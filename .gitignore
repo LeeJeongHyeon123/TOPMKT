@@ -1,0 +1,26 @@
+# 환경 설정
+.env
+config/database.php
+config/firebase.php
+
+# 빌드 및 의존성
+/vendor/
+/node_modules/
+/public/assets/build/
+
+# 저장소 및 캐시
+/storage/
+/resources/cache/
+
+# 임시 파일 저장소
+/public/assets/images/temp/
+/public/assets/images/cache/
+
+# 로그 및 백업
+/storage/logs/
+/database/backups/
+
+# IDE 설정
+/.cursor/
+/.idea/
+/.vscode/ 
