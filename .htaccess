@@ -4,6 +4,9 @@
     Deny from all
 </FilesMatch>
 
+# Favicon 리다이렉션
+RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+
 # .git 디렉토리 경로에 대한 접근 차단
 RedirectMatch 404 /\.git
 
@@ -36,20 +39,25 @@ RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
 # 기본 페이지 리다이렉션
 RewriteRule ^$ index.php [L]
-RewriteRule ^landing/?$ landing.php [L]
+RewriteRule ^logout/?$ logout.php [L]
 
 # 404 에러 페이지
 ErrorDocument 404 /404.php
 
 # 보안 헤더 설정
 <IfModule mod_headers.c>
+    # Content Security Policy
+    Header set Content-Security-Policy "default-src 'self'; frame-src 'self' https://www.google.com https://www.gstatic.com https://www.recaptcha.net; connect-src 'self' https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://*.firebaseio.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.recaptcha.net https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;"
+    
+    # 기존 보안 헤더들
     Header set X-Content-Type-Options "nosniff"
-    Header set X-XSS-Protection "1; mode=block"
     Header set X-Frame-Options "SAMEORIGIN"
-    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
 # PHP 오류 표시 설정
-php_flag display_errors off
+php_flag display_errors on
 php_value error_reporting E_ALL
 php_value error_log /var/log/httpd/topmkt_error.log
+php_flag log_errors on

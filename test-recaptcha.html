@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>reCAPTCHA Enterprise 테스트</title>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        button { padding: 10px 20px; font-size: 16px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>reCAPTCHA Enterprise 테스트</h1>
+    <button onclick="executeRecaptcha()">reCAPTCHA 실행</button>
+    <div id="result"></div>
+
+    <script>
+        function executeRecaptcha() {
+            document.getElementById('result').innerHTML = '토큰 생성 중...';
+            
+            grecaptcha.enterprise.execute('6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4', {action: 'PHONE_VERIFICATION'})
+                .then(function(token) {
+                    // 토큰 생성 성공 시 서버로 전송
+                    fetch('/test-recaptcha.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            recaptcha_token: token
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        let resultHtml = '<h3>결과:</h3>';
+                        resultHtml += '<p>토큰: ' + token.substring(0, 50) + '...</p>';
+                        resultHtml += '<p>성공 여부: <span class="' + (data.success ? 'success' : 'error') + '">' + 
+                            (data.success ? '성공' : '실패') + '</span></p>';
+                        if (data.error) {
+                            resultHtml += '<p>에러 메시지: <span class="error">' + data.error + '</span></p>';
+                        }
+                        if (data.score) {
+                            resultHtml += '<p>위험 점수: ' + data.score + '</p>';
+                        }
+                        document.getElementById('result').innerHTML = resultHtml;
+                    })
+                    .catch(error => {
+                        document.getElementById('result').innerHTML = 
+                            '<p class="error">서버 응답 처리 중 오류 발생: ' + error + '</p>';
+                    });
+                })
+                .catch(function(error) {
+                    document.getElementById('result').innerHTML = 
+                        '<p class="error">토큰 생성 중 오류 발생: ' + error + '</p>';
+                });
+        }
+    </script>
+</body>
+</html> 
