@@ -36,11 +36,8 @@ RewriteBase /
 RewriteCond %{THE_REQUEST} \.php [NC]
 RewriteRule ^ - [F]
 
-# auth 경로 처리
+# auth 경로 처리 (슬래시 유무 모두 처리)
 RewriteRule ^auth/?$ auth.php [L]
-
-# auth/ 경로 처리
-RewriteRule ^auth/$ auth.php [L]
 
 # PHP 확장자 숨김
 RewriteCond %{REQUEST_FILENAME} !-f
