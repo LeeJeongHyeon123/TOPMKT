@@ -2,6 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // JS 활성화 시 body에 js-enabled 클래스 추가
     document.body.classList.add('js-enabled');
 
+    // reCAPTCHA 로드 콜백 함수
+    window.onRecaptchaLoad = function() {
+        console.log('reCAPTCHA Enterprise가 로드되었습니다.');
+    };
+
     // 로그인/회원가입 탭 전환
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
