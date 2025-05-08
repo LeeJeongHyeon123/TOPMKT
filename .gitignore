@@ -27,3 +27,4 @@ config/firebase.php
 
 # 보안 파일
 config/firebase/firebase-credentials.json
+logs/php_errors.log
