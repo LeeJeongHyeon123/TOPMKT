@@ -140,20 +140,8 @@ include_once __DIR__ . '/../includes/header.php';
     </style>
 
     <script>
-    // 디버그 로깅 함수
-    function debugLog(message, data = null) {
-        const timestamp = new Date().toISOString();
-        const logMessage = `[${timestamp}] ${message}`;
-        console.log(logMessage);
-        if (data) {
-            console.log('데이터:', data);
-        }
-    }
-
     // 로딩 오버레이 제어
     function setLoading(isLoading) {
-        debugLog('setLoading 호출됨', { isLoading });
-        
         const loadingOverlay = document.querySelector('.loading-overlay');
         if (!loadingOverlay) {
             console.error('로딩 오버레이를 찾을 수 없습니다.');
@@ -161,38 +149,28 @@ include_once __DIR__ . '/../includes/header.php';
         }
         
         if (isLoading) {
-            debugLog('로딩 오버레이 표시 시작');
             loadingOverlay.classList.add('visible');
             document.body.style.overflow = 'hidden';
-            debugLog('로딩 오버레이 표시 완료');
         } else {
-            debugLog('로딩 오버레이 제거 시작');
             loadingOverlay.classList.remove('visible');
             document.body.style.overflow = '';
-            debugLog('로딩 오버레이 제거 완료');
         }
     }
 
     // 페이지 로드 시 초기 로딩 상태 설정
     document.addEventListener('DOMContentLoaded', function() {
-        debugLog('DOMContentLoaded 이벤트 발생');
         setLoading(true);
     });
 
     // 페이지 완전 로드 시
     window.addEventListener('load', function() {
-        debugLog('window.load 이벤트 발생');
         setTimeout(() => {
-            debugLog('타이머 완료 - 로딩 오버레이 제거 시작');
             setLoading(false);
         }, 500);
     });
 
     // 전역 스코프에 함수 노출
     window.setLoading = setLoading;
-
-    // 초기 로그
-    debugLog('로딩 오버레이 스크립트 초기화 완료');
     </script>
 </head>
 <body>
