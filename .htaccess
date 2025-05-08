@@ -33,8 +33,11 @@ RewriteEngine On
 RewriteBase /
 
 # auth 경로 처리 - 리다이렉션 루프 방지
-RewriteCond %{REQUEST_URI} !^/auth\.php$
-RewriteRule ^auth/?$ auth.php [L]
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+auth\.php [NC]
+RewriteRule ^ - [L]
+
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+auth/? [NC]
+RewriteRule ^ auth.php [L]
 
 # PHP 확장자 숨김
 RewriteCond %{REQUEST_FILENAME} !-f

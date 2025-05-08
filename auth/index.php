@@ -8,6 +8,8 @@ error_reporting(E_ALL);
 ini_set('log_errors', 1);
 ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
-// 인증 관련 페이지로 리다이렉트
-header('Location: /auth.php');
-exit; 
+// 현재 URL이 /auth.php가 아닐 경우에만 리다이렉트
+if (!preg_match('/\/auth\.php$/', $_SERVER['REQUEST_URI'])) {
+    header('Location: /auth.php');
+    exit;
+} 
