@@ -1,4 +1,7 @@
 <?php
+// 출력 버퍼링 시작
+ob_start();
+
 // 에러 출력 설정
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -8,11 +11,11 @@ error_reporting(E_ALL);
 ini_set('log_errors', 1);
 ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
-// Firebase 설정 파일 포함
-require_once __DIR__ . '/../config/firebase/config.php';
-
 // 세션 시작
 session_start();
+
+// Firebase 설정 파일 포함
+require_once __DIR__ . '/../config/firebase/config.php';
 
 // 함수 포함 (다국어 함수 등)
 include_once __DIR__ . '/../includes/functions.php';
@@ -20,6 +23,9 @@ include_once __DIR__ . '/../includes/functions.php';
 // 다국어 메시지 로드
 $currentLang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko';
 $messages = require __DIR__ . "/../resources/lang/{$currentLang}/messages.php";
+
+// 헤더 포함
+include_once __DIR__ . '/../includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>">
@@ -85,13 +91,116 @@ $messages = require __DIR__ . "/../resources/lang/{$currentLang}/messages.php";
         opacity: 1;
         display: block;
     }
+
+    /* 로딩 오버레이 스타일 수정 */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 999999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+        pointer-events: none;
+    }
+
+    .loading-overlay.visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .loading-overlay .spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    .loading-overlay .loading-text {
+        color: #3498db;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
     </style>
+
+    <script>
+    // 디버그 로깅 함수
+    function debugLog(message, data = null) {
+        const timestamp = new Date().toISOString();
+        const logMessage = `[${timestamp}] ${message}`;
+        console.log(logMessage);
+        if (data) {
+            console.log('데이터:', data);
+        }
+    }
+
+    // 로딩 오버레이 제어
+    function setLoading(isLoading) {
+        debugLog('setLoading 호출됨', { isLoading });
+        
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        if (!loadingOverlay) {
+            console.error('로딩 오버레이를 찾을 수 없습니다.');
+            return;
+        }
+        
+        if (isLoading) {
+            debugLog('로딩 오버레이 표시 시작');
+            loadingOverlay.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            debugLog('로딩 오버레이 표시 완료');
+        } else {
+            debugLog('로딩 오버레이 제거 시작');
+            loadingOverlay.classList.remove('visible');
+            document.body.style.overflow = '';
+            debugLog('로딩 오버레이 제거 완료');
+        }
+    }
+
+    // 페이지 로드 시 초기 로딩 상태 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        debugLog('DOMContentLoaded 이벤트 발생');
+        setLoading(true);
+    });
+
+    // 페이지 완전 로드 시
+    window.addEventListener('load', function() {
+        debugLog('window.load 이벤트 발생');
+        setTimeout(() => {
+            debugLog('타이머 완료 - 로딩 오버레이 제거 시작');
+            setLoading(false);
+        }, 500);
+    });
+
+    // 전역 스코프에 함수 노출
+    window.setLoading = setLoading;
+
+    // 초기 로그
+    debugLog('로딩 오버레이 스크립트 초기화 완료');
+    </script>
 </head>
 <body>
-<?php
-// 헤더 포함
-include_once __DIR__ . '/../includes/header.php';
-?>
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay" style="display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background: rgba(255, 255, 255, 0.95) !important; z-index: 999999 !important; justify-content: center !important; align-items: center !important; flex-direction: column !important; gap: 20px !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;">
+    <div class="spinner"></div>
+    <div class="loading-text">로딩 중...</div>
+</div>
 
 <main class="auth-container">
     <div class="auth-form-container">
@@ -187,4 +296,7 @@ include_once __DIR__ . '/../includes/header.php';
 <?php
 // 푸터 포함
 include_once __DIR__ . '/../includes/footer.php';
+
+// 출력 버퍼 플러시
+ob_end_flush();
 ?> 
