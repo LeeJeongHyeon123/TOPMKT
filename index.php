@@ -106,7 +106,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($latestVisionPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/vision/view.php?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/vision/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/vision/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -135,7 +135,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($knowhowPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/knowhow/view.php?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/knowhow/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/knowhow/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -166,7 +166,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($recruitingPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/recruiting/view.php?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/recruiting/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/recruiting/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -276,7 +276,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($noticePosts as $post): ?>
                     <article class="post-card <?php echo $post['is_important'] ? 'important' : ''; ?>">
-                        <a href="/notice/view.php?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/notice/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <h3 class="post-title">
                                 <?php if ($post['is_important']): ?>
                                     <span class="notice-badge">중요</span>

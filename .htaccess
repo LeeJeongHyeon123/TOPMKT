@@ -32,14 +32,18 @@ DirectoryIndex index.php
 RewriteEngine On
 RewriteBase /
 
+# auth 경로 처리
+RewriteRule ^auth/?$ auth.php [L]
+
 # PHP 확장자 숨김
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteRule ^(.+)$ $1.php [L]
 
 # 기본 페이지 리다이렉션
 RewriteRule ^$ index.php [L]
-RewriteRule ^logout/?$ logout.php [L]
+RewriteRule ^logout$ logout.php [L]
 
 # 404 에러 페이지
 ErrorDocument 404 /404.php
@@ -54,6 +58,7 @@ ErrorDocument 404 /404.php
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
 # PHP 오류 표시 설정
