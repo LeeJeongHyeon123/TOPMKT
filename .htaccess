@@ -39,7 +39,7 @@ RewriteRule ^auth/?$ auth.php [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.+)$ $1.php [L]
+RewriteRule ^([^\.]+)$ $1.php [L]
 
 # 기본 페이지 리다이렉션
 RewriteRule ^$ index.php [L]

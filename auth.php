@@ -15,7 +15,7 @@ require_once __DIR__ . '/config/firebase/config.php';
 session_start();
 
 // 함수 포함 (다국어 함수 등)
-include_once 'includes/functions.php';
+include_once __DIR__ . '/includes/functions.php';
 
 // 다국어 메시지 로드
 $currentLang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko';
@@ -90,7 +90,7 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
 <body>
 <?php
 // 헤더 포함
-include_once 'includes/header.php';
+include_once __DIR__ . '/includes/header.php';
 ?>
 
 <main class="auth-container">
@@ -232,5 +232,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php
 // 푸터 포함
-include_once 'includes/footer.php';
+include_once __DIR__ . '/includes/footer.php';
 ?> 

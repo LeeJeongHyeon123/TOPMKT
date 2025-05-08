@@ -9,5 +9,5 @@ ini_set('log_errors', 1);
 ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
 // 인증 관련 페이지로 리다이렉트
-header('Location: /auth.php');
+header('Location: /auth');
 exit; 
