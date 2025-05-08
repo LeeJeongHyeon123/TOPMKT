@@ -33,10 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         grecaptcha.enterprise.ready(function() {
             grecaptcha.enterprise.execute('6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4', {
-                action: 'send_code',
-                // 서드파티 쿠키 정책 대응을 위한 추가 옵션
-                useRecaptchaNet: true,
-                enterprise: true
+                action: 'send_code'
             }).then(function(token) {
                 if (mode === 'login') {
                     requestLoginCode(phone, token);

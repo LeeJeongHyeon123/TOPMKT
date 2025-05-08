@@ -176,7 +176,7 @@ include_once __DIR__ . '/../includes/header.php';
 <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
 <!-- reCAPTCHA Enterprise -->
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4&onload=onRecaptchaLoad"></script>
 <!-- Firebase 설정 및 인증 스크립트 -->
 <script src="/assets/js/firebase-config.js"></script>
 <script src="/assets/js/auth.js"></script>
