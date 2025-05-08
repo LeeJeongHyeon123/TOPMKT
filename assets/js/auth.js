@@ -160,22 +160,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 10으로 시작하는 경우
                     else if (numbers.startsWith('10')) {
                         if (numbers.length <= 2) {
-                            return numbers;
+                            return '0' + numbers;
                         } else if (numbers.length <= 6) {
-                            return numbers.slice(0, 2) + '-' + numbers.slice(2);
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
                         } else {
-                            return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
                         }
                     }
                     // 그 외의 경우 (0으로 시작하는 경우 0 제거)
                     else if (numbers.startsWith('0')) {
                         numbers = numbers.substring(1);
                         if (numbers.length <= 2) {
-                            return numbers;
+                            return '0' + numbers;
                         } else if (numbers.length <= 6) {
-                            return numbers.slice(0, 2) + '-' + numbers.slice(2);
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
                         } else {
-                            return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
+                        }
+                    }
+                    // 그 외의 경우 (0으로 시작하지 않는 경우)
+                    else {
+                        if (numbers.length <= 2) {
+                            return '0' + numbers;
+                        } else if (numbers.length <= 6) {
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
+                        } else {
+                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
                         }
                     }
                 }
