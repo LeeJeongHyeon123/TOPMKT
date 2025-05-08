@@ -10,6 +10,11 @@ ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
 // 현재 URL이 /auth.php가 아닐 경우에만 리다이렉트
 if (!preg_match('/\/auth\.php$/', $_SERVER['REQUEST_URI'])) {
-    header('Location: /auth');
+    // 현재 URL이 /auth/로 끝나면 /auth로 리다이렉트
+    if (preg_match('/\/auth\/$/', $_SERVER['REQUEST_URI'])) {
+        header('Location: /auth');
+    } else {
+        header('Location: /auth');
+    }
     exit;
 } 

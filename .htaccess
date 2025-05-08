@@ -32,14 +32,15 @@ DirectoryIndex index.php
 RewriteEngine On
 RewriteBase /
 
-# .php 확장자로의 직접 접근 차단 (auth.php는 제외)
+# .php 확장자로의 직접 접근 차단
 RewriteCond %{THE_REQUEST} \.php [NC]
-RewriteCond %{REQUEST_URI} !^/auth\.php$
 RewriteRule ^ - [F]
 
 # auth 경로 처리
-RewriteCond %{REQUEST_URI} !^/auth\.php$
 RewriteRule ^auth/?$ auth.php [L]
+
+# auth/ 경로 처리
+RewriteRule ^auth/$ auth.php [L]
 
 # PHP 확장자 숨김
 RewriteCond %{REQUEST_FILENAME} !-f
