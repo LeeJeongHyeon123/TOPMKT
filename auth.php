@@ -26,68 +26,76 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.google.com">
     <title><?= __('auth.login.title') ?> - 탑마케팅</title>
     
     <!-- CSS 파일 링크 -->
     <link rel="stylesheet" href="/assets/css/auth.css">
     
     <style>
-    /* 초기 스타일 - FOUC 방지 */
+    /* 기본 스타일 */
     body {
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
         margin: 0;
-        opacity: 1;
-    }
-    
-    main {
-        flex: 1;
-        padding-top: 90px;
-        padding-bottom: 40px;
-    }
-    
-    .footer {
-        background: linear-gradient(to right, #ffffff, #f8f9fa);
-        padding: 40px 0 20px;
-        text-align: center;
-        border-top: 1px solid rgba(0, 0, 0, 0.05);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
-        margin-top: auto;
-        opacity: 1;
-    }
-    
-    .auth-button {
-        padding: 12px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        margin-top: 4px;
-        opacity: 1 !important;
-        display: block !important;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.5;
+        color: #333;
+        background-color: #fff;
     }
 
-    .auth-button:hover {
-        background-color: #0056b3;
+    /* 로딩 오버레이 스타일 */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
 
-    #loginSubmitBtn, #registerSubmitBtn {
+    .loading-overlay.hidden {
         opacity: 0;
-        display: none;
-        transition: opacity 0.2s ease-in-out;
+        visibility: hidden;
+        pointer-events: none;
     }
 
-    .js-enabled #loginSubmitBtn, .js-enabled #registerSubmitBtn {
-        opacity: 1;
-        display: block;
+    .loading-overlay .spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    .loading-overlay .loading-text {
+        color: #3498db;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     </style>
 </head>
 <body>
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">로딩 중...</div>
+</div>
+
 <?php
 // 헤더 포함
 include_once __DIR__ . '/includes/header.php';
@@ -182,52 +190,55 @@ include_once __DIR__ . '/includes/header.php';
 <script src="/assets/js/auth.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 국가 선택 관련 함수
-    function toggleCountryDropdown() {
-        const dropdown = document.getElementById('countryDropdown');
-        if (dropdown) {
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-        }
-    }
-
-    function selectCountry(countryCode, phoneCode, countryName) {
-        const countryCodeEl = document.getElementById('countryCode');
-        const countryDropdownEl = document.getElementById('countryDropdown');
-        const phoneNumberEl = document.getElementById('phoneNumber');
+// 즉시 실행
+(function() {
+    // 로딩 오버레이 제어
+    function setLoading(isLoading) {
+        console.log('setLoading 호출됨:', isLoading);
         
-        if (countryCodeEl) countryCodeEl.textContent = phoneCode;
-        if (countryDropdownEl) countryDropdownEl.style.display = 'none';
-        if (phoneNumberEl) phoneNumberEl.value = '';
-    }
-
-    // 전화번호 형식 지정
-    const phoneNumberEl = document.getElementById('phoneNumber');
-    if (phoneNumberEl) {
-        phoneNumberEl.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^\d]/g, '');
-            if (value.length > 0) {
-                if (value.startsWith('010')) {
-                    if (value.length >= 3) {
-                        value = value.slice(0, 3) + '-' + value.slice(3);
-                    }
-                    if (value.length >= 8) {
-                        value = value.slice(0, 8) + '-' + value.slice(8);
-                    }
-                }
-            }
-            e.target.value = value;
-        });
-    }
-
-    // 드롭다운 외부 클릭 시 닫기
-    document.addEventListener('click', function(event) {
-        const countryDropdown = document.getElementById('countryDropdown');
-        if (countryDropdown && !event.target.closest('.country-select')) {
-            countryDropdown.style.display = 'none';
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        console.log('로딩 오버레이 요소:', loadingOverlay);
+        
+        if (!loadingOverlay) {
+            console.error('로딩 오버레이를 찾을 수 없습니다.');
+            return;
         }
+        
+        if (isLoading) {
+            loadingOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            console.log('로딩 오버레이 표시됨');
+        } else {
+            loadingOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            console.log('로딩 오버레이 숨겨짐');
+        }
+    }
+
+    // 페이지 로드 시 초기 로딩 상태 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded 이벤트 발생');
+        setLoading(true);
     });
-});
+
+    // 페이지 완전 로드 시
+    window.addEventListener('load', function() {
+        console.log('window.load 이벤트 발생');
+        setTimeout(() => {
+            console.log('타이머 완료 - 로딩 오버레이 숨기기');
+            setLoading(false);
+        }, 1000);
+    });
+
+    // 전역 스코프에 함수 노출
+    window.setLoading = setLoading;
+
+    // 초기 로그
+    console.log('로딩 오버레이 스크립트 초기화 완료');
+    
+    // 즉시 로딩 오버레이 표시
+    setLoading(true);
+})();
 </script>
 
 <?php

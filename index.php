@@ -29,8 +29,80 @@ $upcomingLectures = getDummyUpcomingLectures();
 $knowhowPosts = getDummyKnowhowPosts();
 $recruitingPosts = getDummyRecruitingPosts();
 $noticePosts = getDummyNoticePosts();
+?>
+<!DOCTYPE html>
+<html lang="<?= $currentLang ?>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= __('index.title') ?> - 탑마케팅</title>
+    
+    <style>
+    /* 기본 스타일 */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.5;
+        color: #333;
+        background-color: #fff;
+    }
 
-// 헤더 인클루드
+    /* 로딩 오버레이 스타일 */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+        opacity: 1;
+        visibility: visible;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    }
+
+    .loading-overlay.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .loading-overlay .spinner {
+        width: 60px;
+        height: 60px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    .loading-overlay .loading-text {
+        color: #3498db;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+</head>
+<body>
+<!-- 로딩 오버레이 -->
+<div class="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">로딩 중...</div>
+</div>
+
+<?php
+// 헤더 포함
 include_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -297,7 +369,60 @@ include_once __DIR__ . '/includes/header.php';
     </section>
 </main>
 
+<!-- 로딩 오버레이 제어 스크립트 -->
+<script>
+// 즉시 실행
+(function() {
+    // 로딩 오버레이 제어
+    function setLoading(isLoading) {
+        console.log('setLoading 호출됨:', isLoading);
+        
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        console.log('로딩 오버레이 요소:', loadingOverlay);
+        
+        if (!loadingOverlay) {
+            console.error('로딩 오버레이를 찾을 수 없습니다.');
+            return;
+        }
+        
+        if (isLoading) {
+            loadingOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            console.log('로딩 오버레이 표시됨');
+        } else {
+            loadingOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            console.log('로딩 오버레이 숨겨짐');
+        }
+    }
+
+    // 페이지 로드 시 초기 로딩 상태 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded 이벤트 발생');
+        setLoading(true);
+    });
+
+    // 페이지 완전 로드 시
+    window.addEventListener('load', function() {
+        console.log('window.load 이벤트 발생');
+        setTimeout(() => {
+            console.log('타이머 완료 - 로딩 오버레이 숨기기');
+            setLoading(false);
+        }, 1000);
+    });
+
+    // 전역 스코프에 함수 노출
+    window.setLoading = setLoading;
+
+    // 초기 로그
+    console.log('로딩 오버레이 스크립트 초기화 완료');
+    
+    // 즉시 로딩 오버레이 표시
+    setLoading(true);
+})();
+</script>
+
 <?php
-// 푸터 인클루드
+// 푸터 포함
 include_once __DIR__ . '/includes/footer.php';
 ?> 
