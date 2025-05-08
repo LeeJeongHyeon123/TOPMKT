@@ -32,7 +32,8 @@ DirectoryIndex index.php
 RewriteEngine On
 RewriteBase /
 
-# auth 경로 처리
+# auth 경로 처리 - 리다이렉션 루프 방지
+RewriteCond %{REQUEST_URI} !^/auth\.php$
 RewriteRule ^auth/?$ auth.php [L]
 
 # PHP 확장자 숨김
