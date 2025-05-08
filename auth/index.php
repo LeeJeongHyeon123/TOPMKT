@@ -120,6 +120,8 @@ include_once __DIR__ . '/../includes/header.php';
                         <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
                         <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
                         <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
+                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
+                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
                     </div>
                 </div>
                 <div class="form-group verification-group" id="loginVerificationGroup" style="display:none;">
@@ -146,6 +148,8 @@ include_once __DIR__ . '/../includes/header.php';
                         <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
                         <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
                         <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
+                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
+                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
                     </div>
                 </div>
                 <div class="form-group verification-group" id="registerVerificationGroup" style="display:none;">

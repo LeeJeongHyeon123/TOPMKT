@@ -234,6 +234,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 break;
+            case '+84': // 베트남
+                if (numbers.length > 0) {
+                    if (numbers.length <= 3) {
+                        return numbers;
+                    } else if (numbers.length <= 7) {
+                        return numbers.slice(0, 3) + '-' + numbers.slice(3);
+                    } else {
+                        return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
+                    }
+                }
+                break;
+            case '+66': // 태국
+                if (numbers.length > 0) {
+                    if (numbers.length <= 2) {
+                        return numbers;
+                    } else if (numbers.length <= 6) {
+                        return numbers.slice(0, 2) + '-' + numbers.slice(2);
+                    } else {
+                        return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
+                    }
+                }
+                break;
             default:
                 return numbers;
         }
