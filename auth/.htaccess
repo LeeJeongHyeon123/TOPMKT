@@ -1,5 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine On
+Require all granted
 
 # PHP 파일 직접 접근 허용
 <FilesMatch "\.php$">
