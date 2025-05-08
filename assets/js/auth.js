@@ -109,158 +109,73 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 국가 선택 드롭다운 동작 (로그인/회원가입 공통)
-    function setupCountrySelector(selectId, dropdownId, flagId, codeId) {
-        const select = document.getElementById(selectId);
-        const dropdown = document.getElementById(dropdownId);
-        const flag = document.getElementById(flagId);
-        const code = document.getElementById(codeId);
-        if (!select || !dropdown || !flag || !code) return;
-
-        select.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        });
-        dropdown.querySelectorAll('.country-option').forEach(option => {
-            option.addEventListener('click', function() {
-                flag.textContent = this.dataset.flag;
-                code.textContent = this.dataset.code;
-                dropdown.style.display = 'none';
-            });
-        });
-        document.addEventListener('click', function(e) {
-            if (!select.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.style.display = 'none';
+    // 국가별 전화번호 형식 정의
+    const phoneFormats = {
+        '+82': { // 한국
+            placeholder: '010-1234-1234',
+            pattern: /^0?1[0-9]-?\d{3,4}-?\d{4}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                if (num.startsWith('0')) num = num.substring(1);
+                if (num.startsWith('1')) {
+                    return `0${num.slice(0, 2)}-${num.slice(2, 6)}-${num.slice(6, 10)}`;
+                }
+                return num;
             }
-        });
-    }
-
-    setupCountrySelector('loginCountrySelect', 'loginCountryDropdown', 'loginCountryFlag', 'loginCountryCode');
-    setupCountrySelector('registerCountrySelect', 'registerCountryDropdown', 'registerCountryFlag', 'registerCountryCode');
-
-    // 전화번호 형식 지정 함수
-    function formatPhoneNumber(value, countryCode) {
-        // 숫자만 추출
-        let numbers = value.replace(/[^\d]/g, '');
-        
-        // 국가별 형식 처리
-        switch(countryCode) {
-            case '+82': // 한국
-                if (numbers.length > 0) {
-                    // 010으로 시작하는 경우
-                    if (numbers.startsWith('010')) {
-                        if (numbers.length <= 3) {
-                            return numbers;
-                        } else if (numbers.length <= 7) {
-                            return numbers.slice(0, 3) + '-' + numbers.slice(3);
-                        } else {
-                            return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
-                        }
-                    }
-                    // 10으로 시작하는 경우
-                    else if (numbers.startsWith('10')) {
-                        if (numbers.length <= 2) {
-                            return '0' + numbers;
-                        } else if (numbers.length <= 6) {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
-                        } else {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                        }
-                    }
-                    // 그 외의 경우 (0으로 시작하는 경우 0 제거)
-                    else if (numbers.startsWith('0')) {
-                        numbers = numbers.substring(1);
-                        if (numbers.length <= 2) {
-                            return '0' + numbers;
-                        } else if (numbers.length <= 6) {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
-                        } else {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                        }
-                    }
-                    // 그 외의 경우 (0으로 시작하지 않는 경우)
-                    else {
-                        if (numbers.length <= 2) {
-                            return '0' + numbers;
-                        } else if (numbers.length <= 6) {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2);
-                        } else {
-                            return '0' + numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                        }
-                    }
-                }
-                break;
-            case '+1': // 미국/캐나다
-                if (numbers.length > 0) {
-                    if (numbers.length <= 3) {
-                        return numbers;
-                    } else if (numbers.length <= 6) {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3);
-                    } else {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3, 6) + '-' + numbers.slice(6, 10);
-                    }
-                }
-                break;
-            case '+86': // 중국
-                if (numbers.length > 0) {
-                    if (numbers.length <= 3) {
-                        return numbers;
-                    } else if (numbers.length <= 7) {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3);
-                    } else {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
-                    }
-                }
-                break;
-            case '+81': // 일본
-                if (numbers.length > 0) {
-                    if (numbers.length <= 2) {
-                        return numbers;
-                    } else if (numbers.length <= 6) {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2);
-                    } else {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                    }
-                }
-                break;
-            case '+886': // 대만
-                if (numbers.length > 0) {
-                    if (numbers.length <= 2) {
-                        return numbers;
-                    } else if (numbers.length <= 6) {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2);
-                    } else {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                    }
-                }
-                break;
-            case '+84': // 베트남
-                if (numbers.length > 0) {
-                    if (numbers.length <= 3) {
-                        return numbers;
-                    } else if (numbers.length <= 7) {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3);
-                    } else {
-                        return numbers.slice(0, 3) + '-' + numbers.slice(3, 7) + '-' + numbers.slice(7, 11);
-                    }
-                }
-                break;
-            case '+66': // 태국
-                if (numbers.length > 0) {
-                    if (numbers.length <= 2) {
-                        return numbers;
-                    } else if (numbers.length <= 6) {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2);
-                    } else {
-                        return numbers.slice(0, 2) + '-' + numbers.slice(2, 6) + '-' + numbers.slice(6, 10);
-                    }
-                }
-                break;
-            default:
-                return numbers;
+        },
+        '+1': { // 미국/캐나다
+            placeholder: '123-456-7890',
+            pattern: /^[2-9]\d{2}-?\d{3}-?\d{4}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                return `${num.slice(0, 3)}-${num.slice(3, 6)}-${num.slice(6, 10)}`;
+            }
+        },
+        '+86': { // 중국
+            placeholder: '123-4567-8901',
+            pattern: /^1[3-9]\d{9}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                return `${num.slice(0, 3)}-${num.slice(3, 7)}-${num.slice(7, 11)}`;
+            }
+        },
+        '+81': { // 일본
+            placeholder: '90-1234-5678',
+            pattern: /^0?[789]0-?\d{4}-?\d{4}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                if (num.startsWith('0')) num = num.substring(1);
+                return `${num.slice(0, 2)}-${num.slice(2, 6)}-${num.slice(6, 10)}`;
+            }
+        },
+        '+886': { // 대만
+            placeholder: '912-345-678',
+            pattern: /^0?9\d{2}-?\d{3}-?\d{3}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                if (num.startsWith('0')) num = num.substring(1);
+                return `${num.slice(0, 3)}-${num.slice(3, 6)}-${num.slice(6, 9)}`;
+            }
+        },
+        '+84': { // 베트남
+            placeholder: '123-456-7890',
+            pattern: /^0?[1-9]\d{2}-?\d{3}-?\d{4}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                if (num.startsWith('0')) num = num.substring(1);
+                return `${num.slice(0, 3)}-${num.slice(3, 6)}-${num.slice(6, 10)}`;
+            }
+        },
+        '+66': { // 태국
+            placeholder: '81-234-5678',
+            pattern: /^0?[689]\d{1}-?\d{3}-?\d{4}$/,
+            format: (num) => {
+                num = num.replace(/[^\d]/g, '');
+                if (num.startsWith('0')) num = num.substring(1);
+                return `${num.slice(0, 2)}-${num.slice(2, 5)}-${num.slice(5, 9)}`;
+            }
         }
-        return numbers;
-    }
+    };
 
     // 전화번호 입력 이벤트 처리 함수
     function setupPhoneInput(inputId, countryCodeId) {
@@ -268,32 +183,91 @@ document.addEventListener('DOMContentLoaded', function() {
         const countryCode = document.getElementById(countryCodeId);
         
         if (input && countryCode) {
+            // 국가 코드 변경 시 플레이스홀더 업데이트
+            function updatePlaceholder() {
+                const code = countryCode.textContent;
+                const format = phoneFormats[code];
+                if (format) {
+                    input.placeholder = format.placeholder;
+                }
+            }
+            
+            // 초기 플레이스홀더 설정
+            updatePlaceholder();
+
             input.addEventListener('input', function(e) {
                 const value = e.target.value;
                 const currentCountryCode = countryCode.textContent;
+                const format = phoneFormats[currentCountryCode];
                 
-                // 숫자만 입력 가능하도록 처리
-                if (!/^\d*$/.test(value.replace(/-/g, ''))) {
-                    e.target.value = value.replace(/[^\d-]/g, '');
-                    return;
+                if (format) {
+                    // 숫자만 입력 가능하도록 처리
+                    if (!/^\d*$/.test(value.replace(/-/g, ''))) {
+                        e.target.value = value.replace(/[^\d-]/g, '');
+                        return;
+                    }
+                    
+                    // 형식 적용
+                    e.target.value = format.format(value);
                 }
-                
-                // 형식 적용
-                e.target.value = formatPhoneNumber(value, currentCountryCode);
             });
 
             // 붙여넣기 이벤트 처리
             input.addEventListener('paste', function(e) {
                 e.preventDefault();
                 const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                const numbers = pastedText.replace(/[^\d]/g, '');
                 const currentCountryCode = countryCode.textContent;
-                e.target.value = formatPhoneNumber(numbers, currentCountryCode);
+                const format = phoneFormats[currentCountryCode];
+                
+                if (format) {
+                    e.target.value = format.format(pastedText);
+                }
             });
         }
+    }
+
+    // 국가 선택 드롭다운 동작 (로그인/회원가입 공통)
+    function setupCountrySelector(selectId, dropdownId, flagId, codeId, phoneInputId) {
+        const select = document.getElementById(selectId);
+        const dropdown = document.getElementById(dropdownId);
+        const flag = document.getElementById(flagId);
+        const code = document.getElementById(codeId);
+        const phoneInput = document.getElementById(phoneInputId);
+        
+        if (!select || !dropdown || !flag || !code || !phoneInput) return;
+
+        select.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        dropdown.querySelectorAll('.country-option').forEach(option => {
+            option.addEventListener('click', function() {
+                flag.textContent = this.dataset.flag;
+                code.textContent = this.dataset.code;
+                dropdown.style.display = 'none';
+                
+                // 국가 변경 시 전화번호 입력 필드 초기화 및 플레이스홀더 업데이트
+                phoneInput.value = '';
+                const format = phoneFormats[this.dataset.code];
+                if (format) {
+                    phoneInput.placeholder = format.placeholder;
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!select.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
     }
 
     // 로그인과 회원가입 폼의 전화번호 입력 설정
     setupPhoneInput('loginPhone', 'loginCountryCode');
     setupPhoneInput('registerPhone', 'registerCountryCode');
+
+    // 국가 선택 드롭다운 설정
+    setupCountrySelector('loginCountrySelect', 'loginCountryDropdown', 'loginCountryFlag', 'loginCountryCode', 'loginPhone');
+    setupCountrySelector('registerCountrySelect', 'registerCountryDropdown', 'registerCountryFlag', 'registerCountryCode', 'registerPhone');
 }); 
