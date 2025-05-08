@@ -12,26 +12,28 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(249, 250, 251, 0.75) 100%);
+    backdrop-filter: blur(3px);
     z-index: 999999;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 20px;
+    gap: 24px;
 ">
     <div style="
-        width: 60px;
-        height: 60px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
+        width: 40px;
+        height: 40px;
+        border: 2.5px solid rgba(52, 152, 219, 0.15);
+        border-top: 2.5px solid #3498db;
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        animation: spin 1.8s ease-in-out infinite;
     "></div>
     <div style="
-        color: #3498db;
-        font-size: 16px;
+        color: #2c3e50;
+        font-size: 14px;
         font-weight: 500;
+        letter-spacing: 0.3px;
     ">로딩 중...</div>
 </div>
 
@@ -80,6 +82,10 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+#loadingOverlay.visible {
+    opacity: 1;
 }
 </style>
 
