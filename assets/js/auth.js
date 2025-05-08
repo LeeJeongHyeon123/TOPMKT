@@ -12,19 +12,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerTab = document.getElementById('registerTab');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const authSubtitle = document.getElementById('authSubtitle');
 
-    if (loginTab && registerTab && loginForm && registerForm) {
+    if (loginTab && registerTab && loginForm && registerForm && authSubtitle) {
         loginTab.addEventListener('click', () => {
             loginTab.classList.add('active');
             registerTab.classList.remove('active');
             loginForm.style.display = '';
             registerForm.style.display = 'none';
+            authSubtitle.textContent = '휴대폰 번호로 간편하게 로그인하세요';
         });
         registerTab.addEventListener('click', () => {
             registerTab.classList.add('active');
             loginTab.classList.remove('active');
             registerForm.style.display = '';
             loginForm.style.display = 'none';
+            authSubtitle.textContent = '휴대폰 번호로 간편하게 회원가입하세요';
         });
     }
 

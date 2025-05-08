@@ -96,7 +96,7 @@ include_once __DIR__ . '/../includes/header.php';
 <main class="auth-container">
     <div class="auth-form-container">
         <div class="auth-header">
-            <p><?= __('auth.login.subtitle') ?></p>
+            <p id="authSubtitle">휴대폰 번호로 간편하게 로그인하세요</p>
         </div>
         <div class="auth-tabs">
             <button id="loginTab" class="auth-tab active">로그인</button>
