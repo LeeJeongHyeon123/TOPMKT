@@ -96,7 +96,6 @@ include_once __DIR__ . '/../includes/header.php';
 <main class="auth-container">
     <div class="auth-form-container">
         <div class="auth-header">
-            <h1><?= __('auth.login.title') ?></h1>
             <p><?= __('auth.login.subtitle') ?></p>
         </div>
         <div class="auth-tabs">
