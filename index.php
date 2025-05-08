@@ -47,61 +47,14 @@ $noticePosts = getDummyNoticePosts();
         color: #333;
         background-color: #fff;
     }
-
-    /* 로딩 오버레이 스타일 */
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.95);
-        z-index: 9999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        gap: 20px;
-        opacity: 1;
-        visibility: visible;
-        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-    }
-
-    .loading-overlay.hidden {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-
-    .loading-overlay .spinner {
-        width: 60px;
-        height: 60px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    .loading-overlay .loading-text {
-        color: #3498db;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
     </style>
+    <link rel="stylesheet" href="/assets/css/main.css">
 </head>
 <body>
-<!-- 로딩 오버레이 -->
-<div class="loading-overlay">
-    <div class="spinner"></div>
-    <div class="loading-text">로딩 중...</div>
-</div>
-
 <?php
+// 로딩 오버레이 컴포넌트 포함
+include_once __DIR__ . '/includes/components/loading-overlay.php';
+
 // 헤더 포함
 include_once __DIR__ . '/includes/header.php';
 ?>
@@ -152,8 +105,8 @@ include_once __DIR__ . '/includes/header.php';
                             <p class="leader-company"><?php echo htmlspecialchars($leader['company']); ?></p>
                             <p class="leader-intro"><?php echo isset($leader['introduction']) ? htmlspecialchars($leader['introduction']) : ''; ?></p>
                             <div class="leader-actions">
-                                <a href="/chat/<?php echo $leader['id']; ?>" class="btn-chat">채팅하기</a>
-                                <a href="/profile/<?php echo $leader['id']; ?>" class="btn-content">프로필 보기</a>
+                                <a href="/chat.php/<?php echo $leader['id']; ?>" class="btn-chat">채팅하기</a>
+                                <a href="/profile.php/<?php echo $leader['id']; ?>" class="btn-content">프로필 보기</a>
                             </div>
                         </div>
                     </div>
@@ -178,7 +131,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($latestVisionPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/vision/view?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/vision/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/vision/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -207,7 +160,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($knowhowPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/knowhow/view?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/knowhow/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/knowhow/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -238,7 +191,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($recruitingPosts as $post): ?>
                     <article class="post-card">
-                        <a href="/recruiting/view?id=<?php echo $post['id']; ?>" class="post-link">
+                        <a href="/recruiting/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
                                 <img src="/resources/images/recruiting/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
@@ -348,6 +301,7 @@ include_once __DIR__ . '/includes/header.php';
             <div class="posts-grid">
                 <?php foreach ($noticePosts as $post): ?>
                     <article class="post-card <?php echo $post['is_important'] ? 'important' : ''; ?>">
+                        <a href="/notice/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                         <a href="/notice/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <h3 class="post-title">
                                 <?php if ($post['is_important']): ?>
@@ -368,59 +322,6 @@ include_once __DIR__ . '/includes/header.php';
         </div>
     </section>
 </main>
-
-<!-- 로딩 오버레이 제어 스크립트 -->
-<script>
-// 즉시 실행
-(function() {
-    // 로딩 오버레이 제어
-    function setLoading(isLoading) {
-        console.log('setLoading 호출됨:', isLoading);
-        
-        const loadingOverlay = document.querySelector('.loading-overlay');
-        console.log('로딩 오버레이 요소:', loadingOverlay);
-        
-        if (!loadingOverlay) {
-            console.error('로딩 오버레이를 찾을 수 없습니다.');
-            return;
-        }
-        
-        if (isLoading) {
-            loadingOverlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            console.log('로딩 오버레이 표시됨');
-        } else {
-            loadingOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-            console.log('로딩 오버레이 숨겨짐');
-        }
-    }
-
-    // 페이지 로드 시 초기 로딩 상태 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded 이벤트 발생');
-        setLoading(true);
-    });
-
-    // 페이지 완전 로드 시
-    window.addEventListener('load', function() {
-        console.log('window.load 이벤트 발생');
-        setTimeout(() => {
-            console.log('타이머 완료 - 로딩 오버레이 숨기기');
-            setLoading(false);
-        }, 1000);
-    });
-
-    // 전역 스코프에 함수 노출
-    window.setLoading = setLoading;
-
-    // 초기 로그
-    console.log('로딩 오버레이 스크립트 초기화 완료');
-    
-    // 즉시 로딩 오버레이 표시
-    setLoading(true);
-})();
-</script>
 
 <?php
 // 푸터 포함
