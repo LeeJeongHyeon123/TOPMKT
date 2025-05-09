@@ -10,10 +10,21 @@
     AddType application/javascript .js
     AddType application/x-javascript .js
     AddType text/javascript .js
+    AddType image/x-icon .ico
 </IfModule>
 
-# Favicon 리다이렉션
-RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+# 파일 경로 설정
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # assets 파일 처리
+    RewriteCond %{REQUEST_URI} ^/assets/(.*)$
+    RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+    
+    # favicon 처리
+    RewriteRule ^favicon\.ico$ public/favicon.ico [L]
+</IfModule>
 
 # .git 디렉토리 경로에 대한 접근 차단
 RedirectMatch 404 /\.git
@@ -35,10 +46,6 @@ Options -Indexes
 
 # 기본 인덱스 파일 설정
 DirectoryIndex index.php
-
-# URL 리라이팅 비활성화
-# RewriteEngine On
-# RewriteBase /
 
 # 404 에러 페이지
 ErrorDocument 404 /404.php

@@ -48,9 +48,9 @@ $noticePosts = getDummyNoticePosts();
         background-color: #fff;
     }
     </style>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <link rel="stylesheet" href="/assets/css/loading-overlay.css">
-    <script src="/assets/js/loading-overlay.js"></script>
+    <link rel="stylesheet" href="/public/assets/css/main.css">
+    <link rel="stylesheet" href="/public/assets/css/loading-overlay.css">
+    <script src="/public/assets/js/loading-overlay.js"></script>
 </head>
 <body>
 <?php
