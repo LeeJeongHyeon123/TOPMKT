@@ -246,7 +246,7 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
                     <a href="/profile" class="btn-profile"><?= __('menu.profile', [], $currentLang) ?></a>
                     <a href="/logout" class="btn-logout"><?= __('menu.logout', [], $currentLang) ?></a>
                 <?php else: ?>
-                    <a href="/auth" class="btn-login"><?= __('menu.login', [], $currentLang) ?></a>
+                    <a href="/auth.php" class="btn-login"><?= __('menu.login', [], $currentLang) ?></a>
                 <?php endif; ?>
             </div>
         </div>
