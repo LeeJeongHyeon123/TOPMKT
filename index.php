@@ -48,15 +48,19 @@ $noticePosts = getDummyNoticePosts();
         background-color: #fff;
     }
     </style>
-    <link rel="stylesheet" href="/public/assets/css/main.css">
-    <link rel="stylesheet" href="/public/assets/css/loading-overlay.css">
-    <script src="/public/assets/js/loading-overlay.js"></script>
+    <link rel="stylesheet" href="/resources/css/main.css">
+    <link rel="stylesheet" href="/resources/css/loading-overlay.css">
+    <script src="/resources/js/loading-overlay.js" defer></script>
 </head>
 <body>
+    <!-- 로딩 오버레이 -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>로딩 중...</p>
+        </div>
+    </div>
 <?php
-// 로딩 오버레이 컴포넌트 포함
-include_once __DIR__ . '/includes/components/loading-overlay.php';
-
 // 헤더 포함
 include_once __DIR__ . '/includes/header.php';
 ?>
