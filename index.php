@@ -49,6 +49,8 @@ $noticePosts = getDummyNoticePosts();
     }
     </style>
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/loading-overlay.css">
+    <script src="/assets/js/loading-overlay.js"></script>
 </head>
 <body>
 <?php

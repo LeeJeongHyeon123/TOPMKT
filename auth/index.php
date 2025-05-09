@@ -142,28 +142,38 @@ include_once __DIR__ . '/../includes/header.php';
     <script>
     // 로딩 오버레이 제어
     function setLoading(isLoading) {
+        console.log('[Loading Overlay] setLoading 호출됨:', isLoading);
+        
         const loadingOverlay = document.querySelector('.loading-overlay');
+        console.log('[Loading Overlay] 현재 overlay 요소:', loadingOverlay);
+        
         if (!loadingOverlay) {
-            console.error('로딩 오버레이를 찾을 수 없습니다.');
+            console.error('[Loading Overlay] 로딩 오버레이를 찾을 수 없습니다.');
             return;
         }
         
         if (isLoading) {
+            console.log('[Loading Overlay] 로딩 시작 - visible 클래스 추가');
             loadingOverlay.classList.add('visible');
             document.body.style.overflow = 'hidden';
         } else {
+            console.log('[Loading Overlay] 로딩 종료 - visible 클래스 제거');
             loadingOverlay.classList.remove('visible');
             document.body.style.overflow = '';
         }
+        
+        console.log('[Loading Overlay] 현재 클래스 목록:', loadingOverlay.classList.toString());
     }
 
     // 페이지 로드 시 초기 로딩 상태 설정
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('[Loading Overlay] DOMContentLoaded 이벤트 발생');
         setLoading(true);
     });
 
     // 페이지 완전 로드 시
     window.addEventListener('load', function() {
+        console.log('[Loading Overlay] load 이벤트 발생');
         setTimeout(() => {
             setLoading(false);
         }, 500);
@@ -175,7 +185,7 @@ include_once __DIR__ . '/../includes/header.php';
 </head>
 <body>
 <!-- 로딩 오버레이 -->
-<div class="loading-overlay" style="display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background: rgba(255, 255, 255, 0.95) !important; z-index: 999999 !important; justify-content: center !important; align-items: center !important; flex-direction: column !important; gap: 20px !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;">
+<div class="loading-overlay">
     <div class="spinner"></div>
     <div class="loading-text">로딩 중...</div>
 </div>
