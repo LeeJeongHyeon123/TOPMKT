@@ -12,20 +12,6 @@
     AddType text/javascript .js
 </IfModule>
 
-# assets 디렉토리 설정
-<Directory "/var/www/html/topmkt/public/assets">
-    Options -Indexes
-    AllowOverride None
-    Require all granted
-    
-    <FilesMatch "\.(css|js)$">
-        Header set Content-Type "text/css" env=IS_CSS
-        Header set Content-Type "application/javascript" env=IS_JS
-        SetEnvIf Request_URI "\.css$" IS_CSS
-        SetEnvIf Request_URI "\.js$" IS_JS
-    </FilesMatch>
-</Directory>
-
 # Favicon 리다이렉션
 RewriteRule ^favicon\.ico$ public/favicon.ico [L]
 
