@@ -28,26 +28,9 @@ Options -Indexes
 # 기본 인덱스 파일 설정
 DirectoryIndex index.php
 
-# URL 리라이팅 설정
-RewriteEngine On
-RewriteBase /
-
-# .php 확장자로의 직접 접근 차단
-RewriteCond %{THE_REQUEST} \.php [NC]
-RewriteRule ^ - [F]
-
-# auth 경로 처리 (슬래시 유무 모두 처리)
-RewriteRule ^auth/?$ auth.php [L]
-
-# PHP 확장자 숨김
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^([^\.]+)$ $1.php [L]
-
-# 기본 페이지 리다이렉션
-RewriteRule ^$ index.php [L]
-RewriteRule ^logout$ logout.php [L]
+# URL 리라이팅 비활성화
+# RewriteEngine On
+# RewriteBase /
 
 # 404 에러 페이지
 ErrorDocument 404 /404.php
