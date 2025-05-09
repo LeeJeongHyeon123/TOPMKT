@@ -105,56 +105,6 @@ try {
 
     require_once $firebase_config_path;
     
-    // 테스트 계정인 경우 즉시 인증 완료 처리
-    if ($data['code'] === '123456' && strpos($data['sessionInfo'], 'test') !== false) {
-        $testPhoneNumber = '+821012341234';
-        error_log("[verify-code] 테스트 계정 인증 완료: " . $testPhoneNumber);
-        
-        $result = [
-            'idToken' => 'test_id_token_' . time(),
-            'refreshToken' => 'test_refresh_token_' . time(),
-            'expiresIn' => '3600',
-            'localId' => 'test_local_id_' . time(),
-            'phoneNumber' => $testPhoneNumber
-        ];
-        
-        // 회원가입인 경우 DB에 사용자 정보 저장
-        if (isset($data['nickname'])) {
-            require_once __DIR__ . '/../includes/Database.php';
-            $db = new Database();
-            
-            try {
-                // 사용자 존재 여부 확인
-                $checkSql = "SELECT id FROM users WHERE phone_number = ?";
-                $existingUser = $db->query($checkSql, [$testPhoneNumber])->fetch();
-                
-                if ($existingUser) {
-                    // 기존 사용자 정보 업데이트
-                    $updateSql = "UPDATE users SET nickname = ?, firebase_uid = ? WHERE phone_number = ?";
-                    $db->query($updateSql, [$data['nickname'], $result['localId'], $testPhoneNumber]);
-                } else {
-                    // 새 사용자 등록
-                    $insertSql = "INSERT INTO users (phone_number, nickname, firebase_uid) VALUES (?, ?, ?)";
-                    $db->query($insertSql, [$testPhoneNumber, $data['nickname'], $result['localId']]);
-                }
-            } catch (Exception $e) {
-                error_log("[verify-code] 테스트 계정 DB 저장 오류: " . $e->getMessage());
-            }
-        }
-        
-        // 성공 응답
-        echo json_encode([
-            'success' => true,
-            'message' => '인증이 완료되었습니다.',
-            'idToken' => $result['idToken'],
-            'refreshToken' => $result['refreshToken'],
-            'expiresIn' => $result['expiresIn'],
-            'localId' => $result['localId'],
-            'phoneNumber' => $result['phoneNumber']
-        ], JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-
     // Firebase API 키 검증
     if (empty(FIREBASE_API_KEY)) {
         throw new Exception('Firebase API 키가 설정되지 않았습니다.');

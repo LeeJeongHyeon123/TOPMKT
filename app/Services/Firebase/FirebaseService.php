@@ -51,7 +51,7 @@ class FirebaseService
     {
         try {
             // Firebase 설정 로드
-            $this->config = require APP_ROOT . '/config/firebase.php';
+            $this->config = require __DIR__ . '/../../../config/firebase/config.php';
             
             // 인증서 파일 경로
             $credentialsFile = $this->config['credentials']['file'];
@@ -214,6 +214,6 @@ class FirebaseService
      */
     public function getProjectId()
     {
-        return $this->config['project_id'];
+        return $this->config['database']['url'] ? explode('.', parse_url($this->config['database']['url'], PHP_URL_HOST))[0] : null;
     }
 } 
