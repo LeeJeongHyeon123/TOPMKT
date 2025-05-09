@@ -106,16 +106,16 @@ include_once __DIR__ . '/../includes/header.php';
         align-items: center;
         flex-direction: column;
         gap: 20px;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
-        pointer-events: none;
-    }
-
-    .loading-overlay.visible {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
+    }
+
+    .loading-overlay.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
     }
 
     .loading-overlay .spinner {
@@ -153,12 +153,12 @@ include_once __DIR__ . '/../includes/header.php';
         }
         
         if (isLoading) {
-            console.log('[Loading Overlay] 로딩 시작 - visible 클래스 추가');
-            loadingOverlay.classList.add('visible');
+            console.log('[Loading Overlay] 로딩 시작 - hidden 클래스 제거');
+            loadingOverlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         } else {
-            console.log('[Loading Overlay] 로딩 종료 - visible 클래스 제거');
-            loadingOverlay.classList.remove('visible');
+            console.log('[Loading Overlay] 로딩 종료 - hidden 클래스 추가');
+            loadingOverlay.classList.add('hidden');
             document.body.style.overflow = '';
         }
         
@@ -168,7 +168,7 @@ include_once __DIR__ . '/../includes/header.php';
     // 페이지 로드 시 초기 로딩 상태 설정
     document.addEventListener('DOMContentLoaded', function() {
         console.log('[Loading Overlay] DOMContentLoaded 이벤트 발생');
-        setLoading(true);
+        // 이미 표시되어 있으므로 추가 작업 불필요
     });
 
     // 페이지 완전 로드 시
@@ -184,7 +184,7 @@ include_once __DIR__ . '/../includes/header.php';
     </script>
 </head>
 <body>
-<!-- 로딩 오버레이 -->
+<!-- 로딩 오버레이 - 초기 상태에서 표시 -->
 <div class="loading-overlay">
     <div class="spinner"></div>
     <div class="loading-text">로딩 중...</div>
