@@ -187,10 +187,10 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
             </nav>
 
             <div class="header-right">
-                <a href="<?php echo isset($_SESSION['user_id']) ? '/mypage' : '/auth?redirect=mypage'; ?>" class="nav-mypage">
+                <a href="<?php echo isset($_SESSION['user_id']) ? '/mypage' : '/auth.php?redirect=mypage'; ?>" class="nav-mypage">
                     <span class="nav-icon">👤</span><?= __('menu.mypage', [], $currentLang) ?>
                 </a>
-                <a href="<?php echo isset($_SESSION['user_id']) ? '/chat' : '/auth?redirect=chat'; ?>" class="nav-chat">
+                <a href="<?php echo isset($_SESSION['user_id']) ? '/chat' : '/auth.php?redirect=chat'; ?>" class="nav-chat">
                     <span class="nav-icon">💬</span><?= __('menu.messages', [], $currentLang) ?>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <span class="unread-badge" id="unreadMessageCount"></span>

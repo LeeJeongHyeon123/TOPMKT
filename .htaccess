@@ -4,6 +4,10 @@
     Deny from all
 </FilesMatch>
 
+# MIME 타입 설정
+AddType text/css .css
+AddType application/javascript .js
+
 # Favicon 리다이렉션
 RewriteRule ^favicon\.ico$ public/favicon.ico [L]
 
