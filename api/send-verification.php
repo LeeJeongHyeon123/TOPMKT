@@ -15,11 +15,11 @@ ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 ini_set('session.cookie_secure', 1);
 ini_set('session.cookie_httponly', 1);
 ini_set('session.cookie_samesite', 'None');
-ini_set('session.cookie_domain', '.topmktx.com');
+ini_set('session.cookie_domain', '.wincard.co.kr');
 session_start();
 
 // CORS 설정
-header('Access-Control-Allow-Origin: https://www.topmktx.com');
+header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Accept, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
@@ -110,8 +110,9 @@ try {
         throw new Exception($recaptchaResult['error'] ?? '보안 검증에 실패했습니다.');
     }
 
-    // 위험 점수 확인 (0.5 미만이면 추가 검증 필요)
-    if (isset($recaptchaResult['score']) && $recaptchaResult['score'] < 0.5 && !isset($recaptchaResult['test_account']) && !isset($recaptchaResult['dev_bypass'])) {
+    // 위험 점수 확인 (0.3 미만이면 추가 검증 필요)
+    if (isset($recaptchaResult['score']) && $recaptchaResult['score'] < 0.3 && !isset($recaptchaResult['test_account']) && !isset($recaptchaResult['dev_bypass'])) {
+        error_log("reCAPTCHA 검증 실패: 위험 점수 " . $recaptchaResult['score'] . "가 임계값 0.3 미만");
         throw new Exception('보안 검증에 실패했습니다. 잠시 후 다시 시도해주세요.');
     }
 

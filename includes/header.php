@@ -32,6 +32,8 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
     
     <!-- 실시간 메시지 업데이트 -->
     <?php if (isset($_SESSION['user_id']) && !strpos($_SERVER['REQUEST_URI'], '/auth')): ?>
@@ -92,17 +94,18 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     <!-- Firebase 초기화 -->
     <script>
     // Firebase 초기화 상태 추적
-    let firebaseInitialized = false;
-    let pendingAuthCallbacks = [];
-
+    window.firebaseInitialized = window.firebaseInitialized || false;
+    
     // Firebase 초기화 함수
-    function initializeFirebase() {
-        if (firebaseInitialized) return Promise.resolve();
+    async function initializeFirebase() {
+        if (window.firebaseInitialized) {
+            console.log('[Firebase] 이미 초기화되어 있습니다.');
+            return Promise.resolve();
+        }
         
         return new Promise((resolve, reject) => {
             try {
                 const firebaseConfig = {
-                    // Firebase 설정
                     apiKey: "AIzaSyDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                     authDomain: "topmkt.firebaseapp.com",
                     projectId: "topmkt",
@@ -113,54 +116,26 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
 
                 if (!firebase.apps.length) {
                     firebase.initializeApp(firebaseConfig);
+                    console.log('[Firebase] 초기화 성공');
+                } else {
+                    console.log('[Firebase] 이미 초기화된 앱 사용');
                 }
                 
-                firebaseInitialized = true;
+                window.firebaseInitialized = true;
                 resolve();
             } catch (error) {
-                console.error('Firebase 초기화 오류:', error);
+                console.error('[Firebase] 초기화 오류:', error);
+                window.firebaseInitialized = false;
                 reject(error);
-            }
-        });
-    }
-
-    // 인증 상태 변경 리스너 설정
-    function setupAuthStateListener() {
-        if (!firebaseInitialized) {
-            pendingAuthCallbacks.push(setupAuthStateListener);
-            return;
-        }
-
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // 사용자가 로그인한 경우
-                console.log('사용자 로그인됨:', user.uid);
-            } else {
-                // 사용자가 로그아웃한 경우
-                console.log('사용자 로그아웃됨');
             }
         });
     }
 
     // 페이지 로드 시 Firebase 초기화
     document.addEventListener('DOMContentLoaded', function() {
-        initializeFirebase()
-            .then(() => {
-                // 대기 중인 콜백 실행
-                pendingAuthCallbacks.forEach(callback => callback());
-                pendingAuthCallbacks = [];
-            })
-            .catch(error => {
-                console.error('Firebase 초기화 실패:', error);
-            });
-    });
-
-    // 페이지 언로드 시 정리
-    window.addEventListener('beforeunload', function() {
-        if (firebaseInitialized) {
-            // 필요한 정리 작업 수행
-            firebase.auth().signOut().catch(console.error);
-        }
+        initializeFirebase().catch(error => {
+            console.error('[Firebase] 초기화 실패:', error);
+        });
     });
     </script>
 </head>

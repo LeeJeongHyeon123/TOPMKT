@@ -53,13 +53,14 @@ ErrorDocument 404 /404.php
 # 보안 헤더 설정
 <IfModule mod_headers.c>
     # Content Security Policy
-    Header set Content-Security-Policy "default-src 'self'; frame-src 'self' https://www.google.com https://www.gstatic.com https://www.recaptcha.net; connect-src 'self' https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://*.firebaseio.com https://*.googleapis.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.recaptcha.net https://www.google.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;"
+    Header set Content-Security-Policy "default-src 'self'; frame-ancestors 'self' https://www.google.com https://www.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com https://www.recaptcha.net; frame-src 'self' https://www.google.com https://www.recaptcha.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://www.google.com https://www.recaptcha.net;"
     
     # 기존 보안 헤더들
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 </IfModule>
 
@@ -68,3 +69,70 @@ php_flag display_errors on
 php_value error_reporting E_ALL
 php_value error_log /var/log/httpd/topmkt_error.log
 php_flag log_errors on
+
+# PHP 설정
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# 디렉토리 인덱싱 비활성화
+Options -Indexes
+
+# 기본 인코딩 설정
+AddDefaultCharset UTF-8
+
+# URL 리다이렉션 규칙
+RewriteEngine On
+RewriteBase /
+
+# HTTPS 강제 리다이렉션
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# www 강제 리다이렉션
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# index.php 숨기기
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# 보안 설정
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 에러 문서 설정
+ErrorDocument 404 /404.php
+ErrorDocument 500 /500.php
+
+# 캐시 설정
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# GZIP 압축 설정
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# 인증 페이지 리다이렉트 통합
+RewriteCond %{THE_REQUEST} /auth/index\.php [NC]
+RewriteRule ^auth/index\.php$ /auth.php [R=301,L,QSA]

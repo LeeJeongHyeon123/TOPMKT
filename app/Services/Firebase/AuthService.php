@@ -46,7 +46,7 @@ class AuthService
             $this->config = require __DIR__ . '/../../../config/firebase/config.php';
             
             // 인증서 파일 경로
-            $credentialsFile = $this->config['credentials']['file'];
+            $credentialsFile = __DIR__ . '/../../../config/firebase/firebase-credentials.json';
             
             // 파일 존재 확인
             if (!file_exists($credentialsFile)) {
@@ -54,7 +54,9 @@ class AuthService
             }
             
             // Factory 인스턴스 생성
-            $factory = (new Factory())->withServiceAccount($credentialsFile);
+            $factory = (new Factory())
+                ->withServiceAccount($credentialsFile)
+                ->withDatabaseUri('https://topmkt-832f2.firebaseio.com');
             
             // Auth 인스턴스 생성
             $this->auth = $factory->createAuth();
@@ -470,21 +472,18 @@ class AuthService
         }
     }
 
+    /**
+     * 사용자 생성
+     * 
+     * @param string $phoneNumber 전화번호
+     * @param string $nickname 닉네임
+     * @return array ['success' => bool, 'uid' => string, 'error' => string]
+     */
     public function createUser($phoneNumber, $nickname)
     {
         try {
             // 전화번호 정규화
             $normalizedPhone = $this->formatPhoneNumber($phoneNumber);
-            
-            // 테스트 계정인 경우 특별 처리
-            if ($normalizedPhone === '+8201012341234') {
-                error_log('테스트 계정 사용자 생성: ' . $normalizedPhone);
-                return [
-                    'success' => true,
-                    'uid' => 'test_user_' . time(),
-                    'message' => '테스트 사용자가 생성되었습니다.'
-                ];
-            }
             
             // Firebase Admin SDK를 사용하여 사용자 생성
             $userProperties = [
@@ -501,21 +500,63 @@ class AuthService
             ];
         } catch (\Exception $e) {
             error_log('사용자 생성 오류: ' . $e->getMessage());
-            
-            // 테스트 계정인 경우, 오류가 발생해도 성공 응답
-            if ($normalizedPhone === '+8201012341234') {
-                error_log('테스트 계정 오류 무시, 성공 응답 반환');
-                return [
-                    'success' => true,
-                    'uid' => 'test_user_' . time(),
-                    'message' => '테스트 사용자가 생성되었습니다.'
-                ];
-            }
-            
             return [
                 'success' => false,
                 'error' => '사용자 생성에 실패했습니다. 잠시 후 다시 시도해주세요.'
             ];
+        }
+    }
+
+    /**
+     * 사용자 삭제
+     * 
+     * @param string $uid Firebase 사용자 ID
+     * @return bool 성공 여부
+     */
+    public function deleteUser($uid)
+    {
+        try {
+            $this->auth->deleteUser($uid);
+            return true;
+        } catch (\Exception $e) {
+            error_log('사용자 삭제 오류: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 커스텀 토큰 생성
+     * 
+     * @param string $uid Firebase 사용자 ID
+     * @return array ['idToken' => string, 'refreshToken' => string]
+     */
+    public function createCustomToken($uid)
+    {
+        try {
+            // 커스텀 토큰 생성
+            $customToken = $this->auth->createCustomToken($uid);
+            
+            // ID 토큰으로 교환
+            $apiKey = $this->config['config']['apiKey'];
+            $url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=" . $apiKey;
+            
+            $client = new Client();
+            $response = $client->post($url, [
+                'json' => [
+                    'token' => $customToken->toString(),
+                    'returnSecureToken' => true
+                ]
+            ]);
+            
+            $result = json_decode($response->getBody()->getContents(), true);
+            
+            return [
+                'idToken' => $result['idToken'],
+                'refreshToken' => $result['refreshToken']
+            ];
+        } catch (\Exception $e) {
+            error_log('토큰 생성 오류: ' . $e->getMessage());
+            throw $e;
         }
     }
 } 
