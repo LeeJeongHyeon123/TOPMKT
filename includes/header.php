@@ -23,8 +23,8 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     <link rel="stylesheet" href="/resources/fonts/noto-sans-kr.css">
     
     <!-- CSS 파일 로드 -->
-    <link rel="stylesheet" href="/resources/css/main.css">
-    <link rel="stylesheet" href="/resources/css/auth.css">
+    <link rel="stylesheet" href="/public/assets/css/main.css">
+    <link rel="stylesheet" href="/public/assets/css/auth.css">
     
     <!-- reCAPTCHA Enterprise -->
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
@@ -32,6 +32,8 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
     
     <!-- 실시간 메시지 업데이트 -->
     <?php if (isset($_SESSION['user_id']) && !strpos($_SERVER['REQUEST_URI'], '/auth')): ?>
@@ -92,17 +94,19 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     <!-- Firebase 초기화 -->
     <script>
     // Firebase 초기화 상태 추적
-    let firebaseInitialized = false;
+    window.firebaseInitialized = window.firebaseInitialized || false;
     let pendingAuthCallbacks = [];
-
+    
     // Firebase 초기화 함수
-    function initializeFirebase() {
-        if (firebaseInitialized) return Promise.resolve();
+    async function initializeFirebase() {
+        if (window.firebaseInitialized) {
+            console.log('[Firebase] 이미 초기화되어 있습니다.');
+            return Promise.resolve();
+        }
         
         return new Promise((resolve, reject) => {
             try {
                 const firebaseConfig = {
-                    // Firebase 설정
                     apiKey: "AIzaSyDXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                     authDomain: "topmkt.firebaseapp.com",
                     projectId: "topmkt",
@@ -113,12 +117,16 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
 
                 if (!firebase.apps.length) {
                     firebase.initializeApp(firebaseConfig);
+                    console.log('[Firebase] 초기화 성공');
+                } else {
+                    console.log('[Firebase] 이미 초기화된 앱 사용');
                 }
                 
-                firebaseInitialized = true;
+                window.firebaseInitialized = true;
                 resolve();
             } catch (error) {
-                console.error('Firebase 초기화 오류:', error);
+                console.error('[Firebase] 초기화 오류:', error);
+                window.firebaseInitialized = false;
                 reject(error);
             }
         });
@@ -126,7 +134,7 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
 
     // 인증 상태 변경 리스너 설정
     function setupAuthStateListener() {
-        if (!firebaseInitialized) {
+        if (!window.firebaseInitialized) {
             pendingAuthCallbacks.push(setupAuthStateListener);
             return;
         }
@@ -134,10 +142,10 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                 // 사용자가 로그인한 경우
-                console.log('사용자 로그인됨:', user.uid);
+                console.log('[Firebase] 사용자 로그인됨:', user.uid);
             } else {
                 // 사용자가 로그아웃한 경우
-                console.log('사용자 로그아웃됨');
+                console.log('[Firebase] 사용자 로그아웃됨');
             }
         });
     }
@@ -151,13 +159,13 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
                 pendingAuthCallbacks = [];
             })
             .catch(error => {
-                console.error('Firebase 초기화 실패:', error);
+                console.error('[Firebase] 초기화 실패:', error);
             });
     });
 
     // 페이지 언로드 시 정리
     window.addEventListener('beforeunload', function() {
-        if (firebaseInitialized) {
+        if (window.firebaseInitialized) {
             // 필요한 정리 작업 수행
             firebase.auth().signOut().catch(console.error);
         }
@@ -165,109 +173,79 @@ header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://ww
     </script>
 </head>
 <body>
-    <!-- 헤더 -->
-    <header class="header">
+    <header class="main-header">
         <div class="header-container">
-            <div class="logo">
-                <a href="/">
-                    <span class="logo-text">탑마케팅</span>
+            <div class="header-left">
+                <a href="/" class="logo">
+                    <img src="/resources/images/logo.png" alt="탑마케팅">
                 </a>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/#leaders">추천 리더</a></li>
+                        <li><a href="/#vision">회사/비전 소개</a></li>
+                        <li><a href="/#knowhow">노하우 공유</a></li>
+                        <li><a href="/#community">커뮤니티</a></li>
+                    </ul>
+                </nav>
             </div>
-            
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/vision"><?= __('menu.vision', [], $currentLang) ?></a></li>
-                    <li><a href="/knowhow"><?= __('menu.knowhow', [], $currentLang) ?></a></li>
-                    <li><a href="/recruiting"><?= __('menu.recruiting', [], $currentLang) ?></a></li>
-                    <li><a href="/events"><?= __('menu.events', [], $currentLang) ?></a></li>
-                    <li><a href="/lecture"><?= __('menu.lecture', [], $currentLang) ?></a></li>
-                    <li><a href="/community"><?= __('menu.community', [], $currentLang) ?></a></li>
-                    <li><a href="/notice"><?= __('menu.notice', [], $currentLang) ?></a></li>
-                </ul>
-            </nav>
-
             <div class="header-right">
-                <a href="<?php echo isset($_SESSION['user_id']) ? '/mypage' : '/auth?redirect=mypage'; ?>" class="nav-mypage">
-                    <span class="nav-icon">👤</span><?= __('menu.mypage', [], $currentLang) ?>
-                </a>
-                <a href="<?php echo isset($_SESSION['user_id']) ? '/chat' : '/auth?redirect=chat'; ?>" class="nav-chat">
-                    <span class="nav-icon">💬</span><?= __('menu.messages', [], $currentLang) ?>
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <span class="unread-badge" id="unreadMessageCount"></span>
-                    <?php endif; ?>
-                </a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <div class="user-menu">
+                        <button class="user-menu-button">
+                            <img src="<?php echo htmlspecialchars($_SESSION['profile_image'] ?? '/resources/images/default-profile.png'); ?>" 
+                                 alt="프로필" 
+                                 class="profile-image">
+                            <span class="user-name"><?php echo htmlspecialchars($_SESSION['nickname']); ?></span>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="/profile.php" class="dropdown-item">프로필</a>
+                            <a href="/messages.php" class="dropdown-item">
+                                메시지
+                                <?php if (isset($_SESSION['unread_messages']) && $_SESSION['unread_messages'] > 0): ?>
+                                    <span class="badge"><?php echo $_SESSION['unread_messages']; ?></span>
+                                <?php endif; ?>
+                            </a>
+                            <a href="/settings.php" class="dropdown-item">설정</a>
+                            <a href="/logout.php" class="dropdown-item">로그아웃</a>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="auth-buttons">
+                        <a href="/auth.php" class="btn-login">로그인</a>
+                        <a href="/auth.php?tab=register" class="btn-register">회원가입</a>
+                    </div>
+                <?php endif; ?>
                 <div class="language-selector">
-                    <button class="language-btn" onclick="toggleLanguageDropdown()">
-                        <span class="current-lang">
+                    <button class="language-button">
+                        <span class="current-language">
                             <?php
                             $langFlags = [
                                 'ko' => '🇰🇷',
                                 'en' => '🇺🇸',
                                 'zh' => '🇨🇳',
-                                'ja' => '🇯🇵',
-                                'vi' => '🇻🇳',
-                                'th' => '🇹🇭'
+                                'ja' => '🇯🇵'
                             ];
-                            $langNames = [
-                                'ko' => '한국어',
-                                'en' => 'English',
-                                'zh' => '中文',
-                                'ja' => '日本語',
-                                'vi' => 'Tiếng Việt',
-                                'th' => 'ไทย'
-                            ];
-                            echo $langFlags[$currentLang] . ' ' . $langNames[$currentLang];
+                            echo $langFlags[$currentLang] ?? '🌐';
                             ?>
                         </span>
-                        <i class="fas fa-chevron-down"></i>
                     </button>
-                    <div class="language-dropdown" id="languageDropdown">
-                        <a href="?lang=ko" class="language-option <?= $currentLang === 'ko' ? 'active' : '' ?>">
-                            <span class="flag">🇰🇷</span> 한국어
+                    <div class="language-dropdown">
+                        <a href="?lang=ko" class="language-option <?php echo $currentLang === 'ko' ? 'active' : ''; ?>">
+                            🇰🇷 한국어
                         </a>
-                        <a href="?lang=en" class="language-option <?= $currentLang === 'en' ? 'active' : '' ?>">
-                            <span class="flag">🇺🇸</span> English
+                        <a href="?lang=en" class="language-option <?php echo $currentLang === 'en' ? 'active' : ''; ?>">
+                            🇺🇸 English
                         </a>
-                        <a href="?lang=zh" class="language-option <?= $currentLang === 'zh' ? 'active' : '' ?>">
-                            <span class="flag">🇨🇳</span> 中文
+                        <a href="?lang=zh" class="language-option <?php echo $currentLang === 'zh' ? 'active' : ''; ?>">
+                            🇨🇳 中文
                         </a>
-                        <a href="?lang=ja" class="language-option <?= $currentLang === 'ja' ? 'active' : '' ?>">
-                            <span class="flag">🇯🇵</span> 日本語
-                        </a>
-                        <a href="?lang=vi" class="language-option <?= $currentLang === 'vi' ? 'active' : '' ?>">
-                            <span class="flag">🇻🇳</span> Tiếng Việt
-                        </a>
-                        <a href="?lang=th" class="language-option <?= $currentLang === 'th' ? 'active' : '' ?>">
-                            <span class="flag">🇹🇭</span> ไทย
+                        <a href="?lang=ja" class="language-option <?php echo $currentLang === 'ja' ? 'active' : ''; ?>">
+                            🇯🇵 日本語
                         </a>
                     </div>
                 </div>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <a href="/profile" class="btn-profile"><?= __('menu.profile', [], $currentLang) ?></a>
-                    <a href="/logout" class="btn-logout"><?= __('menu.logout', [], $currentLang) ?></a>
-                <?php else: ?>
-                    <a href="/auth" class="btn-login"><?= __('menu.login', [], $currentLang) ?></a>
-                <?php endif; ?>
             </div>
         </div>
     </header>
-    <main> 
-
-    <script>
-    function toggleLanguageDropdown() {
-        const dropdown = document.getElementById('languageDropdown');
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    }
-
-    // 드롭다운 외부 클릭 시 닫기
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('languageDropdown');
-        const languageBtn = document.querySelector('.language-btn');
-        
-        if (!languageBtn.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.style.display = 'none';
-        }
-    });
-    </script>
 </body>
 </html> 

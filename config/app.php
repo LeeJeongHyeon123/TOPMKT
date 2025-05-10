@@ -44,9 +44,10 @@ return [
     
     // reCAPTCHA 설정
     'recaptcha' => [
-        'site_key' => '6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', // 실제 키로 교체 필요
-        'secret_key' => '6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', // 실제 키로 교체 필요
-        'threshold' => 0.5,
+        'site_key' => '6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4',
+        'secret_key' => '6LfCdjErAAAAAPYQYwXxXxXxXxXxXxXxXxXxXxXx',
+        'project_id' => 'topmkt-832f2',
+        'threshold' => 0.3,
         'action' => [
             'phone_verification' => 'PHONE_VERIFICATION',
             'login' => 'LOGIN',

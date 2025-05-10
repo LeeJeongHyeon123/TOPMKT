@@ -1,4 +1,16 @@
 <?php
+/**
+ * Firebase 설정 로더
+ * 
+ * 이 파일은 중앙 Firebase 설정 파일을 로드하여 필요한 상수 및 변수를 정의합니다.
+ * 
+ * @version 1.0.0
+ * @author TOPMKT Development Team
+ */
+
+// 직접 접근 방지
+defined('TOPMKT') or define('TOPMKT', true);
+
 // Firebase 설정
 $firebaseConfig = [
     'apiKey' => "AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ",
@@ -35,7 +47,16 @@ $auth = $factory->createAuth();
 $database = $factory->createDatabase();
 $storage = $factory->createStorage();
 
-return [
+// 하위 호환성을 위한 상수 정의
+define('FIREBASE_API_KEY', $firebaseConfig['apiKey']);
+define('FIREBASE_AUTH_DOMAIN', $firebaseConfig['authDomain']);
+define('FIREBASE_PROJECT_ID', $firebaseConfig['projectId']);
+define('FIREBASE_STORAGE_BUCKET', $firebaseConfig['storageBucket']);
+define('FIREBASE_MESSAGING_SENDER_ID', $firebaseConfig['messagingSenderId']);
+define('FIREBASE_APP_ID', $firebaseConfig['appId']);
+
+// 글로벌 Firebase 설정 변수 추가
+$GLOBALS['firebase_config'] = [
     'credentials' => [
         'file' => __DIR__ . '/../google/service-account.json'
     ],
@@ -46,10 +67,12 @@ return [
         'bucket' => 'topmkt-832f2.firebasestorage.app'
     ],
     'auth' => [
-        'domain' => 'topmkt-832f2.firebaseapp.com',
-        'apiKey' => 'AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ',
-        'projectId' => 'topmkt-832f2',
-        'messagingSenderId' => '856114239779',
-        'appId' => '1:856114239779:web:d8dd9049a9723ac8835496'
+        'domain' => $firebaseConfig['authDomain'],
+        'apiKey' => $firebaseConfig['apiKey'],
+        'projectId' => $firebaseConfig['projectId'],
+        'messagingSenderId' => $firebaseConfig['messagingSenderId'],
+        'appId' => $firebaseConfig['appId']
     ]
-]; 
+];
+
+return $GLOBALS['firebase_config'];

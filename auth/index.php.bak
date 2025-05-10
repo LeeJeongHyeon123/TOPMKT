@@ -1,4 +1,7 @@
 <?php
+// 출력 버퍼링 시작
+ob_start();
+
 // 에러 출력 설정
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -8,55 +11,88 @@ error_reporting(E_ALL);
 ini_set('log_errors', 1);
 ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
-// Firebase 설정 파일 포함
-require_once __DIR__ . '/config/firebase/config.php';
-
 // 세션 시작
 session_start();
 
+// Firebase 설정 파일 포함
+require_once __DIR__ . '/../config/firebase/config.php';
+
 // 함수 포함 (다국어 함수 등)
-include_once __DIR__ . '/includes/functions.php';
+include_once __DIR__ . '/../includes/functions.php';
 
 // 다국어 메시지 로드
 $currentLang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko';
-$messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
+$messages = require __DIR__ . "/../resources/lang/{$currentLang}/messages.php";
+
+// 헤더 포함
+include_once __DIR__ . '/../includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.google.com">
     <title><?= __('auth.login.title') ?> - 탑마케팅</title>
     
     <!-- CSS 파일 링크 -->
-    <link rel="stylesheet" href="/public/assets/css/main.css">
-    <link rel="stylesheet" href="/public/assets/css/auth.css">
-    <link rel="stylesheet" href="/public/assets/css/loading-overlay.css">
+    <link rel="stylesheet" href="/assets/css/auth.css">
     
     <style>
-    /* 기본 스타일 */
+    /* 초기 스타일 - FOUC 방지 */
     body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
         margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        line-height: 1.5;
-        color: #333;
-        background-color: #fff;
+        opacity: 1;
     }
-
-    /* 에러 메시지 스타일 */
-    .error-message {
-        padding: 12px;
-        margin-bottom: 20px;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
+    
+    main {
+        flex: 1;
+        padding-top: 90px;
+        padding-bottom: 40px;
+    }
+    
+    .footer {
+        background: linear-gradient(to right, #ffffff, #f8f9fa);
+        padding: 40px 0 20px;
         text-align: center;
-        display: none;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+        margin-top: auto;
+        opacity: 1;
+    }
+    
+    .auth-button {
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 4px;
+        opacity: 1 !important;
+        display: block !important;
     }
 
-    /* 로딩 오버레이 스타일 */
+    .auth-button:hover {
+        background-color: #0056b3;
+    }
+
+    #loginSubmitBtn, #registerSubmitBtn {
+        opacity: 0;
+        display: none;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .js-enabled #loginSubmitBtn, .js-enabled #registerSubmitBtn {
+        opacity: 1;
+        display: block;
+    }
+
+    /* 로딩 오버레이 스타일 수정 */
     .loading-overlay {
         position: fixed;
         top: 0;
@@ -64,7 +100,7 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
         width: 100%;
         height: 100%;
         background: rgba(255, 255, 255, 0.95);
-        z-index: 9999;
+        z-index: 999999;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -72,13 +108,14 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
         gap: 20px;
         opacity: 1;
         visibility: visible;
-        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        pointer-events: auto;
     }
 
     .loading-overlay.hidden {
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
     }
 
     .loading-overlay .spinner {
@@ -100,65 +137,69 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
-
-    /* 인증번호 입력 그룹 스타일 */
-    .verification-input-group {
-        position: relative;
-        margin-bottom: 15px;
-    }
-
-    .verification-timer {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #666;
-        font-size: 14px;
-    }
-
-    .verification-button-group {
-        margin-top: 10px;
-        text-align: center;
-    }
-
-    .verification-group {
-        margin: 15px 0;
-    }
-
-    .register-complete-group {
-        margin-top: 20px;
-        text-align: center;
-    }
-
-    /* 인증번호 입력 필드 스타일 */
     </style>
+
+    <script>
+    // 로딩 오버레이 제어
+    function setLoading(isLoading) {
+        console.log('[Loading Overlay] setLoading 호출됨:', isLoading);
+        
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        console.log('[Loading Overlay] 현재 overlay 요소:', loadingOverlay);
+        
+        if (!loadingOverlay) {
+            console.error('[Loading Overlay] 로딩 오버레이를 찾을 수 없습니다.');
+            return;
+        }
+        
+        if (isLoading) {
+            console.log('[Loading Overlay] 로딩 시작 - hidden 클래스 제거');
+            loadingOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        } else {
+            console.log('[Loading Overlay] 로딩 종료 - hidden 클래스 추가');
+            loadingOverlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        
+        console.log('[Loading Overlay] 현재 클래스 목록:', loadingOverlay.classList.toString());
+    }
+
+    // 페이지 로드 시 초기 로딩 상태 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('[Loading Overlay] DOMContentLoaded 이벤트 발생');
+        // 이미 표시되어 있으므로 추가 작업 불필요
+    });
+
+    // 페이지 완전 로드 시
+    window.addEventListener('load', function() {
+        console.log('[Loading Overlay] load 이벤트 발생');
+        setTimeout(() => {
+            setLoading(false);
+        }, 500);
+    });
+
+    // 전역 스코프에 함수 노출
+    window.setLoading = setLoading;
+    </script>
 </head>
 <body>
-<!-- 로딩 오버레이 -->
-<div id="loadingOverlay" class="loading-overlay">
+<!-- 로딩 오버레이 - 초기 상태에서 표시 -->
+<div class="loading-overlay">
     <div class="spinner"></div>
     <div class="loading-text">로딩 중...</div>
 </div>
 
-<?php
-// 헤더 포함
-include_once __DIR__ . '/includes/header.php';
-?>
-
 <main class="auth-container">
     <div class="auth-form-container">
         <div class="auth-header">
-            <h1><?= __('auth.login.title') ?></h1>
-            <p><?= __('auth.login.subtitle') ?></p>
+            <p id="authSubtitle">휴대폰 번호로 간편하게 로그인하세요</p>
         </div>
         <div class="auth-tabs">
             <button id="loginTab" class="auth-tab active">로그인</button>
             <button id="registerTab" class="auth-tab">회원가입</button>
         </div>
         <div class="auth-tab-content">
-            <!-- 에러 메시지 표시 영역 -->
-            <div id="errorMessage" class="error-message"></div>
-            
             <!-- 로그인 폼 -->
             <form class="auth-form" id="loginForm">
                 <div class="form-group">
@@ -176,6 +217,8 @@ include_once __DIR__ . '/includes/header.php';
                         <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
                         <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
                         <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
+                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
+                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
                     </div>
                 </div>
                 <div class="form-group verification-group" id="loginVerificationGroup" style="display:none;">
@@ -202,6 +245,8 @@ include_once __DIR__ . '/includes/header.php';
                         <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
                         <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
                         <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
+                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
+                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
                     </div>
                 </div>
                 <div class="form-group verification-group" id="registerVerificationGroup" style="display:none;">
@@ -231,64 +276,15 @@ include_once __DIR__ . '/includes/header.php';
 <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
 <!-- reCAPTCHA Enterprise -->
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4&onload=onRecaptchaLoad"></script>
 <!-- Firebase 설정 및 인증 스크립트 -->
 <script src="/assets/js/firebase-config.js"></script>
 <script src="/assets/js/auth.js"></script>
 
-<script>
-// 즉시 실행
-(function() {
-    // 로딩 오버레이 제어
-    function setLoading(isLoading) {
-        console.log('setLoading 호출됨:', isLoading);
-        
-        const loadingOverlay = document.querySelector('.loading-overlay');
-        console.log('로딩 오버레이 요소:', loadingOverlay);
-        
-        if (!loadingOverlay) {
-            console.error('로딩 오버레이를 찾을 수 없습니다.');
-            return;
-        }
-        
-        if (isLoading) {
-            loadingOverlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            console.log('로딩 오버레이 표시됨');
-        } else {
-            loadingOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-            console.log('로딩 오버레이 숨겨짐');
-        }
-    }
-
-    // 페이지 로드 시 초기 로딩 상태 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded 이벤트 발생');
-        setLoading(true);
-    });
-
-    // 페이지 완전 로드 시
-    window.addEventListener('load', function() {
-        console.log('window.load 이벤트 발생');
-        setTimeout(() => {
-            console.log('타이머 완료 - 로딩 오버레이 숨기기');
-            setLoading(false);
-        }, 1000);
-    });
-
-    // 전역 스코프에 함수 노출
-    window.setLoading = setLoading;
-
-    // 초기 로그
-    console.log('로딩 오버레이 스크립트 초기화 완료');
-    
-    // 즉시 로딩 오버레이 표시
-    setLoading(true);
-})();
-</script>
-
 <?php
 // 푸터 포함
-include_once __DIR__ . '/includes/footer.php';
-?>
+include_once __DIR__ . '/../includes/footer.php';
+
+// 출력 버퍼 플러시
+ob_end_flush();
+?> 

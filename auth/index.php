@@ -35,7 +35,7 @@ include_once __DIR__ . '/../includes/header.php';
     <title><?= __('auth.login.title') ?> - 탑마케팅</title>
     
     <!-- CSS 파일 링크 -->
-    <link rel="stylesheet" href="/assets/css/auth.css">
+    <link rel="stylesheet" href="/public/assets/css/auth.css">
     
     <style>
     /* 초기 스타일 - FOUC 방지 */
@@ -175,7 +175,7 @@ include_once __DIR__ . '/../includes/header.php';
 </head>
 <body>
 <!-- 로딩 오버레이 -->
-<div class="loading-overlay" style="display: flex !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; background: rgba(255, 255, 255, 0.95) !important; z-index: 999999 !important; justify-content: center !important; align-items: center !important; flex-direction: column !important; gap: 20px !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;">
+<div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
     <div class="loading-text">로딩 중...</div>
 </div>
@@ -183,13 +183,17 @@ include_once __DIR__ . '/../includes/header.php';
 <main class="auth-container">
     <div class="auth-form-container">
         <div class="auth-header">
-            <p id="authSubtitle">휴대폰 번호로 간편하게 로그인하세요</p>
+            <h1><?= __('auth.login.title') ?></h1>
+            <p><?= __('auth.login.subtitle') ?></p>
         </div>
         <div class="auth-tabs">
             <button id="loginTab" class="auth-tab active">로그인</button>
             <button id="registerTab" class="auth-tab">회원가입</button>
         </div>
         <div class="auth-tab-content">
+            <!-- 에러 메시지 표시 영역 -->
+            <div id="errorMessage" class="error-message"></div>
+            
             <!-- 로그인 폼 -->
             <form class="auth-form" id="loginForm">
                 <div class="form-group">
@@ -201,23 +205,18 @@ include_once __DIR__ . '/../includes/header.php';
                         </div>
                         <input type="tel" id="loginPhone" name="phone" placeholder="010-1234-1234" required>
                     </div>
-                    <div class="country-dropdown" id="loginCountryDropdown" style="display:none;">
-                        <div class="country-option" data-flag="🇰🇷" data-code="+82">🇰🇷 한국 (+82)</div>
-                        <div class="country-option" data-flag="🇺🇸" data-code="+1">🇺🇸 미국 (+1)</div>
-                        <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
-                        <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
-                        <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
-                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
-                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
-                    </div>
                 </div>
                 <div class="form-group verification-group" id="loginVerificationGroup" style="display:none;">
-                    <label for="loginCode">인증번호</label>
-                    <input type="text" id="loginCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
+                    <label for="loginVerificationCode">인증번호</label>
+                    <div class="verification-input-group">
+                        <input type="text" id="loginVerificationCode" name="verification_code" placeholder="인증번호 6자리" required>
+                        <div class="verification-timer"></div>
+                    </div>
                 </div>
                 <button type="button" class="auth-button" id="loginSendCodeBtn">인증번호 받기</button>
-                <button type="submit" class="auth-button" id="loginSubmitBtn" style="opacity:0;transition:none;display:none;">로그인</button>
+                <button type="submit" class="auth-button" id="loginSubmitBtn" style="display:none;">로그인</button>
             </form>
+
             <!-- 회원가입 폼 -->
             <form class="auth-form" id="registerForm" style="display:none;">
                 <div class="form-group">
@@ -229,32 +228,22 @@ include_once __DIR__ . '/../includes/header.php';
                         </div>
                         <input type="tel" id="registerPhone" name="phone" placeholder="010-1234-1234" required>
                     </div>
-                    <div class="country-dropdown" id="registerCountryDropdown" style="display:none;">
-                        <div class="country-option" data-flag="🇰🇷" data-code="+82">🇰🇷 한국 (+82)</div>
-                        <div class="country-option" data-flag="🇺🇸" data-code="+1">🇺🇸 미국 (+1)</div>
-                        <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
-                        <div class="country-option" data-flag="🇹🇼" data-code="+886">🇹🇼 대만 (+886)</div>
-                        <div class="country-option" data-flag="🇯🇵" data-code="+81">🇯🇵 일본 (+81)</div>
-                        <div class="country-option" data-flag="🇻🇳" data-code="+84">🇻🇳 베트남 (+84)</div>
-                        <div class="country-option" data-flag="🇹🇭" data-code="+66">🇹🇭 태국 (+66)</div>
-                    </div>
-                </div>
-                <div class="form-group verification-group" id="registerVerificationGroup" style="display:none;">
-                    <label for="registerCode">인증번호</label>
-                    <input type="text" id="registerCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
                 </div>
                 <div class="form-group">
                     <label for="registerNickname">닉네임</label>
-                    <input type="text" id="registerNickname" name="nickname" placeholder="닉네임을 입력하세요" required>
+                    <input type="text" id="registerNickname" name="nickname" placeholder="닉네임을 입력하세요 (2~20자)" required>
+                    <small class="form-text text-muted">한글, 영문, 숫자만 사용 가능합니다.</small>
+                </div>
+                <div class="form-group verification-group" id="registerVerificationGroup" style="display:none;">
+                    <label for="registerVerificationCode">인증번호</label>
+                    <div class="verification-input-group">
+                        <input type="text" id="registerVerificationCode" name="verification_code" placeholder="인증번호 6자리" required>
+                        <div class="verification-timer"></div>
+                    </div>
                 </div>
                 <button type="button" class="auth-button" id="registerSendCodeBtn">인증번호 받기</button>
-                <button type="submit" class="auth-button" id="registerSubmitBtn" style="opacity:0;transition:none;display:none;">회원가입</button>
+                <button type="submit" class="auth-button" id="registerSubmitBtn" style="display:none;">회원가입</button>
             </form>
-        </div>
-        <div class="auth-policy">
-            <ul>
-                <li>인증번호를 1시간 내 5회 이상 잘못 입력하실 경우, 24시간 동안 인증이 제한됩니다.</li>
-            </ul>
         </div>
     </div>
 </main>
@@ -263,18 +252,14 @@ include_once __DIR__ . '/../includes/header.php';
 <div id="recaptcha-container"></div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
-<!-- reCAPTCHA Enterprise -->
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4&onload=onRecaptchaLoad"></script>
-<!-- Firebase 설정 및 인증 스크립트 -->
-<script src="/assets/js/firebase-config.js"></script>
-<script src="/assets/js/auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+
+<!-- 인증 관련 스크립트 -->
+<script src="/public/assets/js/firebase-config.js"></script>
+<script src="/public/assets/js/auth.js"></script>
 
 <?php
 // 푸터 포함
 include_once __DIR__ . '/../includes/footer.php';
-
-// 출력 버퍼 플러시
-ob_end_flush();
-?> 
+?>
