@@ -1,0 +1,678 @@
+[07-May-2025 22:50:14 Asia/Seoul] 2025-05-07 22:50:14 - === 회원가입 요청 시작 ===
+2025-05-07 22:51:40 - === 회원가입 요청 시작 ===2025-05-07 22:51:40 - Raw request data
+Data: {"phone":"+821012341234","nickname":"우리집탄이","uid":"Om6iVy37M8fTfZe3m6kfraLqri62"}2025-05-07 22:51:40 - Parsed request data
+Data: Array
+(
+    [phone] => +821012341234
+    [nickname] => 우리집탄이
+    [uid] => Om6iVy37M8fTfZe3m6kfraLqri62
+)
+2025-05-07 22:51:40 - Attempting database connection2025-05-07 22:51:40 - Database connection successful2025-05-07 22:51:40 - Checking nickname: 우리집탄이2025-05-07 22:51:40 - Duplicate nickname found: 우리집탄이2025-05-07 22:53:43 - === 회원가입 요청 시작 ===2025-05-07 22:53:43 - Raw request data
+Data: {"phone":"+821012341234","nickname":"우리집탄이","uid":"Om6iVy37M8fTfZe3m6kfraLqri62"}2025-05-07 22:53:43 - Parsed request data
+Data: Array
+(
+    [phone] => +821012341234
+    [nickname] => 우리집탄이
+    [uid] => Om6iVy37M8fTfZe3m6kfraLqri62
+)
+2025-05-07 22:53:43 - Attempting database connection2025-05-07 22:53:43 - Database connection successful2025-05-07 22:53:43 - Checking nickname: 우리집탄이2025-05-07 22:53:43 - Checking phone number: +8210123412342025-05-07 22:53:43 - Country code determined
+Data: KR2025-05-07 22:53:43 - Preparing to insert user data2025-05-07 22:53:43 - Executing insert with params
+Data: Array
+(
+    [0] => Om6iVy37M8fTfZe3m6kfraLqri62
+    [1] => +821012341234
+    [2] => 우리집탄이
+    [3] => KR
+    [4] => sales
+    [5] => 
+    [6] => 121.170.130.5
+)
+2025-05-07 22:53:43 - User inserted successfully
+Data: Array
+(
+    [user_id] => 0
+)
+2025-05-07 22:53:43 - Recording login history2025-05-07 22:53:43 - Database Error
+Data: Array
+(
+    [message] => SQLSTATE[42S22]: Column not found: 1054 Unknown column 'login_time' in 'field list'
+    [code] => 42S22
+    [trace] => #0 /var/www/html/topmkt/api/register.php(120): PDO->prepare()
+#1 {main}
+)
+2025-05-07 22:55:02 - === 회원가입 요청 시작 ===2025-05-07 22:55:02 - Raw request data
+Data: {"phone":"+821012341234","nickname":"우리집탄이2","uid":"Om6iVy37M8fTfZe3m6kfraLqri62"}2025-05-07 22:55:02 - Parsed request data
+Data: Array
+(
+    [phone] => +821012341234
+    [nickname] => 우리집탄이2
+    [uid] => Om6iVy37M8fTfZe3m6kfraLqri62
+)
+2025-05-07 22:55:02 - Attempting database connection2025-05-07 22:55:02 - Database connection successful2025-05-07 22:55:02 - Checking nickname: 우리집탄이22025-05-07 22:55:02 - Checking phone number: +8210123412342025-05-07 22:55:02 - Duplicate phone number found: +8210123412342025-05-07 22:56:43 - === 회원가입 요청 시작 ===2025-05-07 22:56:43 - Raw request data
+Data: {"phone":"+821012341234","nickname":"우리집탄이","uid":"Om6iVy37M8fTfZe3m6kfraLqri62"}2025-05-07 22:56:43 - Parsed request data
+Data: Array
+(
+    [phone] => +821012341234
+    [nickname] => 우리집탄이
+    [uid] => Om6iVy37M8fTfZe3m6kfraLqri62
+)
+2025-05-07 22:56:43 - Attempting database connection2025-05-07 22:56:43 - Database connection successful2025-05-07 22:56:43 - Checking nickname: 우리집탄이2025-05-07 22:56:43 - Checking phone number: +8210123412342025-05-07 22:56:43 - Country code determined
+Data: KR2025-05-07 22:56:43 - Preparing to insert user data2025-05-07 22:56:43 - Executing insert with params
+Data: Array
+(
+    [0] => Om6iVy37M8fTfZe3m6kfraLqri62
+    [1] => +821012341234
+    [2] => 우리집탄이
+    [3] => KR
+    [4] => sales
+    [5] => 
+    [6] => 121.170.130.5
+)
+2025-05-07 22:56:43 - User inserted successfully
+Data: Array
+(
+    [user_id] => 0
+)
+2025-05-07 22:56:43 - Recording login history2025-05-07 22:56:43 - Login history recorded2025-05-07 22:56:43 - Starting session2025-05-07 22:56:43 - Session data set
+Data: Array
+(
+    [user_id] => 0
+    [phone] => +821012341234
+    [nickname] => 우리집탄이
+    [country_code] => KR
+)
+2025-05-07 22:56:43 - === 회원가입 성공 ===[07-May-2025 23:06:18 Asia/Seoul] PHP Warning:  require_once(../config/firebase-config.php): failed to open stream: No such file or directory in /var/www/html/topmkt/api/send-verification.php on line 51
+[07-May-2025 23:06:18 Asia/Seoul] PHP Fatal error:  require_once(): Failed opening required '../config/firebase-config.php' (include_path='.:/usr/share/pear:/usr/share/php:/usr/share/pear:/usr/share/php') in /var/www/html/topmkt/api/send-verification.php on line 51
+[07-May-2025 23:15:25 Asia/Seoul] PHP Fatal error:  Uncaught Error: Call to undefined method Kreait\Firebase\Auth::sendSignInLink() in /var/www/html/topmkt/api/send-verification.php:123
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/topmkt/api/send-verification.php on line 123
+[07-May-2025 23:16:07 Asia/Seoul] PHP Fatal error:  Uncaught Error: Call to undefined method Kreait\Firebase\Auth::sendSignInLink() in /var/www/html/topmkt/api/send-verification.php:123
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/topmkt/api/send-verification.php on line 123
+[07-May-2025 23:18:23 Asia/Seoul] PHP Fatal error:  Uncaught Error: Call to undefined method Kreait\Firebase\Auth::startPhoneNumberVerification() in /var/www/html/topmkt/api/send-verification.php:124
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/topmkt/api/send-verification.php on line 124
+[07-May-2025 23:21:52 Asia/Seoul] Error in send-verification.php: No user with phone number '+8201012341234' found.
+#0 /var/www/html/topmkt/api/send-verification.php(124): Kreait\Firebase\Auth->getUserByPhoneNumber()
+#1 {main}
+[07-May-2025 23:35:12 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:35:12 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5IuSnDWPuEpqyZWZ_aN0gikqTpwpPor5I1xu2G-YNZJiAHio5DO5VPRgSp4eUQymF1H4ndxZMxsUWs7-Cz_ZXVxCsCM8TggNgIi52QHzsbSX_hvBvJCH5cQ-o4dbwVT3rA4-rRnn4JK5KrKVr7PRAIvRhAVQjA","code":"123456","nickname":"\uc6b0\ub9ac\uc9d1\ud0c4\uc774"}
+[07-May-2025 23:36:05 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5Is3DOaqVtvvRiOtTuKFpk3cCqU2W4WNv1a5G3eS_QwAsu4xgMxgWF3znqniMTkEBaTKBSVXPK67kS92TIRMAdOIcmWMqZqEnlycc0PpIXP27blYZoO4OJj9FwTM_NprHHsh4KURjVKF7_xFMp6siLUcth2IfA","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:36:05 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:36:05 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5Is3DOaqVtvvRiOtTuKFpk3cCqU2W4WNv1a5G3eS_QwAsu4xgMxgWF3znqniMTkEBaTKBSVXPK67kS92TIRMAdOIcmWMqZqEnlycc0PpIXP27blYZoO4OJj9FwTM_NprHHsh4KURjVKF7_xFMp6siLUcth2IfA","code":"123456","nickname":"\uc6b0\ub9ac\uc9d1\ud0c4\uc774"}
+[07-May-2025 23:36:05 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:36:05 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:36:05 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:36:05 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다.
+#0 {main}
+[07-May-2025 23:38:32 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5ItP0C16SvsLPFzFoVeeR6BYTvJfyUFSCPTOy-4i7KZib4I8YoZsMLNgbya1V-9oaDmmyaFjxUk-irn9QrdBOAJbB_1S_4uHQdbmORFuUJcYSXcXrqmzqPASLOtymGNr82DyfIIUMKK8wynjHk_alOzrxT1fyQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:38:32 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:38:32 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5ItP0C16SvsLPFzFoVeeR6BYTvJfyUFSCPTOy-4i7KZib4I8YoZsMLNgbya1V-9oaDmmyaFjxUk-irn9QrdBOAJbB_1S_4uHQdbmORFuUJcYSXcXrqmzqPASLOtymGNr82DyfIIUMKK8wynjHk_alOzrxT1fyQ","code":"123456","nickname":"\uc6b0\ub9ac\uc9d1\ud0c4\uc774"}
+[07-May-2025 23:38:32 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:38:32 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:38:32 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:38:32 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다.
+#0 {main}
+[07-May-2025 23:43:46 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5Is4afUGdgOUCpaB9N3_uz0gf50Z3sEdD-pueyo-5iN3qmCO5t5TuMprgCZuwN463KevTDor33zRnZIqZtbA-raU7-JQHaHjKHD8va2HZIvY-MpXmi7tsIT10yQbdE0Kqa3-4QmvxQiZczVbOrxXRYhHs5YZtQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:43:46 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:43:46 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5Is4afUGdgOUCpaB9N3_uz0gf50Z3sEdD-pueyo-5iN3qmCO5t5TuMprgCZuwN463KevTDor33zRnZIqZtbA-raU7-JQHaHjKHD8va2HZIvY-MpXmi7tsIT10yQbdE0Kqa3-4QmvxQiZczVbOrxXRYhHs5YZtQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:43:47 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:43:47 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:43:47 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:43:47 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:44:32 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5IujpNZTUUyPiv7JZre-0yW7A2s6zWpf-0jqX8zWHxYqYlV4q9-FFzwrt_VE2NQiffTR1MjYzldeCqbbVKBV7WQTmqiW09cNw7utxSrewXRU7kRpEf5DYcRzlRcV3_WUscqTcYuheDIXGDYe1ffeB-xgg8ieNQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:44:32 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:44:32 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5IujpNZTUUyPiv7JZre-0yW7A2s6zWpf-0jqX8zWHxYqYlV4q9-FFzwrt_VE2NQiffTR1MjYzldeCqbbVKBV7WQTmqiW09cNw7utxSrewXRU7kRpEf5DYcRzlRcV3_WUscqTcYuheDIXGDYe1ffeB-xgg8ieNQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:44:33 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:44:33 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:44:33 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:44:33 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:45:07 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5ItA6H1Q1oXR-AvI3snCj7Wk3iQi3YZqldJ5sAIkOG5gfZTU_1Zw-JQKv6oDkUXwEHlnQhjiGFa6siiF_fUfXpWhZUEyruBJDH3SSkDvL4YiTpL3PR1sCsD8bq1EGRhw5fJefNZ9lCukwKjkgaVmrBWpGGZgww","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:45:07 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:45:07 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5ItA6H1Q1oXR-AvI3snCj7Wk3iQi3YZqldJ5sAIkOG5gfZTU_1Zw-JQKv6oDkUXwEHlnQhjiGFa6siiF_fUfXpWhZUEyruBJDH3SSkDvL4YiTpL3PR1sCsD8bq1EGRhw5fJefNZ9lCukwKjkgaVmrBWpGGZgww","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:45:08 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:45:08 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:45:08 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:45:08 Asia/Seoul] Raw Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:45:08 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:45:51 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5ItXMGR6vbeUmOiXvBmtPko63f7EF_Ne3L7XYyem1WDHnz2lb6IeeUS0xVWUHQ0hjxLNeDUM03LJUOw-DHLVKgw9xaS6Zi9t63jiz_EtDVdDD36bby8AsNullZVwHWTy8RjipC1yNf8lQ-kCuOfjwKvj5raiQg","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:45:51 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:45:51 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5ItXMGR6vbeUmOiXvBmtPko63f7EF_Ne3L7XYyem1WDHnz2lb6IeeUS0xVWUHQ0hjxLNeDUM03LJUOw-DHLVKgw9xaS6Zi9t63jiz_EtDVdDD36bby8AsNullZVwHWTy8RjipC1yNf8lQ-kCuOfjwKvj5raiQg","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:45:51 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:45:51 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:45:51 Asia/Seoul] Unexpected HTTP status code: 404
+[07-May-2025 23:45:51 Asia/Seoul] Error in verify-code.php: Firebase 서버 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:48:09 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5Is2pQQ9oDi7xL1ZGJ86z7EpjYYz0RLsH24CND_8OCaDckYOZ4zFPgCyqdoRHrrkc9Dv8GoLSlVUaYq9hDbH90-NMi7dJnDgoKEIaejUuOTBKvooOiZtPEXa51fzTF_3VHxzos3JgBT0MHHdzbYdnw2C6nWknQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:48:09 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:48:09 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5Is2pQQ9oDi7xL1ZGJ86z7EpjYYz0RLsH24CND_8OCaDckYOZ4zFPgCyqdoRHrrkc9Dv8GoLSlVUaYq9hDbH90-NMi7dJnDgoKEIaejUuOTBKvooOiZtPEXa51fzTF_3VHxzos3JgBT0MHHdzbYdnw2C6nWknQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:48:09 Asia/Seoul] CURL Verbose Log: * About to connect() to identitytoolkit.googleapis.com port 443 (#3)
+*   Trying 172.217.25.170...
+* Connected to identitytoolkit.googleapis.com (172.217.25.170) port 443 (#3)
+* warning: ignoring value of ssl.verifyhost
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 240
+
+* upload completely sent off: 240 out of 240 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 14:48:11 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #3 to host identitytoolkit.googleapis.com left intact
+
+[07-May-2025 23:48:09 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:48:09 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:48:09 Asia/Seoul] Unexpected HTTP status code: 404
+[07-May-2025 23:48:09 Asia/Seoul] Response body: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:48:09 Asia/Seoul] Error in verify-code.php: Firebase 서버 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:48:43 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5Isc3WYbfpeld1SH_TVwtFEzosmv4Rg7nxneuOjAw7uVymkX0fYgAff0dQxe7XsWRA6SRizEXfe5mUiO9i74ZwoNw6fNdeTWw7W34Ggrvc5LuCyS5phD2GZU6sxsAsBRUatlz1SenYV0R7RdFaDesKkYrn3-sQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:48:43 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:48:43 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5Isc3WYbfpeld1SH_TVwtFEzosmv4Rg7nxneuOjAw7uVymkX0fYgAff0dQxe7XsWRA6SRizEXfe5mUiO9i74ZwoNw6fNdeTWw7W34Ggrvc5LuCyS5phD2GZU6sxsAsBRUatlz1SenYV0R7RdFaDesKkYrn3-sQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:48:44 Asia/Seoul] CURL Verbose Log: * About to connect() to identitytoolkit.googleapis.com port 443 (#2)
+*   Trying 172.217.161.202...
+* Connected to identitytoolkit.googleapis.com (172.217.161.202) port 443 (#2)
+* warning: ignoring value of ssl.verifyhost
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 240
+
+* upload completely sent off: 240 out of 240 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 14:48:46 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #2 to host identitytoolkit.googleapis.com left intact
+
+[07-May-2025 23:48:44 Asia/Seoul] Response Headers: HTTP/1.1 404 Not Found
+Date: Wed, 07 May 2025 14:48:46 GMT
+Content-Type: text/html; charset=UTF-8
+Server: ESF
+Content-Length: 1634
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+[07-May-2025 23:48:44 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:48:44 Asia/Seoul] Firebase API Response Body: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:48:44 Asia/Seoul] Unexpected HTTP status code: 404
+[07-May-2025 23:48:44 Asia/Seoul] Response headers: HTTP/1.1 404 Not Found
+Date: Wed, 07 May 2025 14:48:46 GMT
+Content-Type: text/html; charset=UTF-8
+Server: ESF
+Content-Length: 1634
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+[07-May-2025 23:48:44 Asia/Seoul] Response body: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:48:44 Asia/Seoul] Error in verify-code.php: Firebase 서버 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:49:25 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5IvV1pUJyDe_CdCZHfzzafkV-fGLgG5h0BY9QuEv2HXFqL6JX98S88ChuXcNYvPbCEjurbDkfY7q7XEVxg9MIxJG1afKBREhEXxVuglRFhXpR-CxhC0LY3dEROvtYnSoOUFcjNbtqobQiTHLiIOXPByNTOfq2w","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:49:25 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:49:25 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5IvV1pUJyDe_CdCZHfzzafkV-fGLgG5h0BY9QuEv2HXFqL6JX98S88ChuXcNYvPbCEjurbDkfY7q7XEVxg9MIxJG1afKBREhEXxVuglRFhXpR-CxhC0LY3dEROvtYnSoOUFcjNbtqobQiTHLiIOXPByNTOfq2w","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:49:26 Asia/Seoul] CURL Verbose Log: * About to connect() to identitytoolkit.googleapis.com port 443 (#3)
+*   Trying 142.250.207.106...
+* Connected to identitytoolkit.googleapis.com (142.250.207.106) port 443 (#3)
+* warning: ignoring value of ssl.verifyhost
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 240
+
+* upload completely sent off: 240 out of 240 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 14:49:28 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #3 to host identitytoolkit.googleapis.com left intact
+
+[07-May-2025 23:49:26 Asia/Seoul] Response Headers: HTTP/1.1 404 Not Found
+Date: Wed, 07 May 2025 14:49:28 GMT
+Content-Type: text/html; charset=UTF-8
+Server: ESF
+Content-Length: 1634
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+[07-May-2025 23:49:26 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:49:26 Asia/Seoul] Firebase API Response Body: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:49:26 Asia/Seoul] Unexpected HTTP status code: 404
+[07-May-2025 23:49:26 Asia/Seoul] Response headers: HTTP/1.1 404 Not Found
+Date: Wed, 07 May 2025 14:49:28 GMT
+Content-Type: text/html; charset=UTF-8
+Server: ESF
+Content-Length: 1634
+X-XSS-Protection: 0
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+
+
+[07-May-2025 23:49:26 Asia/Seoul] Response body: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:49:26 Asia/Seoul] Error in verify-code.php: Firebase 서버 응답이 올바르지 않습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:51:09 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5Iua2Ggmw6h6EGsLiRoXCBofjkbrMRWKkfkNVZDeAiR3zSl00XYAEFRnKgcY3RM8_DYECUfAEb6UZl-mpboLlY5RugU2RBN3ekRy6gX8HrMaBaC-uDAEO0OiWzOMIrRrS0GOy0MDlFZFZaJ57-H-uUuOiYYKeQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:51:09 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:51:09 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5Iua2Ggmw6h6EGsLiRoXCBofjkbrMRWKkfkNVZDeAiR3zSl00XYAEFRnKgcY3RM8_DYECUfAEb6UZl-mpboLlY5RugU2RBN3ekRy6gX8HrMaBaC-uDAEO0OiWzOMIrRrS0GOy0MDlFZFZaJ57-H-uUuOiYYKeQ","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:51:09 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:51:09 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:51:09 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:51:09 Asia/Seoul] Raw Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:51:09 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:52:14 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5ItAxoMjgVviXjJNMKAicp1ofWEdoCcH45Fi1aGR0RtXGmF0b8JVoCvbJZNvkaeIvDgnZufktzgTq3A-HOJ-Faph68cYdAD4oHvzgxEqvx51JGX_hBzhwcwEnFbaOjXZ2zKC5tO_TfFHfSc4cgLu9JlT0rtN_Q","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:52:14 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:52:14 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5ItAxoMjgVviXjJNMKAicp1ofWEdoCcH45Fi1aGR0RtXGmF0b8JVoCvbJZNvkaeIvDgnZufktzgTq3A-HOJ-Faph68cYdAD4oHvzgxEqvx51JGX_hBzhwcwEnFbaOjXZ2zKC5tO_TfFHfSc4cgLu9JlT0rtN_Q","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:52:14 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:52:14 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:52:14 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:52:14 Asia/Seoul] Raw Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:52:14 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:52:54 Asia/Seoul] Raw request data: {"sessionInfo":"AD8T5IssysbaQM27TTvgMqp6si9f1vGZddx41nSU9jXJuN7NucLXAgVhRcKnSSAGDKWbP6AqbHVbazXvD5E8xZVgeAaD91tf_r_2sm703OXOX2iKWFU8m77ENDZRvVGoXSLRBmw1nPzL9TzXTyCaTsk6i7q-cxV6Qg","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:52:54 Asia/Seoul] Firebase API Request URL: https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:52:54 Asia/Seoul] Firebase API Request Data: {"sessionInfo":"AD8T5IssysbaQM27TTvgMqp6si9f1vGZddx41nSU9jXJuN7NucLXAgVhRcKnSSAGDKWbP6AqbHVbazXvD5E8xZVgeAaD91tf_r_2sm703OXOX2iKWFU8m77ENDZRvVGoXSLRBmw1nPzL9TzXTyCaTsk6i7q-cxV6Qg","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:52:54 Asia/Seoul] CURL Verbose Log: * About to connect() to identitytoolkit.googleapis.com port 443 (#2)
+*   Trying 172.217.161.234...
+* Connected to identitytoolkit.googleapis.com (172.217.161.234) port 443 (#2)
+* warning: ignoring value of ssl.verifyhost
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 240
+
+* upload completely sent off: 240 out of 240 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 14:52:57 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #2 to host identitytoolkit.googleapis.com left intact
+
+[07-May-2025 23:52:54 Asia/Seoul] Firebase API Response Code: 404
+[07-May-2025 23:52:54 Asia/Seoul] Firebase API Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:52:54 Asia/Seoul] JSON Decode Error: Syntax error
+[07-May-2025 23:52:54 Asia/Seoul] Raw Response: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:52:54 Asia/Seoul] Error in verify-code.php: Firebase 응답을 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+#0 {main}
+[07-May-2025 23:56:40 Asia/Seoul] [verify-code] 수신된 요청 데이터: {"sessionInfo":"AD8T5IvixUkVVM91pYm-MXUMGVhEIpbxqsLopCWmfuYO61Bnq5UkOzfwxJF8OqfhUlH3VvZ5iN-1irtHdgxb1Ya2_F5iCGip-2Jo0W0GSyzNDi0vr7yh8FNcERyRvF9Lpg_SsWc3F0GMgGKjmshSL8wbOKq8Vo6TYw","code":"123456","nickname":"우리집탄이"}
+[07-May-2025 23:56:40 Asia/Seoul] [verify-code] Firebase API 요청: URL=https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[07-May-2025 23:56:40 Asia/Seoul] [verify-code] Firebase API 요청 데이터: {"sessionInfo":"AD8T5IvixUkVVM91pYm-MXUMGVhEIpbxqsLopCWmfuYO61Bnq5UkOzfwxJF8OqfhUlH3VvZ5iN-1irtHdgxb1Ya2_F5iCGip-2Jo0W0GSyzNDi0vr7yh8FNcERyRvF9Lpg_SsWc3F0GMgGKjmshSL8wbOKq8Vo6TYw","code":"123456","displayName":"우리집탄이"}
+[07-May-2025 23:56:41 Asia/Seoul] [verify-code] CURL 상세 로그: * About to connect() to identitytoolkit.googleapis.com port 443 (#6)
+*   Trying 142.250.206.202...
+* Connected to identitytoolkit.googleapis.com (142.250.206.202) port 443 (#6)
+*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+  CApath: none
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 243
+
+* upload completely sent off: 243 out of 243 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 14:56:43 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #6 to host identitytoolkit.googleapis.com left intact
+
+[07-May-2025 23:56:41 Asia/Seoul] [verify-code] Firebase API 응답 코드: 404
+[07-May-2025 23:56:41 Asia/Seoul] [verify-code] Firebase API 응답 내용: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[07-May-2025 23:56:41 Asia/Seoul] [verify-code] HTTP 오류 응답: 404
+[08-May-2025 00:00:02 Asia/Seoul] [verify-code] 수신된 요청 데이터: {"sessionInfo":"AD8T5IuFqsUPMsYnFuMptLkk1674XVOiM6ffGVfIgqKqrf1v--kiG6WYwisWCICnX7bgxoEFMw_Xx2nFq2VMyr8dnHnFsCRd3umJesIdQ-kBzd0Xr93jKRTMECu9VX8YhTT-fc3sQ54aMQzDmDatWYyT-yPvyBxgwg","code":"123456","nickname":"우리집탄이"}
+[08-May-2025 00:00:02 Asia/Seoul] [verify-code] Firebase API 요청: URL=https://identitytoolkit.googleapis.com/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ
+[08-May-2025 00:00:02 Asia/Seoul] [verify-code] Firebase API 요청 데이터: {"sessionInfo":"AD8T5IuFqsUPMsYnFuMptLkk1674XVOiM6ffGVfIgqKqrf1v--kiG6WYwisWCICnX7bgxoEFMw_Xx2nFq2VMyr8dnHnFsCRd3umJesIdQ-kBzd0Xr93jKRTMECu9VX8YhTT-fc3sQ54aMQzDmDatWYyT-yPvyBxgwg","code":"123456","displayName":"우리집탄이"}
+[08-May-2025 00:00:05 Asia/Seoul] [verify-code] CURL 상세 로그: * About to connect() to identitytoolkit.googleapis.com port 443 (#7)
+*   Trying 142.250.206.234...
+* Connected to identitytoolkit.googleapis.com (142.250.206.234) port 443 (#7)
+*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+  CApath: none
+* SSL connection using TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=upload.video.google.com
+* 	start date: Mar 31 08:55:43 2025 GMT
+* 	expire date: Jun 23 08:55:42 2025 GMT
+* 	common name: upload.video.google.com
+* 	issuer: CN=WE2,O=Google Trust Services,C=US
+> POST /v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ HTTP/1.1
+Host: identitytoolkit.googleapis.com
+Content-Type: application/json
+Accept: application/json
+Content-Length: 243
+
+* upload completely sent off: 243 out of 243 bytes
+< HTTP/1.1 404 Not Found
+< Date: Wed, 07 May 2025 15:00:07 GMT
+< Content-Type: text/html; charset=UTF-8
+< Server: ESF
+< Content-Length: 1634
+< X-XSS-Protection: 0
+< X-Frame-Options: SAMEORIGIN
+< X-Content-Type-Options: nosniff
+< Alt-Svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+< 
+* Connection #7 to host identitytoolkit.googleapis.com left intact
+
+[08-May-2025 00:00:05 Asia/Seoul] [verify-code] Firebase API 응답 코드: 404
+[08-May-2025 00:00:05 Asia/Seoul] [verify-code] Firebase API 응답 내용: <!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/v1/accounts:verifyPhoneNumber?key=AIzaSyAlFQNcYxi29uhu5fW1MYy7iESy3GvmnUQ</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+[08-May-2025 00:00:05 Asia/Seoul] [verify-code] HTTP 오류 응답: 404
