@@ -1,0 +1,19 @@
+Options +FollowSymLinks
+RewriteEngine On
+Require all granted
+
+# PHP 파일 직접 접근 허용
+<FilesMatch "\.php$">
+    Require all granted
+</FilesMatch>
+
+# 디렉토리 리스팅 비활성화
+Options -Indexes
+
+# 기본 인덱스 파일 설정
+DirectoryIndex index.php
+
+# 에러 문서 설정
+ErrorDocument 500 /error.php
+ErrorDocument 404 /404.php
+ErrorDocument 403 /error.php 
