@@ -1,0 +1,142 @@
+<?php
+/**
+ * 사용자 프로필 정보 API
+ * 
+ * 로그인한 사용자의 프로필 정보를 반환합니다.
+ * 
+ * 요청 방식: GET
+ * 
+ * 응답:
+ * - success: 성공 여부 (boolean)
+ * - message: 결과 메시지
+ * - data: 사용자 정보 (성공 시)
+ */
+
+// CORS 설정
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+// OPTIONS 요청 처리
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
+// 로그 함수
+function debug_log($message, $data = null) {
+    $log_dir = __DIR__ . '/../../logs';
+    if (!is_dir($log_dir)) {
+        mkdir($log_dir, 0755, true);
+    }
+    
+    $log_file = $log_dir . '/profile.log';
+    $log_message = date('[Y-m-d H:i:s]') . ' ' . $message;
+    
+    if ($data !== null) {
+        $log_message .= ' - ' . json_encode($data, JSON_UNESCAPED_UNICODE);
+    }
+    
+    file_put_contents($log_file, $log_message . PHP_EOL, FILE_APPEND);
+}
+
+// GET 요청 검증
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode([
+        'success' => false,
+        'message' => '잘못된 요청 방식입니다. GET 요청이 필요합니다.'
+    ]);
+    exit();
+}
+
+// 세션 시작 및 로그인 체크
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode([
+        'success' => false,
+        'message' => '로그인이 필요합니다.'
+    ]);
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+debug_log('프로필 정보 요청', [
+    'user_id' => $user_id
+]);
+
+// 데이터베이스 연결
+require_once __DIR__ . '/../../config/database.php';
+$db_config = require __DIR__ . '/../../config/database.php';
+
+try {
+    // PDO 연결
+    $dsn = "mysql:unix_socket=/var/lib/mysql/mysql.sock;dbname={$db_config['db_name']};charset={$db_config['db_charset']}";
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false
+    ];
+    
+    $pdo = new PDO($dsn, $db_config['db_user'], $db_config['db_pass'], $options);
+    
+    // 사용자 정보 조회
+    $stmt = $pdo->prepare('SELECT 
+                            id, 
+                            firebase_uid, 
+                            phone_number, 
+                            nickname, 
+                            profile_image, 
+                            company, 
+                            introduction, 
+                            position, 
+                            email, 
+                            country, 
+                            language, 
+                            created_at, 
+                            last_login_at
+                          FROM users 
+                          WHERE id = :user_id');
+    $stmt->execute([':user_id' => $user_id]);
+    $user_data = $stmt->fetch();
+    
+    if (!$user_data) {
+        debug_log('프로필 정보 조회 실패 - 사용자 없음', [
+            'user_id' => $user_id
+        ]);
+        
+        http_response_code(404);
+        echo json_encode([
+            'success' => false,
+            'message' => '사용자 정보를 찾을 수 없습니다.'
+        ]);
+        exit();
+    }
+    
+    // 민감한 정보 필터링
+    unset($user_data['firebase_uid']);
+    
+    debug_log('프로필 정보 조회 성공', [
+        'user_id' => $user_id
+    ]);
+    
+    echo json_encode([
+        'success' => true,
+        'message' => '프로필 정보를 성공적으로 조회했습니다.',
+        'data' => $user_data
+    ]);
+} catch (PDOException $e) {
+    debug_log('프로필 정보 조회 오류', [
+        'user_id' => $user_id,
+        'error' => $e->getMessage(),
+        'code' => $e->getCode()
+    ]);
+    
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => '서버 오류가 발생했습니다.'
+    ]);
+} 

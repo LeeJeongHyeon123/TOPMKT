@@ -204,6 +204,55 @@ include_once __DIR__ . '/includes/header.php';
         background-color: #f8f9fa;
         cursor: not-allowed;
     }
+
+    /* 버튼 스타일 */
+    .auth-button.primary {
+        background-color: #1976d2;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.2s;
+    }
+    
+    .auth-button.primary:hover {
+        background-color: #1565c0;
+    }
+    
+    .auth-button.secondary {
+        background-color: #f8f9fa;
+        color: #495057;
+        border: 1px solid #ddd;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .auth-button.secondary:hover {
+        background-color: #e9ecef;
+    }
+    
+    .auth-button:disabled {
+        background-color: #e9ecef;
+        color: #adb5bd;
+        cursor: not-allowed;
+    }
+    
+    /* 인증 성공 상태 */
+    .verified-success {
+        border-color: #28a745 !important;
+        background-color: #f8f9fa;
+    }
+    
+    .verification-success-icon {
+        color: #28a745;
+        margin-left: 5px;
+    }
     </style>
 </head>
 <body>
@@ -260,6 +309,7 @@ include_once __DIR__ . '/includes/header.php';
             </form>
             <!-- 회원가입 폼 -->
             <form class="auth-form" id="registerForm" style="display:none;">
+                <input type="hidden" id="idToken" name="idToken">
                 <div class="form-group">
                     <label for="nickname">닉네임</label>
                     <div class="nickname-input-group">
@@ -268,7 +318,7 @@ include_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="feedback-message" id="nicknameFeedback"></div>
                 </div>
-                <div class="form-group phone-section" id="phoneSection" style="display:none;">
+                <div class="form-group phone-section" id="phoneSection" style="display:none; position: relative; z-index: 50;">
                     <label for="registerPhone">휴대폰 번호</label>
                     <div class="phone-input-group">
                         <div class="country-select" id="registerCountrySelect">
@@ -277,7 +327,7 @@ include_once __DIR__ . '/includes/header.php';
                         </div>
                         <input type="tel" id="registerPhone" name="phone" placeholder="010-1234-1234" required>
                     </div>
-                    <div class="country-dropdown" id="registerCountryDropdown" style="display:none;">
+                    <div class="country-dropdown" id="registerCountryDropdown" style="display:none; z-index: 100;">
                         <div class="country-option" data-flag="🇰🇷" data-code="+82">🇰🇷 한국 (+82)</div>
                         <div class="country-option" data-flag="🇺🇸" data-code="+1">🇺🇸 미국 (+1)</div>
                         <div class="country-option" data-flag="🇨🇳" data-code="+86">🇨🇳 중국 (+86)</div>
@@ -287,14 +337,22 @@ include_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="form-group verification-group" id="registerVerificationGroup" style="display:none;">
                     <label for="registerCode">인증번호</label>
-                    <input type="text" id="registerCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
+                    <div class="verification-input-group">
+                        <input type="text" id="registerCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
+                        <span class="verification-timer" id="verificationTimer"></span>
+                    </div>
+                    <div class="verification-button-group">
+                        <button type="button" class="auth-button secondary" id="verifyCodeBtn">인증번호 확인</button>
+                    </div>
                 </div>
                 <div class="form-group code-button-section" id="codeButtonSection" style="display:none;">
                     <button type="button" class="auth-button" id="sendCodeBtn" disabled>
                         인증번호 받기
                     </button>
                 </div>
-                <button type="submit" class="auth-button" id="registerSubmitBtn" style="opacity:0;transition:none;display:none;">회원가입</button>
+                <div class="register-complete-group" id="registerCompleteGroup" style="display:none;">
+                    <button type="submit" class="auth-button primary" id="registerSubmitBtn">회원가입 완료</button>
+                </div>
             </form>
         </div>
         <div class="auth-policy" id="authPolicy" style="display:none;">

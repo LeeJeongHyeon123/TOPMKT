@@ -1,4 +1,7 @@
 <?php
+// Composer 오토로더 로드
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 // 디버그 로그 파일 설정
 $debug_log_file = __DIR__ . '/../../logs/send_code_debug.log';
 
@@ -121,7 +124,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // 필수 파라미터 검증
-if (!isset($data['phone']) || !isset($data['country_code']) || !isset($data['recaptcha_token'])) {
+if (!isset($data['phone']) || !isset($data['country']) || !isset($data['recaptcha_token'])) {
     debug_log("필수 파라미터 누락", $data);
     http_response_code(400);
     echo json_encode([
@@ -133,8 +136,18 @@ if (!isset($data['phone']) || !isset($data['country_code']) || !isset($data['rec
 
 debug_log("Firebase 설정 로드 시작");
 // Firebase 설정 로드
-require_once __DIR__ . '/../../config/firebase/config.php';
-debug_log("Firebase 설정 로드 완료");
+try {
+    $firebase_config = require_once __DIR__ . '/../../config/firebase/firebase-config.php';
+    debug_log("Firebase 설정 로드 완료");
+} catch (\Exception $e) {
+    debug_log("Firebase 설정 로드 실패: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => '시스템 오류가 발생했습니다. 관리자에게 문의하세요.'
+    ]);
+    exit();
+}
 
 debug_log("reCAPTCHA 서비스 초기화 시작");
 // reCAPTCHA 토큰 검증 (Enterprise)
@@ -177,7 +190,7 @@ if (!$recaptchaResult['success'] || ($recaptchaResult['score'] ?? 0) < 0.3) {
 
 // 전화번호 형식 검증
 $phone = $data['phone'];
-$countryCode = $data['country_code'];
+$countryCode = $data['country'];
 
 // 전화번호에서 하이픈 제거
 $phone = str_replace('-', '', $phone);
@@ -224,7 +237,7 @@ try {
     debug_log("Firebase Auth 서비스 초기화 완료");
     
     debug_log("인증번호 전송 시작", ['phone' => $countryCode . $phone]);
-    $result = $authService->sendVerificationCode($countryCode . $phone);
+    $result = $authService->sendVerificationCode($countryCode . $phone, $data['recaptcha_token']);
     debug_log("인증번호 전송 결과", $result);
     
     if (!$result['success']) {

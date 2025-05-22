@@ -26,16 +26,30 @@ $firebase_config = [
 ];
 
 // Firebase 상수 정의 (하위 호환성)
-define('FIREBASE_DATABASE_URL', 'https://topmkt-832f2-default-rtdb.firebaseio.com');
-define('FIREBASE_PROJECT_ID', $firebase_config['projectId']);
-define('FIREBASE_STORAGE_BUCKET', $firebase_config['storageBucket']);
-define('FIREBASE_MESSAGING_SENDER_ID', $firebase_config['messagingSenderId']);
-define('FIREBASE_APP_ID', $firebase_config['appId']);
-define('FIREBASE_AUTH_DOMAIN', $firebase_config['authDomain']);
-define('FIREBASE_API_KEY', $firebase_config['apiKey']);
+if (!defined('FIREBASE_DATABASE_URL')) {
+    define('FIREBASE_DATABASE_URL', 'https://topmkt-832f2-default-rtdb.firebaseio.com');
+}
+if (!defined('FIREBASE_PROJECT_ID')) {
+    define('FIREBASE_PROJECT_ID', $firebase_config['projectId']);
+}
+if (!defined('FIREBASE_STORAGE_BUCKET')) {
+    define('FIREBASE_STORAGE_BUCKET', $firebase_config['storageBucket']);
+}
+if (!defined('FIREBASE_MESSAGING_SENDER_ID')) {
+    define('FIREBASE_MESSAGING_SENDER_ID', $firebase_config['messagingSenderId']);
+}
+if (!defined('FIREBASE_APP_ID')) {
+    define('FIREBASE_APP_ID', $firebase_config['appId']);
+}
+if (!defined('FIREBASE_AUTH_DOMAIN')) {
+    define('FIREBASE_AUTH_DOMAIN', $firebase_config['authDomain']);
+}
+if (!defined('FIREBASE_API_KEY')) {
+    define('FIREBASE_API_KEY', $firebase_config['apiKey']);
+}
 
 // 자격 증명 파일 경로
-$firebase_credentials_path = __DIR__ . '/firebase-credentials.json';
+$firebase_credentials_path = __DIR__ . '/../google/service-account.json';
 
 // Firebase 서비스 사용 설정
 $firebase_services = [
@@ -66,7 +80,7 @@ $firebase_auth_config = [
 // reCAPTCHA 설정
 $recaptcha_config = [
     'site_key' => '6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4',
-    'service_account_path' => __DIR__ . '/google/service-account.json',
+    'service_account_path' => __DIR__ . '/../google/service-account.json',
     'actions' => [
         'login' => 'LOGIN',
         'register' => 'REGISTER',
@@ -77,8 +91,23 @@ $recaptcha_config = [
 // Firebase 설정 내보내기
 return [
     'config' => $firebase_config,
-    'credentials_path' => $firebase_credentials_path,
+    'credentials' => [
+        'file' => $firebase_credentials_path
+    ],
+    'storage' => [
+        'bucket' => 'gs://' . $firebase_config['storageBucket']
+    ],
+    'database' => [
+        'url' => 'https://' . $firebase_config['projectId'] . '.firebaseio.com'
+    ],
+    'auth' => [
+        'apiKey' => $firebase_config['apiKey'],
+        'authDomain' => $firebase_config['authDomain'],
+        'projectId' => $firebase_config['projectId'],
+        'storageBucket' => $firebase_config['storageBucket'],
+        'appId' => $firebase_config['appId']
+    ],
     'services' => $firebase_services,
-    'auth' => $firebase_auth_config,
+    'auth_config' => $firebase_auth_config,
     'recaptcha' => $recaptcha_config
 ];

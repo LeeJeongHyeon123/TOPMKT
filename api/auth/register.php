@@ -118,7 +118,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // 필수 파라미터 검증
-$required_fields = ['phone', 'country_code', 'recaptcha_token', 'action', 'nickname'];
+$required_fields = ['phone', 'country', 'recaptcha_token', 'nickname', 'idToken'];
 foreach ($required_fields as $field) {
     if (!isset($data[$field]) || $data[$field] === '') {
         debug_log("필수 필드 누락: {$field}", $data);
@@ -128,35 +128,9 @@ foreach ($required_fields as $field) {
     }
 }
 
-// action 값 검증
-if ($data['action'] !== 'REGISTER') {
-    debug_log("잘못된 action 값: " . $data['action']);
-    http_response_code(400);
-    echo json_encode(['success' => false, 'message' => '잘못된 요청입니다.']);
-    exit;
-}
-
-// reCAPTCHA 토큰 검증
-try {
-    $recaptcha = new \App\Services\Google\ReCaptchaService();
-    $recaptchaResult = $recaptcha->verify($data['recaptcha_token'], $data['action']);
-    
-    if (!$recaptchaResult['success']) {
-        debug_log("reCAPTCHA 검증 실패", $recaptchaResult);
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => '보안 검증에 실패했습니다.']);
-        exit;
-    }
-} catch (\Exception $e) {
-    debug_log("reCAPTCHA 검증 중 오류 발생: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => '보안 검증 중 오류가 발생했습니다.']);
-    exit;
-}
-
 // 전화번호 형식 검증
 $phoneNumber = $data['phone'];
-$countryCode = $data['country_code'];
+$countryCode = $data['country'];
 
 // 전화번호에서 하이픈 제거
 $phoneNumber = str_replace('-', '', $phoneNumber);
@@ -184,9 +158,44 @@ if (!preg_match('/^[가-힣a-zA-Z0-9]{2,20}$/', $data['nickname'])) {
     exit;
 }
 
+// reCAPTCHA 토큰 검증
+try {
+    debug_log('reCAPTCHA 검증 시작', ['token' => substr($data['recaptcha_token'], 0, 10) . '...']);
+    require_once __DIR__ . '/../../app/Services/RecaptchaService.php';
+    
+    $recaptchaService = new \App\Services\RecaptchaService();
+    $recaptchaResult = $recaptchaService->verifyToken($data['recaptcha_token'], 'register');
+    
+    debug_log('reCAPTCHA 검증 결과', $recaptchaResult);
+    
+    if (!$recaptchaResult['success']) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => '보안 인증에 실패했습니다.'
+        ]);
+        exit();
+    }
+    
+    if ($recaptchaResult['score'] < 0.3) {
+        debug_log('reCAPTCHA 점수 낮음', ['score' => $recaptchaResult['score']]);
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => '보안 검증 점수가 낮습니다. 잠시 후 다시 시도해주세요.'
+        ]);
+        exit();
+    }
+} catch (\Exception $e) {
+    debug_log("reCAPTCHA 검증 중 오류 발생: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => '보안 검증 중 오류가 발생했습니다.']);
+    exit;
+}
+
 // 설정 파일 로드
 require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../config/firebase-config.php';
+require_once __DIR__ . '/../../config/firebase.php';
 
 // Firebase Auth 서비스 로드
 require_once __DIR__ . '/../../app/Services/Firebase/AuthService.php';
@@ -199,7 +208,7 @@ try {
     $db_config = require __DIR__ . '/../../config/database.php';
     
     // DB 연결
-    $dsn = "mysql:unix_socket=/var/lib/mysql/mysql.sock;dbname={$db_config['db_name']};charset={$db_config['db_charset']}";
+    $dsn = "mysql:host=localhost;dbname={$db_config['db_name']};charset={$db_config['db_charset']}";
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -242,63 +251,155 @@ try {
     
     // 인증번호 검증
     debug_log("=== 인증번호 검증 시작 ===");
-    debug_log("인증번호: " . $data['code']);
     
     // Firebase Auth 서비스 초기화
     try {
         $authService = \App\Services\Firebase\AuthService::getInstance();
         debug_log("Firebase Auth 서비스 초기화 성공");
         
-        // 인증번호 전송 가능 여부 확인
-        $canSend = $authService->canSendVerificationCode($countryCode . $phoneNumber);
-        if (!$canSend['allowed']) {
-            debug_log("인증번호 전송 제한", $canSend);
-            http_response_code(429);
-            echo json_encode([
-                'success' => false,
-                'message' => $canSend['message'],
-                'remainingTime' => $canSend['remainingTime']
-            ]);
+        // idToken 검증
+        debug_log("idToken 검증 시작");
+        $verifyResult = $authService->verifyIdToken($data['idToken']);
+        debug_log("idToken 검증 결과", $verifyResult);
+        
+        if (!$verifyResult['success']) {
+            debug_log("idToken 검증 실패", $verifyResult);
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '인증 토큰이 유효하지 않습니다.']);
             exit;
         }
         
-        // 인증번호 전송
-        $result = $authService->sendVerificationCode($countryCode . $phoneNumber);
+        // 전화번호 일치 여부 확인
+        $tokenPhoneNumber = $verifyResult['phone_number'];
+        $normalizedPhoneNumber = $countryCode . preg_replace('/[^0-9]/', '', $phoneNumber);
         
-        if (!$result['success']) {
-            debug_log("인증번호 전송 실패", $result);
+        debug_log("전화번호 비교", ['token' => $tokenPhoneNumber, 'request' => $normalizedPhoneNumber]);
+        
+        if ($tokenPhoneNumber !== $normalizedPhoneNumber) {
+            debug_log("전화번호 불일치", ['token' => $tokenPhoneNumber, 'request' => $normalizedPhoneNumber]);
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '인증된 전화번호와 요청 전화번호가 일치하지 않습니다.']);
+            exit;
+        }
+        
+        debug_log("idToken 검증 성공", ['phone' => $tokenPhoneNumber]);
+        
+        // 사용자 정보 저장
+        debug_log("사용자 정보 DB 저장 시작");
+        
+        // 현재 시간
+        $now = date('Y-m-d H:i:s');
+        
+        // 테이블 존재 여부 확인
+        $stmt = $pdo->query("SHOW TABLES LIKE 'users'");
+        $usersTableExists = $stmt->rowCount() > 0;
+        
+        $stmt = $pdo->query("SHOW TABLES LIKE 'user_profiles'");
+        $profilesTableExists = $stmt->rowCount() > 0;
+        
+        if (!$usersTableExists || !$profilesTableExists) {
+            debug_log("필요한 테이블이 존재하지 않음", ['users' => $usersTableExists, 'profiles' => $profilesTableExists]);
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => $messages['auth']['register']['verification_code_send_failed']]);
+            echo json_encode(['success' => false, 'message' => '데이터베이스 테이블이 준비되지 않았습니다.']);
             exit;
         }
+        
+        // 트랜잭션 시작
+        $pdo->beginTransaction();
+        
+        // 사용자 정보 저장
+        $stmt = $pdo->prepare("
+            INSERT INTO users 
+            (firebase_uid, nickname, phone_number, country_code, status, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, 'active', ?, ?)
+        ");
+        
+        debug_log("사용자 정보 저장 쿼리 준비", [
+            'uid' => $verifyResult['uid'],
+            'nickname' => $data['nickname'],
+            'phone' => $phoneNumber,
+            'country' => $countryCode
+        ]);
+        
+        $stmt->execute([
+            $verifyResult['uid'],
+            $data['nickname'],
+            $phoneNumber,
+            $countryCode,
+            $now,
+            $now
+        ]);
+        
+        $userId = $pdo->lastInsertId();
+        debug_log("사용자 정보 저장 성공", ['userId' => $userId]);
+        
+        // 사용자 프로필 생성
+        $stmt = $pdo->prepare("
+            INSERT INTO user_profiles 
+            (user_id, introduction, created_at, updated_at) 
+            VALUES (?, '', ?, ?)
+        ");
+        
+        debug_log("사용자 프로필 저장 쿼리 준비", ['userId' => $userId]);
+        
+        $stmt->execute([
+            $userId,
+            $now,
+            $now
+        ]);
+        
+        debug_log("사용자 프로필 저장 성공");
+        
+        // 트랜잭션 커밋
+        $pdo->commit();
+        
+        debug_log("회원가입 성공", ['user_id' => $userId, 'nickname' => $data['nickname']]);
         
         // 성공 응답
+        http_response_code(200);
         echo json_encode([
             'success' => true,
-            'message' => $messages['auth']['register']['verification_code_sent'],
+            'message' => '회원가입이 완료되었습니다.',
             'data' => [
-                'phone' => $phoneNumber,
-                'country_code' => $countryCode,
-                'sessionInfo' => $result['sessionInfo'] ?? null
+                'user_id' => $userId,
+                'nickname' => $data['nickname'],
+                'idToken' => $data['idToken']
             ]
         ]);
         
     } catch (\Exception $e) {
-        debug_log("Firebase Auth 서비스 오류: " . $e->getMessage());
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => $messages['auth']['register']['server_error'],
-            'error' => [
-                'code' => 'AUTH_ERROR',
-                'details' => $e->getMessage()
-            ]
+        // 트랜잭션 롤백
+        if (isset($pdo) && $pdo->inTransaction()) {
+            $pdo->rollBack();
+            debug_log("트랜잭션 롤백");
+        }
+        
+        debug_log("Firebase Auth 서비스 오류", [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ]);
+        
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => '인증 서비스 오류가 발생했습니다: ' . $e->getMessage()]);
         exit;
     }
     
 } catch (\Exception $e) {
-    debug_log("인증번호 전송 중 오류 발생: " . $e->getMessage());
+    // 트랜잭션 롤백
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+        debug_log("트랜잭션 롤백");
+    }
+    
+    debug_log("회원가입 처리 중 오류 발생", [
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
+    
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => $messages['auth']['register']['server_error']]);
     exit;
@@ -306,7 +407,5 @@ try {
 
 debug_log("=== 회원가입 요청 종료 ===");
 
-if (!headers_sent()) {
-    echo json_encode(['success' => false, 'message' => '서버 오류: 빈 응답']);
-    exit;
-} 
+// 출력 버퍼 플러시
+ob_end_flush(); 

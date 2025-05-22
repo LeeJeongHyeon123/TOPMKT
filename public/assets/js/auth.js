@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
         errorMessage: document.getElementById('errorMessage'),
         registerVerificationGroup: document.getElementById('registerVerificationGroup'),
         authPolicy: document.getElementById('authPolicy'),
-        authSubtitle: document.getElementById('authSubtitle')
+        authSubtitle: document.getElementById('authSubtitle'),
+        idToken: document.getElementById('idToken')
     };
     
     console.log('[DEBUG] DOM 요소:', elements);
@@ -380,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             const response = await fetch('/api/auth/send-code.php', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ phone, country_code: country, recaptcha_token: token })
+                                body: JSON.stringify({ phone, country: country, recaptcha_token: token })
                             });
                             const text = await response.text();
                             console.log('[DEBUG] 인증번호 fetch 응답', text);
@@ -391,6 +392,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                 if (elements.registerVerificationGroup) elements.registerVerificationGroup.style.display = '';
                                 if (elements.registerSubmitBtn) elements.registerSubmitBtn.style.display = '';
                                 console.log('[DEBUG] 인증번호 발송 성공', data);
+                                // 완료 버튼 표시
+                                if (elements.registerCompleteGroup) {
+                                    elements.registerCompleteGroup.style.display = 'block';
+                                }
+                                
+                                // sessionInfo 저장 (인증번호 확인에 필요)
+                                if (data.sessionInfo) {
+                                    localStorage.setItem('verification_session_info', data.sessionInfo);
+                                    console.log('[DEBUG] sessionInfo 저장 완료', data.sessionInfo.substring(0, 10) + '...');
+                                } else {
+                                    // 인증 성공 후에는 sessionInfo가 필요 없으므로 경고만 기록
+                                    console.log('[WARN] 인증 성공 후 sessionInfo 없음 - 정상적인 상황');
+                                }
+                                
+                                // idToken 저장 (인증 확인 시에만 받는 값이므로 여기서는 체크하지 않음)
+                                if (elements.idToken && data.idToken) {
+                                    elements.idToken.value = data.idToken;
+                                    console.log('[DEBUG] idToken 저장 완료', data.idToken.substring(0, 10) + '...');
+                                }
+                                
+                                if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                                if (elements.registerCode) elements.registerCode.readOnly = false;
                             } else {
                                 showMessage(data.message);
                                 console.error('[ERROR] 인증번호 발송 실패', data);
@@ -513,12 +536,24 @@ document.addEventListener('DOMContentLoaded', function() {
                             return;
                         }
                         try {
-                            console.log('[DEBUG] 회원가입 fetch 요청', { phone, country, nickname: nicknameValue, code, recaptcha_token: token });
+                            console.log('[DEBUG] 회원가입 fetch 요청', { phone, country, nickname: nicknameValue, idToken: elements.idToken.value });
                             const response = await fetch('/api/auth/register.php', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ phone, country_code: country, nickname: nicknameValue, code, recaptcha_token: token })
+                                body: JSON.stringify({ 
+                                    phone, 
+                                    country: country, 
+                                    nickname: nicknameValue, 
+                                    idToken: elements.idToken.value,
+                                    recaptcha_token: token 
+                                })
                             });
+                            
+                            console.log('[DEBUG] 회원가입 응답 상태:', response.status);
+                            if (!response.ok) {
+                                console.error('[ERROR] 회원가입 API 오류 응답:', response.status, response.statusText);
+                            }
+                            
                             const text = await response.text();
                             console.log('[DEBUG] 회원가입 fetch 응답', text);
                             if (!text) throw new Error('서버 오류: 빈 응답');
@@ -643,5 +678,192 @@ document.addEventListener('DOMContentLoaded', function() {
         const regex = phoneRegex[countryCode];
         if (!regex) return false;
         return regex.test(phone.replace(/[^0-9]/g, ''));
+    }
+
+    // 인증번호 확인 버튼 클릭
+    const verifyCodeBtn = document.getElementById('verifyCodeBtn');
+    if (verifyCodeBtn) {
+        console.log('[DEBUG] 인증번호 확인 버튼 요소 찾음, 클릭 리스너 추가');
+        verifyCodeBtn.addEventListener('click', function() {
+            if (!elements.registerPhone || !elements.registerCountryCode || !elements.nickname || !elements.registerCode) {
+                console.error('[ERROR] 필요한 요소를 찾을 수 없음');
+                showToast('요소를 찾을 수 없습니다. 페이지를 새로고침 해주세요.', 'error');
+                return;
+            }
+            
+            const phone = elements.registerPhone.value.trim();
+            const country = elements.registerCountryCode.textContent.trim();
+            const nicknameValue = elements.nickname.value.trim();
+            const code = elements.registerCode.value.trim();
+            console.log('[DEBUG] 인증번호 확인 버튼 클릭', { phone, country, code, nickname: nicknameValue });
+            
+            if (!phone || !code) {
+                showMessage('휴대폰 번호와 인증번호를 입력하세요.');
+                console.error('[ERROR] 필수 항목 미입력', { phone, code });
+                return;
+            }
+            
+            if (!validatePhoneByCountry(phone, country)) {
+                showMessage('국가별 올바른 전화번호 형식이 아닙니다.');
+                console.error('[ERROR] 전화번호 형식 오류', { phone, country });
+                return;
+            }
+            
+            // 로컬 스토리지 사용 제거 - 서버 측에서만 인증 시도 횟수 관리
+            if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = true;
+            showMessage('인증번호 확인 중...', 'success');
+            
+            if (!window.grecaptcha || !grecaptcha.enterprise || typeof grecaptcha.enterprise.ready !== 'function') {
+                showMessage('reCAPTCHA Enterprise 스크립트가 정상적으로 로드되지 않았습니다. 새로고침 후 다시 시도해 주세요.');
+                if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                console.error('[ERROR] grecaptcha.enterprise.ready is not a function');
+                return;
+            }
+            
+            // 세션 정보 확인 (이 부분은 유지)
+            const sessionInfo = localStorage.getItem('verification_session_info');
+            if (!sessionInfo) {
+                showMessage('인증 세션 정보가 없습니다. 인증번호를 다시 요청해주세요.');
+                if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                console.error('[ERROR] 세션 정보 없음');
+                return;
+            }
+            
+            grecaptcha.enterprise.ready(function() {
+                grecaptcha.enterprise.execute('6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4', { action: 'verify_code' })
+                    .then(async function(token) {
+                        console.log('[DEBUG] reCAPTCHA 토큰 발급', token);
+                        if (!token) {
+                            showMessage('reCAPTCHA 인증에 실패했습니다. 새로고침 후 다시 시도해 주세요.');
+                            if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                            console.error('[ERROR] reCAPTCHA 토큰 없음');
+                            return;
+                        }
+                        try {
+                            console.log('[DEBUG] 인증번호 확인 fetch 요청', { phone, country, code, sessionInfo });
+                            const response = await fetch('/api/auth/verify-code.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ 
+                                    phone, 
+                                    country: country, 
+                                    code, 
+                                    sessionInfo, 
+                                    recaptcha_token: token 
+                                })
+                            });
+                            const text = await response.text();
+                            console.log('[DEBUG] 인증번호 확인 fetch 응답', text);
+                            if (!text) throw new Error('서버 오류: 빈 응답');
+                            const data = JSON.parse(text);
+                            
+                            if (data.success) {
+                                showMessage(data.message, 'success');
+                                console.log('[DEBUG] 인증번호 확인 성공', data);
+                                
+                                // 인증번호 확인 버튼 숨기기
+                                if (elements.verifyCodeBtn) {
+                                    elements.verifyCodeBtn.style.display = 'none';
+                                }
+                                
+                                // 인증번호 받기 버튼 숨기기
+                                if (elements.sendCodeBtn) {
+                                    elements.sendCodeBtn.style.display = 'none';
+                                }
+                                
+                                // 인증번호 입력 필드 비활성화
+                                if (elements.registerCode) {
+                                    elements.registerCode.readOnly = true;
+                                    elements.registerCode.classList.add('input-success');
+                                }
+                                
+                                // 회원가입 완료 버튼 추가 또는 표시
+                                const registerCompleteGroup = document.getElementById('registerCompleteGroup');
+                                if (registerCompleteGroup) {
+                                    registerCompleteGroup.style.display = 'block';
+                                } else {
+                                    // 회원가입 완료 버튼이 없는 경우 생성
+                                    const completeBtn = document.createElement('button');
+                                    completeBtn.id = 'registerCompleteBtn';
+                                    completeBtn.className = 'auth-button';
+                                    completeBtn.textContent = '회원가입 완료';
+                                    completeBtn.type = 'submit';
+                                    
+                                    // 폼에 버튼 추가
+                                    if (elements.registerForm) {
+                                        const submitGroup = document.createElement('div');
+                                        submitGroup.id = 'registerCompleteGroup';
+                                        submitGroup.className = 'form-group';
+                                        submitGroup.style.marginTop = '20px';
+                                        submitGroup.appendChild(completeBtn);
+                                        
+                                        elements.registerForm.appendChild(submitGroup);
+                                        console.log('[DEBUG] 회원가입 완료 버튼 생성 및 추가');
+                                    }
+                                }
+                                
+                                // sessionInfo 저장 (인증번호 확인에 필요)
+                                if (data.sessionInfo) {
+                                    localStorage.setItem('verification_session_info', data.sessionInfo);
+                                    console.log('[DEBUG] sessionInfo 저장 완료', data.sessionInfo.substring(0, 10) + '...');
+                                } else {
+                                    // 인증 성공 후에는 sessionInfo가 필요 없으므로 경고만 기록
+                                    console.log('[WARN] 인증 성공 후 sessionInfo 없음 - 정상적인 상황');
+                                }
+                                
+                                // idToken 저장 (인증 확인 시에만 받는 값이므로 여기서는 체크하지 않음)
+                                if (elements.idToken && data.idToken) {
+                                    elements.idToken.value = data.idToken;
+                                    console.log('[DEBUG] idToken 저장 완료', data.idToken.substring(0, 10) + '...');
+                                }
+                                
+                                if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                                if (elements.registerCode) elements.registerCode.readOnly = false;
+                            } else {
+                                // 실패 시 서버에서 받은 정보만 사용
+                                let shouldDisableButton = false;
+                                
+                                // 차단되었거나 남은 시도 횟수가 0이면 버튼 비활성화
+                                shouldDisableButton = (data.remainingAttempts !== undefined && data.remainingAttempts <= 0) || 
+                                                      data.isBlocked === true;
+                                
+                                // 서버에서 받은 남은 시도 횟수 정보 출력
+                                if (data.remainingAttempts !== undefined) {
+                                    console.log('[DEBUG] 서버에서 받은 남은 시도 횟수:', data.remainingAttempts, '차단 여부:', data.isBlocked);
+                                }
+                                
+                                // 실패 메시지 표시 (서버에서 받은 메시지 그대로 사용)
+                                showMessage(data.message);
+                                console.error('[ERROR] 인증번호 확인 실패', data);
+                                
+                                // 버튼 상태 업데이트
+                                if (shouldDisableButton) {
+                                    if (elements.verifyCodeBtn) {
+                                        elements.verifyCodeBtn.disabled = true;
+                                        elements.verifyCodeBtn.textContent = '인증 차단됨';
+                                    }
+                                    if (elements.registerCode) elements.registerCode.readOnly = true;
+                                } else {
+                                    if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                                }
+                            }
+                        } catch (err) {
+                            showMessage('서버 오류: ' + err.message);
+                            console.error('[ERROR] 인증번호 확인 fetch 예외', err);
+                        } finally {
+                            if (elements.verifyCodeBtn && !elements.verifyCodeBtn.disabled) {
+                                elements.verifyCodeBtn.disabled = false;
+                            }
+                        }
+                    })
+                    .catch(function(err) {
+                        showMessage('reCAPTCHA 실행 오류: ' + err.message);
+                        if (elements.verifyCodeBtn) elements.verifyCodeBtn.disabled = false;
+                        console.error('[ERROR] reCAPTCHA 실행 오류', err);
+                    });
+            });
+        });
+    } else {
+        console.error('[ERROR] 인증번호 확인 버튼 요소를 찾을 수 없음');
     }
 }); 

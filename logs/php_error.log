@@ -31,3 +31,676 @@
 [22-May-2025 17:12:17 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
 [22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 위험 점수: 1
 [22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 17:28:31 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4TRodB_RxXDO4Nycqew-pXdibg1kndeMlg_hxWnRil...
+[22-May-2025 17:28:31 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 17:28:31 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 17:28:31 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 17:28:31 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 17:28:31 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 17:28:31 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 17:28:31 Asia/Seoul] Firebase Storage 버킷 접근 시도: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:28:31 Asia/Seoul] Firebase Storage 버킷 접근 성공: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:28:31 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 17:28:31 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 17:28:31 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 17:28:32 Asia/Seoul] Firestore 컬렉션 조회 오류: Client error: `GET https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts?pageSize=100` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 17:28:32 Asia/Seoul] Firestore 문서 생성 오류: Client error: `POST https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 17:28:39 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7kYENl6W9Z3P_GgWQPIUhksAQLaFiar4XdX5PfCqkZ...
+[22-May-2025 17:28:39 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 17:28:39 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 17:28:40 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 17:28:40 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 17:28:40 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 17:28:40 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 17:28:40 Asia/Seoul] Firebase Storage 버킷 접근 시도: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:28:40 Asia/Seoul] Firebase Storage 버킷 접근 성공: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:28:40 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 17:28:40 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 17:28:40 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 17:28:40 Asia/Seoul] Firestore 컬렉션 조회 오류: Client error: `GET https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts?pageSize=100` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 17:28:41 Asia/Seoul] Firestore 문서 생성 오류: Client error: `POST https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 17:35:13 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4tc92Ckr1bkcXRn9cSx3kRErmFKuxNGQeyCIc9jL_J...
+[22-May-2025 17:35:13 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 17:35:13 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 17:35:13 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 17:35:13 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 17:35:13 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 17:35:13 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 17:35:13 Asia/Seoul] Firebase Storage 버킷 접근 시도: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:35:13 Asia/Seoul] Firebase Storage 버킷 접근 성공: topmkt-832f2.firebasestorage.app
+[22-May-2025 17:35:13 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 17:35:13 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 17:35:13 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 17:35:14 Asia/Seoul] Firestore 컬렉션 조회 오류: Client error: `GET https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts?pageSize=100` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 17:35:14 Asia/Seoul] Firestore 문서 생성 오류: Client error: `POST https://firestore.googleapis.com/v1/projects/topmkt-832f2-default-rtdb/databases/(default)/documents/auth_attempts` resulted in a `403 Forbidden` response:
+{
+  "error": {
+    "code": 403,
+    "message": "Permission denied on resource project topmkt-832f2-default-rtdb.",
+    " (truncated...)
+
+[22-May-2025 18:00:49 Asia/Seoul] 개발 환경: reCAPTCHA 검증을 생략합니다.
+[22-May-2025 18:00:49 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7bSAs_7AtNcIVUeh5P1UpN8dl01eKilYoVvSEWeO67...
+[22-May-2025 18:00:49 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 18:00:49 Asia/Seoul] reCAPTCHA 검증 생략 (개발 환경 또는 클라이언트 초기화 실패)
+[22-May-2025 18:03:24 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5Y2cnnd_sk5m53qTEH3rYHUf3XWHhp-JySzWp-K0UX...
+[22-May-2025 18:03:24 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 18:03:24 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 18:03:24 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 18:03:24 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 18:03:24 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 18:03:24 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 18:51:51 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4KK0dqLq1rJxOGJLzWQ1lbzJWu3f-0GDYUwtGKZho9...
+[22-May-2025 18:51:51 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 18:51:51 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 18:51:51 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 18:51:51 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 18:51:51 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 18:51:51 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 18:55:30 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4TAzQYoLiA1WARqK9-0Ds1nEyd2hZfjL5R4cdVKR-R...
+[22-May-2025 18:55:30 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 18:55:30 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 18:55:30 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 18:55:30 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 18:55:30 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 18:55:30 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 18:55:30 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 18:55:30 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 18:55:30 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 18:55:30 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 18:55:30 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 18:55:30 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 18:55:31 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4TAzQYoLiA1W..."}
+[22-May-2025 18:55:31 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 18:55:31 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Iu_R0F7L7u2t81lGevZBP1ACKJtCZ6lBlYmjDnfxjy6hjpo-dcE36TRyGgyF6D_Fbs-Juce5tnz5OP3LK_3nJPjE5MPjlKL87TUb_orJTty1DDqijPMhUhI6OE4WPmrXWcMlzaHPi-LTqxB5Sd0aKVj6pdX4A"
+}
+
+[22-May-2025 19:04:17 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5ZAzgaIF8i-ZTsZfZeSlPUMRLwdicuAfD6OTSiq7d5...
+[22-May-2025 19:04:17 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:04:17 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:04:18 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:04:18 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:04:18 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:04:18 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:04:18 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:04:18 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:04:18 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:04:18 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:04:18 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:04:18 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:04:18 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA5ZAzgaIF8i-Z..."}
+[22-May-2025 19:04:19 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:04:19 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvaFuUAKajZWv2SMzV5RqWI-FdKO4kR33ixT3itoXC_ZPJHUL4kCOQ984sy2iPoJEActTNpmn3dsqsE3qEaHaMGvKfuOj4xRckdQDlnJ21nzzJtCbGtiLlLZL32c8miacKzNRHJzIWdqJBJyoWUnIvQQedllQ"
+}
+
+[22-May-2025 19:07:32 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4uo1yOn9qdlaAP2EaKbg6DdCWw1WOiEz5ciXfk9y_f...
+[22-May-2025 19:07:32 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:07:32 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:07:33 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:07:33 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:07:33 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:07:33 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:07:33 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:07:33 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:07:33 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:07:33 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:07:33 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:07:33 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:07:33 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4uo1yOn9qdla..."}
+[22-May-2025 19:07:34 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:07:34 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5ItfQ9ROKGLE5fYTARFihX9n_i_QUhAnD-LKIQAxauezRlTDwTuB4Bs-c94_ZJVoxeKXKnTfL10H8BrPvrDM7FaQ1G1fnZzaAAxpbwM_RyDgBZrpB8aXJXXJ9dlQBVoPojFxAty_o59HZjQF5KBfsMFrX0e1bw"
+}
+
+[22-May-2025 19:17:41 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:17:41 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4SDT3cD4kPPCQamb2NmaWwyQgtSP44p82bmDRpxAEa...
+[22-May-2025 19:17:41 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:17:41 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:17:42 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:17:42 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:17:42 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:17:42 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:17:42 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:17:42 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:17:42 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:17:42 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:17:42 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:17:42 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:17:42 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4SDT3cD4kPPC..."}
+[22-May-2025 19:17:43 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:17:43 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Iup5NWPVlfwqU1lD8r6hbWUaYWIfMQNDKzYJwuJ1WlpK6F7ZiVfUsuAEQxLyedL8YSQgQ3olIPcE5NMgDWdDt2MXbNpJ1pOLI0SU3Rl22HkKmOa2yCOE7ZOeSW_wDuU3FN6vu5-MUN_QrND2E1eVb7hFXOenw"
+}
+
+[22-May-2025 19:20:05 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:20:05 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6IrcmMjvEj0N8TmnIk1FaXnW5HVmtmOr-TpUmdY6xc...
+[22-May-2025 19:20:05 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:20:05 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:20:05 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:20:05 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:20:05 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:20:05 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:20:05 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:20:05 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:20:05 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:20:06 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:20:06 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:20:06 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:20:06 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6IrcmMjvEj0N..."}
+[22-May-2025 19:20:06 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:20:06 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvpG4CnQI--YHorwE9p4el8Ffp3XcxM_p60XXi5KqGzPYqy3N1pl_lcvYKLTepdcmTCu1ltoF9KlQq3yWfZLXOiWdagEstxShPi1aJx69ZEga9a6D0i1Jui6d5UD5Ywxfpg-WT5NZofOqhsiGRfVQ7ACEZ0wA"
+}
+
+[22-May-2025 19:21:39 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:21:39 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6Edc6miq6bYXx37j5V5LWMPa9t1P_IDYMaqBKKToF7...
+[22-May-2025 19:21:39 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:21:39 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:21:40 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:21:40 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:21:40 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:21:40 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:21:40 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:21:40 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:21:40 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:21:40 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:21:40 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:21:40 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:21:40 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6Edc6miq6bYX..."}
+[22-May-2025 19:21:40 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:21:40 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvOu0snHJJzSZrLxArHTtmZSdVwKvqHw-qwoaLaMNg3amortxDuky0c8c8u_d0SAs7mKNEtBjOEYPBPMIqmiYWAm3FnHokVUMbMpltxr7dTfpIxcTQAxH0XsnxSVlLWA6ueq8SosbMKddgaxizyg-2nIPnhxw"
+}
+
+[22-May-2025 19:22:44 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:22:44 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6bsQKD-0wFTsIH5wVRL18huyMeOH92cN63d9vRSYqW...
+[22-May-2025 19:22:44 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:22:44 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:22:44 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:22:44 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:22:44 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:22:44 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:22:44 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:22:44 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:22:44 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:22:44 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:22:44 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:22:44 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:22:44 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6bsQKD-0wFTs..."}
+[22-May-2025 19:22:45 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:22:45 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvmkTFZsNPSk7i99LQPavKpqvUeF_7rYyHQcKa4UprD9O_qn_QwyZD_nl7vcPapPZfDN1s_SAHS3w8v2zUmNdMkO60ZXeggwPYIPe21ozqgxjhpKqbASRORSUQxBJogQFC0p33dUQZyups1ySeU_jyW-cjRvQ"
+}
+
+[22-May-2025 19:23:27 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:23:27 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4G314oI7C51V0nds3I6qXQfR7r6DzHhK1yBlGKHHjB...
+[22-May-2025 19:23:27 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:23:27 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:23:28 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:23:28 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:23:28 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:23:28 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:23:28 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:23:28 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:23:28 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:23:28 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:23:28 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:23:28 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:23:28 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4G314oI7C51V..."}
+[22-May-2025 19:23:29 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:23:29 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IsyQyKagKgynkvJzD6dWOMnAKkXHsvx0-wVNuzQnbLUi9r3hngWFUzKez1QbMNQI_5qjNvrEdzjZdkaZDzt_Tl94Q0KWU6R2-OQAD8i9FB7f26hD9BQUhjmOdvYFDyVt3d-HDuPD_BcEEUPhRgAkBuF0G_k5A"
+}
+
+[22-May-2025 19:25:36 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:25:36 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5FChqoTGgl9MbTJpQyTp0gFK9eg4p4FfeTp5q4PJWi...
+[22-May-2025 19:25:36 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:25:36 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:25:36 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:25:36 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:25:36 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:25:36 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:25:36 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:25:36 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:25:36 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:25:36 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:25:36 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:25:36 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:25:37 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA5FChqoTGgl9M..."}
+[22-May-2025 19:25:37 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:25:37 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5It4EjfRQfXOeKmXKxNnvdMzWPCcutlfnchshSMguCFH7zynIIYydEboTBdPLey_oxLrfs3mDwRCmysoRm8k_Nl1I0AkS06zoftgb1mHWq60TxRTVx6-Vn4NvaOmsCrxeLweq2qgh-THEhl3UyuuFdBH-j-ZLg"
+}
+
+[22-May-2025 19:25:59 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:25:59 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5Zy6j0qugMEYAo9-JVeKZbmlAaiZIDDAY37dtPD_qx...
+[22-May-2025 19:25:59 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:25:59 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:25:59 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:25:59 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:25:59 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:25:59 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:25:59 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:25:59 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:25:59 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:26:00 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:26:00 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:26:00 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:26:00 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA5Zy6j0qugMEY..."}
+[22-May-2025 19:26:00 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:26:00 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvQ6T1LJ37oX6XFiHTe4zo5TWjg-HY7i0syArzTDS8gjoYOwU-yV5oNx57cC6kT3Jy_fsE-LmlS_tWOVV9U15pzaRp9rlWfBuVNxJSdD_cZ_tScHQI2HDJmBroQinQQIq-As8EVIJHjZ6FGCkcH4LAYjB1hvw"
+}
+
+[22-May-2025 19:26:47 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:26:47 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4PB-7eTawmDzX4AZH-fSU-1JJ2BmjAl2k9yTWvpoIc...
+[22-May-2025 19:26:47 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:26:47 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:26:48 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:26:48 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:26:48 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:26:48 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:26:48 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:26:48 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:26:48 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:26:48 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:26:48 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:26:48 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:26:48 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4PB-7eTawmDz..."}
+[22-May-2025 19:26:48 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:26:48 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvtkJKX9N0nhJlfDjvE9UYhnbkr4V0kfV3Q0iF_q_02NODfQOFMB4JcFds6wVGlq76u3wuQpwAlfVtgNcOZPGgzCznazyGl6KI2NNvBtNWh2P4FLOqzjZca9jSe-Db-Eg9CxVrvUiqshyhDWqAR4Nkr1T7t1g"
+}
+
+[22-May-2025 19:29:59 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:29:59 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6jt8Y4e9Sgd_iWU2gchs8lTEuqMo-5UCsih3s0pmQD...
+[22-May-2025 19:29:59 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:29:59 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:30:00 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:30:00 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:30:00 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:30:00 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:30:00 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:30:00 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:30:00 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:30:00 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:30:00 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:30:00 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:30:00 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6jt8Y4e9Sgd_..."}
+[22-May-2025 19:30:01 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:30:01 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Ite3d8KGE3KFNRlA2k4QHkCyxk8o7MQT-eXDKZ2QeKT_Wt4TXO0Qn7wnUWxfRGb-odNxCDFlptOOj0U5o-LnXswxK1pAY9N10LO7dXm3vy7BCR0ZuzGQHlKw6w2bOnTlxQM5180H64t1ptf5OCDBOaW-cc06Q"
+}
+
+[22-May-2025 19:32:22 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:32:22 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4m4evnfG6T0Rvd28VAJDUdPfO-8NAiwY-PbHZbgMaE...
+[22-May-2025 19:32:22 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:32:22 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:32:22 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:32:22 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:32:22 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:32:22 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:32:23 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:32:23 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:32:23 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:32:23 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:32:23 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:32:23 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:32:23 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4m4evnfG6T0R..."}
+[22-May-2025 19:32:23 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:32:23 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IuZamnRf6aJ7AU2Rvj1jWYYPUjWHO2rMi0L2zxBYb_x4sGQrc6RJx-2Qpc-ywFrD9dr-G8L6BcFUdIBaja94zkYG-1U8xGVmLnFtTSIGghAWvL_BzkCRrWXZqx7eLMp1MDrbAqOVHzQVXc3c2XfwEPbb55RuA"
+}
+
+[22-May-2025 19:40:05 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:40:05 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4HahcuWuN17Mal_rkM7hPoEW4ly4xfR4aDE-dFTprF...
+[22-May-2025 19:40:05 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:40:05 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:40:05 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:40:05 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:40:05 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:40:05 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:40:05 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:40:05 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:40:05 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:40:06 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:40:06 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:40:06 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:40:06 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4HahcuWuN17M..."}
+[22-May-2025 19:40:06 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:40:06 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvrTceOwigbuCu1CUb7-NTA4Xm9lYTobfMCItV_-dSO0Uoewt3e-cf-RejgtflB8MYjKDRcNemq0770VE9UFd4FOa7ZjdRNiaZwglD30avK1o3_icpeuQ_-1Th3QHhqsUewiNDmko0_GfB9QepUNcvqWtNkZw"
+}
+
+[22-May-2025 19:42:33 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:42:33 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6QecvBWv0fTBo5sGS5b1cEcSz1id4J8i59i0XHafjT...
+[22-May-2025 19:42:33 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:42:33 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:42:33 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:42:33 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:42:33 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:42:33 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:42:33 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:42:33 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:42:33 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:42:34 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:42:34 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:42:34 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:42:34 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6QecvBWv0fTB..."}
+[22-May-2025 19:42:34 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:42:34 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvLA3GqjxLmE-Lsvz6tzDwlJpCzDsWtBX4l77hqC63Ye8RTAqCz9i4htP5wyo5S6q23FLPU50W9vhEal1zVXaQIkNF7ugpoekoLFhhvmC_4dn_laOhghsKMwGTl3fpWo7au3YboRTJv26NHOmSFp-rGLRBmaw"
+}
+
+[22-May-2025 19:52:00 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:52:00 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6qDFjm-qjCDFD-xTo_Fqv9Or1G9cFuF3CRgnJd4NH0...
+[22-May-2025 19:52:00 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:52:00 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:52:00 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:52:00 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:52:00 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:52:00 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:52:00 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:52:00 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:52:00 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:52:01 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:52:01 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:52:01 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:52:01 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6qDFjm-qjCDF..."}
+[22-May-2025 19:52:01 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:52:01 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5It2TPLp0IXP7HsnkgyT4tBb0166g4OTjHKM3kNbS9KJcRVzvABNVSqWI_fKf8C_nU35Hf39CM8OQxxWK8gzLtP5Qz12O0B1tNBzqH31fu2NIbIFu8yAsFOA4hvo6L7G06zPu52838kyeF6ucV15iFWdCaSS7Q"
+}
+
+[22-May-2025 19:53:04 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:53:04 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4r6A8fcwaxzrKAUCs8f7FCtNb-3DsTNTSRguW2Ge0H...
+[22-May-2025 19:53:04 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:53:04 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:53:04 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:53:04 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:53:04 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:53:04 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:53:04 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:53:04 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:53:04 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:53:05 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:53:05 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:53:05 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:53:05 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4r6A8fcwaxzr..."}
+[22-May-2025 19:53:05 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:53:05 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Ivi3Mssn50NDX4kR1LWBX8dISK2u-qxFLzMCjf-yTFCc63gjU4MHPHFG_BWZjSISnmtWuP-tITHHIm-1Oitvvzap1Eaeeom1iTUpIqmYgvn--qchG7qFGw_QxZcFw8DXpwj7EhNcdh7oyKpTKtlrAt8v-brSA"
+}
+
+[22-May-2025 19:54:59 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 19:54:59 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7HpjJ8P4vpsgV9EeztrmfgLTXN8Uqm1aHFktKcyd-T...
+[22-May-2025 19:54:59 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 19:54:59 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 19:54:59 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 19:54:59 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 19:54:59 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 19:54:59 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 19:54:59 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:54:59 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 19:54:59 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 19:54:59 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 19:54:59 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 19:54:59 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 19:54:59 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA7HpjJ8P4vpsg..."}
+[22-May-2025 19:55:00 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 19:55:00 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Ivt3TBaoU-yNTfMFMjMCKTGh_VAfUkUeTcnFdhN1If-QKqNHsC2iYH_zlkKPnTL_YZ5RKl3r-ctwu1VHMq2TJVOgcO7iZphzNTfRgpfNTQmppHnPOdVVWaoex67LPBG81HwDuGIqHEDk8Grl-9bSOScDgXrjw"
+}
+
+[22-May-2025 20:00:42 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:00:42 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA60xvdpJe3ipkSqob4gRsIwQfRYVm4xyAS7pCw2DWAd...
+[22-May-2025 20:00:42 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:00:42 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:00:42 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:00:42 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:00:42 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:00:42 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:00:42 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:00:42 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:00:42 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:00:42 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:00:42 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:00:42 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:00:42 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA60xvdpJe3ipk..."}
+[22-May-2025 20:00:43 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:00:43 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IuoWz4lTYUVGjEQFD9OVLsN4yfrLFL3Jsauv-zXFzN4OX0winmU8bFXkRmEAPA_-QSbDhb0VpiubAklaIilqauaVCJSPApK9YIqcClYRZuCia8OZknsXn_eAsn7wJEcPfxuxjovaoMm29MmKT_YypKgOwYxMg"
+}
+
+[22-May-2025 20:02:57 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:02:57 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6HJ_N0Kyly6MLvqxeH_HgGpmYRgx3031pG_9KA2HDp...
+[22-May-2025 20:02:57 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:02:57 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:02:58 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:02:58 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:02:58 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:02:58 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:02:58 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:02:58 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:02:58 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:02:58 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:02:58 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:02:58 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:02:58 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6HJ_N0Kyly6M..."}
+[22-May-2025 20:02:58 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:02:58 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Iu1p9E4GEYAUJMEQfo-mse7mEahfPBFNVKpm8iY8y7pLbFaVur1tbez4i8PDNKi5R6CGkSwL4DHbl72m1CiyG2ZupJGwnXsmnCzs-wtcabRc6oJduKk6G5PmyK4sMB75mHvud-4oRlIyutxZs2fGXyQApmDOQ"
+}
+
+[22-May-2025 20:05:24 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:05:24 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA768QzVIe0VNKunLnn1Ck9GcBJqyC6_7hJMsqnxIjGM...
+[22-May-2025 20:05:24 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:05:24 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:05:24 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:05:24 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:05:24 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:05:24 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:05:24 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:05:24 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:05:24 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:05:24 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:05:24 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:05:24 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:05:24 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA768QzVIe0VNK..."}
+[22-May-2025 20:05:25 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:05:25 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IsVCAZyydOkOjWVejC_J1dmAfdPXAO8BcVx1LAonZbYcNLjuLRt4JqwfbUgo5j1fq_SA8mvXwHTVDQe2AAD5z8eI8IWhYiv-PfOzaBMJyNHNhB6DI0I0O7AgcheCLrCetber7Y3AouCDFQ7YXR6YJQKxtVMqw"
+}
+
+[22-May-2025 20:06:39 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:06:39 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5LKKDSKa-tIMP3iuuVhYBg7oYgcfztJj5443Arj5Kz...
+[22-May-2025 20:06:39 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:06:39 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:06:39 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:06:39 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:06:39 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:06:39 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:06:39 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:06:39 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:06:39 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:06:39 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:06:39 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:06:39 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:06:40 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA5LKKDSKa-tIM..."}
+[22-May-2025 20:06:40 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:06:40 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5It91ab-gErtjFeTvUlWgoD6kLL_fl-9MdIzEwFFxLfXwIKVaNG4crDataax-vx10JB45AUaEwACwdPutBXwrbs_NxxwUlCtDidR2tDzX6iN2tPcbRCcleCd-eOM9BwCG7No70-td5vXNedm70aHkYgf8qY3Sg"
+}
+
+[22-May-2025 20:15:16 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:15:16 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA5QLOoELWye-qQcDQfk38mwtYt4Yx-F45UHlyEn1scF...
+[22-May-2025 20:15:16 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:15:16 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:15:16 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:15:16 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:15:16 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:15:16 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:15:16 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:15:16 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:15:16 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:15:17 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:15:17 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:15:17 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:15:17 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA5QLOoELWye-q..."}
+[22-May-2025 20:15:17 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:15:17 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IssA2NISdYWo7fwE3UTISIbeoW8yVHBtpCMsrckSTzbpASPANum43S4rDTcDwmeVgUJ14xWxz2HXXcik-W3gpctmY7ccasCqg2ePubXmRKvcXs92t2oUeSAwD1S5Mwj8Cp9W01FXRLzlHDQYzzhk6QC0pH3cg"
+}
+
+[22-May-2025 20:20:12 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:20:12 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4zjFAf-eeNqIOpADtIG3NXHG6togVweSNkFgtPaksJ...
+[22-May-2025 20:20:12 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:20:12 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:20:12 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:20:12 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:20:12 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:20:12 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:20:12 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:20:12 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:20:12 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:20:12 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:20:12 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:20:12 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:20:12 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA4zjFAf-eeNqI..."}
+[22-May-2025 20:20:13 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:20:13 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Ivu8HEElsGVaYg1UqRbccMLGujJZ-BWK6s95bEYBz6Wk-45C07v77sqpJJpeEQd3aQZ6heR3owCc4xPGho-htB0n0_Zl1yDPJpUmi9RitxVQAB350Fnr0gw2QhhSr1UrIgADUQxtR7ziHWSBIUhIO4B4_LfwA"
+}
+
+[22-May-2025 20:26:04 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:26:04 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6d45CPVRPL6ntfA-atS86fJjYUdtEgkM-cVFgqdPdY...
+[22-May-2025 20:26:04 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:26:04 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:26:04 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:26:04 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:26:04 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:26:04 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:26:04 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:26:04 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:26:04 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:26:05 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:26:05 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:26:05 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:26:05 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA6d45CPVRPL6n..."}
+[22-May-2025 20:26:05 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:26:05 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5ItcgTkEgCc8BmjQjCcQ7SSNwJesubNDfB642qH4kk2q7B6bc4tb-treEMcHsG8aMga08PVCpccZ9TUBJqObhbQi-Xyqv2gl-BqtOBxs_CcE7hTf1HUKIV1eeNCtwc4CXchs3DsGfuWIPtcETGKXOC9V7wf9gw"
+}
+
+[22-May-2025 20:31:12 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:31:12 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7QuZgpMA5hPZjLKHdQqkX5SYsT9cbTKx0gqoWf97zf...
+[22-May-2025 20:31:12 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:31:12 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:31:13 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:31:13 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:31:13 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:31:13 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:31:13 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:31:13 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:31:13 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:31:13 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:31:13 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:31:13 Asia/Seoul] 정규화된 전화번호: +8201012341234
+[22-May-2025 20:31:13 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201012341234","recaptchaToken":"03AFcWeA7QuZgpMA5hPZ..."}
+[22-May-2025 20:31:14 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:31:14 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IulN4pBevAOGEE0WnuLDLMU-XPB9qYug4o-k-KJtNs5-Aaja0bjMqnrffB0poWp7--gXHX3qkCZAj_Nhzi2mSvctieCnp1vS3CekCe1IzvftBZ8g-AH9kkDS3-CSRfv9FD0bkc044bT5d_aHFLeQGDeK0IDMg"
+}
+
+[22-May-2025 20:35:33 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:35:33 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7iT_mpvZ9Gq7Dvldfs9coeHURGGG6ENKvvpFK2Zm-a...
+[22-May-2025 20:35:33 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:35:33 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:35:33 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:35:33 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:35:33 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:35:33 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:35:33 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:35:33 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:35:33 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:35:34 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:35:34 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:35:34 Asia/Seoul] 정규화된 전화번호: +8201011111111
+[22-May-2025 20:35:34 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201011111111","recaptchaToken":"03AFcWeA7iT_mpvZ9Gq7..."}
+[22-May-2025 20:35:34 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:35:34 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IvBQq0AEyY58f_-Z6KVWJ-KJ-ulw5jsrBWQm43t17T6Z8ciNO9drfBrv9rFL5fDRGF0IcEE82VuU1ngSVIi7YjkrGdqoWyO8cg6sQFus3dyLzNsw3d_nkIAPqyLVoZ3e644EKHCIgjD6faMAGIWIuicxak6MQ"
+}
+
+[22-May-2025 20:38:20 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:38:20 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6v6CxODwX4Ap7Vkbl8paCZbFoTta9SidmiWPsxu-bH...
+[22-May-2025 20:38:20 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:38:20 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:38:20 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:38:20 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:38:20 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:38:20 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:38:20 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:38:20 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:38:20 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:38:21 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:38:21 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:38:21 Asia/Seoul] 정규화된 전화번호: +8201011111111
+[22-May-2025 20:38:21 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201011111111","recaptchaToken":"03AFcWeA6v6CxODwX4Ap..."}
+[22-May-2025 20:38:21 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:38:21 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5Iu0gdu4P0wvIs4GyMAo2SettvaWdjqaebtN-NX56dGBzDLkc1EOeiy9A2ipiRmzsBtf8Uo8T1AWx4D7kFPSRahkB2tb5NxdjaHjbArU9qf-kf4uD8FYM-1pvNd7vkKBEMWWoW2N4hPEn_SkzCAOfTe2oVtBXQ"
+}
+
+[22-May-2025 20:42:24 Asia/Seoul] RecaptchaService 초기화 성공: 프로젝트 ID - topmkt-832f2
+[22-May-2025 20:42:24 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4IpXdx7zf5EsAsWHEBQHiWmdDoMkfTKcB0r95GtkUm...
+[22-May-2025 20:42:24 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 20:42:24 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 20:42:25 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 20:42:25 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 20:42:25 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 20:42:25 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 20:42:25 Asia/Seoul] Firebase Storage 버킷 접근 시도: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:42:25 Asia/Seoul] Firebase Storage 버킷 접근 성공: gs://topmkt-832f2.appspot.com
+[22-May-2025 20:42:25 Asia/Seoul] Firebase Storage 초기화 성공 - 기본정책: 이미지, 영상, 첨부파일 등 대용량 파일은 Firebase Storage에 저장
+[22-May-2025 20:42:25 Asia/Seoul] Firebase Firestore REST API 초기화 성공 - 기본정책: 채팅 메시지, 알림, 상태 변경 등 실시간 동기화가 필요한 데이터는 Firestore에 저장
+[22-May-2025 20:42:25 Asia/Seoul] Firebase Auth 초기화 성공
+[22-May-2025 20:42:25 Asia/Seoul] 정규화된 전화번호: +8201011111111
+[22-May-2025 20:42:25 Asia/Seoul] 인증번호 전송 API 요청: {"phoneNumber":"+8201011111111","recaptchaToken":"03AFcWeA4IpXdx7zf5Es..."}
+[22-May-2025 20:42:26 Asia/Seoul] 인증번호 전송 API 응답 상태 코드: 200
+[22-May-2025 20:42:26 Asia/Seoul] 인증번호 전송 API 응답 내용: {
+  "sessionInfo": "AD8T5IufD_VMxXVGffrDSCDaF-Gh2qCeolipekx0CduR2b6MrnFeqr1A8U47VVqQ34nqHlVIs8ok0qR_N_T7LBevRD7sn5yIqtpkokEaeqvalGRGm5SlvO78duu06Zg8X7_1xeFGs77AlyhRai01fhwX6rE144yo3g"
+}
+
