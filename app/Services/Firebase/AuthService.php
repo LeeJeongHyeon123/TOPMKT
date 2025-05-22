@@ -282,13 +282,13 @@ class AuthService
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json'
-                ],
-                'verify' => false // SSL 인증서 검증 비활성화
+                ]
             ]);
             
             $result = json_decode($response->getBody()->getContents(), true);
             
             if (isset($result['error'])) {
+                error_log('Firebase 인증번호 전송 오류: ' . json_encode($result['error']));
                 throw new \Exception($result['error']['message']);
             }
             

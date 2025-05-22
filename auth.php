@@ -11,15 +11,15 @@ ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 // Firebase 설정 파일 포함
 require_once __DIR__ . '/config/firebase/config.php';
 
-// 세션 시작
-session_start();
-
 // 함수 포함 (다국어 함수 등)
 include_once __DIR__ . '/includes/functions.php';
 
 // 다국어 메시지 로드
 $currentLang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko';
 $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
+
+// 헤더 포함 (헤더에서 session_start()가 호출됨)
+include_once __DIR__ . '/includes/header.php';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -145,6 +145,65 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
     }
 
     /* 인증번호 입력 필드 스타일 */
+    .nickname-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+    .nickname-input-group input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .check-button {
+        padding: 12px 20px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        color: #495057;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .check-button:hover {
+        background-color: #e9ecef;
+    }
+
+    .feedback-message {
+        font-size: 13px;
+        margin-top: 5px;
+        min-height: 20px;
+    }
+
+    .feedback-message.success {
+        color: #28a745;
+    }
+
+    .feedback-message.error {
+        color: #dc3545;
+    }
+    
+    /* 닉네임 입력 필드 스타일 */
+    .input-error {
+        border-color: #dc3545 !important;
+    }
+    
+    .input-success {
+        border-color: #28a745 !important;
+    }
+    
+    /* 읽기 전용 필드 스타일 */
+    input[readonly] {
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
     </style>
 </head>
 <body>
@@ -154,16 +213,10 @@ $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
     <div class="loading-text">로딩 중...</div>
 </div>
 
-<?php
-// 헤더 포함
-include_once __DIR__ . '/includes/header.php';
-?>
-
 <main class="auth-container">
     <div class="auth-form-container">
-        <div class="auth-header">
-            <h1><?= __('auth.login.title') ?></h1>
-            <p><?= __('auth.login.subtitle') ?></p>
+        <div class="auth-logo">
+            <img src="/public/assets/images/logo.svg" alt="탑마케팅 로고" />
         </div>
         <div class="auth-tabs">
             <button id="loginTab" class="auth-tab active">로그인</button>
@@ -172,6 +225,9 @@ include_once __DIR__ . '/includes/header.php';
         <div class="auth-tab-content">
             <!-- 에러 메시지 표시 영역 -->
             <div id="errorMessage" class="error-message"></div>
+            
+            <!-- 탭 제목 -->
+            <h2 id="authSubtitle" class="auth-subtitle">휴대폰 번호로 간편하게 로그인하세요</h2>
             
             <!-- 로그인 폼 -->
             <form class="auth-form" id="loginForm">
@@ -202,6 +258,14 @@ include_once __DIR__ . '/includes/header.php';
             <!-- 회원가입 폼 -->
             <form class="auth-form" id="registerForm" style="display:none;">
                 <div class="form-group">
+                    <label for="nickname">닉네임</label>
+                    <div class="nickname-input-group">
+                        <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" required>
+                        <button type="button" class="check-button" id="checkNicknameBtn">중복확인</button>
+                    </div>
+                    <div class="feedback-message" id="nicknameFeedback"></div>
+                </div>
+                <div class="form-group phone-section" id="phoneSection" style="display:none;">
                     <label for="registerPhone">휴대폰 번호</label>
                     <div class="phone-input-group">
                         <div class="country-select" id="registerCountrySelect">
@@ -222,15 +286,15 @@ include_once __DIR__ . '/includes/header.php';
                     <label for="registerCode">인증번호</label>
                     <input type="text" id="registerCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
                 </div>
-                <div class="form-group">
-                    <label for="registerNickname">닉네임</label>
-                    <input type="text" id="registerNickname" name="nickname" placeholder="닉네임을 입력하세요" required>
+                <div class="form-group code-button-section" id="codeButtonSection" style="display:none;">
+                    <button type="button" class="auth-button" id="sendCodeBtn" disabled>
+                        인증번호 받기
+                    </button>
                 </div>
-                <button type="button" class="auth-button" id="registerSendCodeBtn">인증번호 받기</button>
                 <button type="submit" class="auth-button" id="registerSubmitBtn" style="opacity:0;transition:none;display:none;">회원가입</button>
             </form>
         </div>
-        <div class="auth-policy">
+        <div class="auth-policy" id="authPolicy" style="display:none;">
             <ul>
                 <li>인증번호를 1시간 내 5회 이상 잘못 입력하실 경우, 24시간 동안 인증이 제한됩니다.</li>
             </ul>

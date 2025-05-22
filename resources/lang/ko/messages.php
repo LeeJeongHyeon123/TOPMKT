@@ -78,12 +78,30 @@ return [
             'nickname_placeholder' => '닉네임을 입력하세요',
             'register_button' => '회원가입',
             'has_account' => '이미 계정이 있으신가요?',
-            'login' => '로그인'
+            'login' => '로그인',
+            'success' => '회원가입이 완료되었습니다.',
+            'phone_exists' => '이미 가입된 전화번호입니다. 로그인을 시도해주세요.',
+            'nickname_exists' => '이미 사용 중인 닉네임입니다.',
+            'invalid_phone' => '올바른 전화번호 형식이 아닙니다.',
+            'invalid_nickname' => '닉네임은 2~20자의 한글, 영문, 숫자만 사용 가능합니다.',
+            'required' => '필수 항목이 누락되었습니다: :field',
+            'recaptcha_fail' => '보안 검증에 실패했습니다.',
+            'server_error' => '서버 오류가 발생했습니다.',
+            'invalid_code' => '인증번호가 올바르지 않습니다.',
+            'code_limit' => '인증번호를 1시간 내 5회 이상 잘못 입력하실 경우, 24시간 동안 인증이 제한됩니다.',
+            'send_code_success' => '인증번호가 발송되었습니다.',
+            'verify_success' => '인증이 완료되었습니다.',
+            'verify_fail' => '인증에 실패했습니다. 인증번호를 확인해주세요.',
         ],
         'errors' => [
             'verification_failed' => '인증번호 확인에 실패했습니다.',
             'send_failed' => '인증번호 전송에 실패했습니다.',
             'recaptcha_failed' => 'reCAPTCHA 검증에 실패했습니다.'
         ]
-    ]
+    ],
+    'login' => [
+        'success' => '로그인에 성공했습니다.',
+        'fail' => '로그인에 실패했습니다.',
+    ],
+    // 기타 메시지 카테고리 추가 가능
 ]; 

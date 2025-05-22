@@ -1,0 +1,22 @@
+2025-05-22 14:28:03 - 닉네임 중복 체크 요청 시작
+2025-05-22 14:28:03 - Exception: Class 'Database' not found
+2025-05-22 14:29:24 - 닉네임 중복 체크 요청 시작
+2025-05-22 14:29:24 - PHP Error: [2] Use of undefined constant DB_HOST - assumed 'DB_HOST' (this will throw an Error in a future version of PHP) in /var/www/html/topmkt/includes/Database.php on line 12
+2025-05-22 14:33:28 - 닉네임 중복 체크 요청 시작
+2025-05-22 14:33:28 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 14:39:51 - 닉네임 중복 체크 요청 시작
+2025-05-22 14:39:51 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 14:41:42 - 닉네임 중복 체크 요청 시작
+2025-05-22 14:41:42 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 15:27:41 - 닉네임 중복 체크 요청 시작
+2025-05-22 15:27:41 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 15:32:09 - 닉네임 중복 체크 요청 시작
+2025-05-22 15:32:09 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 15:36:23 - 닉네임 중복 체크 요청 시작
+2025-05-22 15:36:23 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 15:37:19 - 닉네임 중복 체크 요청 시작
+2025-05-22 15:37:19 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 15:51:02 - 닉네임 중복 체크 요청 시작
+2025-05-22 15:51:02 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}
+2025-05-22 16:05:33 - 닉네임 중복 체크 요청 시작
+2025-05-22 16:05:33 - 닉네임 중복 체크 결과 - Data: {"nickname":"우리집탄이","exists":false}

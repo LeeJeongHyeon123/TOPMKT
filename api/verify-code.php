@@ -23,11 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // 에러 핸들러 설정
 function errorHandler($errno, $errstr, $errfile, $errline) {
     $error = [
-        'error' => '시스템 오류가 발생했습니다.',
-        'debug' => [
-            'message' => $errstr,
-            'file' => $errfile,
-            'line' => $errline
+        'success' => false,
+        'message' => '시스템 오류가 발생했습니다.',
+        'error' => [
+            'code' => 'INTERNAL_ERROR',
+            'details' => '서버 내부 오류가 발생했습니다.'
         ]
     ];
     
@@ -38,11 +38,33 @@ function errorHandler($errno, $errstr, $errfile, $errline) {
     header('Content-Type: application/json; charset=utf-8');
     http_response_code(500);
     echo json_encode($error, JSON_UNESCAPED_UNICODE);
-    exit;
+    exit();
+}
+
+// 예외 핸들러 설정
+function exceptionHandler($exception) {
+    $error = [
+        'success' => false,
+        'message' => '시스템 오류가 발생했습니다.',
+        'error' => [
+            'code' => 'INTERNAL_ERROR',
+            'details' => '서버 내부 오류가 발생했습니다.'
+        ]
+    ];
+    
+    // 버퍼 클리어
+    ob_clean();
+    
+    // JSON 응답 헤더 설정
+    header('Content-Type: application/json; charset=utf-8');
+    http_response_code(500);
+    echo json_encode($error, JSON_UNESCAPED_UNICODE);
+    exit();
 }
 
 // 에러 핸들러 등록
 set_error_handler('errorHandler');
+set_exception_handler('exceptionHandler');
 
 // 에러 리포팅 설정
 error_reporting(E_ALL);

@@ -1,0 +1,29 @@
+/* Noto Sans KR */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 400;
+    font-style: normal;
+    src: url('NotoSansKR-Regular.woff2') format('woff2');
+}
+
+/* 추가 폰트 가중치가 필요할 경우 아래에 추가할 수 있습니다 */
+/* 
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 500;
+    font-style: normal;
+    src: url('NotoSansKR-Medium.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-weight: 700;
+    font-style: normal;
+    src: url('NotoSansKR-Bold.woff2') format('woff2');
+}
+*/
+
+/* 기본 폰트 설정 */
+body {
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+} 

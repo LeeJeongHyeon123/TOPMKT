@@ -5,21 +5,37 @@
 class Database {
     private static $instance = null;
     private $conn;
+    private $db_host;
+    private $db_name;
+    private $db_user;
+    private $db_pass;
+    private $db_charset;
     
     private function __construct() {
+        // config/database.php에서 DB 연결 정보 불러오기
+        $config = require __DIR__ . '/../config/database.php';
+        $this->db_host = $config['db_host'];
+        $this->db_name = $config['db_name'];
+        $this->db_user = $config['db_user'];
+        $this->db_pass = $config['db_pass'];
+        $this->db_charset = $config['db_charset'] ?? 'utf8mb4';
         try {
             $this->conn = new PDO(
-                "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-                DB_USER,
-                DB_PASS,
+                "mysql:host={$this->db_host};dbname={$this->db_name};charset={$this->db_charset}",
+                $this->db_user,
+                $this->db_pass,
                 [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES => false
                 ]
             );
+            
+            // 연결 성공 로그
+            error_log("[Database] 연결 성공: {$this->db_host}/{$this->db_name}");
         } catch (PDOException $e) {
             error_log("[Database] 연결 실패: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+            error_log("[Database] 연결 정보: {$this->db_host}/{$this->db_name}/{$this->db_user}");
             throw new Exception("데이터베이스 연결에 실패했습니다. 관리자에게 문의하세요.");
         }
     }

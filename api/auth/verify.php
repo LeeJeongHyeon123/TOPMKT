@@ -22,6 +22,9 @@ if (!isset($data['uid']) || !isset($data['phoneNumber'])) {
     exit;
 }
 
+require_once __DIR__ . '/../../includes/functions.php';
+$messages = require __DIR__ . '/../../resources/lang/ko/messages.php';
+
 try {
     // Firebase에서 사용자 정보 확인
     $user = $auth->getUser($data['uid']);

@@ -20,6 +20,75 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type, X-Requested-With');
 
+// 디버깅을 위한 로그 함수
+function debug_log($message, $data = null) {
+    $log_message = date('Y-m-d H:i:s') . " [Login] " . $message;
+    if ($data !== null) {
+        $log_message .= "\nData: " . print_r($data, true);
+    }
+    error_log($log_message);
+}
+
+// 에러 핸들러 설정
+function handleError($errno, $errstr, $errfile, $errline) {
+    $error = [
+        'success' => false,
+        'message' => '시스템 오류가 발생했습니다.',
+        'error' => [
+            'code' => 'INTERNAL_ERROR',
+            'details' => '서버 내부 오류가 발생했습니다.'
+        ]
+    ];
+    
+    debug_log('PHP 에러 발생', [
+        'type' => $errno,
+        'message' => $errstr,
+        'file' => $errfile,
+        'line' => $errline
+    ]);
+    
+    // 버퍼 클리어
+    ob_clean();
+    
+    // JSON 응답 헤더 설정
+    header('Content-Type: application/json; charset=utf-8');
+    http_response_code(500);
+    echo json_encode($error, JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
+// 예외 핸들러 설정
+function handleException($exception) {
+    $error = [
+        'success' => false,
+        'message' => '시스템 오류가 발생했습니다.',
+        'error' => [
+            'code' => 'INTERNAL_ERROR',
+            'details' => '서버 내부 오류가 발생했습니다.'
+        ]
+    ];
+    
+    debug_log('예외 발생', [
+        'message' => $exception->getMessage(),
+        'file' => $exception->getFile(),
+        'line' => $exception->getLine(),
+        'trace' => $exception->getTraceAsString()
+    ]);
+    
+    // 버퍼 클리어
+    ob_clean();
+    
+    // JSON 응답 헤더 설정
+    header('Content-Type: application/json; charset=utf-8');
+    http_response_code(500);
+    echo json_encode($error, JSON_UNESCAPED_UNICODE);
+    exit();
+}
+
+// 에러 핸들러 등록
+set_error_handler('handleError');
+set_exception_handler('handleException');
+
 // 디버깅을 위한 로그
 error_log("로그인 요청 수신: api/auth/login.php");
 
@@ -85,52 +154,49 @@ try {
     
     // 인증번호 검증
     $verificationCode = $data['code'];
-    $authConfig = $GLOBALS['firebase_config']['auth'];
-    $isTestPhone = ($data['phone'] === $authConfig['phone_verification']['test_phone']);
+    $sessionInfo = $data['sessionInfo'] ?? null;
     
-    error_log("인증번호 검증: " . $verificationCode);
-    
-    // 테스트 전화번호인 경우 테스트 코드와 비교
-    if ($isTestPhone) {
-        $isValidCode = ($verificationCode === $authConfig['phone_verification']['test_code']);
-        error_log("테스트 전화번호 인증 검증 결과: " . ($isValidCode ? '성공' : '실패'));
-        
-        if (!$isValidCode) {
-            http_response_code(401);
-            echo json_encode(['success' => false, 'message' => '인증번호가 일치하지 않습니다.']);
-            exit;
-        }
-    } else {
-        // 실제 구현 시 Firebase Authentication 연동 필요
-        // 현재는 테스트를 위해 항상 성공으로 처리
-        error_log("일반 전화번호 인증은 현재 테스트 모드로 항상 성공 처리됨");
+    if (!$sessionInfo) {
+        error_log("세션 정보 누락");
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => '인증 세션이 만료되었습니다. 다시 시도해주세요.']);
+        exit;
     }
     
-    // 인증 성공 시 토큰 생성
-    $verifyResult = [
-        'success' => true,
-        'idToken' => 'test_id_token_' . time(),
-        'refreshToken' => 'test_refresh_token_' . time(),
-        'expiresIn' => 3600,
-        'localId' => $user['firebase_uid'],
-        'phoneNumber' => $data['phone']
-    ];
-    
-    // 로그인 시간 업데이트
-    $stmt = $pdo->prepare("UPDATE users SET last_login_at = NOW(), last_login_ip = ? WHERE id = ?");
-    $stmt->execute([$_SERVER['REMOTE_ADDR'], $user['id']]);
-    
-    // 성공 응답
-    echo json_encode([
-        'success' => true,
-        'message' => '로그인에 성공했습니다.',
-        'data' => [
-            'idToken' => $verifyResult['idToken'],
-            'refreshToken' => $verifyResult['refreshToken'],
-            'phoneNumber' => $data['phone'],
-            'nickname' => $user['nickname']
-        ]
-    ]);
+    try {
+        $authService = \App\Services\Firebase\AuthService::getInstance();
+        $verifyResult = $authService->verifyCode($data['phone'], $verificationCode, $sessionInfo);
+        
+        if (!$verifyResult['success']) {
+            error_log("인증번호 검증 실패: " . $verifyResult['message']);
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => $verifyResult['message']]);
+            exit;
+        }
+        
+        // Firebase UID 업데이트
+        $stmt = $pdo->prepare("UPDATE users SET firebase_uid = ? WHERE id = ?");
+        $stmt->execute([$verifyResult['idToken'], $user['id']]);
+        
+        // 로그인 성공
+        echo json_encode([
+            'success' => true,
+            'message' => '로그인되었습니다.',
+            'data' => [
+                'user' => [
+                    'id' => $user['id'],
+                    'nickname' => $user['nickname']
+                ],
+                'token' => $verifyResult['idToken']
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        error_log("Firebase 인증 오류: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => '인증 처리 중 오류가 발생했습니다.']);
+        exit;
+    }
     
 } catch (Exception $e) {
     error_log("로그인 오류: " . $e->getMessage());
@@ -139,4 +205,7 @@ try {
         'success' => false,
         'message' => $e->getMessage()
     ]);
-} 
+}
+
+// 출력 버퍼 플러시
+ob_end_flush(); 

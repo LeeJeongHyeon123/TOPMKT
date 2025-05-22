@@ -1,41 +1,137 @@
 document.addEventListener('DOMContentLoaded', function() {
-// JS 활성화 시 body에 js-enabled 클래스 추가
+    console.log('DOMContentLoaded event fired'); // 디버깅용 로그
+
+    // JS 활성화 시 body에 js-enabled 클래스 추가
     document.body.classList.add('js-enabled');
+
+    // Toast 메시지 표시 함수
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // 애니메이션을 위한 setTimeout
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        
+        // 3초 후 제거
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
 
     // reCAPTCHA 로드 콜백 함수
     window.onRecaptchaLoad = function() {
         console.log('reCAPTCHA Enterprise가 로드되었습니다.');
     };
 
-    // 로그인/회원가입 탭 전환
+    // DOM 요소 초기화
+    const elements = {
+        loginTab: document.getElementById('loginTab'),
+        registerTab: document.getElementById('registerTab'),
+        loginForm: document.getElementById('loginForm'),
+        registerForm: document.getElementById('registerForm'),
+        authSubtitle: document.getElementById('authSubtitle'),
+        loginSendCodeBtn: document.getElementById('loginSendCodeBtn'),
+        sendCodeBtn: document.getElementById('sendCodeBtn'),
+        checkNicknameBtn: document.getElementById('checkNicknameBtn'),
+        nicknameInput: document.getElementById('nickname'),
+        nicknameFeedback: document.getElementById('nicknameFeedback'),
+        loginPhone: document.getElementById('loginPhone'),
+        registerPhone: document.getElementById('registerPhone'),
+        loginCountryCode: document.getElementById('loginCountryCode'),
+        registerCountryCode: document.getElementById('registerCountryCode'),
+        loginVerificationGroup: document.getElementById('loginVerificationGroup'),
+        registerVerificationGroup: document.getElementById('registerVerificationGroup'),
+        loginSubmitBtn: document.getElementById('loginSubmitBtn'),
+        registerSubmitBtn: document.getElementById('registerSubmitBtn')
+    };
+
+    // 디버깅을 위한 요소 존재 여부 확인
+    console.log('DOM Elements:', elements);
+
+    // 탭 전환 함수
+    function switchTab(isLogin) {
+        console.log('switchTab called with isLogin:', isLogin);
+
+        // 탭 버튼 상태 변경
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        
+        if (loginTab && registerTab) {
+            if (isLogin) {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+            }
+        }
+
+        // 폼 표시 상태 변경
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        
+        if (loginForm && registerForm) {
+            loginForm.style.display = isLogin ? '' : 'none';
+            registerForm.style.display = isLogin ? 'none' : '';
+        }
+
+        // 서브타이틀 메시지 변경
+        const authSubtitle = document.getElementById('authSubtitle');
+        console.log('authSubtitle element:', authSubtitle); // 디버깅용 로그
+
+        if (authSubtitle) {
+            const message = isLogin ? 
+                '휴대폰 번호로 간편하게 로그인하세요' : 
+                '휴대폰 번호로 간편하게 회원가입하세요';
+            console.log('Changing subtitle to:', message);
+            authSubtitle.textContent = message;
+            console.log('New subtitle text:', authSubtitle.textContent); // 디버깅용 로그
+        } else {
+            console.error('authSubtitle element not found');
+        }
+    }
+
+    // 탭 클릭 이벤트 리스너 등록
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const authSubtitle = document.getElementById('authSubtitle');
 
-    if (loginTab && registerTab && loginForm && registerForm && authSubtitle) {
-        loginTab.addEventListener('click', () => {
-            loginTab.classList.add('active');
-            registerTab.classList.remove('active');
-            loginForm.style.display = '';
-            registerForm.style.display = 'none';
-            authSubtitle.textContent = '휴대폰 번호로 간편하게 로그인하세요';
+    if (loginTab) {
+        console.log('Login tab found, adding click listener');
+        loginTab.addEventListener('click', function() {
+            console.log('Login tab clicked');
+            switchTab(true);
         });
-        registerTab.addEventListener('click', () => {
-            registerTab.classList.add('active');
-            loginTab.classList.remove('active');
-            registerForm.style.display = '';
-            loginForm.style.display = 'none';
-            authSubtitle.textContent = '휴대폰 번호로 간편하게 회원가입하세요';
-        });
+    } else {
+        console.error('Login tab not found');
     }
+
+    if (registerTab) {
+        console.log('Register tab found, adding click listener');
+        registerTab.addEventListener('click', function() {
+            console.log('Register tab clicked');
+            alert('테스트');
+            switchTab(false);
+        });
+    } else {
+        console.error('Register tab not found');
+    }
+
+    // 초기 탭 상태 설정
+    switchTab(true);
 
     // 인증번호 받기 버튼 클릭 시 reCAPTCHA 실행 및 인증번호 요청
     function sendCodeWithRecaptcha(phone, mode) {
         if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
             console.error('reCAPTCHA Enterprise가 로드되지 않았습니다.');
-            alert('보안 검증을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.');
+            showToast('보안 검증을 초기화하는 중입니다. 잠시 후 다시 시도해주세요.', 'error');
             return;
         }
 
@@ -50,65 +146,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }).catch(function(error) {
                 console.error('reCAPTCHA 실행 중 오류 발생:', error);
-                alert('보안 검증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                showToast('보안 검증 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.', 'error');
             });
         });
     }
 
     // 로그인 인증번호 요청
     function requestLoginCode(phone, recaptchaToken) {
-        const group = document.getElementById('loginVerificationGroup');
-        const btn = document.getElementById('loginSubmitBtn');
-        if (group) group.style.display = '';
-        if (btn) btn.style.display = '';
-        alert('인증번호가 전송되었습니다.');
+        if (elements.loginVerificationGroup) elements.loginVerificationGroup.style.display = '';
+        if (elements.loginSubmitBtn) elements.loginSubmitBtn.style.display = '';
+        showToast('인증번호가 전송되었습니다.', 'success');
     }
     // 회원가입 인증번호 요청
     function requestRegisterCode(phone, recaptchaToken) {
-        const group = document.getElementById('registerVerificationGroup');
-        const btn = document.getElementById('registerSubmitBtn');
-        if (group) group.style.display = '';
-        if (btn) btn.style.display = '';
-        alert('인증번호가 전송되었습니다.');
+        if (elements.registerVerificationGroup) elements.registerVerificationGroup.style.display = '';
+        if (elements.registerSubmitBtn) elements.registerSubmitBtn.style.display = '';
+        showToast('인증번호가 전송되었습니다.', 'success');
     }
 
     // 로그인 인증번호 받기 버튼
-    const loginSendCodeBtn = document.getElementById('loginSendCodeBtn');
-    if (loginSendCodeBtn) {
-        loginSendCodeBtn.addEventListener('click', function() {
-            const phone = document.getElementById('loginPhone') ? document.getElementById('loginPhone').value.trim() : '';
+    if (elements.loginSendCodeBtn) {
+        elements.loginSendCodeBtn.addEventListener('click', function() {
+            const phone = elements.loginPhone?.value.trim();
             if (!phone) {
-                alert('휴대폰 번호를 입력하세요.');
+                showToast('휴대폰 번호를 입력하세요.', 'error');
                 return;
             }
             sendCodeWithRecaptcha(phone, 'login');
         });
     }
     // 회원가입 인증번호 받기 버튼
-    const registerSendCodeBtn = document.getElementById('registerSendCodeBtn');
-    if (registerSendCodeBtn) {
-        registerSendCodeBtn.addEventListener('click', function() {
-            const phone = document.getElementById('registerPhone') ? document.getElementById('registerPhone').value.trim() : '';
-            if (!phone) {
-                alert('휴대폰 번호를 입력하세요.');
+    if (elements.sendCodeBtn) {
+        elements.sendCodeBtn.addEventListener('click', function() {
+            const phone = elements.registerPhone?.value.trim();
+            const country = elements.registerCountryCode?.textContent;
+            const nickname = elements.nicknameInput?.value.trim();
+            
+            if (!phone || !nickname) {
+                showToast('전화번호와 닉네임을 모두 입력해주세요.', 'error');
                 return;
             }
+            
+            if (!elements.nicknameInput?.classList.contains('is-valid')) {
+                showToast('닉네임 중복 확인을 해주세요.', 'error');
+                return;
+            }
+            
             sendCodeWithRecaptcha(phone, 'register');
         });
     }
 
     // 로그인 폼 제출(인증번호 확인 및 로그인)
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+    if (elements.loginForm) {
+        elements.loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('로그인 처리(서버 연동 필요)');
+            showToast('로그인 처리(서버 연동 필요)', 'info');
         });
     }
     // 회원가입 폼 제출(인증번호 확인 및 회원가입)
-    if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
+    if (elements.registerForm) {
+        elements.registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            alert('회원가입 처리(서버 연동 필요)');
+            showToast('회원가입 처리(서버 연동 필요)', 'info');
         });
     }
 
@@ -273,4 +372,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // 국가 선택 드롭다운 설정
     setupCountrySelector('loginCountrySelect', 'loginCountryDropdown', 'loginCountryFlag', 'loginCountryCode', 'loginPhone');
     setupCountrySelector('registerCountrySelect', 'registerCountryDropdown', 'registerCountryFlag', 'registerCountryCode', 'registerPhone');
+
+    // 닉네임 중복 확인 버튼 클릭 이벤트
+    if (elements.checkNicknameBtn && elements.nicknameInput && elements.nicknameFeedback) {
+        elements.checkNicknameBtn.addEventListener('click', function() {
+            const nickname = elements.nicknameInput.value.trim();
+            
+            if (!nickname) {
+                elements.nicknameFeedback.className = 'feedback-message error';
+                elements.nicknameFeedback.textContent = '닉네임을 입력해주세요.';
+                return;
+            }
+            
+            // 닉네임 중복 확인 요청
+            fetch('/api/auth/check-nickname.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ nickname: nickname })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.exists) {
+                        elements.nicknameFeedback.className = 'feedback-message error';
+                        elements.nicknameFeedback.textContent = '이미 사용 중인 닉네임입니다.';
+                        elements.nicknameInput.classList.add('is-invalid');
+                        if (elements.sendCodeBtn) elements.sendCodeBtn.disabled = true;
+                    } else {
+                        elements.nicknameFeedback.className = 'feedback-message success';
+                        elements.nicknameFeedback.textContent = '사용 가능한 닉네임입니다.';
+                        elements.nicknameInput.classList.remove('is-invalid');
+                        elements.nicknameInput.classList.add('is-valid');
+                        if (elements.sendCodeBtn) elements.sendCodeBtn.disabled = false;
+                    }
+                } else {
+                    elements.nicknameFeedback.className = 'feedback-message error';
+                    elements.nicknameFeedback.textContent = data.message || '닉네임 확인 중 오류가 발생했습니다.';
+                }
+            })
+            .catch(error => {
+                console.error('닉네임 중복 확인 중 오류:', error);
+                elements.nicknameFeedback.className = 'feedback-message error';
+                elements.nicknameFeedback.textContent = '닉네임 확인 중 오류가 발생했습니다.';
+            });
+        });
+
+        // 닉네임 입력 필드 변경 시
+        elements.nicknameInput.addEventListener('input', function() {
+            this.classList.remove('is-valid', 'is-invalid');
+            elements.nicknameFeedback.className = 'feedback-message';
+            elements.nicknameFeedback.textContent = '';
+            if (elements.sendCodeBtn) elements.sendCodeBtn.disabled = true;
+        });
+    }
 }); 
