@@ -1,6 +1,7 @@
 // Firebase 초기화 상태 추적
 window.firebaseInitialized = window.firebaseInitialized || false;
 let pendingAuthCallbacks = [];
+let recaptchaVerifier = null;
 
 // Firebase 초기화 함수
 async function initializeFirebase() {
@@ -37,6 +38,25 @@ async function initializeFirebase() {
     });
 }
 
+// reCAPTCHA 설정 함수
+function setupRecaptcha() {
+    try {
+        if (window.firebaseInitialized && document.getElementById('recaptcha-container')) {
+            recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response) => {
+                    console.log('reCAPTCHA 검증 완료');
+                }
+            });
+            console.log('[reCAPTCHA] 설정 완료');
+        } else {
+            console.log('[reCAPTCHA] 컨테이너를 찾을 수 없거나 Firebase가 초기화되지 않았습니다.');
+        }
+    } catch (error) {
+        console.error('[reCAPTCHA] 설정 오류:', error);
+    }
+}
+
 // 인증 상태 변경 리스너 설정
 function setupAuthStateListener() {
     if (!window.firebaseInitialized) {
@@ -55,14 +75,6 @@ function setupAuthStateListener() {
     });
 }
 
-// reCAPTCHA 설정
-const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    'size': 'invisible',
-    'callback': (response) => {
-        console.log('reCAPTCHA 검증 완료');
-    }
-});
-
 // 페이지 로드 시 Firebase 초기화
 document.addEventListener('DOMContentLoaded', function() {
     initializeFirebase()
@@ -70,6 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // 대기 중인 콜백 실행
             pendingAuthCallbacks.forEach(callback => callback());
             pendingAuthCallbacks = [];
+            
+            // reCAPTCHA 설정
+            setupRecaptcha();
         })
         .catch(error => {
             console.error('[Firebase] 초기화 실패:', error);

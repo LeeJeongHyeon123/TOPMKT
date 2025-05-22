@@ -207,6 +207,9 @@ include_once __DIR__ . '/includes/header.php';
     </style>
 </head>
 <body>
+<!-- reCAPTCHA 컨테이너 -->
+<div id="recaptcha-container"></div>
+
 <!-- 로딩 오버레이 -->
 <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
@@ -301,9 +304,6 @@ include_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 </main>
-
-<!-- reCAPTCHA 컨테이너 -->
-<div id="recaptcha-container"></div>
 
 <!-- Firebase 설정 및 인증 스크립트 -->
 <script src="/public/assets/js/firebase-config.js"></script>
