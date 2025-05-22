@@ -132,13 +132,16 @@ foreach ($required_fields as $field) {
 $phoneNumber = $data['phone'];
 $countryCode = $data['country'];
 
-// 전화번호에서 하이픈 제거
-$phoneNumber = str_replace('-', '', $phoneNumber);
+// 전화번호에서 하이픈 제거 (E.164의 +는 유지됨)
+// $phoneNumber = str_replace('-', '', $phoneNumber);
 
-if (!preg_match('/^[0-9]{10,11}$/', $phoneNumber)) {
-    debug_log("잘못된 전화번호 형식: " . $phoneNumber);
+// E.164 형식 (+로 시작, 숫자 1~15자리) 또는 국내 형식(숫자 10~11자리) 허용
+// 클라이언트에서는 E.164 형식으로 통일해서 보내므로, E.164만 체크해도 무방.
+// Firebase idToken에 있는 전화번호도 E.164 형식이므로, 이와 일관성을 맞춤.
+if (!preg_match('/^\\+[1-9][0-9]{7,14}$/', $phoneNumber)) { // 국가코드 최소 1자리, 번호 최소 7자리 가정
+    debug_log("잘못된 전화번호 형식 (E.164 필요): " . $phoneNumber, $data);
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => '올바른 전화번호 형식이 아닙니다.']);
+    echo json_encode(['success' => false, 'message' => '올바른 전화번호 형식(국제표준)이 아닙니다.']);
     exit;
 }
 
@@ -270,13 +273,14 @@ try {
         }
         
         // 전화번호 일치 여부 확인
-        $tokenPhoneNumber = $verifyResult['phone_number'];
-        $normalizedPhoneNumber = $countryCode . preg_replace('/[^0-9]/', '', $phoneNumber);
+        $tokenPhoneNumber = $verifyResult['phone_number']; // Firebase에서 온 E.164
+        // $normalizedPhoneNumber = $countryCode . preg_replace('/[^0-9]/', '', $phoneNumber);
+        $requestPhoneNumber = $phoneNumber; // 클라이언트가 보낸 E.164 형식 전화번호를 직접 사용
         
-        debug_log("전화번호 비교", ['token' => $tokenPhoneNumber, 'request' => $normalizedPhoneNumber]);
+        debug_log("전화번호 비교", ['token' => $tokenPhoneNumber, 'request' => $requestPhoneNumber]);
         
-        if ($tokenPhoneNumber !== $normalizedPhoneNumber) {
-            debug_log("전화번호 불일치", ['token' => $tokenPhoneNumber, 'request' => $normalizedPhoneNumber]);
+        if ($tokenPhoneNumber !== $requestPhoneNumber) {
+            debug_log("전화번호 불일치", ['token' => $tokenPhoneNumber, 'request' => $requestPhoneNumber]);
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => '인증된 전화번호와 요청 전화번호가 일치하지 않습니다.']);
             exit;
@@ -327,7 +331,21 @@ try {
             $now
         ]);
         
-        $userId = $pdo->lastInsertId();
+        // $userId = $pdo->lastInsertId(); // UUID에는 lastInsertId() 사용 불가
+        // firebase_uid로 방금 삽입된 사용자의 id (UUID)를 가져옴
+        $stmt_get_id = $pdo->prepare("SELECT id FROM users WHERE firebase_uid = ?");
+        $stmt_get_id->execute([$verifyResult['uid']]);
+        $insertedUser = $stmt_get_id->fetch();
+        $userId = $insertedUser ? $insertedUser['id'] : null;
+
+        if (!$userId) {
+            $pdo->rollBack();
+            debug_log("사용자 ID 조회 실패 후 롤백", ['firebase_uid' => $verifyResult['uid']]);
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => '사용자 정보 저장 후 ID 조회에 실패했습니다.']);
+            exit;
+        }
+
         debug_log("사용자 정보 저장 성공", ['userId' => $userId]);
         
         // user_profiles 테이블 존재 여부 확인
@@ -367,9 +385,9 @@ try {
             'success' => true,
             'message' => '회원가입이 완료되었습니다.',
             'data' => [
-                'user_id' => $userId,
+                'user_id' => $userId, // UUID string
                 'nickname' => $data['nickname'],
-                'idToken' => $data['idToken']
+                'idToken' => $data['idToken'] // Firebase ID 토큰. 이를 auth_token으로도 사용 가능
             ]
         ]);
         

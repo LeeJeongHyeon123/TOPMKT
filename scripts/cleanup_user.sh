@@ -69,22 +69,22 @@ if [ "$PYTHON_AVAILABLE" = true ]; then
     if [ -z "$1" ]; then
         # 매개변수가 없는 경우 - 모든 사용자 삭제
         echo -e "${YELLOW}모든 사용자 데이터를 삭제합니다... (Python)${NC}"
-        python3 "$PYTHON_SCRIPT" --all
+        python3 "$PYTHON_SCRIPT" --all --confirm
     else
         # 전화번호가 제공된 경우 - 특정 사용자 삭제
         echo -e "${YELLOW}전화번호 '$1'의 사용자 데이터를 삭제합니다... (Python)${NC}"
-        python3 "$PYTHON_SCRIPT" --phone "$1"
+        python3 "$PYTHON_SCRIPT" --phone "$1" --confirm
     fi
 elif [ "$PHP_AVAILABLE" = true ]; then
     # PHP 스크립트 실행
     if [ -z "$1" ]; then
         # 매개변수가 없는 경우 - 모든 사용자 삭제
         echo -e "${YELLOW}모든 사용자 데이터를 삭제합니다... (PHP)${NC}"
-        php "$PHP_SCRIPT" --all
+        php "$PHP_SCRIPT" --all --confirm
     else
         # 전화번호가 제공된 경우 - 특정 사용자 삭제
         echo -e "${YELLOW}전화번호 '$1'의 사용자 데이터를 삭제합니다... (PHP)${NC}"
-        php "$PHP_SCRIPT" --phone="$1"
+        php "$PHP_SCRIPT" --phone="$1" --confirm
     fi
 else
     echo -e "${RED}오류: Python과 PHP 스크립트를 모두 실행할 수 없습니다.${NC}"

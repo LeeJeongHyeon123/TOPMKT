@@ -130,11 +130,31 @@ def get_users_to_delete(connection, phone_number=None):
     try:
         with connection.cursor() as cursor:
             if phone_number:
-                # 전화번호로 특정 사용자 조회
-                cursor.execute(
-                    "SELECT id, firebase_uid, phone_number, nickname FROM users WHERE phone_number = %s",
-                    (phone_number,)
-                )
+                # 입력된 전화번호를 다양한 형식으로 변환
+                normalized_phone = re.sub(r'[^0-9]', '', phone_number) # 숫자만 추출
+                
+                possible_formats = [
+                    phone_number, # 원본 입력
+                    normalized_phone, # 숫자만 (예: 01012345678)
+                ]
+                
+                # 한국 번호로 추정되는 경우 +82 형식 추가
+                if normalized_phone.startswith('010') and len(normalized_phone) == 11:
+                    possible_formats.append(f"+82{normalized_phone[1:]}") # +821012345678
+                elif normalized_phone.startswith('10') and len(normalized_phone) == 10: # 0 없이 10으로 시작하는 경우
+                    possible_formats.append(f"+82{normalized_phone}") # +821012345678
+                
+                # 중복 제거
+                possible_formats = list(set(possible_formats))
+                
+                print_info(f"검색할 전화번호 형식: {possible_formats}")
+
+                # 여러 형식으로 전화번호 조회
+                # SQL 인젝션 방지를 위해 각 포맷에 대해 플레이스홀더 사용
+                placeholders = ', '.join(['%s'] * len(possible_formats))
+                sql = f"SELECT id, firebase_uid, phone_number, nickname FROM users WHERE phone_number IN ({placeholders})"
+                
+                cursor.execute(sql, tuple(possible_formats))
             else:
                 # 모든 사용자 조회
                 cursor.execute("SELECT id, firebase_uid, phone_number, nickname FROM users")

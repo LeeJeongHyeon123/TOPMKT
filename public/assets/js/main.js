@@ -145,6 +145,28 @@ if (typeof TOPMKT === 'undefined') {
 }
 
 function updateHeaderUI() {
+    console.log('[DEBUG] updateHeaderUI() 호출됨');
+
+    // localStorage에서 로그인 관련 모든 값 가져오기 및 로깅
+    const authToken = localStorage.getItem('auth_token');
+    const userId = localStorage.getItem('user_id');
+    const userNickname = localStorage.getItem('user_nickname');
+    const keepLogin = localStorage.getItem('keep_login');
+    const firebaseIdToken = localStorage.getItem('firebase_id_token');
+    const loginTimestamp = localStorage.getItem('login_timestamp');
+
+    console.log('[DEBUG] updateHeaderUI - localStorage 값:', {
+        authToken,
+        userId,
+        userNickname,
+        keepLogin,
+        firebaseIdToken: firebaseIdToken ? firebaseIdToken.substring(0, 10) + '...' : '없음',
+        loginTimestamp
+    });
+
+    const isLoggedInStatus = TOPMKT.isLoggedIn();
+    console.log('[DEBUG] updateHeaderUI - TOPMKT.isLoggedIn() 결과:', isLoggedInStatus);
+
     const authButtonsContainer = document.querySelector('.auth-buttons');
     if (!authButtonsContainer) {
         console.log('[DEBUG] auth-buttons container not found');
@@ -154,7 +176,7 @@ function updateHeaderUI() {
     const loginButton = authButtonsContainer.querySelector('.btn-login');
     const registerButton = authButtonsContainer.querySelector('.btn-register');
 
-    if (TOPMKT.isLoggedIn()) {
+    if (isLoggedInStatus) {
         console.log('[DEBUG] User is logged in, updating header.');
         if (loginButton) {
             loginButton.textContent = '로그아웃';
