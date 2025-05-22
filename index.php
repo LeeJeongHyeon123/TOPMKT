@@ -37,20 +37,28 @@ $noticePosts = getDummyNoticePosts();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= __('index.title') ?> - 탑마케팅</title>
     
-    <style>
-    /* 기본 스타일 */
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        line-height: 1.5;
-        color: #333;
-        background-color: #fff;
-    }
-    </style>
+    <!-- 파비콘 -->
+    <link rel="icon" type="image/x-icon" href="/public/assets/images/favicon.ico">
+    
+    <!-- 웹 폰트 로드 (서버에 저장된 폰트 사용) -->
+    <!-- <link rel="stylesheet" href="/public/assets/fonts/noto-sans-kr.css"> -->
+    
+    <!-- CSS 파일 로드 -->
     <link rel="stylesheet" href="/public/assets/css/main.css">
     <link rel="stylesheet" href="/public/assets/css/loading-overlay.css">
+    
+    <!-- reCAPTCHA Enterprise -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+    
+    <!-- 공통 스크립트 -->
     <script src="/public/assets/js/loading-overlay.js" defer></script>
+    <script src="/public/assets/js/main.js" defer></script>
 </head>
 <body>
     <!-- 로딩 오버레이 -->
@@ -58,6 +66,7 @@ $noticePosts = getDummyNoticePosts();
         <div class="spinner"></div>
         <div class="loading-text">로딩 중...</div>
     </div>
+
 <?php
 // 헤더 포함
 include_once __DIR__ . '/includes/header.php';
@@ -137,7 +146,7 @@ include_once __DIR__ . '/includes/header.php';
                     <article class="post-card">
                         <a href="/vision/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
-                                <img src="/resources/images/vision/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                <img src="/public/assets/images/vision/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
                             <h3 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h3>
                             <p class="post-excerpt"><?php echo htmlspecialchars($post['excerpt']); ?></p>
@@ -166,7 +175,7 @@ include_once __DIR__ . '/includes/header.php';
                     <article class="post-card">
                         <a href="/knowhow/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
-                                <img src="/resources/images/knowhow/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                <img src="/public/assets/images/knowhow/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
                             <h3 class="post-title">
                                 <?php echo htmlspecialchars($post['title']); ?>
@@ -197,7 +206,7 @@ include_once __DIR__ . '/includes/header.php';
                     <article class="post-card">
                         <a href="/recruiting/view.php?id=<?php echo $post['id']; ?>" class="post-link">
                             <div class="post-image">
-                                <img src="/resources/images/recruiting/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                <img src="/public/assets/images/recruiting/<?php echo $post['id']; ?>.jpg" alt="<?php echo htmlspecialchars($post['title']); ?>">
                             </div>
                             <h3 class="post-title">
                                 <?php echo htmlspecialchars($post['title']); ?>
@@ -231,7 +240,7 @@ include_once __DIR__ . '/includes/header.php';
                 <?php foreach ($upcomingEvents as $event): ?>
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="/resources/images/events/<?php echo $event['id']; ?>.jpg" alt="<?php echo htmlspecialchars($event['title']); ?>">
+                            <img src="/public/assets/images/events/<?php echo $event['id']; ?>.jpg" alt="<?php echo htmlspecialchars($event['title']); ?>">
                         </div>
                         <div class="event-content">
                             <div class="event-date">
@@ -259,7 +268,7 @@ include_once __DIR__ . '/includes/header.php';
                 <?php foreach ($upcomingLectures as $lecture): ?>
                     <div class="event-card">
                         <div class="event-image">
-                            <img src="/resources/images/lectures/<?php echo $lecture['id']; ?>.jpg" alt="<?php echo htmlspecialchars($lecture['title']); ?>">
+                            <img src="/public/assets/images/lectures/<?php echo $lecture['id']; ?>.jpg" alt="<?php echo htmlspecialchars($lecture['title']); ?>">
                         </div>
                         <div class="event-content">
                             <div class="event-date">
@@ -306,7 +315,6 @@ include_once __DIR__ . '/includes/header.php';
                 <?php foreach ($noticePosts as $post): ?>
                     <article class="post-card <?php echo $post['is_important'] ? 'important' : ''; ?>">
                         <a href="/notice/view.php?id=<?php echo $post['id']; ?>" class="post-link">
-                        <a href="/notice/view?id=<?php echo $post['id']; ?>" class="post-link">
                             <h3 class="post-title">
                                 <?php if ($post['is_important']): ?>
                                     <span class="notice-badge">중요</span>
@@ -330,4 +338,6 @@ include_once __DIR__ . '/includes/header.php';
 <?php
 // 푸터 포함
 include_once __DIR__ . '/includes/footer.php';
-?> 
+?>
+</body>
+</html> 
