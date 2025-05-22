@@ -9,58 +9,21 @@ NC='\033[0m' # No Color
 
 # 사용법 표시
 usage() {
-    echo -e "${BLUE}사용법:${NC} $0 [옵션] <백업_디렉토리_경로>"
-    echo ""
-    echo "옵션:"
-    echo "  -f, --fast      빠른 모드 (MD5 체크섬 계산 건너뛰기)"
-    echo "  -s, --sample    샘플링 모드 (각 유형별 일부 파일만 검사)"
-    echo "  -c, --critical  중요 파일만 검증 (코어 PHP, JS, CSS 파일만)"
-    echo "  -h, --help      이 도움말 메시지 표시"
+    echo -e "${BLUE}사용법:${NC} $0 <백업_디렉토리_경로>"
     echo ""
     echo "예시:"
-    echo "  $0 /backup/git/topmkt_20250522_171301       # 전체 검증"
-    echo "  $0 -f /backup/git/topmkt_20250522_171301    # 빠른 검증 (MD5 건너뛰기)"
-    echo "  $0 -c /backup/git/topmkt_20250522_171301    # 중요 파일만 검증"
+    echo "  $0 /backup/git/topmkt_20250522_171301"
     echo ""
     exit 1
 }
 
-# 기본 옵션 설정
-FAST_MODE=false
-SAMPLE_MODE=false
-CRITICAL_MODE=false
-
-# 옵션 파싱
-while [[ $# -gt 0 ]]; do
-    key="$1"
-    case $key in
-        -f|--fast)
-        FAST_MODE=true
-        shift
-        ;;
-        -s|--sample)
-        SAMPLE_MODE=true
-        shift
-        ;;
-        -c|--critical)
-        CRITICAL_MODE=true
-        shift
-        ;;
-        -h|--help)
-        usage
-        ;;
-        *)
-        BACKUP_DIR="$1"
-        shift
-        ;;
-    esac
-done
-
 # 백업 디렉토리가 지정되지 않으면 종료
-if [ -z "$BACKUP_DIR" ]; then
+if [ -z "$1" ]; then
     echo -e "${RED}오류: 백업 디렉토리 경로가 필요합니다.${NC}"
     usage
 fi
+
+BACKUP_DIR="$1"
 
 # 현재 시간 출력 함수
 print_time() {
@@ -159,19 +122,6 @@ cat "${BACKUP_DIR}/backup_info.txt"
 echo "----------------------------------------"
 print_success "[검증] 백업 정보 확인 완료"
 
-# 선택된 모드 표시
-if [ "$FAST_MODE" = true ]; then
-    print_warning "[검증] 빠른 모드로 실행 중 (MD5 체크섬 계산 건너뛰기)"
-fi
-
-if [ "$SAMPLE_MODE" = true ]; then
-    print_warning "[검증] 샘플링 모드로 실행 중 (일부 파일만 검사)"
-fi
-
-if [ "$CRITICAL_MODE" = true ]; then
-    print_warning "[검증] 중요 파일 모드로 실행 중 (중요 파일만 검사)"
-fi
-
 # 중요 파일 존재 확인
 print_time "[검증] 중요 파일 존재 여부 확인 중..."
 missing_files=""
@@ -211,59 +161,33 @@ if [ ! -z "$missing_dirs" ]; then
 fi
 print_success "[검증] 디렉토리 구조 검증 완료"
 
-# 파일 시스템 무결성 검사 (빠른 모드가 아닌 경우에만)
-if [ "$FAST_MODE" = false ]; then
-    print_time "[검증] 파일 시스템 무결성 검사 준비 중..."
-    
-    # 파일 검색 조건 설정
-    if [ "$CRITICAL_MODE" = true ]; then
-        print_time "[검증] 중요 파일만 체크섬 계산..."
-        for file in "${CRITICAL_FILES[@]}"; do
-            if [ -f "${BACKUP_DIR}/${file}" ]; then
-                md5sum "${BACKUP_DIR}/${file}" >> "${BACKUP_DIR}/md5sum_critical.txt"
-            fi
-        done
-        print_success "[검증] 중요 파일 체크섬 계산 완료"
-    else
-        if [ "$SAMPLE_MODE" = true ]; then
-            print_time "[검증] 샘플링된 파일의 체크섬 계산 중..."
-            # 각 파일 유형별로 최대 10개 파일만 선택
-            find "$BACKUP_DIR" -type f \( -name "*.php" \) | sort -R | head -10 > /tmp/sample_files.txt
-            find "$BACKUP_DIR" -type f \( -name "*.js" \) | sort -R | head -10 >> /tmp/sample_files.txt
-            find "$BACKUP_DIR" -type f \( -name "*.css" \) | sort -R | head -10 >> /tmp/sample_files.txt
-            
-            # 병렬 처리로 체크섬 계산 (xargs -P로 병렬 프로세스 생성)
-            cat /tmp/sample_files.txt | xargs -P 4 -I {} md5sum {} >> "${BACKUP_DIR}/md5sum_sample.txt"
-            rm /tmp/sample_files.txt
-        else
-            print_time "[검증] 모든 코드 파일의 체크섬 계산 중 (시간이 오래 걸릴 수 있습니다)..."
-            print_time "[검증] 병렬 처리로 PHP, JS, CSS 파일 체크섬 계산 중..."
-            
-            # PHP 파일 MD5 계산 (병렬 처리)
-            find "$BACKUP_DIR" -type f -name "*.php" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_php.txt" &
-            php_pid=$!
-            
-            # JS 파일 MD5 계산 (병렬 처리)
-            find "$BACKUP_DIR" -type f -name "*.js" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_js.txt" &
-            js_pid=$!
-            
-            # CSS 파일 MD5 계산 (병렬 처리)
-            find "$BACKUP_DIR" -type f -name "*.css" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_css.txt" &
-            css_pid=$!
-            
-            # 진행 상황 표시
-            while kill -0 $php_pid 2>/dev/null || kill -0 $js_pid 2>/dev/null || kill -0 $css_pid 2>/dev/null; do
-                echo -ne "\r[진행 중] PHP: $([ -f ${BACKUP_DIR}/md5sum_php.txt ] && wc -l < ${BACKUP_DIR}/md5sum_php.txt || echo "0") 파일, JS: $([ -f ${BACKUP_DIR}/md5sum_js.txt ] && wc -l < ${BACKUP_DIR}/md5sum_js.txt || echo "0") 파일, CSS: $([ -f ${BACKUP_DIR}/md5sum_css.txt ] && wc -l < ${BACKUP_DIR}/md5sum_css.txt || echo "0") 파일"
-                sleep 1
-            done
-            echo ""
-            
-            # 모든 체크섬 파일 합치기
-            cat "${BACKUP_DIR}/md5sum_php.txt" "${BACKUP_DIR}/md5sum_js.txt" "${BACKUP_DIR}/md5sum_css.txt" > "${BACKUP_DIR}/md5sum_all.txt"
-        fi
-    fi
-    print_success "[검증] 파일 무결성 검사 완료"
-fi
+# 파일 시스템 무결성 검사
+print_time "[검증] 파일 시스템 무결성 검사 준비 중..."
+print_time "[검증] 모든 코드 파일의 체크섬 계산 중 (시간이 오래 걸릴 수 있습니다)..."
+print_time "[검증] 병렬 처리로 PHP, JS, CSS 파일 체크섬 계산 중..."
+
+# PHP 파일 MD5 계산 (병렬 처리)
+find "$BACKUP_DIR" -type f -name "*.php" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_php.txt" &
+php_pid=$!
+
+# JS 파일 MD5 계산 (병렬 처리)
+find "$BACKUP_DIR" -type f -name "*.js" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_js.txt" &
+js_pid=$!
+
+# CSS 파일 MD5 계산 (병렬 처리)
+find "$BACKUP_DIR" -type f -name "*.css" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_css.txt" &
+css_pid=$!
+
+# 진행 상황 표시
+while kill -0 $php_pid 2>/dev/null || kill -0 $js_pid 2>/dev/null || kill -0 $css_pid 2>/dev/null; do
+    echo -ne "\r[진행 중] PHP: $([ -f ${BACKUP_DIR}/md5sum_php.txt ] && wc -l < ${BACKUP_DIR}/md5sum_php.txt || echo "0") 파일, JS: $([ -f ${BACKUP_DIR}/md5sum_js.txt ] && wc -l < ${BACKUP_DIR}/md5sum_js.txt || echo "0") 파일, CSS: $([ -f ${BACKUP_DIR}/md5sum_css.txt ] && wc -l < ${BACKUP_DIR}/md5sum_css.txt || echo "0") 파일"
+    sleep 1
+done
+echo ""
+
+# 모든 체크섬 파일 합치기
+cat "${BACKUP_DIR}/md5sum_php.txt" "${BACKUP_DIR}/md5sum_js.txt" "${BACKUP_DIR}/md5sum_css.txt" > "${BACKUP_DIR}/md5sum_all.txt"
+print_success "[검증] 파일 무결성 검사 완료"
 
 # 권한 검증
 print_time "[검증] 파일 권한 검증 중..."
