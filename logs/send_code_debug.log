@@ -332,3 +332,62 @@ Data: Array
     [line] => 51
 )
 
+[2025-05-22 17:12:17] === API 요청 시작 ===
+[2025-05-22 17:12:17] REQUEST_METHOD: POST
+[2025-05-22 17:12:17] REQUEST_URI: /api/auth/send-code.php
+[2025-05-22 17:12:17] REQUEST_HEADERS: Array
+(
+    [Host] => www.topmktx.com
+    [Connection] => keep-alive
+    [Content-Length] => 2129
+    [sec-ch-ua-platform] => "Windows"
+    [User-Agent] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+    [sec-ch-ua] => "Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"
+    [Content-Type] => application/json
+    [sec-ch-ua-mobile] => ?0
+    [Accept] => */*
+    [Origin] => https://www.topmktx.com
+    [Sec-Fetch-Site] => same-origin
+    [Sec-Fetch-Mode] => cors
+    [Sec-Fetch-Dest] => empty
+    [Referer] => https://www.topmktx.com/auth.php
+    [Accept-Encoding] => gzip, deflate, br, zstd
+    [Accept-Language] => ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7,zh;q=0.6,ja;q=0.5
+    [Cookie] => PHPSESSID=514k0ac3dp0n8jsefaah2fvf6i
+)
+
+[2025-05-22 17:12:17] 헤더 설정 완료
+[2025-05-22 17:12:17] 수신된 JSON 데이터: {"phone":"010-1234-1234","country_code":"+82","recaptcha_token":"03AFcWeA6ao95ku8ApagK9B4e4e1qS6c0PTndw7BMk3dPZwsjmflOB6gPVv4ZGVGb1HHI8n8m5tuezM3N9it9YXb36l2OL9elhgKIfJ3YdPHD7lHYLYF6OZMRjv0tmYWrbVSUDFxnCa9K7ZyUJSWmrBO_cbiiLUSZbxsaH7l6R-nbBCvJPg4Wa0jLCCFzhxLuNT4nkyvmIm7oQ99eQ2V64u5ZNBUiH31xqDSaP0UKPg2RUi4GcA9NxOXx5VCIDkRfje8rP2nacy4MVtUEK90AUvL-rJM6lnklLQspLTuZzGDTI0AqDdoQzcrd51TNN-iiVtmkidkFQeQbMg3GFoxG1gJkF0_m74lWjTbUWHgUXvO0DsypxL7CqR1XXQaFuvaczkRQdfqYbNddR6MyI6_BhnZoZiDMb9SJFr60Uda1o6Op-PXCL9wY6k_QiP3Nk5iqFGbuqMpnGuyxGt1qSZyN1DJ8CKzYNzW61nvqpyOK3ww4v7iK248clIirtCyVc9CV8TGqKLehgPDAXk7KmmN4GsVKYAb9svsllDUQ2fzRyBlx4eQKdicsMEuv12_yMKf4iHD9MvqS9LCrbhPyEQV9jry1XZNsOAVN9KB-GXJ06pG-I4m89iJndaJ-p-n4o6kXkGHxF378aUpPE6moWupCI3ay_xXSxEsqiBdfKOg81ObkdLy-KBWNq54gvhEG3XpRlohEBEFE8Nl61HvWOIQW8mdsZvxnmaHPN-A0r35YQiFvmO2SwIDG2d3qrBJDxke9fNN4HMFsV4hL2KRHMG7-dDVTro-V2cf29xsoNaMx5lfW1vK3ogAyXMjeP7WfxV80JJamiDQDJwATveMOT6cEAhrUt1rA27KjEzKMBswqr2cOIBU8a_OlCj5VK4iXrdxZsQkAFwuCVAR56OLyNYLpWmCxzTrW0Frgftk1TPNBk_LWTdXXnFPnGAvnUEg92U7VFddpOy_M7z047yz8T2M5_zz-n1KxpYKS22tICldhGx8Virq7ftU8grCNhnHXr-F6hYVa-mUEDYcNdtMlGQ6jyI6MAOOSTJG6LTcffBWITZDjmYf_fBRqKMd2jM-6_a-X4iCZ-8E3zbyHyAln6IQTre5LYhQF5CVXlmD5Fjzqo0DNMWMWShE3K-ku2k8F29kQQZ2NmkMqJwgdFiCBmyo_qQPHmnuwZ-gRxBlbQkDuPQyXdl_XRygr1FwZvaVQU11KxPeUfMQMor6QF61yg6ZTomJ38vgaD5NgxyRm7wzZcr_cg_rPNWL_k4PtRtPGW4lg-Ym2njA8W1TkyblJohxMAYoQSxi0sw2wrRovYrRTNYu-m2E3JdrlxuxZ1Mr13dGC52uQkUt6w3TQIbfJSHdZjcXoXdu9E3r9c2Wwpy1-VaPq-bDh-K_NTBv3lbpxBzJGwnc_ce-Ood0kEaPS1WcIByJA8UiuruW6otLh4URhhvZwZ3ZSYAjqASD_3XVcTG6vCH8ZxxhyRuk_RrRNeQ7r6M2KfW9KjsfQGQVEjofSw8QF1es-KIAhTLvBjEEGT23yqrDJAsb5iiEXHQZ5K7zGTrIjDyeGr66qKUDjZN8RqhWDpHNOBcE7MykiDZWoMpmnhhuqtTMnC2GyngPUQ9KNKDGFoOAgOC2aSXbGWChU69j-eRdKczQR1P0d2m3rEwgZDdpx9ggn1DrrI1sezCqkbffto8sH1NWA1udddCcj88m6x88f9qZpVcvR3nMm0gtEw3lCBOQw3W6HcbRxG-Il7VpSpERscK7ccd5CJXb79dVrlaZp-wwVQaLS2jA8lHZwIJI6-N_8avabLS2gM7D7zixRM-HbfVhFTK_ZEp-M72cBpWw8a89ZN1q2BIhsitjgwL_PLFpSQRo28omLIUqG-fWyYc3cxs8PdzhFwqeXUhPF7wBjSpcvXcy684l1SmD2XuYn5MmGu6cU-QljFzG53C4akG_S72Q6KJbA4OQTQFU8gMtqoTZGzeVJIkuBBLO7BImonbD7gs40u1P2_tYd9RZkF0q5hGP4PqKyvWpnDZxaNhks5akL50jX8sOLziq841Rrq4vmEVewN"}
+[2025-05-22 17:12:17] Firebase 설정 로드 시작
+[2025-05-22 17:12:17] Firebase 설정 로드 완료
+[2025-05-22 17:12:17] reCAPTCHA 서비스 초기화 시작
+[2025-05-22 17:12:17] reCAPTCHA 서비스 초기화 완료
+[2025-05-22 17:12:17] reCAPTCHA 토큰 검증 시작
+[2025-05-22 17:12:17] reCAPTCHA 검증 결과 Array
+(
+    [success] => 1
+    [score] => 1
+)
+
+[2025-05-22 17:12:17] 전화번호 정규화 Array
+(
+    [original] => 010-1234-1234
+    [normalized] => 01012341234
+)
+
+[2025-05-22 17:12:17] 전화번호 검증 결과 Array
+(
+    [isValid] => 1
+    [phone] => 01012341234
+    [country_code] => +82
+)
+
+[2025-05-22 17:12:17] Firebase Auth 서비스 초기화 시작
+[2025-05-22 17:12:17] PHP 에러 발생 Array
+(
+    [type] => 8
+    [message] => Constant FIREBASE_API_KEY already defined
+    [file] => /var/www/html/topmkt/config/firebase/config.php
+    [line] => 51
+)
+

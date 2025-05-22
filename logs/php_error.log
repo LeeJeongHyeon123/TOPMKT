@@ -24,3 +24,10 @@
 [22-May-2025 16:06:37 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
 [22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 위험 점수: 1
 [22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6ao95ku8ApagK9B4e4e1qS6c0PTndw7BMk3dPZwsjm...
+[22-May-2025 17:12:17 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 17:12:17 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 17:12:17 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
