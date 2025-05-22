@@ -21,6 +21,57 @@ main {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
+/* 로고 스타일 */
+.auth-logo {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.auth-logo img {
+    height: 40px;
+    width: auto;
+}
+
+/* 탭 스타일 */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6c757d;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-tab:hover {
+    color: #3498db;
+}
+
+.auth-tab.active {
+    color: #3498db;
+    border-bottom: 2px solid #3498db;
+}
+
+/* 탭 서브타이틀 */
+.auth-subtitle {
+    font-size: 18px;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
 .auth-header {
     text-align: center;
     margin-bottom: 40px;
@@ -221,6 +272,24 @@ main {
     color: #e74c3c;
     font-size: 0.9rem;
     margin-top: 4px;
+}
+
+/* 정책 안내 스타일 */
+.auth-policy {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.auth-policy ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.auth-policy li {
+    margin-bottom: 6px;
 }
 
 /* 반응형 스타일 */
