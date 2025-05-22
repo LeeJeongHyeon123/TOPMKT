@@ -8,9 +8,28 @@ verify_backup() {
     echo "원본 디렉토리: ${source_dir}"
     echo "백업 디렉토리: ${backup_dir}"
     
-    # 1. 파일 수 검증
-    local source_count=$(find "$source_dir" -type f | wc -l)
-    local backup_count=$(find "$backup_dir" -type f | wc -l)
+    # 제외할 디렉토리/파일 목록
+    local exclude_list=(
+        ".git"
+        "node_modules"
+        "vendor"
+        "*.log"
+        "*.log.*"
+        "*.tmp"
+        "*.temp"
+        "*.swp"
+        "*.swo"
+    )
+    
+    # 제외 옵션 생성
+    local find_exclude=""
+    for item in "${exclude_list[@]}"; do
+        find_exclude+="-not -path '*/${item}' "
+    done
+    
+    # 1. 파일 수 검증 (제외 목록 제외)
+    local source_count=$(eval "find '$source_dir' -type f ${find_exclude} | wc -l")
+    local backup_count=$(eval "find '$backup_dir' -type f ${find_exclude} | wc -l")
     
     echo "원본 파일 수: ${source_count}"
     echo "백업 파일 수: ${backup_count}"
@@ -37,9 +56,9 @@ verify_backup() {
         echo "✓ ${file} 확인 완료"
     done
     
-    # 3. 파일 크기 검증
-    local source_size=$(du -sb "$source_dir" | cut -f1)
-    local backup_size=$(du -sb "$backup_dir" | cut -f1)
+    # 3. 파일 크기 검증 (제외 목록 제외)
+    local source_size=$(eval "find '$source_dir' -type f ${find_exclude} -exec du -b {} + | awk '{total += $1} END {print total}'")
+    local backup_size=$(eval "find '$backup_dir' -type f ${find_exclude} -exec du -b {} + | awk '{total += $1} END {print total}'")
     
     echo "원본 크기: ${source_size} bytes"
     echo "백업 크기: ${backup_size} bytes"
