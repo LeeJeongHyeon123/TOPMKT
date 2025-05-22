@@ -17,7 +17,7 @@ echo "[백업] Git add ."
 cd /var/www/html/topmkt
 git add .
 echo "[백업] Git commit"
-git commit -m "[BACKUP] ${DATE} 백업"
+git commit -m "[BACKUP] ${DATE} 백업 - ${DESC}"
 echo "[백업] Git push"
 git push origin master
 echo "[백업] Git 백업 완료"
