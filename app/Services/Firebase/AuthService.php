@@ -291,20 +291,24 @@ class AuthService
         try {
             // 전화번호 정규화
             $normalizedPhone = $this->formatPhoneNumber($phoneNumber);
-            error_log('정규화된 전화번호: ' . $normalizedPhone);
+            error_log('[AuthService] 정규화된 전화번호: ' . $normalizedPhone);
             
             // 인증번호 전송 가능 여부 확인
             $canSend = $this->canSendVerificationCode($normalizedPhone);
             if (!$canSend['allowed']) {
-                return [
+                error_log('[AuthService] 인증번호 전송 불가: ' . $canSend['message']);
+                $finalReturn = [
                     'success' => false,
                     'message' => $canSend['message']
                 ];
+                error_log('[AuthService] sendVerificationCode 최종 반환값 (전송 불가): ' . json_encode($finalReturn));
+                return $finalReturn;
             }
             
             // Firebase Authentication REST API를 사용하여 인증번호 전송
             $apiKey = $this->config['auth']['apiKey'];
             $url = "https://identitytoolkit.googleapis.com/v1/accounts:sendVerificationCode?key={$apiKey}";
+            error_log('[AuthService] Firebase API URL: ' . $url);
             
             $requestData = [
                 'phoneNumber' => $normalizedPhone
@@ -315,10 +319,12 @@ class AuthService
                 $requestData['recaptchaToken'] = $recaptchaToken;
             }
             
-            error_log('인증번호 전송 API 요청: ' . json_encode(array_merge(
-                $requestData, 
-                ['recaptchaToken' => $recaptchaToken ? substr($recaptchaToken, 0, 20) . '...' : null]
-            )));
+            // 요청 데이터 로깅 (reCAPTCHA 토큰은 일부만)
+            $loggableRequestData = $requestData;
+            if (isset($loggableRequestData['recaptchaToken'])) {
+                $loggableRequestData['recaptchaToken'] = substr($loggableRequestData['recaptchaToken'], 0, 20) . '...';
+            }
+            error_log('[AuthService] 인증번호 전송 API 요청 데이터: ' . json_encode($loggableRequestData));
             
             try {
                 $client = new Client([
@@ -339,12 +345,13 @@ class AuthService
                 $statusCode = $response->getStatusCode();
                 $responseBody = $response->getBody()->getContents();
                 
-                error_log('인증번호 전송 API 응답 상태 코드: ' . $statusCode);
-                error_log('인증번호 전송 API 응답 내용: ' . $responseBody);
+                error_log('[AuthService] 인증번호 전송 API 응답 상태 코드: ' . $statusCode);
+                error_log('[AuthService] 인증번호 전송 API 응답 내용: ' . $responseBody);
                 
                 if ($statusCode >= 400) {
                     $errorData = json_decode($responseBody, true);
                     $errorMsg = isset($errorData['error']['message']) ? $errorData['error']['message'] : '상태 코드 ' . $statusCode;
+                    error_log('[AuthService] API 오류 응답 (>=400): ' . $errorMsg . ' | 응답 본문: ' . $responseBody);
                     throw new \Exception('API 오류 응답: ' . $errorMsg);
                 }
                 
@@ -356,63 +363,176 @@ class AuthService
                 
                 if (isset($result['error'])) {
                     $errorMsg = $result['error']['message'] ?? '알 수 없는 오류';
-                    error_log('Firebase 인증번호 전송 오류: ' . json_encode($result['error']));
-                    throw new \Exception($errorMsg);
+                    
+                    // Firebase 오류 코드를 한국어 메시지로 변환
+                    $errorMapping = [
+                        'INVALID_PHONE_NUMBER' => '유효하지 않은 전화번호 형식입니다.',
+                        'TOO_MANY_ATTEMPTS' => '너무 많은 시도로 인해 차단되었습니다. 잠시 후 다시 시도해주세요.',
+                        'QUOTA_EXCEEDED' => '일일 인증 한도를 초과했습니다. 내일 다시 시도해주세요.',
+                        'MISSING_RECAPTCHA_TOKEN' => 'reCAPTCHA 토큰이 필요합니다. 페이지를 새로고침 후 다시 시도해주세요.',
+                        'INVALID_RECAPTCHA_TOKEN' => 'reCAPTCHA 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해주세요.'
+                    ];
+                    
+                    $message = $errorMapping[$errorMsg] ?? '인증번호 전송 중 오류가 발생했습니다: ' . $errorMsg;
+                    
+                    error_log('Firebase 인증 오류: ' . $errorMsg);
+                    
+                    // 인증 시도 기록
+                    $this->logAuthAttempt($normalizedPhone, false, 'send');
+                    
+                    // 남은 시도 횟수 업데이트
+                    $updatedAttempts = $this->getVerificationAttempts($normalizedPhone);
+                    
+                    // 차단 상태 무시 - Firebase에서는 차단됐지만 우리 시스템에서는 아직 시도 횟수가 남아있는 경우
+                    if ($errorMsg === 'TOO_MANY_ATTEMPTS') {
+                        error_log('Firebase 차단 상태 감지, Firebase에서는 차단되었지만 로컬 시스템에서는 확인 필요');
+                        
+                        // 로컬 시스템의 남은 시도 횟수 확인
+                        if ($updatedAttempts['remainingAttempts'] > 0) {
+                            error_log('로컬 시스템에서는 시도 횟수가 남아있음: ' . $updatedAttempts['remainingAttempts']);
+                            
+                            // 로컬 시스템 기준으로 메시지 설정
+                            $message = '인증번호가 일치하지 않습니다. 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
+                            
+                            // 시도 횟수 감소
+                            $this->logAuthAttempt($normalizedPhone, false, 'send');
+                            
+                            // 남은 시도 횟수 다시 확인
+                            $updatedAttempts = $this->getVerificationAttempts($normalizedPhone);
+                            
+                            $finalReturn = [
+                                'success' => false,
+                                'message' => $message
+                            ];
+                            error_log('[AuthService] sendVerificationCode 최종 반환값 (Firebase 차단 감지): ' . json_encode($finalReturn));
+                            return $finalReturn;
+                        } else {
+                            // 실제로 시도 횟수가 0이면 차단 메시지 그대로 유지
+                            error_log('로컬 시스템에서도 시도 횟수가 없음, 차단 상태 유지');
+                            
+                            // 24시간 차단 설정
+                            $now = time();
+                            $blockedUntil = $now + 86400;
+                            
+                            $finalReturn = [
+                                'success' => false,
+                                'message' => '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.',
+                                'sessionInfo' => null
+                            ];
+                            error_log('[AuthService] sendVerificationCode 최종 반환값 (Firebase 차단 감지): ' . json_encode($finalReturn));
+                            return $finalReturn;
+                        }
+                    }
+                    
+                    // 오류 메시지에 남은 시도 횟수 추가
+                    if ($errorMsg === 'INVALID_CODE') {
+                        if ($updatedAttempts['remainingAttempts'] <= 0) {
+                            $message = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+                        } else {
+                            $message .= ' 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
+                        }
+                    }
+                    
+                    $finalReturn = [
+                        'success' => false,
+                        'message' => $message,
+                        'sessionInfo' => null
+                    ];
+                    error_log('[AuthService] sendVerificationCode 최종 반환값 (Firebase 오류 처리): ' . json_encode($finalReturn));
+                    return $finalReturn;
                 }
                 
                 // 인증 시도 기록
                 $this->logAuthAttempt($normalizedPhone, true, 'send');
                 
-                return [
+                // 인증 성공 시 실패 횟수 초기화
+                $this->resetFailedAttempts($normalizedPhone);
+                error_log('인증 성공으로 실패 횟수가 초기화되었습니다: ' . $normalizedPhone);
+                
+                // 응답에 idToken이 있는지 검증
+                if (!isset($result['idToken'])) {
+                    error_log('경고: API 응답에 idToken이 없습니다: ' . json_encode($result));
+                } else {
+                    error_log('성공: idToken 발견, 길이: ' . strlen($result['idToken']));
+                }
+                
+                // 성공 응답 구성
+                $finalReturn = [
                     'success' => true,
-                    'message' => '인증번호가 전송되었습니다.',
+                    'message' => '인증이 완료되었습니다.',
                     'sessionInfo' => $result['sessionInfo']
                 ];
+                error_log('[AuthService] sendVerificationCode 최종 반환값 (성공): ' . json_encode($finalReturn));
+                return $finalReturn;
             } catch (\GuzzleHttp\Exception\RequestException $e) {
-                error_log('인증번호 전송 API 요청 오류: ' . $e->getMessage());
+                error_log('[AuthService] 인증번호 전송 Guzzle API 요청 오류: ' . $e->getMessage());
                 
                 if ($e->hasResponse()) {
-                    $responseBody = $e->getResponse()->getBody()->getContents();
-                    error_log('API 오류 응답 내용: ' . $responseBody);
+                    $guzzleStatusCode = $e->getResponse()->getStatusCode();
+                    $guzzleResponseBody = $e->getResponse()->getBody()->getContents();
+                    error_log('[AuthService] Guzzle API 오류 응답 상태 코드: ' . $guzzleStatusCode);
+                    error_log('[AuthService] Guzzle API 오류 응답 내용: ' . $guzzleResponseBody);
                     
-                    $errorData = json_decode($responseBody, true);
+                    $errorData = json_decode($guzzleResponseBody, true);
                     if (isset($errorData['error']['message'])) {
                         $errorMsg = $errorData['error']['message'];
                         error_log('Firebase 오류 메시지: ' . $errorMsg);
                         
-                        // 오류 메시지에 따른 사용자 친화적인 메시지
-                        $errorMapping = [
-                            'INVALID_PHONE_NUMBER' => '유효하지 않은 전화번호 형식입니다.',
-                            'TOO_MANY_ATTEMPTS' => '너무 많은 시도로 인해 차단되었습니다. 잠시 후 다시 시도해주세요.',
-                            'QUOTA_EXCEEDED' => '일일 인증 한도를 초과했습니다. 내일 다시 시도해주세요.',
-                            'MISSING_RECAPTCHA_TOKEN' => 'reCAPTCHA 토큰이 필요합니다. 페이지를 새로고침 후 다시 시도해주세요.',
-                            'INVALID_RECAPTCHA_TOKEN' => 'reCAPTCHA 인증에 실패했습니다. 페이지를 새로고침 후 다시 시도해주세요.'
-                        ];
-                        
-                        $message = $errorMapping[$errorMsg] ?? '인증번호 전송 중 오류가 발생했습니다: ' . $errorMsg;
-                        
-                        // 인증 시도 기록
-                        $this->logAuthAttempt($normalizedPhone, false, 'send');
-                        
-                        return [
-                            'success' => false,
-                            'message' => $message
-                        ];
+                        // 특정 오류 메시지 처리
+                        if ($errorMsg === 'INVALID_CODE') {
+                            $this->logAuthAttempt($normalizedPhone, false, 'send');
+                            
+                            // 남은 시도 횟수 업데이트
+                            $updatedAttempts = $this->getVerificationAttempts($normalizedPhone);
+                            
+                            // 메시지에 항상 남은 시도 횟수 포함
+                            $message = '인증번호가 일치하지 않습니다.';
+                            if ($updatedAttempts['remainingAttempts'] <= 0) {
+                                $message = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+                            } else {
+                                $message .= ' 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
+                            }
+                            
+                            $finalReturn = [
+                                'success' => false,
+                                'message' => $message,
+                                'sessionInfo' => null
+                            ];
+                            error_log('[AuthService] sendVerificationCode 최종 반환값 (Firebase 오류 처리): ' . json_encode($finalReturn));
+                            return $finalReturn;
+                        }
                     }
                 }
                 
+                // Guzzle 예외지만 응답이 없거나 파싱 불가능한 경우
+                error_log('[AuthService] Guzzle API 요청 오류 (응답 없거나 파싱 불가)');
                 throw new \Exception('API 요청 오류: ' . $e->getMessage());
             }
         } catch (\Exception $e) {
-            error_log('인증번호 전송 오류: ' . $e->getMessage());
+            error_log('[AuthService] 인증번호 전송 중 예외 발생: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine());
             
             // 인증 시도 기록
             $this->logAuthAttempt($phoneNumber, false, 'send');
             
-            return [
+            // 남은 시도 횟수 업데이트
+            $updatedAttempts = $this->getVerificationAttempts($phoneNumber);
+            
+            // 기본 응답 구조 정의
+            $finalReturn = [
                 'success' => false,
-                'message' => '인증번호 전송에 실패했습니다. 잠시 후 다시 시도해주세요.'
+                'message' => '인증번호 전송에 실패했습니다. 잠시 후 다시 시도해주세요.',
+                'sessionInfo' => null
             ];
+            
+            // 메시지에 남은 시도 횟수 포함
+            if ($updatedAttempts['remainingAttempts'] <= 0) {
+                $finalReturn['message'] = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+            } else {
+                $finalReturn['message'] = '인증번호가 일치하지 않습니다. 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
+            }
+            
+            error_log('[AuthService] sendVerificationCode 최종 반환값 (일반 예외): ' . json_encode($finalReturn));
+            return $finalReturn;
         }
     }
     
@@ -572,14 +692,28 @@ class AuthService
     public function verifyCode($phoneNumber, $code, $sessionInfo)
     {
         try {
+            error_log('=== verifyCode 메서드 호출 시작 ===');
+            error_log('파라미터: 전화번호=' . $phoneNumber . ', 코드=' . $code . ', 세션Info=' . substr($sessionInfo, 0, 20) . '...');
+            
             // 전화번호 정규화
             $normalizedPhone = $this->formatPhoneNumber($phoneNumber);
+            error_log('정규화된 전화번호: ' . $normalizedPhone);
             
             // 인증 시도 횟수 확인
             $attempts = $this->getVerificationAttempts($normalizedPhone);
             
             // 디버그: 인증 시도 확인 결과 로깅
             error_log('인증번호 확인 시도 - 전화번호: ' . $normalizedPhone . ', 시도 결과: ' . json_encode($attempts));
+            
+            // 기본 응답 구조 정의 (항상 모든 필드를 포함하도록)
+            $defaultResponse = [
+                'success' => false,
+                'message' => '인증에 실패했습니다.',
+                'idToken' => null,
+                'remainingAttempts' => $attempts['remainingAttempts'],
+                'isBlocked' => $attempts['isBlocked'],
+                'blockedUntil' => $attempts['blockedUntil'] ?? 0
+            ];
             
             // 차단된 경우
             if ($attempts['isBlocked']) {
@@ -589,13 +723,12 @@ class AuthService
                 
                 error_log('인증 차단 감지 - 전화번호: ' . $normalizedPhone . ', 남은 시간: ' . $hours . '시간 ' . $minutes . '분');
                 
-                return [
-                    'success' => false,
-                    'message' => "인증이 차단되었습니다. {$hours}시간 {$minutes}분 후에 다시 시도해주세요.",
-                    'remainingAttempts' => 0,
-                    'isBlocked' => true,
-                    'blockedUntil' => $attempts['blockedUntil']
-                ];
+                $defaultResponse['message'] = "인증이 차단되었습니다. {$hours}시간 {$minutes}분 후에 다시 시도해주세요.";
+                $defaultResponse['remainingAttempts'] = 0;
+                $defaultResponse['isBlocked'] = true;
+                $defaultResponse['blockedUntil'] = $attempts['blockedUntil'];
+                
+                return $defaultResponse;
             }
             
             // 시도 횟수 초과
@@ -616,13 +749,12 @@ class AuthService
                     'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
                 ]);
                 
-                return [
-                    'success' => false,
-                    'message' => '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.',
-                    'remainingAttempts' => 0,
-                    'isBlocked' => true,
-                    'blockedUntil' => $blockedUntil
-                ];
+                $defaultResponse['message'] = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+                $defaultResponse['remainingAttempts'] = 0;
+                $defaultResponse['isBlocked'] = true;
+                $defaultResponse['blockedUntil'] = $blockedUntil;
+                
+                return $defaultResponse;
             }
             
             // Firebase Authentication REST API를 사용하여 인증번호 확인
@@ -709,13 +841,12 @@ class AuthService
                             // 남은 시도 횟수 다시 확인
                             $updatedAttempts = $this->getVerificationAttempts($normalizedPhone);
                             
-                            return [
-                                'success' => false,
-                                'message' => $message,
-                                'remainingAttempts' => $updatedAttempts['remainingAttempts'],
-                                'isBlocked' => false,  // 차단 상태를 false로 설정
-                                'blockedUntil' => 0
-                            ];
+                            $defaultResponse['message'] = $message;
+                            $defaultResponse['remainingAttempts'] = $updatedAttempts['remainingAttempts'];
+                            $defaultResponse['isBlocked'] = false;
+                            $defaultResponse['blockedUntil'] = 0;
+                            
+                            return $defaultResponse;
                         } else {
                             // 실제로 시도 횟수가 0이면 차단 메시지 그대로 유지
                             error_log('로컬 시스템에서도 시도 횟수가 없음, 차단 상태 유지');
@@ -724,13 +855,12 @@ class AuthService
                             $now = time();
                             $blockedUntil = $now + 86400;
                             
-                            return [
-                                'success' => false,
-                                'message' => '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.',
-                                'remainingAttempts' => 0,
-                                'isBlocked' => true,
-                                'blockedUntil' => $blockedUntil
-                            ];
+                            $defaultResponse['message'] = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+                            $defaultResponse['remainingAttempts'] = 0;
+                            $defaultResponse['isBlocked'] = true;
+                            $defaultResponse['blockedUntil'] = $blockedUntil;
+                            
+                            return $defaultResponse;
                         }
                     }
                     
@@ -743,13 +873,12 @@ class AuthService
                         }
                     }
                     
-                    return [
-                        'success' => false,
-                        'message' => $message,
-                        'remainingAttempts' => $updatedAttempts['remainingAttempts'],
-                        'isBlocked' => $updatedAttempts['isBlocked'],
-                        'blockedUntil' => $updatedAttempts['blockedUntil'] ?? 0
-                    ];
+                    $defaultResponse['message'] = $message;
+                    $defaultResponse['remainingAttempts'] = $updatedAttempts['remainingAttempts'];
+                    $defaultResponse['isBlocked'] = $updatedAttempts['isBlocked'];
+                    $defaultResponse['blockedUntil'] = $updatedAttempts['blockedUntil'] ?? 0;
+                    
+                    return $defaultResponse;
                 }
                 
                 // 인증 시도 기록
@@ -757,14 +886,27 @@ class AuthService
                 
                 // 인증 성공 시 실패 횟수 초기화
                 $this->resetFailedAttempts($normalizedPhone);
+                error_log('인증 성공으로 실패 횟수가 초기화되었습니다: ' . $normalizedPhone);
                 
-                return [
-                    'success' => true,
-                    'message' => '인증이 완료되었습니다.',
-                    'idToken' => $result['idToken'] ?? null,
-                    'remainingAttempts' => 5,
-                    'isBlocked' => false
-                ];
+                // 응답에 idToken이 있는지 검증
+                if (!isset($result['idToken'])) {
+                    error_log('경고: API 응답에 idToken이 없습니다: ' . json_encode($result));
+                } else {
+                    error_log('성공: idToken 발견, 길이: ' . strlen($result['idToken']));
+                }
+                
+                // 성공 응답 구성
+                $defaultResponse['success'] = true;
+                $defaultResponse['message'] = '인증이 완료되었습니다.';
+                $defaultResponse['idToken'] = isset($result['idToken']) ? $result['idToken'] : null;
+                $defaultResponse['remainingAttempts'] = 5;
+                $defaultResponse['isBlocked'] = false;
+                $defaultResponse['blockedUntil'] = 0;
+                
+                error_log('=== verifyCode 메서드 정상 종료 ===');
+                error_log('응답: ' . json_encode($defaultResponse));
+                
+                return $defaultResponse;
             } catch (\GuzzleHttp\Exception\RequestException $e) {
                 error_log('인증번호 확인 API 요청 오류: ' . $e->getMessage());
                 
@@ -792,13 +934,12 @@ class AuthService
                                 $message .= ' 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
                             }
                             
-                            return [
-                                'success' => false,
-                                'message' => $message,
-                                'remainingAttempts' => $updatedAttempts['remainingAttempts'],
-                                'isBlocked' => $updatedAttempts['isBlocked'],
-                                'blockedUntil' => $updatedAttempts['blockedUntil'] ?? 0
-                            ];
+                            $defaultResponse['message'] = $message;
+                            $defaultResponse['remainingAttempts'] = $updatedAttempts['remainingAttempts'];
+                            $defaultResponse['isBlocked'] = $updatedAttempts['isBlocked'];
+                            $defaultResponse['blockedUntil'] = $updatedAttempts['blockedUntil'] ?? 0;
+                            
+                            return $defaultResponse;
                         }
                     }
                 }
@@ -817,16 +958,18 @@ class AuthService
                     $message .= ' 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
                 }
                 
-                return [
-                    'success' => false,
-                    'message' => $message,
-                    'remainingAttempts' => $updatedAttempts['remainingAttempts'],
-                    'isBlocked' => $updatedAttempts['isBlocked'],
-                    'blockedUntil' => $updatedAttempts['blockedUntil'] ?? 0
-                ];
+                $defaultResponse['message'] = $message;
+                $defaultResponse['remainingAttempts'] = $updatedAttempts['remainingAttempts'];
+                $defaultResponse['isBlocked'] = $updatedAttempts['isBlocked'];
+                $defaultResponse['blockedUntil'] = $updatedAttempts['blockedUntil'] ?? 0;
+                
+                return $defaultResponse;
             }
         } catch (\Exception $e) {
             error_log('인증번호 확인 오류: ' . $e->getMessage());
+            error_log('스택 트레이스: ' . $e->getTraceAsString());
+            error_log('파일: ' . $e->getFile() . ', 줄: ' . $e->getLine());
+            error_log('=== verifyCode 메서드 예외 발생으로 종료 ===');
             
             // 인증 시도 기록
             $this->logAuthAttempt($phoneNumber, false, 'verify');
@@ -834,21 +977,26 @@ class AuthService
             // 남은 시도 횟수 업데이트
             $updatedAttempts = $this->getVerificationAttempts($phoneNumber);
             
-            // 메시지에 항상 남은 시도 횟수 포함
-            $message = '인증번호가 일치하지 않습니다.';
-            if ($updatedAttempts['remainingAttempts'] <= 0) {
-                $message = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
-            } else {
-                $message .= ' 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
-            }
-            
-            return [
+            // 기본 응답 구조 정의
+            $finalResponse = [
                 'success' => false,
-                'message' => $message,
+                'message' => '인증번호 확인 중 오류가 발생했습니다: ' . $e->getMessage(),
+                'idToken' => null,
                 'remainingAttempts' => $updatedAttempts['remainingAttempts'],
                 'isBlocked' => $updatedAttempts['isBlocked'],
                 'blockedUntil' => $updatedAttempts['blockedUntil'] ?? 0
             ];
+            
+            // 메시지에 남은 시도 횟수 포함
+            if ($updatedAttempts['remainingAttempts'] <= 0) {
+                $finalResponse['message'] = '1시간 내 인증번호 5회 오류로 24시간 동안 인증이 차단되었습니다.';
+            } else {
+                $finalResponse['message'] = '인증번호가 일치하지 않습니다. 남은 시도 횟수: ' . $updatedAttempts['remainingAttempts'] . '회';
+            }
+            
+            error_log('응답: ' . json_encode($finalResponse));
+            
+            return $finalResponse;
         }
     }
     

@@ -126,8 +126,10 @@ include_once __DIR__ . '/includes/header.php';
         right: 10px;
         top: 50%;
         transform: translateY(-50%);
-        color: #666;
+        color: #dc3545;
         font-size: 14px;
+        font-weight: 600;
+        z-index: 10;
     }
 
     .verification-button-group {
@@ -302,7 +304,9 @@ include_once __DIR__ . '/includes/header.php';
                 </div>
                 <div class="form-group verification-group" id="loginVerificationGroup" style="display:none;">
                     <label for="loginCode">인증번호</label>
-                    <input type="text" id="loginCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
+                    <div class="verification-input-group">
+                        <input type="text" id="loginCode" name="verificationCode" placeholder="인증번호 6자리" maxlength="6" pattern="\d*" inputmode="numeric">
+                    </div>
                 </div>
                 <button type="button" class="auth-button" id="loginSendCodeBtn">인증번호 받기</button>
                 <button type="submit" class="auth-button" id="loginSubmitBtn" style="opacity:0;transition:none;display:none;">로그인</button>

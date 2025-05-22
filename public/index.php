@@ -154,5 +154,10 @@
 
     <main>
     </main>
+
+    <!-- Custom Scripts -->
+    <script src="/public/assets/js/main.js"></script>
+    <script src="/public/assets/js/auth.js"></script>
+
 </body>
 </html> 

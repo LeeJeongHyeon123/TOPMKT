@@ -151,12 +151,90 @@ foreach ($users as $user) {
             echo "✅ Firebase Authentication에서 사용자 삭제 완료\n";
         } catch (Exception $e) {
             echo "⚠️ Firebase Authentication에서 사용자 삭제 실패: " . $e->getMessage() . "\n";
+            
+            // 사용자 ID가 JWT 토큰인 경우 추출 시도
+            if (strpos($user['firebase_uid'], 'eyJ') === 0) {
+                echo "   JWT 토큰으로 보이는 값이 저장되어 있습니다. Firebase UID 추출 시도 중...\n";
+                try {
+                    // JWT 토큰 파싱
+                    $tokenParts = explode('.', $user['firebase_uid']);
+                    if (count($tokenParts) === 3) {
+                        $payload = json_decode(base64_decode(str_replace('_', '/', str_replace('-', '+', $tokenParts[1]))), true);
+                        if (isset($payload['user_id']) || isset($payload['sub'])) {
+                            $firebaseUid = $payload['user_id'] ?? $payload['sub'];
+                            echo "   Firebase UID 추출 성공: $firebaseUid\n";
+                            try {
+                                $auth->deleteUser($firebaseUid);
+                                echo "✅ Firebase Authentication에서 사용자 삭제 완료 (추출한 UID 사용)\n";
+                            } catch (Exception $e2) {
+                                echo "⚠️ 추출한 UID로 삭제 시도 실패: " . $e2->getMessage() . "\n";
+                            }
+                        } else {
+                            echo "⚠️ JWT 토큰에서 user_id 또는 sub 필드를 찾을 수 없습니다.\n";
+                        }
+                    } else {
+                        echo "⚠️ 유효한 JWT 토큰 형식이 아닙니다.\n";
+                    }
+                } catch (Exception $e2) {
+                    echo "⚠️ JWT 토큰 파싱 실패: " . $e2->getMessage() . "\n";
+                }
+            }
+        }
+    } else if ($useFirebase) {
+        // Firebase UID가 없는 경우 전화번호로 사용자 찾기 시도
+        try {
+            $normalizedPhone = $user['phone_number'];
+            if (substr($normalizedPhone, 0, 1) !== '+') {
+                // 한국 번호인 경우 +82 형식으로 변환
+                if (substr($normalizedPhone, 0, 2) === '01') {
+                    $normalizedPhone = '+82' . substr($normalizedPhone, 1);
+                } else {
+                    $normalizedPhone = '+' . $normalizedPhone;
+                }
+            }
+            
+            echo "ℹ️ 전화번호로 Firebase 사용자 찾기 시도 중... (전화번호: {$normalizedPhone})\n";
+            try {
+                $firebaseUser = $auth->getUserByPhoneNumber($normalizedPhone);
+                if ($firebaseUser) {
+                    echo "✅ Firebase에서 사용자 찾음 (UID: {$firebaseUser->uid})\n";
+                    try {
+                        $auth->deleteUser($firebaseUser->uid);
+                        echo "✅ Firebase Authentication에서 사용자 삭제 완료\n";
+                    } catch (Exception $e) {
+                        echo "⚠️ Firebase 사용자 삭제 실패: " . $e->getMessage() . "\n";
+                    }
+                }
+            } catch (Exception $e) {
+                echo "⚠️ 전화번호로 Firebase 사용자 찾기 실패: " . $e->getMessage() . "\n";
+            }
+        } catch (Exception $e) {
+            echo "⚠️ 전화번호 정규화 실패: " . $e->getMessage() . "\n";
         }
     }
     
     // 데이터베이스에서 사용자 삭제
     try {
         echo "ℹ️ 데이터베이스에서 사용자 삭제 중...\n";
+        
+        // 관련 테이블에서 데이터 삭제 (예: 사용자 세션, 활동 기록 등)
+        $relatedTables = ['user_sessions', 'user_activities', 'user_preferences', 'user_devices'];
+        foreach ($relatedTables as $table) {
+            try {
+                $checkTableExists = $pdo->query("SHOW TABLES LIKE '$table'");
+                if ($checkTableExists->rowCount() > 0) {
+                    $deleteStmt = $pdo->prepare("DELETE FROM $table WHERE user_id = :user_id");
+                    $deleteStmt->execute(['user_id' => $user['id']]);
+                    if ($deleteStmt->rowCount() > 0) {
+                        echo "   - $table 테이블에서 " . $deleteStmt->rowCount() . "개 레코드 삭제 완료\n";
+                    }
+                }
+            } catch (PDOException $e) {
+                echo "   - $table 테이블 삭제 중 오류 (무시됨): " . $e->getMessage() . "\n";
+            }
+        }
+        
+        // 사용자 데이터 삭제
         $stmt = $pdo->prepare("DELETE FROM users WHERE id = :id");
         $stmt->execute(['id' => $user['id']]);
         
@@ -164,7 +242,7 @@ foreach ($users as $user) {
             echo "✅ 데이터베이스에서 사용자 삭제 완료\n";
             $successCount++;
         } else {
-            echo "❌ 데이터베이스에서 사용자 삭제 실패\n";
+            echo "❌ 데이터베이스에서 사용자 삭제 실패 (이미 삭제되었거나 ID가 올바르지 않습니다)\n";
             $failCount++;
         }
     } catch (PDOException $e) {

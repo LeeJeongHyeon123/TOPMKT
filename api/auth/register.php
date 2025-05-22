@@ -294,11 +294,8 @@ try {
         $stmt = $pdo->query("SHOW TABLES LIKE 'users'");
         $usersTableExists = $stmt->rowCount() > 0;
         
-        $stmt = $pdo->query("SHOW TABLES LIKE 'user_profiles'");
-        $profilesTableExists = $stmt->rowCount() > 0;
-        
-        if (!$usersTableExists || !$profilesTableExists) {
-            debug_log("필요한 테이블이 존재하지 않음", ['users' => $usersTableExists, 'profiles' => $profilesTableExists]);
+        if (!$usersTableExists) {
+            debug_log("users 테이블이 존재하지 않음");
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => '데이터베이스 테이블이 준비되지 않았습니다.']);
             exit;
@@ -310,8 +307,8 @@ try {
         // 사용자 정보 저장
         $stmt = $pdo->prepare("
             INSERT INTO users 
-            (firebase_uid, nickname, phone_number, country_code, status, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, 'active', ?, ?)
+            (id, firebase_uid, nickname, phone_number, country, language, created_at, updated_at, last_login_at) 
+            VALUES (UUID(), ?, ?, ?, SUBSTRING(?, 2, 2), 'ko', ?, ?, NOW())
         ");
         
         debug_log("사용자 정보 저장 쿼리 준비", [
@@ -333,22 +330,31 @@ try {
         $userId = $pdo->lastInsertId();
         debug_log("사용자 정보 저장 성공", ['userId' => $userId]);
         
-        // 사용자 프로필 생성
-        $stmt = $pdo->prepare("
-            INSERT INTO user_profiles 
-            (user_id, introduction, created_at, updated_at) 
-            VALUES (?, '', ?, ?)
-        ");
+        // user_profiles 테이블 존재 여부 확인
+        $stmt = $pdo->query("SHOW TABLES LIKE 'user_profiles'");
+        $profilesTableExists = $stmt->rowCount() > 0;
         
-        debug_log("사용자 프로필 저장 쿼리 준비", ['userId' => $userId]);
-        
-        $stmt->execute([
-            $userId,
-            $now,
-            $now
-        ]);
-        
-        debug_log("사용자 프로필 저장 성공");
+        // user_profiles 테이블이 있는 경우에만 프로필 생성
+        if ($profilesTableExists) {
+            // 사용자 프로필 생성
+            $stmt = $pdo->prepare("
+                INSERT INTO user_profiles 
+                (user_id, introduction, created_at, updated_at) 
+                VALUES (?, '', ?, ?)
+            ");
+            
+            debug_log("사용자 프로필 저장 쿼리 준비", ['userId' => $userId]);
+            
+            $stmt->execute([
+                $userId,
+                $now,
+                $now
+            ]);
+            
+            debug_log("사용자 프로필 저장 성공");
+        } else {
+            debug_log("user_profiles 테이블이 존재하지 않아 프로필 생성 건너뜀");
+        }
         
         // 트랜잭션 커밋
         $pdo->commit();

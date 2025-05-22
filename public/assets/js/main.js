@@ -120,14 +120,139 @@ if (typeof TOPMKT === 'undefined') {
             if (errorElement) {
                 errorElement.style.display = 'none';
             }
+        },
+        
+        // 로그인 상태 확인
+        isLoggedIn: function() {
+            const authToken = localStorage.getItem('auth_token');
+            const userId = localStorage.getItem('user_id');
+            const keepLogin = localStorage.getItem('keep_login');
+            
+            return !!(authToken && userId && keepLogin === 'true');
+        },
+        
+        // 로그인 세션 확장 (토큰 갱신)
+        extendSession: function() {
+            if (this.isLoggedIn()) {
+                // 현재 시간 업데이트
+                localStorage.setItem('login_timestamp', Date.now());
+                console.log('[DEBUG] 로그인 세션 갱신 완료');
+                return true;
+            }
+            return false;
         }
     };
 }
+
+function updateHeaderUI() {
+    const authButtonsContainer = document.querySelector('.auth-buttons');
+    if (!authButtonsContainer) {
+        console.log('[DEBUG] auth-buttons container not found');
+        return;
+    }
+
+    const loginButton = authButtonsContainer.querySelector('.btn-login');
+    const registerButton = authButtonsContainer.querySelector('.btn-register');
+
+    if (TOPMKT.isLoggedIn()) {
+        console.log('[DEBUG] User is logged in, updating header.');
+        if (loginButton) {
+            loginButton.textContent = '로그아웃';
+            loginButton.href = '#'; 
+            loginButton.removeEventListener('click', handleLogoutClick); // 기존 리스너 중복 방지
+            loginButton.addEventListener('click', handleLogoutClick);
+        }
+        if (registerButton) {
+            registerButton.style.display = 'none';
+        }
+        /*
+        const nickname = localStorage.getItem('user_nickname');
+        if (nickname) {
+            const nicknameElement = document.createElement('span');
+            nicknameElement.className = 'user-nickname';
+            nicknameElement.textContent = nickname + '님 환영합니다!'; 
+            nicknameElement.style.color = '#333';
+            nicknameElement.style.marginRight = '10px';
+            authButtonsContainer.insertBefore(nicknameElement, loginButton);
+        }
+        */
+
+    } else {
+        console.log('[DEBUG] User is not logged in, ensuring default header.');
+        if (loginButton) {
+            loginButton.textContent = '로그인';
+            loginButton.href = '/auth.php';
+            loginButton.removeEventListener('click', handleLogoutClick); // 로그아웃 상태에서는 이 리스너 제거
+        }
+        if (registerButton) {
+            registerButton.style.display = ''; 
+        }
+        const existingNickname = authButtonsContainer.querySelector('.user-nickname');
+        if (existingNickname) {
+            existingNickname.remove();
+        }
+    }
+}
+
+async function handleLogoutClick(event) {
+    event.preventDefault(); // 기본 링크 동작 방지
+    console.log('[DEBUG] Logout button clicked');
+
+    try {
+        const response = await fetch('/api/auth/logout.php', {
+            method: 'POST', // 또는 GET, logout.php 구현에 따라
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('[DEBUG] Logout successful:', result.message);
+            // localStorage 항목 삭제
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_nickname');
+            localStorage.removeItem('keep_login');
+            localStorage.removeItem('login_timestamp');
+            localStorage.removeItem('firebase_id_token');
+            localStorage.removeItem('verification_session_info');
+            // 필요에 따라 더 많은 항목 삭제 가능
+
+            // UI 업데이트
+            updateHeaderUI();
+
+            // (선택) 홈페이지로 리다이렉트 또는 알림 표시
+            // window.location.href = '/'; 
+            // alert('로그아웃되었습니다.');
+        } else {
+            console.error('[ERROR] Logout failed:', result.message);
+            alert('로그아웃에 실패했습니다: ' + result.message);
+        }
+    } catch (error) {
+        console.error('[ERROR] Logout request failed:', error);
+        alert('로그아웃 요청 중 오류가 발생했습니다.');
+    }
+}
+
+// 세션 관리를 위한 정기 점검 (5분마다 실행)
+setInterval(function() {
+    if (TOPMKT.isLoggedIn()) {
+        TOPMKT.extendSession();
+    }
+}, 5 * 60 * 1000);
 
 // 페이지 로드 완료 시 실행
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOMContentLoaded 이벤트 발생');
     TOPMKT.setLoading(true);
+    
+    // 로그인 상태 확인 및 세션 연장
+    if (TOPMKT.isLoggedIn()) {
+        TOPMKT.extendSession();
+    }
+    updateHeaderUI(); // <-- Call the function to update header
 });
 
 // 모든 리소스 로드 완료 시 실행

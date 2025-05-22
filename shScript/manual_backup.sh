@@ -33,17 +33,7 @@ echo "[백업] 전체 프로젝트 백업 시작..."
 mkdir -p "${BACKUP_DIR}"
 
 # 제외할 디렉토리/파일 목록
-EXCLUDE_LIST=(
-    ".git"
-    "node_modules"
-    "vendor"
-    "*.log"
-    "*.log.*"
-    "*.tmp"
-    "*.temp"
-    "*.swp"
-    "*.swo"
-)
+EXCLUDE_LIST=()
 
 # 제외 옵션 생성
 echo "[백업] 제외 옵션 생성..."
