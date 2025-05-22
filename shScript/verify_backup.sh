@@ -166,6 +166,24 @@ print_time "[검증] 파일 시스템 무결성 검사 준비 중..."
 print_time "[검증] 모든 코드 파일의 체크섬 계산 중 (시간이 오래 걸릴 수 있습니다)..."
 print_time "[검증] 병렬 처리로 PHP, JS, CSS 파일 체크섬 계산 중..."
 
+# 디버깅용 메시지
+echo "백업 디렉토리: $BACKUP_DIR"
+
+# 디렉토리 내 파일 개수 확인
+php_count=$(find "$BACKUP_DIR" -type f -name "*.php" | wc -l)
+js_count=$(find "$BACKUP_DIR" -type f -name "*.js" | wc -l)
+css_count=$(find "$BACKUP_DIR" -type f -name "*.css" | wc -l)
+
+# 파일 개수 출력
+echo "찾은 파일 수: PHP: $php_count, JS: $js_count, CSS: $css_count"
+
+# 파일이 하나도 없는지 확인
+if [ "$php_count" -eq 0 ] && [ "$js_count" -eq 0 ] && [ "$css_count" -eq 0 ]; then
+    print_warning "경고: 백업 디렉토리에서 PHP, JS, CSS 파일을 찾을 수 없습니다!"
+    print_warning "백업 디렉토리 경로가 올바른지 확인하세요: $BACKUP_DIR"
+    exit 1
+fi
+
 # PHP 파일 MD5 계산 (병렬 처리)
 find "$BACKUP_DIR" -type f -name "*.php" -print0 | xargs -0 -P 4 -I {} md5sum {} > "${BACKUP_DIR}/md5sum_php.txt" &
 php_pid=$!
@@ -180,10 +198,33 @@ css_pid=$!
 
 # 진행 상황 표시
 while kill -0 $php_pid 2>/dev/null || kill -0 $js_pid 2>/dev/null || kill -0 $css_pid 2>/dev/null; do
-    echo -ne "\r[진행 중] PHP: $([ -f ${BACKUP_DIR}/md5sum_php.txt ] && wc -l < ${BACKUP_DIR}/md5sum_php.txt || echo "0") 파일, JS: $([ -f ${BACKUP_DIR}/md5sum_js.txt ] && wc -l < ${BACKUP_DIR}/md5sum_js.txt || echo "0") 파일, CSS: $([ -f ${BACKUP_DIR}/md5sum_css.txt ] && wc -l < ${BACKUP_DIR}/md5sum_css.txt || echo "0") 파일"
+    php_current=$([ -f "${BACKUP_DIR}/md5sum_php.txt" ] && wc -l < "${BACKUP_DIR}/md5sum_php.txt" || echo "0")
+    js_current=$([ -f "${BACKUP_DIR}/md5sum_js.txt" ] && wc -l < "${BACKUP_DIR}/md5sum_js.txt" || echo "0")
+    css_current=$([ -f "${BACKUP_DIR}/md5sum_css.txt" ] && wc -l < "${BACKUP_DIR}/md5sum_css.txt" || echo "0")
+    
+    echo -ne "\r[진행 중] PHP: ${php_current}/${php_count} 파일, JS: ${js_current}/${js_count} 파일, CSS: ${css_current}/${css_count} 파일"
     sleep 1
 done
 echo ""
+
+# 체크섬 파일 존재 확인
+if [ ! -f "${BACKUP_DIR}/md5sum_php.txt" ] || [ ! -f "${BACKUP_DIR}/md5sum_js.txt" ] || [ ! -f "${BACKUP_DIR}/md5sum_css.txt" ]; then
+    print_error "오류: 체크섬 파일 생성에 실패했습니다."
+    exit 1
+fi
+
+# 최종 체크섬 파일 크기 확인
+php_final=$(wc -l < "${BACKUP_DIR}/md5sum_php.txt" 2>/dev/null || echo "0")
+js_final=$(wc -l < "${BACKUP_DIR}/md5sum_js.txt" 2>/dev/null || echo "0")
+css_final=$(wc -l < "${BACKUP_DIR}/md5sum_css.txt" 2>/dev/null || echo "0")
+total_files=$((php_final + js_final + css_final))
+
+if [ "$total_files" -eq 0 ]; then
+    print_error "오류: 체크섬 계산이 실패했습니다. 체크섬 파일이 비어 있습니다."
+    exit 1
+fi
+
+echo "체크섬 계산 완료 - PHP: $php_final, JS: $js_final, CSS: $css_final, 총 $total_files 파일"
 
 # 모든 체크섬 파일 합치기
 cat "${BACKUP_DIR}/md5sum_php.txt" "${BACKUP_DIR}/md5sum_js.txt" "${BACKUP_DIR}/md5sum_css.txt" > "${BACKUP_DIR}/md5sum_all.txt"
