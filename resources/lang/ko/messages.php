@@ -103,5 +103,34 @@ return [
         'success' => '로그인에 성공했습니다.',
         'fail' => '로그인에 실패했습니다.',
     ],
+    'profile.update.success' => '프로필이 성공적으로 업데이트되었습니다.',
+    'profile.update.fail' => '프로필 업데이트에 실패했습니다.',
+
+    // 공지사항
+    'notice.list.title' => '공지사항',
+    'notice.list.header' => '공지사항',
+    'notice.list.no_notices' => '등록된 공지사항이 없습니다.',
+    'notice.list.table.id' => '번호',
+    'notice.list.table.title' => '제목',
+    'notice.list.table.author' => '작성자',
+    'notice.list.table.date' => '작성일',
+    'notice.list.table.views' => '조회수',
+
+    'notice.view.author' => '작성자',
+    'notice.view.date' => '작성일',
+    'notice.view.views' => '조회수',
+    'notice.view.go_list' => '목록으로',
+
+    // 메인 페이지
+    'index.title' => '메인',
+    'index.section.notice_title' => '공지사항',
+    'index.section.notice_empty' => '등록된 공지사항이 없습니다.',
+
+    // 일반
+    'common.site_title' => '탑마케팅',
+    'common.see_more' => '더보기',
+    'common.pagination.prev' => '이전',
+    'common.pagination.next' => '다음',
+
     // 기타 메시지 카테고리 추가 가능
 ]; 

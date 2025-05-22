@@ -30,7 +30,14 @@ $upcomingEvents = getDummyUpcomingEvents();
 $upcomingLectures = getDummyUpcomingLectures();
 $knowhowPosts = getDummyKnowhowPosts();
 $recruitingPosts = getDummyRecruitingPosts();
-$noticePosts = getDummyNoticePosts();
+// $noticePosts = getDummyNoticePosts(); // 기존 더미 데이터 로드 주석 처리
+
+// DB에서 최신 공지사항 5개 가져오기
+$db_main = Database::getInstance();
+$conn_main = $db_main->getConnection();
+$noticeStmt = $conn_main->prepare("SELECT n.id, n.title, u.nickname as author, n.created_at FROM notices n JOIN users u ON n.user_id = u.id ORDER BY n.created_at DESC LIMIT 5");
+$noticeStmt->execute();
+$noticePosts = $noticeStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="<?= $currentLang ?>">
@@ -312,26 +319,25 @@ include_once __DIR__ . '/includes/header.php';
     <!-- 공지사항 섹션 -->
     <section id="notice" class="section-notice">
         <div class="section-container">
-            <h2 class="section-title">공지사항</h2>
-            <div class="posts-grid">
-                <?php foreach ($noticePosts as $post): ?>
-                    <article class="post-card <?php echo $post['is_important'] ? 'important' : ''; ?>">
-                        <a href="/notice/view.php?id=<?php echo $post['id']; ?>" class="post-link">
-                            <h3 class="post-title">
-                                <?php if ($post['is_important']): ?>
-                                    <span class="notice-badge">중요</span>
-                                <?php endif; ?>
-                                <?php echo htmlspecialchars($post['title']); ?>
-                            </h3>
-                            <p class="post-excerpt"><?php echo htmlspecialchars($post['excerpt']); ?></p>
-                            <div class="post-meta">
-                                <div class="post-meta-left">
-                                    <span class="post-date"><?php echo formatDate($post['created_at']); ?></span>
-                                </div>
-                            </div>
-                        </a>
-                    </article>
-                <?php endforeach; ?>
+            <div class="section-header">
+                <h2 class="section-title"><?= __('index.section.notice_title') ?></h2>
+                <a href="/notice/index.php" class="btn-more"><?= __('common.see_more') ?></a>
+            </div>
+            <div class="notice-list">
+                <?php if (empty($noticePosts)): ?>
+                    <p class="no-content"><?= __('index.section.notice_empty') ?></p>
+                <?php else: ?>
+                    <ul>
+                        <?php foreach ($noticePosts as $post): ?>
+                            <li>
+                                <a href="/notice/view.php?id=<?php echo $post['id']; ?>" class="notice-item">
+                                    <span class="notice-title"><?php echo htmlspecialchars($post['title']); ?></span>
+                                    <span class="notice-date"><?php echo date('Y.m.d', strtotime($post['created_at'])); ?></span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
             </div>
         </div>
     </section>

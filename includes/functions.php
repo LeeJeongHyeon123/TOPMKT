@@ -158,37 +158,63 @@ function formatDate($date) {
  * 다국어 메시지를 가져옵니다.
  */
 function __($key, $replace = [], $lang = null) {
-    global $messages;
-    
-    // 현재 언어 설정
-    $currentLang = $lang ?? (isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko');
-    
-    // 언어 파일 로드
-    $langFile = __DIR__ . "/../resources/lang/{$currentLang}/messages.php";
-    if (file_exists($langFile)) {
-        $messages = require $langFile;
-    }
-    
-    // 키를 점(.)으로 분리
-    $parts = explode('.', $key);
-    $value = $messages;
-    
-    // 중첩된 배열에서 값을 찾음
-    foreach ($parts as $part) {
-        if (isset($value[$part])) {
-            $value = $value[$part];
+    static $loaded_messages = [];
+    static $current_loaded_lang = null;
+
+    $targetLang = $lang ?? (isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko');
+    // error_log("[Lang Debug] Target Lang: " . $targetLang . ", Key: " . $key); 
+
+    if ($current_loaded_lang !== $targetLang || !isset($loaded_messages[$targetLang])) {
+        $langFile = __DIR__ . "/../resources/lang/{$targetLang}/messages.php";
+        // error_log("[Lang Debug] Loading Lang File: " . $langFile);
+
+        if (file_exists($langFile)) {
+            $messages_from_file = require $langFile;
+            if (is_array($messages_from_file)) {
+                $loaded_messages[$targetLang] = $messages_from_file;
+                $current_loaded_lang = $targetLang;
+                // error_log("[Lang Debug] Lang File Loaded Successfully for " . $targetLang);
+            } else {
+                $loaded_messages[$targetLang] = []; 
+                // error_log("[Lang Debug] Lang File NOT an array: " . $langFile);
+            }
         } else {
-            return $key; // 번역을 찾을 수 없는 경우 키 반환
+            $loaded_messages[$targetLang] = []; 
+            // error_log("[Lang Debug] Lang File NOT found: " . $langFile);
+        }
+    }
+
+    $message_set = $loaded_messages[$targetLang] ?? [];
+    
+    // 수정된 로직: 키 전체를 사용하여 메시지 세트에서 직접 값을 찾습니다.
+    if (isset($message_set[$key])) {
+        $value = $message_set[$key];
+    } else {
+        // 키를 점(.)으로 분리하여 중첩된 배열에서 값을 찾는 기존 로직 (menu.vision 같은 경우)
+        $parts = explode('.', $key);
+        $value = $message_set;
+        $found = true;
+        foreach ($parts as $part) {
+            if (is_array($value) && isset($value[$part])) {
+                $value = $value[$part];
+            } else {
+                // error_log("[Lang Debug] Key PART NOT FOUND: " . $part . " in Key: " . $key);
+                $found = false;
+                break;
+            }
+        }
+        if (!$found) {
+            return $key; // 키를 찾지 못하면 원래 키 반환
         }
     }
     
-    // 문자열인 경우에만 변수 치환
     if (is_string($value) && !empty($replace)) {
-        foreach ($replace as $key => $val) {
-            $value = str_replace(':' . $key, $val, $value);
+        foreach ($replace as $placeholder => $replacement) {
+            $value = str_replace(':' . $placeholder, $replacement, $value);
         }
     }
     
+    // error_log("[Lang Debug] Returning Value: " . (is_array($value) ? '[ARRAY]' : $value) . " for Key: " . $key);
     return $value;
 }
 

@@ -2,7 +2,6 @@
 // 현재 언어 설정 확인
 $currentLang = isset($_GET['lang']) ? $_GET['lang'] : (isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko');
 ?>
-    </main>
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
