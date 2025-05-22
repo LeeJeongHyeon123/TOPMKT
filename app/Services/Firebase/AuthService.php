@@ -247,6 +247,13 @@ class AuthService
      * 
      * @param string $phoneNumber 전화번호
      * @return array ['success' => bool, 'message' => string, 'sessionInfo' => string]
+     *
+     * [설명]
+     * 1. 전화번호를 정규화(국제표준 E.164 형식)한다.
+     * 2. 인증번호 전송 가능 여부(횟수 제한 등)를 체크한다.
+     * 3. Firebase REST API(accounts:sendVerificationCode)로 인증번호 발송을 요청한다.
+     * 4. 성공 시 sessionInfo(세션 정보)를 반환한다.
+     * 5. 실패 시 에러 메시지를 반환한다.
      */
     public function sendVerificationCode($phoneNumber)
     {
@@ -313,6 +320,12 @@ class AuthService
      * @param string $code 인증번호
      * @param string $sessionInfo 세션 정보
      * @return array ['success' => bool, 'message' => string, 'idToken' => string]
+     *
+     * [설명]
+     * 1. 전화번호를 정규화(국제표준 E.164 형식)한다.
+     * 2. Firebase REST API(accounts:verifyPhoneNumber)로 인증번호 일치 여부를 확인한다.
+     * 3. 성공 시 idToken(로그인 토큰) 등 인증 결과를 반환한다.
+     * 4. 실패 시 에러 메시지를 반환한다.
      */
     public function verifyCode($phoneNumber, $code, $sessionInfo)
     {

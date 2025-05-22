@@ -22,17 +22,31 @@ $currentLang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'ko';
 $messages = require __DIR__ . "/resources/lang/{$currentLang}/messages.php";
 ?>
 <!DOCTYPE html>
-<html lang="<?= $currentLang ?>">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self' https://www.google.com">
-    <title><?= __('auth.login.title') ?> - 탑마케팅</title>
+    <title>로그인 - 탑마케팅</title>
+    
+    <!-- 파비콘 -->
+    <link rel="icon" type="image/x-icon" href="/public/assets/images/favicon.ico">
+    
+    <!-- 웹 폰트 로드 -->
+    <link rel="stylesheet" href="/public/assets/fonts/noto-sans-kr.css">
     
     <!-- CSS 파일 링크 -->
     <link rel="stylesheet" href="/public/assets/css/main.css">
     <link rel="stylesheet" href="/public/assets/css/auth.css">
     <link rel="stylesheet" href="/public/assets/css/loading-overlay.css">
+    
+    <!-- reCAPTCHA Enterprise -->
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
     
     <style>
     /* 기본 스타일 */
@@ -227,68 +241,14 @@ include_once __DIR__ . '/includes/header.php';
 <!-- reCAPTCHA 컨테이너 -->
 <div id="recaptcha-container"></div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth.js"></script>
-<!-- reCAPTCHA Enterprise -->
-<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfCdjErAAAAAL6YKLyHV_bt9of-8FNLCoOhW9C4"></script>
 <!-- Firebase 설정 및 인증 스크립트 -->
-<script src="/assets/js/firebase-config.js"></script>
-<script src="/assets/js/auth.js"></script>
-
-<script>
-// 즉시 실행
-(function() {
-    // 로딩 오버레이 제어
-    function setLoading(isLoading) {
-        console.log('setLoading 호출됨:', isLoading);
-        
-        const loadingOverlay = document.querySelector('.loading-overlay');
-        console.log('로딩 오버레이 요소:', loadingOverlay);
-        
-        if (!loadingOverlay) {
-            console.error('로딩 오버레이를 찾을 수 없습니다.');
-            return;
-        }
-        
-        if (isLoading) {
-            loadingOverlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            console.log('로딩 오버레이 표시됨');
-        } else {
-            loadingOverlay.classList.add('hidden');
-            document.body.style.overflow = '';
-            console.log('로딩 오버레이 숨겨짐');
-        }
-    }
-
-    // 페이지 로드 시 초기 로딩 상태 설정
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOMContentLoaded 이벤트 발생');
-        setLoading(true);
-    });
-
-    // 페이지 완전 로드 시
-    window.addEventListener('load', function() {
-        console.log('window.load 이벤트 발생');
-        setTimeout(() => {
-            console.log('타이머 완료 - 로딩 오버레이 숨기기');
-            setLoading(false);
-        }, 1000);
-    });
-
-    // 전역 스코프에 함수 노출
-    window.setLoading = setLoading;
-
-    // 초기 로그
-    console.log('로딩 오버레이 스크립트 초기화 완료');
-    
-    // 즉시 로딩 오버레이 표시
-    setLoading(true);
-})();
-</script>
+<script src="/public/assets/js/firebase-config.js"></script>
+<script src="/public/assets/js/auth.js"></script>
+<script src="/public/assets/js/main.js"></script>
 
 <?php
 // 푸터 포함
 include_once __DIR__ . '/includes/footer.php';
 ?>
+</body>
+</html>
