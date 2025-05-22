@@ -29,4 +29,5 @@ config/firebase.php
 config/firebase/firebase-credentials.json
 config/firebase-credentials.json
 config/google/service-account.json
+config/recaptcha-enterprise-credentials.json
 logs/php_errors.log
