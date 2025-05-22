@@ -3,6 +3,7 @@
 # 날짜 형식 생성
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_DIR="/backup/git/topmkt_${DATE}"
+TAG_NAME="v${DATE}"
 
 # 백업 설명 메시지(옵션)
 DESC="$1"
@@ -12,13 +13,20 @@ fi
 
 echo "[백업] 시작: $DATE"
 
-# 1. Git 로컬 커밋만 수행 (푸시 없음)
+# 1. Git 백업 및 태깅/푸시
 echo "[백업] Git add ."
 cd /var/www/html/topmkt
 git add .
 echo "[백업] Git commit"
 git commit -m "[BACKUP] ${DATE} 백업 - ${DESC}"
-echo "[백업] Git 로컬 커밋 완료 (푸시는 수행되지 않음)"
+
+# 태깅 추가
+echo "[백업] Git 태그 생성"
+git tag -a "${TAG_NAME}" -m "[TAG] ${DATE} - ${DESC}"
+
+# Git 푸시 시도 (실패해도 계속 진행)
+echo "[백업] Git push 시도 중..."
+git push origin master && git push origin "${TAG_NAME}" && echo "[백업] Git 푸시 성공" || echo "[백업] Git 푸시 실패 - 백업은 계속 진행합니다"
 
 # 2. 전체 프로젝트 백업
 echo "[백업] 전체 프로젝트 백업 시작..."
@@ -57,7 +65,7 @@ cat > "${BACKUP_DIR}/backup_info.txt" << EOL
 백업 크기: $(du -sh "${BACKUP_DIR}" | cut -f1)
 제외된 항목: ${EXCLUDE_LIST[*]}
 백업 설명: ${DESC}
-로컬 커밋: 예 (Git 태그 및 푸시 없음)
+Git 태그: ${TAG_NAME}
 EOL
 
 echo "[백업] 전체 프로젝트 백업 완료"

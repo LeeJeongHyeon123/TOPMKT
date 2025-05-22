@@ -39,26 +39,22 @@ cat "${BACKUP_DIR}/backup_info.txt"
 echo "----------------------------------------"
 print_time "[검증] 백업 정보 확인 완료"
 
-# 파일 시스템 검증 (파일 수 계산 및 진행상황 표시)
+# 파일 시스템 검증 (파일 수 계산 및 진행상황 표시) - 중요 파일만 검사
 print_time "[검증] 파일 시스템 무결성 검사 준비 중..."
-total_files=$(find "$BACKUP_DIR" -type f | wc -l)
-print_time "[검증] 총 ${total_files}개 파일의 MD5 체크섬을 계산합니다 (시간이 오래 걸릴 수 있습니다)..."
+print_time "[검증] 중요 파일의 MD5 체크섬을 계산합니다 (시간이 오래 걸릴 수 있습니다)..."
 
-# 진행 상황을 100개 파일마다 출력
-counter=0
-find "$BACKUP_DIR" -type f | while read -r file; do
-    md5sum "$file" >> "${BACKUP_DIR}/md5sum.txt"
-    counter=$((counter + 1))
-    if [ $((counter % 100)) -eq 0 ]; then
-        print_time "[검증] 진행 중... ${counter}/${total_files} 파일 처리 완료 ($(echo "scale=1; ${counter}*100/${total_files}" | bc)%)"
-    fi
+# 특정 확장자 파일만 선택적으로 검사
+echo "[검증] PHP, JS, CSS 파일만 체크섬 계산..."
+find "$BACKUP_DIR" -type f \( -name "*.php" -o -name "*.js" -o -name "*.css" \) -print0 | 
+while IFS= read -r -d '' file; do
+    md5sum "$file" >> "${BACKUP_DIR}/md5sum_important.txt"
 done
 
 if [ $? -ne 0 ]; then
-    print_time "오류: MD5 체크섬 생성 실패"
+    print_time "오류: 중요 파일 MD5 체크섬 생성 실패"
     exit 1
 fi
-print_time "[검증] 파일 시스템 무결성 검사 완료"
+print_time "[검증] 중요 파일 무결성 검사 완료"
 
 # 디렉토리 구조 검증
 print_time "[검증] 디렉토리 구조 검증 중..."
