@@ -6,7 +6,9 @@ ini_set('log_errors', 1);
 ini_set('error_log', '/var/log/httpd/topmkt_error.log');
 
 // 세션 시작
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // 설정 파일 로드
 require_once __DIR__ . '/config/config.php';

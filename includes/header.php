@@ -1,6 +1,8 @@
 <?php
 // 세션 시작 (header 설정 전에 필요)
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Content-Security-Policy 헤더 설정
 header("Content-Security-Policy: default-src 'self'; frame-src 'self' https://www.google.com https://accounts.google.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://accounts.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://www.google.com https://accounts.google.com;");
