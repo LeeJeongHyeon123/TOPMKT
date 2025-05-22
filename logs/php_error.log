@@ -1,0 +1,26 @@
+[22-May-2025 14:33:28 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA402qBFZUWHemdrcosojn4cspw1zDsxcK55JqvEK6Lc...
+[22-May-2025 14:33:28 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 14:33:28 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 14:40:00 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4pJ4jk1LZxbFLz3Pt4jPoBIlmEGqsF1M3b4g2WJ2ga...
+[22-May-2025 14:40:00 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 14:40:00 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 15:32:18 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA6jrkfNp0fIrX3W0G8vDuH-adsfdyIkqMmqw0rPtEwd...
+[22-May-2025 15:32:18 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 15:32:18 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 15:37:22 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA7ATRxE0Hce-LAm-AxJo597JfYVxPvIIfPuYqVSj3s1...
+[22-May-2025 15:37:22 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 15:37:22 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 16:06:30 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA65tY3W9DVtC6edrGfdGbnI1Yj9pVZKejbZf7LP8WNm...
+[22-May-2025 16:06:30 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 16:06:30 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 16:06:31 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 16:06:31 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 16:06:31 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 16:06:31 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1
+[22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 검증 시작 - 토큰: 03AFcWeA4LEDR-em9iHG4zzBve3jUZS0-M61_Ldk0ViQlg0wTb...
+[22-May-2025 16:06:37 Asia/Seoul] 예상된 액션: send_code
+[22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 평가 요청 생성 완료
+[22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 평가 응답 수신
+[22-May-2025 16:06:37 Asia/Seoul] 액션 검증 - 예상: send_code, 실제: send_code
+[22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 위험 점수: 1
+[22-May-2025 16:06:37 Asia/Seoul] reCAPTCHA 검증 성공 - 점수: 1

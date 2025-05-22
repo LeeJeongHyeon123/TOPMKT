@@ -191,6 +191,9 @@ require_once __DIR__ . '/../../config/firebase-config.php';
 // Firebase Auth 서비스 로드
 require_once __DIR__ . '/../../app/Services/Firebase/AuthService.php';
 
+require_once __DIR__ . '/../../includes/functions.php';
+$messages = require __DIR__ . '/../../resources/lang/ko/messages.php';
+
 try {
     // 데이터베이스 설정 가져오기
     $db_config = require __DIR__ . '/../../config/database.php';
@@ -221,7 +224,7 @@ try {
     if ($existingUser) {
         debug_log("전화번호 중복: " . $phoneNumber);
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => '이미 가입된 전화번호입니다. 로그인을 시도해주세요.']);
+        echo json_encode(['success' => false, 'message' => $messages['auth']['register']['phone_exists']]);
         exit;
     }
     
@@ -233,7 +236,7 @@ try {
     if ($existingNickname) {
         debug_log("닉네임 중복: " . $data['nickname']);
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => '이미 사용 중인 닉네임입니다. 다른 닉네임을 사용해주세요.']);
+        echo json_encode(['success' => false, 'message' => $messages['auth']['register']['nickname_exists']]);
         exit;
     }
     
@@ -265,14 +268,14 @@ try {
         if (!$result['success']) {
             debug_log("인증번호 전송 실패", $result);
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => '인증번호 전송에 실패했습니다.']);
+            echo json_encode(['success' => false, 'message' => $messages['auth']['register']['verification_code_send_failed']]);
             exit;
         }
         
         // 성공 응답
         echo json_encode([
             'success' => true,
-            'message' => '인증번호가 전송되었습니다.',
+            'message' => $messages['auth']['register']['verification_code_sent'],
             'data' => [
                 'phone' => $phoneNumber,
                 'country_code' => $countryCode,
@@ -285,7 +288,7 @@ try {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'message' => '서버 오류가 발생했습니다.',
+            'message' => $messages['auth']['register']['server_error'],
             'error' => [
                 'code' => 'AUTH_ERROR',
                 'details' => $e->getMessage()
@@ -297,8 +300,13 @@ try {
 } catch (\Exception $e) {
     debug_log("인증번호 전송 중 오류 발생: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => '인증번호 전송 중 오류가 발생했습니다.']);
+    echo json_encode(['success' => false, 'message' => $messages['auth']['register']['server_error']]);
     exit;
 }
 
-debug_log("=== 회원가입 요청 종료 ==="); 
+debug_log("=== 회원가입 요청 종료 ===");
+
+if (!headers_sent()) {
+    echo json_encode(['success' => false, 'message' => '서버 오류: 빈 응답']);
+    exit;
+} 

@@ -1,6 +1,7 @@
 // Firebase 초기화 상태 추적
 window.firebaseInitialized = window.firebaseInitialized || false;
 let pendingAuthCallbacks = [];
+let recaptchaVerifier = null;
 
 // Firebase 초기화 함수
 async function initializeFirebase() {
@@ -23,6 +24,14 @@ async function initializeFirebase() {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
                 console.log('[Firebase] 초기화 성공');
+                
+                // Firebase 초기화 후 reCAPTCHA 설정
+                recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': (response) => {
+                        console.log('reCAPTCHA 검증 완료');
+                    }
+                });
             } else {
                 console.log('[Firebase] 이미 초기화된 앱 사용');
             }
@@ -54,14 +63,6 @@ function setupAuthStateListener() {
         }
     });
 }
-
-// reCAPTCHA 설정
-const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    'size': 'invisible',
-    'callback': (response) => {
-        console.log('reCAPTCHA 검증 완료');
-    }
-});
 
 // 페이지 로드 시 Firebase 초기화
 document.addEventListener('DOMContentLoaded', function() {

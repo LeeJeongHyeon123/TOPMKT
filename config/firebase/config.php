@@ -71,7 +71,21 @@ $GLOBALS['firebase_config'] = [
         'apiKey' => $firebaseConfig['apiKey'],
         'projectId' => $firebaseConfig['projectId'],
         'messagingSenderId' => $firebaseConfig['messagingSenderId'],
-        'appId' => $firebaseConfig['appId']
+        'appId' => $firebaseConfig['appId'],
+        'phone_verification' => [
+            'test_phone' => '01012341234',
+            'test_code' => '123456'
+        ]
+    ],
+    'recaptcha' => [
+        'site_key' => '6LfViDErAAAAAMcOf3D-JxEhisMDhzLhEDYEahZb',
+        'secret_key' => '6LfViDErAAAAAJYZ6zqP3I6q124NuaUlAGcUWeB5',
+        'service_account_path' => __DIR__ . '/google/service-account.json',
+        'actions' => [
+            'login' => 'LOGIN',
+            'register' => 'REGISTER',
+            'send_code' => 'SEND_CODE'
+        ]
     ]
 ];
 

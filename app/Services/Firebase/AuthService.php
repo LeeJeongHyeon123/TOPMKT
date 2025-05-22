@@ -247,13 +247,6 @@ class AuthService
      * 
      * @param string $phoneNumber 전화번호
      * @return array ['success' => bool, 'message' => string, 'sessionInfo' => string]
-     *
-     * [설명]
-     * 1. 전화번호를 정규화(국제표준 E.164 형식)한다.
-     * 2. 인증번호 전송 가능 여부(횟수 제한 등)를 체크한다.
-     * 3. Firebase REST API(accounts:sendVerificationCode)로 인증번호 발송을 요청한다.
-     * 4. 성공 시 sessionInfo(세션 정보)를 반환한다.
-     * 5. 실패 시 에러 메시지를 반환한다.
      */
     public function sendVerificationCode($phoneNumber)
     {
@@ -282,13 +275,13 @@ class AuthService
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json'
-                ],
-                'verify' => false // SSL 인증서 검증 비활성화
+                ]
             ]);
             
             $result = json_decode($response->getBody()->getContents(), true);
             
             if (isset($result['error'])) {
+                error_log('Firebase 인증번호 전송 오류: ' . json_encode($result['error']));
                 throw new \Exception($result['error']['message']);
             }
             

@@ -38,7 +38,13 @@ class RecaptchaService {
             $event = (new Event())
                 ->setSiteKey($this->siteKey)
                 ->setToken($token)
-                ->setExpectedAction($action);
+                ->setExpectedAction($action)
+                ->setUserAgent($_SERVER['HTTP_USER_AGENT'] ?? '')
+                ->setUserIpAddress($_SERVER['REMOTE_ADDR'] ?? '');
+            
+            // hashed_account_id deprecated 경고 회피를 위해 error_reporting 임시 변경
+            $original_error_level = error_reporting();
+            error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
             
             // 평가 요청
             $assessment = (new Assessment())
@@ -51,6 +57,9 @@ class RecaptchaService {
                 $formattedParent,
                 $assessment
             );
+            
+            // 원래 error_reporting 레벨로 복원
+            error_reporting($original_error_level);
             
             error_log("reCAPTCHA 평가 응답 수신");
             
