@@ -22,8 +22,22 @@ jobs:
       - name: Check PHP version
         run: php -v
         
+      - name: Check if composer.json exists
+        id: check_composer
+        run: |
+          if [ -f "composer.json" ]; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+        
       - name: Install dependencies
+        if: steps.check_composer.outputs.exists == 'true'
         run: composer install --prefer-dist --no-progress
+        
+      - name: Skip dependency installation
+        if: steps.check_composer.outputs.exists != 'true'
+        run: echo "No composer.json found, skipping dependency installation"
         
       - name: Run linting
         run: echo "Linting checks passed"
