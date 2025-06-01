@@ -33,6 +33,7 @@ composer install
 ## GitHub 연동 상태
 - GitHub 저장소: [LeeJeongHyeon123/topmkt](https://github.com/LeeJeongHyeon123/topmkt.git)
 - GitHub Actions CI/CD 파이프라인 연동 완료
+- GitHub Actions 워크플로우 권한 설정 완료 (Read and write permissions)
 
 ## 라이센스
 이 프로젝트는 MIT 라이센스 하에 제공됩니다. 
