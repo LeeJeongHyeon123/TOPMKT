@@ -1,0 +1,22 @@
+{
+  "name": "topmkt",
+  "version": "1.0.1",
+  "description": "탑마케팅 웹 애플리케이션",
+  "scripts": {
+    "lint:js": "eslint public/assets/js/**/*.js",
+    "lint:php": "vendor/bin/phpcs",
+    "lint": "npm run lint:js && npm run lint:php",
+    "fix:js": "eslint --fix public/assets/js/**/*.js",
+    "fix:php": "vendor/bin/phpcbf",
+    "fix": "npm run fix:js && npm run fix:php"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LeeJeongHyeon123/topmkt.git"
+  },
+  "author": "LeeJeongHyeon",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.28.0"
+  }
+}

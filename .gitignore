@@ -1,0 +1,28 @@
+# 의존성 디렉토리
+/vendor/
+/node_modules/
+
+# 환경 파일
+.env
+.env.*
+!.env.example
+
+# 로그 파일
+/logs/*
+!logs/.gitkeep
+
+# 캐시 및 임시 파일
+.phpcs-cache
+.php_cs.cache
+composer.lock
+package-lock.json
+.DS_Store
+
+# 업로드 디렉토리
+/public/assets/uploads/*
+!/public/assets/uploads/.gitkeep
+
+# IDE 설정
+.idea/
+.vscode/
+*.code-workspace 

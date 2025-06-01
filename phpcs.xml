@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<ruleset name="TopMkt Coding Standard">
+    <description>탑마케팅 코딩 표준</description>
+
+    <!-- 검사할 파일/디렉토리 -->
+    <file>src</file>
+    
+    <!-- 제외할 파일/디렉토리 -->
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    
+    <!-- 탭을 스페이스 4개로 처리 -->
+    <arg name="tab-width" value="4"/>
+    
+    <!-- 색상 활성화 -->
+    <arg name="colors"/>
+    
+    <!-- 진행 상황 표시 -->
+    <arg value="p"/>
+    
+    <!-- PSR-2 코딩 표준 적용 -->
+    <rule ref="PSR2">
+        <!-- 제외할 규칙 -->
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+    
+    <!-- 추가 규칙 -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Squiz.PHP.CommentedOutCode"/>
+    <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+    
+    <!-- 변수 이름 규칙 -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+    </rule>
+</ruleset> 
