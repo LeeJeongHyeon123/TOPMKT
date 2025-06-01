@@ -1,0 +1,29 @@
+# 탑마케팅 웹 애플리케이션
+
+## 소개
+탑마케팅은 효과적인 마케팅 솔루션을 제공하는 웹 애플리케이션입니다.
+
+## 기능
+- 사용자 관리
+- 게시판 기능
+- 댓글 기능
+
+## 설치 방법
+```bash
+# 저장소 복제
+git clone https://github.com/example/topmkt.git
+
+# 디렉토리 이동
+cd topmkt
+
+# 의존성 설치
+composer install
+```
+
+## 기술 스택
+- PHP 7.4+
+- MySQL 5.7+
+- HTML/CSS/JavaScript
+
+## 라이센스
+이 프로젝트는 MIT 라이센스 하에 제공됩니다. 
