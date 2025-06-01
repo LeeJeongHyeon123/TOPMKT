@@ -35,6 +35,7 @@ composer install
 - GitHub Actions CI/CD 파이프라인 연동 완료
 - GitHub Actions 워크플로우 권한 설정 완료 (Read and write permissions)
 - GitHub Actions 워크플로우 개선: 태그 푸시 권한 추가 및 명시적 토큰 사용
+- GitHub Actions 워크플로우 개선: composer.json 체크 로직 추가
 
 ## 라이센스
 이 프로젝트는 MIT 라이센스 하에 제공됩니다. 
