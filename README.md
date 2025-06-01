@@ -12,7 +12,7 @@
 ## 설치 방법
 ```bash
 # 저장소 복제
-git clone https://github.com/example/topmkt.git
+git clone https://github.com/LeeJeongHyeon123/topmkt.git
 
 # 디렉토리 이동
 cd topmkt
@@ -29,6 +29,10 @@ composer install
 
 ## 배포 정보
 자세한 CI/CD 파이프라인 정보는 [CI/CD GitHub Actions 가이드](docs/9.CI-CD_GitHub_Actions.md)를 참조하세요.
+
+## GitHub 연동 상태
+- GitHub 저장소: [LeeJeongHyeon123/topmkt](https://github.com/LeeJeongHyeon123/topmkt.git)
+- GitHub Actions CI/CD 파이프라인 연동 완료
 
 ## 라이센스
 이 프로젝트는 MIT 라이센스 하에 제공됩니다. 
