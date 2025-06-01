@@ -35,18 +35,25 @@ jobs:
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    # GitHub 토큰에 쓰기 권한 부여
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Push tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ "${{ github.event.head_commit.message }}" =~ ^Release.* ]]; then
             version=$(echo "${{ github.event.head_commit.message }}" | sed -n 's/^Release \(.*\)/\1/p')
             git config --global user.name 'GitHub Actions'
             git config --global user.email 'actions@github.com'
             git tag -a "v$version" -m "Release $version"
+            git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
             git push origin "v$version"
             echo "Tagged and pushed version $version"
           else
