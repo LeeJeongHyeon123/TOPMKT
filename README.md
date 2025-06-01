@@ -7,6 +7,7 @@
 - 사용자 관리
 - 게시판 기능
 - 댓글 기능
+- CI/CD 자동화 (GitHub Actions)
 
 ## 설치 방법
 ```bash
@@ -24,6 +25,10 @@ composer install
 - PHP 7.4+
 - MySQL 5.7+
 - HTML/CSS/JavaScript
+- GitHub Actions
+
+## 배포 정보
+자세한 CI/CD 파이프라인 정보는 [CI/CD GitHub Actions 가이드](docs/9.CI-CD_GitHub_Actions.md)를 참조하세요.
 
 ## 라이센스
 이 프로젝트는 MIT 라이센스 하에 제공됩니다. 
