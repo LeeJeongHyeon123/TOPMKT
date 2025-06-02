@@ -29,4 +29,15 @@ define('SESSION_PREFIX', 'topmkt_');
 define('FIREBASE_API_KEY', '');
 define('FIREBASE_AUTH_DOMAIN', '');
 define('FIREBASE_DATABASE_URL', '');
-define('FIREBASE_PROJECT_ID', ''); 
+define('FIREBASE_PROJECT_ID', '');
+
+// 알리고 SMS API 설정
+define('ALIGO_API_KEY', 'ukqd7brex9cf9o3ggvy3bxr37brxxkm1'); // 알리고에서 발급받은 실제 API 키
+define('ALIGO_USER_ID', 'neungsoft');                          // 알리고 실제 사용자 ID  
+define('ALIGO_SENDER', '070-4136-8899');                       // 실제 등록된 발신번호
+define('ALIGO_API_URL', 'https://apis.aligo.in/send/');        // 알리고 API URL
+define('ALIGO_REMAIN_URL', 'https://apis.aligo.in/remain/');   // 잔여 건수 조회 URL
+
+// SMS 실제 모드 설정 (Mock 모드 완전 제거)
+define('SMS_MOCK_MODE', false);                        // 항상 실제 발송
+define('SMS_TEST_PHONE', '010-2659-1346');            // 테스트용 전화번호 

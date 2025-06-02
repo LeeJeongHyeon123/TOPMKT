@@ -16,6 +16,9 @@ class Router {
     public function __construct() {
         // 인증 관련 라우트
         $this->routes = [
+            // 기본 라우트
+            'GET:/' => ['HomeController', 'index'],
+            
             // 인증 라우트
             'GET:/auth/login' => ['AuthController', 'showLogin'],
             'POST:/auth/login' => ['AuthController', 'login'],
@@ -40,9 +43,6 @@ class Router {
             'POST:/posts/{id}/comments' => ['CommentController', 'create'],
             'PUT:/comments/{id}' => ['CommentController', 'update'],
             'DELETE:/comments/{id}' => ['CommentController', 'delete'],
-            
-            // 기본 라우트
-            'GET:/' => ['PostController', 'index'],
         ];
     }
     
@@ -51,6 +51,14 @@ class Router {
      * URL 경로와 HTTP 메서드를 기반으로 적절한 컨트롤러와 액션 호출
      */
     public function dispatch() {
+        // 웹 서버가 아닌 환경에서 실행되는 경우 기본값 설정
+        if (!isset($_SERVER['REQUEST_URI'])) {
+            $_SERVER['REQUEST_URI'] = '/';
+        }
+        if (!isset($_SERVER['REQUEST_METHOD'])) {
+            $_SERVER['REQUEST_METHOD'] = 'GET';
+        }
+        
         // 요청 URI 파싱
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $uri = rtrim($uri, '/');
@@ -68,13 +76,41 @@ class Router {
         if (isset($this->routes[$routeKey])) {
             // 컨트롤러와 액션 호출
             list($controllerName, $action) = $this->routes[$routeKey];
-            $controllerClass = 'App\\Controllers\\' . $controllerName;
-            $controller = new $controllerClass();
-            $controller->$action();
+            $controllerPath = SRC_PATH . '/controllers/' . $controllerName . '.php';
+            
+            if (file_exists($controllerPath)) {
+                require_once $controllerPath;
+                if (class_exists($controllerName)) {
+                    $controller = new $controllerName();
+                    if (method_exists($controller, $action)) {
+                        $controller->$action();
+                        return;
+                    } else {
+                        error_log("Method $action not found in $controllerName");
+                    }
+                } else {
+                    error_log("Controller class $controllerName not found");
+                }
+            } else {
+                error_log("Controller file not found: $controllerPath");
+            }
+        }
+        
+        // 매칭되는 라우트가 없거나 오류가 발생하면 404 페이지 표시
+        header('HTTP/1.1 404 Not Found');
+        $this->show404();
+    }
+    
+    /**
+     * 404 페이지 표시
+     */
+    private function show404() {
+        $templatePath = SRC_PATH . '/views/templates/404.php';
+        if (file_exists($templatePath)) {
+            include $templatePath;
         } else {
-            // 매칭되는 라우트가 없으면 404 페이지 표시
-            header('HTTP/1.1 404 Not Found');
-            include SRC_PATH . '/views/templates/404.php';
+            echo '<h1>404 - Page Not Found</h1>';
+            echo '<p>The requested page could not be found.</p>';
         }
     }
 } 

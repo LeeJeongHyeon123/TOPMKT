@@ -8,6 +8,56 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 댓글 수정 기능
     setupCommentEdit();
+    
+    // 메인 페이지 기능
+    if (document.querySelector('.hero-section')) {
+        setupScrollAnimation();
+    }
+    
+    // 모바일 메뉴 토글
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+    
+    if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            
+            // 아이콘 변경 (메뉴 <-> X)
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    }
+    
+    // 모바일 드롭다운 메뉴 토글
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    if (window.innerWidth <= 992) {
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const dropdown = this.closest('.dropdown');
+                dropdown.classList.toggle('active');
+            });
+        });
+    }
+    
+    // 플래시 메시지 자동 사라짐
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 500);
+            }, 4000);
+        });
+    }
 });
 
 /**
@@ -126,4 +176,43 @@ function setupCommentEdit() {
             });
         });
     });
+}
+
+/**
+ * 스크롤 애니메이션 설정
+ */
+function setupScrollAnimation() {
+    // 부드러운 스크롤
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80, // 헤더 높이 고려
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // 스크롤 시 요소 애니메이션
+    const scrollElements = document.querySelectorAll('.value-card, .post-card, .event-card, .lecture-card');
+    
+    function handleScrollAnimation() {
+        scrollElements.forEach(element => {
+            const elementTop = element.getBoundingClientRect().top;
+            const elementVisible = 150;
+            
+            if (elementTop < window.innerHeight - elementVisible) {
+                element.classList.add('animated');
+            }
+        });
+    }
+    
+    window.addEventListener('scroll', handleScrollAnimation);
+    handleScrollAnimation(); // 초기 로드 시 실행
 } 
