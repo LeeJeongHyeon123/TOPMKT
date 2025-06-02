@@ -3,7 +3,7 @@
  * 탑마케팅 로그인 페이지
  */
 $page_title = '로그인';
-$page_description = '탑마케팅에 로그인하여 글로벌 네트워크 마케팅 커뮤니티에 참여하세요';
+$page_description = '탑마케팅에 로그인하여 네트워크 마케팅 커뮤니티에 참여하세요';
 $current_page = 'login';
 
 require_once SRC_PATH . '/views/templates/header.php';
@@ -33,11 +33,28 @@ require_once SRC_PATH . '/views/templates/header.php';
                         <span class="logo-text"><?= APP_NAME ?? '탑마케팅' ?></span>
                     </div>
                     <h1 class="auth-title">다시 만나서 반갑습니다</h1>
-                    <p class="auth-subtitle">휴대폰 번호로 로그인하여 탑마케팅 커뮤니티에 참여하세요</p>
+                    <p class="auth-subtitle">계정에 로그인하여 커뮤니티 활동을 계속하세요</p>
                 </div>
 
+                <!-- 에러/성공 메시지 표시 -->
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['error']) ?></span>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span><?= htmlspecialchars($_SESSION['success']) ?></span>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                <?php endif; ?>
+
                 <!-- 로그인 폼 -->
-                <form class="auth-form" method="POST" action="/auth/login">
+                <form class="auth-form" method="POST" action="/auth/login" id="login-form">
                     <div class="form-group">
                         <label for="phone" class="form-label">
                             <i class="fas fa-mobile-alt"></i>
@@ -52,9 +69,10 @@ require_once SRC_PATH . '/views/templates/header.php';
                             value="<?= htmlspecialchars($_POST['phone'] ?? '') ?>"
                             required 
                             autocomplete="tel"
-                            pattern="[0-9]{3}-[0-9]{3,4}-[0-9]{4}"
+                            pattern="010-[0-9]{3,4}-[0-9]{4}"
+                            maxlength="13"
                         >
-                        <small class="form-help">하이픈(-)을 포함하여 입력해주세요</small>
+                        <small class="form-help">회원가입 시 사용한 휴대폰 번호를 입력하세요</small>
                     </div>
 
                     <div class="form-group">
@@ -84,8 +102,11 @@ require_once SRC_PATH . '/views/templates/header.php';
                             <span class="checkbox-custom"></span>
                             <span class="checkbox-text">로그인 상태 유지</span>
                         </label>
-                        <a href="/auth/forgot-password" class="forgot-password">비밀번호 찾기</a>
+                        <a href="/auth/forgot-password" class="auth-link">비밀번호를 잊으셨나요?</a>
                     </div>
+
+                    <!-- CSRF 토큰 -->
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                     <button type="submit" class="btn btn-primary-gradient btn-large btn-full">
                         <i class="fas fa-sign-in-alt"></i>
@@ -103,37 +124,52 @@ require_once SRC_PATH . '/views/templates/header.php';
                         </a>
                     </p>
                 </div>
+
+                <!-- 관리자 테스트 계정 안내 (개발용) -->
+                <?php if (defined('APP_DEBUG') && APP_DEBUG): ?>
+                    <div class="dev-notice">
+                        <h4>🔧 개발자 테스트 계정</h4>
+                        <p><strong>휴대폰:</strong> 010-0000-0000</p>
+                        <p><strong>비밀번호:</strong> admin123!</p>
+                        <button type="button" class="btn btn-outline-secondary" onclick="fillTestAccount()">
+                            테스트 계정으로 자동 입력
+                        </button>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <!-- 사이드 정보 -->
             <div class="auth-side-info">
                 <div class="side-info-content">
                     <div class="side-info-icon">
-                        <i class="fas fa-network-wired"></i>
+                        <i class="fas fa-lock"></i>
                     </div>
-                    <h2>네트워킹의 힘</h2>
-                    <p>전 세계 마케팅 전문가들과 연결되어 함께 성장하고 새로운 기회를 만들어가세요</p>
+                    <h2>안전한 로그인</h2>
+                    <p>최신 보안 기술로 여러분의 계정을 안전하게 보호합니다</p>
                     
-                    <div class="info-stats">
-                        <div class="info-stat">
-                            <div class="stat-number">10,000+</div>
-                            <div class="stat-label">활성 멤버</div>
+                    <div class="security-features">
+                        <div class="security-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>SSL 암호화</span>
                         </div>
-                        <div class="info-stat">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">국가별 네트워크</div>
+                        <div class="security-feature">
+                            <i class="fas fa-user-shield"></i>
+                            <span>2단계 인증</span>
                         </div>
-                        <div class="info-stat">
-                            <div class="stat-number">98%</div>
-                            <div class="stat-label">만족도</div>
+                        <div class="security-feature">
+                            <i class="fas fa-history"></i>
+                            <span>로그인 기록</span>
                         </div>
                     </div>
 
-                    <div class="testimonial">
-                        <blockquote>
-                            "탑마케팅을 통해 전 세계 파트너들과 연결되어 비즈니스를 확장할 수 있었습니다."
-                        </blockquote>
-                        <cite>- 김성공, 다이아몬드 리더</cite>
+                    <div class="login-benefits">
+                        <h3>로그인 후 이용 가능한 서비스</h3>
+                        <ul>
+                            <li><i class="fas fa-comments"></i> 커뮤니티 참여</li>
+                            <li><i class="fas fa-bell"></i> 실시간 알림</li>
+                            <li><i class="fas fa-chart-line"></i> 성과 분석 도구</li>
+                            <li><i class="fas fa-graduation-cap"></i> 전문가 강의</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -141,109 +177,221 @@ require_once SRC_PATH . '/views/templates/header.php';
     </div>
 </section>
 
+<style>
+/* 알림 메시지 스타일 */
+.alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.alert-error {
+    background-color: #fee;
+    border: 1px solid #fcc;
+    color: #c33;
+}
+
+.alert-success {
+    background-color: #efe;
+    border: 1px solid #cfc;
+    color: #363;
+}
+
+.alert i {
+    font-size: 16px;
+}
+
+/* 폼 옵션 스타일 */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* 보안 기능 표시 */
+.security-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.security-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.security-feature i {
+    color: #10b981;
+    width: 20px;
+}
+
+/* 로그인 혜택 */
+.login-benefits {
+    margin-top: 30px;
+}
+
+.login-benefits h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: #1e293b;
+}
+
+.login-benefits ul {
+    list-style: none;
+    padding: 0;
+}
+
+.login-benefits li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.login-benefits li i {
+    color: #667eea;
+    width: 16px;
+}
+
+/* 개발자 테스트 안내 */
+.dev-notice {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f9ff;
+    border: 1px solid #0ea5e9;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.dev-notice h4 {
+    margin: 0 0 10px 0;
+    color: #0369a1;
+}
+
+.dev-notice p {
+    margin: 5px 0;
+    color: #0369a1;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .form-options {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM 요소들
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('password-toggle');
+    const loginForm = document.getElementById('login-form');
+
+    // 휴대폰 번호 포맷팅
+    phoneInput.addEventListener('input', function() {
+        let value = this.value.replace(/[^0-9]/g, '');
+        
+        // 010으로 시작하지 않으면 에러 표시
+        if (value.length > 0 && !value.startsWith('010')) {
+            this.setCustomValidity('010으로 시작하는 휴대폰 번호만 입력할 수 있습니다.');
+            this.classList.add('error');
+        } else {
+            this.setCustomValidity('');
+            this.classList.remove('error');
+        }
+        
+        if (value.length >= 3) {
+            value = value.substring(0, 3) + '-' + value.substring(3);
+        }
+        if (value.length >= 8) {
+            value = value.substring(0, 8) + '-' + value.substring(8, 12);
+        }
+        
+        this.value = value;
+    });
+
     // 비밀번호 표시/숨김 토글
-    document.addEventListener('DOMContentLoaded', function() {
-        const passwordInput = document.getElementById('password');
-        const passwordToggle = document.getElementById('password-toggle');
+    passwordToggle.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
 
-        if (passwordToggle && passwordInput) {
-            passwordToggle.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                const icon = passwordToggle.querySelector('i');
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
+    // 폼 제출 시 추가 검증
+    loginForm.addEventListener('submit', function(e) {
+        const phone = phoneInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!phone || !password) {
+            e.preventDefault();
+            showMessage('휴대폰 번호와 비밀번호를 모두 입력해주세요.', 'error');
+            return;
         }
-
-        // 휴대폰 번호 자동 포맷팅
-        const phoneInput = document.getElementById('phone');
-        if (phoneInput) {
-            phoneInput.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/[^\d]/g, '');
-                
-                if (value.length >= 3) {
-                    if (value.length >= 7) {
-                        value = value.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
-                    } else {
-                        value = value.replace(/(\d{3})(\d{1,4})/, '$1-$2');
-                    }
-                }
-                
-                e.target.value = value;
-            });
-        }
-
-        // 폼 유효성 검사
-        const form = document.querySelector('.auth-form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
-                const phone = document.getElementById('phone').value;
-                const password = document.getElementById('password').value;
-
-                if (!phone || !password) {
-                    e.preventDefault();
-                    alert('휴대폰 번호와 비밀번호를 모두 입력해주세요.');
-                    return false;
-                }
-
-                // 휴대폰 번호 유효성 검사
-                if (!isValidPhone(phone)) {
-                    e.preventDefault();
-                    alert('올바른 휴대폰 번호를 입력해주세요. (예: 010-1234-5678)');
-                    return false;
-                }
-            });
-        }
-
-        function isValidPhone(phone) {
-            const phoneRegex = /^01[0-9]-[0-9]{3,4}-[0-9]{4}$/;
-            return phoneRegex.test(phone);
+        
+        if (!isValidPhoneFormat(phone)) {
+            e.preventDefault();
+            showMessage('010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.', 'error');
+            return;
         }
     });
+
+    // 휴대폰 번호 형식 검증
+    function isValidPhoneFormat(phone) {
+        const pattern = /^010-[0-9]{3,4}-[0-9]{4}$/;
+        return pattern.test(phone);
+    }
+
+    // 메시지 표시
+    function showMessage(message, type) {
+        // 기존 메시지 제거
+        const existingAlert = document.querySelector('.alert-message');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+        
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-message`;
+        alertDiv.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        const form = document.querySelector('.auth-form');
+        form.insertBefore(alertDiv, form.firstChild);
+        
+        // 3초 후 자동 제거
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 3000);
+    }
+
+    // 개발용 테스트 계정 자동 입력
+    window.fillTestAccount = function() {
+        phoneInput.value = '010-0000-0000';
+        passwordInput.value = 'admin123!';
+        phoneInput.focus();
+    };
+});
 </script>
-
-<style>
-    .form-help {
-        display: block;
-        font-size: 0.8rem;
-        color: #94a3b8;
-        margin-top: 4px;
-    }
-
-    .testimonial {
-        margin-top: 40px;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        border-left: 4px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .testimonial blockquote {
-        font-style: italic;
-        margin: 0 0 12px 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
-
-    .testimonial cite {
-        font-size: 0.85rem;
-        opacity: 0.8;
-        font-style: normal;
-    }
-
-    .forgot-password {
-        color: #667eea;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .forgot-password:hover {
-        text-decoration: underline;
-    }
-</style>
 
 <?php require_once SRC_PATH . '/views/templates/footer.php'; ?> 

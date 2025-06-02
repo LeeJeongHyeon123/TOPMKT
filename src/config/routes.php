@@ -26,6 +26,14 @@ class Router {
             'POST:/auth/signup' => ['AuthController', 'signup'],
             'POST:/auth/logout' => ['AuthController', 'logout'],
             
+            // 휴대폰 인증 라우트
+            'POST:/auth/send-verification' => ['AuthController', 'sendVerification'],
+            'POST:/auth/verify-code' => ['AuthController', 'verifyCode'],
+            
+            // 법적 문서 라우트
+            'GET:/terms' => ['LegalController', 'showTerms'],
+            'GET:/privacy' => ['LegalController', 'showPrivacy'],
+            
             // 사용자 라우트
             'GET:/users/me' => ['UserController', 'showProfile'],
             'GET:/users/{id}' => ['UserController', 'getUser'],

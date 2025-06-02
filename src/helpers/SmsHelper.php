@@ -56,7 +56,8 @@ function sendPasswordResetSms($phone, $tempPassword)
  */
 function sendWelcomeSms($phone, $username) 
 {
-    $message = "[탑마케팅] {$username}님, 가입을 환영합니다! 글로벌 네트워크 마케팅 커뮤니티에서 성공을 함께 만들어가세요.";
+    // 단문 제한(90바이트, 한글 약 45자)에 맞게 간결하게 작성
+    $message = "[탑마케팅] {$username}님 가입완료! 성공적인 마케팅 여정을 시작하세요.";
     return sendSms($phone, $message);
 }
 
@@ -179,7 +180,7 @@ function createSmsTemplate($template, $params = [])
     $templates = [
         'auth_code' => '[탑마케팅] 인증번호는 [{{code}}]입니다. 정확히 입력해주세요.',
         'password_reset' => '[탑마케팅] 임시 비밀번호는 [{{password}}]입니다. 로그인 후 비밀번호를 변경해주세요.',
-        'welcome' => '[탑마케팅] {{username}}님, 가입을 환영합니다! 글로벌 네트워크 마케팅 커뮤니티에서 성공을 함께 만들어가세요.',
+        'welcome' => '[탑마케팅] {{username}}님 가입완료! 성공적인 마케팅 여정을 시작하세요.',
         'event_reminder' => '[탑마케팅] {{event_name}} 이벤트가 {{event_date}}에 진행됩니다. 많은 참여 바랍니다!',
         'meeting_reminder' => '[탑마케팅] {{meeting_title}} 회의가 {{meeting_time}}에 시작됩니다. 준비해주세요.',
         'payment_confirm' => '[탑마케팅] {{amount}}원 결제가 완료되었습니다. 이용해주셔서 감사합니다.',
