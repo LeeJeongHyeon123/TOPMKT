@@ -23,34 +23,29 @@ class User {
             $this->db->beginTransaction();
             
             $sql = "INSERT INTO users (
-                phone, nickname, email, password,
-                phone_verified, phone_verified_at,
-                terms_agreed, privacy_agreed, marketing_agreed,
+                phone, nickname, email, password_hash,
+                phone_verified, marketing_agreed,
                 status, created_at
             ) VALUES (
-                :phone, :nickname, :email, :password,
-                :phone_verified, :phone_verified_at,
-                :terms_agreed, :privacy_agreed, :marketing_agreed,
-                'ACTIVE', NOW()
+                :phone, :nickname, :email, :password_hash,
+                :phone_verified, :marketing_agreed,
+                'active', NOW()
             )";
             
             $params = [
                 ':phone' => $userData['phone'],
                 ':nickname' => $userData['nickname'],
                 ':email' => $userData['email'],
-                ':password' => password_hash($userData['password'], PASSWORD_DEFAULT),
-                ':phone_verified' => true,
-                ':phone_verified_at' => date('Y-m-d H:i:s'),
-                ':terms_agreed' => $userData['terms_agreed'],
-                ':privacy_agreed' => $userData['terms_agreed'], // 이용약관과 동일
-                ':marketing_agreed' => $userData['marketing_agreed']
+                ':password_hash' => password_hash($userData['password'], PASSWORD_DEFAULT),
+                ':phone_verified' => 1,  // DB 스키마에 맞게 숫자로 변경
+                ':marketing_agreed' => $userData['marketing_agreed'] ? 1 : 0
             ];
             
             $this->db->execute($sql, $params);
             $userId = $this->db->lastInsertId();
             
-            // 가입 로그 기록
-            $this->logUserActivity($userId, 'SIGNUP', '회원가입 완료');
+            // 가입 로그 기록 (임시 비활성화)
+            // $this->logUserActivity($userId, 'SIGNUP', '회원가입 완료');
             
             $this->db->commit();
             return $userId;
@@ -66,7 +61,7 @@ class User {
      * 휴대폰 번호로 사용자 조회
      */
     public function findByPhone($phone) {
-        $sql = "SELECT * FROM users WHERE phone = :phone AND status != 'DELETED'";
+        $sql = "SELECT * FROM users WHERE phone = :phone AND status != 'deleted'";
         return $this->db->fetch($sql, [':phone' => $phone]);
     }
     
@@ -74,7 +69,7 @@ class User {
      * 이메일로 사용자 조회
      */
     public function findByEmail($email) {
-        $sql = "SELECT * FROM users WHERE email = :email AND status != 'DELETED'";
+        $sql = "SELECT * FROM users WHERE email = :email AND status != 'deleted'";
         return $this->db->fetch($sql, [':email' => $email]);
     }
     
@@ -82,7 +77,7 @@ class User {
      * 닉네임으로 사용자 조회
      */
     public function findByNickname($nickname) {
-        $sql = "SELECT * FROM users WHERE nickname = :nickname AND status != 'DELETED'";
+        $sql = "SELECT * FROM users WHERE nickname = :nickname AND status != 'deleted'";
         return $this->db->fetch($sql, [':nickname' => $nickname]);
     }
     
@@ -90,7 +85,7 @@ class User {
      * ID로 사용자 조회
      */
     public function findById($id) {
-        $sql = "SELECT * FROM users WHERE id = :id AND status != 'DELETED'";
+        $sql = "SELECT * FROM users WHERE id = :id AND status != 'deleted'";
         return $this->db->fetch($sql, [':id' => $id]);
     }
     
@@ -110,7 +105,7 @@ class User {
         }
         
         // 비밀번호 확인
-        if (!password_verify($password, $user['password'])) {
+        if (!password_verify($password, $user['password_hash'])) {
             $this->incrementFailedLoginAttempts($user['id']);
             return false;
         }
@@ -127,16 +122,13 @@ class User {
      */
     private function updateLoginInfo($userId) {
         $sql = "UPDATE users SET 
-                last_login_at = NOW(),
-                last_login_ip = :ip,
-                login_count = login_count + 1,
-                failed_login_attempts = 0,
+                last_login = NOW(),
+                login_attempts = 0,
                 locked_until = NULL
                 WHERE id = :id";
         
         $params = [
-            ':id' => $userId,
-            ':ip' => $_SERVER['REMOTE_ADDR'] ?? ''
+            ':id' => $userId
         ];
         
         $this->db->execute($sql, $params);
@@ -146,12 +138,12 @@ class User {
      * 로그인 실패 횟수 증가
      */
     private function incrementFailedLoginAttempts($userId) {
-        $sql = "UPDATE users SET failed_login_attempts = failed_login_attempts + 1 WHERE id = :id";
+        $sql = "UPDATE users SET login_attempts = login_attempts + 1 WHERE id = :id";
         $this->db->execute($sql, [':id' => $userId]);
         
         // 5회 실패 시 30분 계정 잠금
         $user = $this->findById($userId);
-        if ($user['failed_login_attempts'] >= 4) { // 0부터 시작하므로 4가 5번째
+        if ($user['login_attempts'] >= 4) { // 0부터 시작하므로 4가 5번째
             $lockUntil = date('Y-m-d H:i:s', time() + 1800); // 30분 후
             $sql = "UPDATE users SET locked_until = :lock_until WHERE id = :id";
             $this->db->execute($sql, [':lock_until' => $lockUntil, ':id' => $userId]);
@@ -189,13 +181,13 @@ class User {
      */
     public function changePassword($userId, $newPassword) {
         $sql = "UPDATE users SET 
-                password = :password,
-                password_changed_at = NOW()
+                password_hash = :password_hash,
+                updated_at = NOW()
                 WHERE id = :id";
         
         $params = [
             ':id' => $userId,
-            ':password' => password_hash($newPassword, PASSWORD_DEFAULT)
+            ':password_hash' => password_hash($newPassword, PASSWORD_DEFAULT)
         ];
         
         $result = $this->db->execute($sql, $params);

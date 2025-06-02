@@ -379,16 +379,32 @@ require_once SRC_PATH . '/views/templates/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 회원가입 페이지 로드 완료');
+    
+    // 세션에서 디버깅 정보 확인
+    <?php if (isset($_SESSION['debug_info'])): ?>
+    console.error('🚨 서버 디버깅 정보:', <?= json_encode($_SESSION['debug_info']) ?>);
+    alert('🚨 디버깅 정보\n\n<?= addslashes($_SESSION['debug_info']) ?>\n\n콘솔 로그도 확인하세요.');
+    <?php unset($_SESSION['debug_info']); ?>
+    <?php endif; ?>
+    
     // 전역 변수
     let verificationTimer = null;
     let timeLeft = 0;
     let isPhoneVerified = false;
     let recaptchaLoaded = false;
     
+    console.log('📊 초기 상태:', {
+        verificationTimer,
+        timeLeft,
+        isPhoneVerified,
+        recaptchaLoaded
+    });
+    
     // reCAPTCHA 로드 확인
     grecaptcha.ready(function() {
         recaptchaLoaded = true;
-        console.log('reCAPTCHA v3 loaded successfully');
+        console.log('✅ reCAPTCHA v3 로드 성공');
     });
     
     // DOM 요소들
@@ -409,8 +425,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('signup-form');
     const recaptchaTokenInput = document.getElementById('recaptcha_token');
 
+    console.log('📋 DOM 요소 확인:', {
+        phoneInput: !!phoneInput,
+        sendVerificationBtn: !!sendVerificationBtn,
+        verificationGroup: !!verificationGroup,
+        verificationCodeInput: !!verificationCodeInput,
+        verifyCodeBtn: !!verifyCodeBtn,
+        timerDisplay: !!timerDisplay,
+        signupBtn: !!signupBtn,
+        phoneVerifiedInput: !!phoneVerifiedInput,
+        signupForm: !!signupForm,
+        recaptchaTokenInput: !!recaptchaTokenInput
+    });
+
     // 비밀번호 표시/숨김 토글
     function setupPasswordToggle(input, toggle) {
+        console.log('🔒 비밀번호 토글 설정:', input.id);
         toggle.addEventListener('click', function() {
             const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
             input.setAttribute('type', type);
@@ -418,6 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const icon = toggle.querySelector('i');
             icon.classList.toggle('fa-eye');
             icon.classList.toggle('fa-eye-slash');
+            console.log('👁️ 비밀번호 표시 토글:', type);
         });
     }
 
@@ -426,13 +457,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 휴대폰 번호 포맷팅 및 010 검증
     phoneInput.addEventListener('input', function() {
+        console.log('📱 휴대폰 번호 입력:', this.value);
         let value = this.value.replace(/[^0-9]/g, '');
+        console.log('📱 숫자만 추출:', value);
         
         // 010으로 시작하지 않으면 에러 표시
         if (value.length > 0 && !value.startsWith('010')) {
+            console.warn('❌ 010으로 시작하지 않는 번호:', value);
             this.setCustomValidity('010으로 시작하는 휴대폰 번호만 입력할 수 있습니다.');
             this.classList.add('error');
         } else {
+            console.log('✅ 유효한 010 번호');
             this.setCustomValidity('');
             this.classList.remove('error');
         }
@@ -444,10 +479,12 @@ document.addEventListener('DOMContentLoaded', function() {
             value = value.substring(0, 8) + '-' + value.substring(8, 12);
         }
         
+        console.log('📱 포맷팅된 번호:', value);
         this.value = value;
         
         // 전화번호가 변경되면 인증 상태 초기화
         if (isPhoneVerified) {
+            console.log('🔄 전화번호 변경으로 인증 상태 초기화');
             resetVerification();
         }
         
@@ -456,58 +493,76 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 인증번호 입력 필드 - 숫자만 입력
     verificationCodeInput.addEventListener('input', function() {
+        const oldValue = this.value;
         this.value = this.value.replace(/[^0-9]/g, '');
+        console.log('🔢 인증번호 입력:', oldValue, '→', this.value);
         updateVerifyButtonState();
     });
 
     // reCAPTCHA 토큰 생성
     async function generateRecaptchaToken(action) {
+        console.log('🛡️ reCAPTCHA 토큰 생성 시작 - 액션:', action);
+        
         if (!recaptchaLoaded) {
+            console.error('❌ reCAPTCHA가 아직 로드되지 않음');
             throw new Error('reCAPTCHA가 아직 로드되지 않았습니다.');
         }
         
         try {
+            console.log('🛡️ grecaptcha.execute 호출 중...');
             const token = await grecaptcha.execute('6LfViDErAAAAAMcOf3D-JxEhisMDhzLhEDYEahZb', {
                 action: action
             });
+            console.log('✅ reCAPTCHA 토큰 생성 성공:', token.substring(0, 20) + '...');
             return token;
         } catch (error) {
-            console.error('reCAPTCHA 토큰 생성 실패:', error);
+            console.error('❌ reCAPTCHA 토큰 생성 실패:', error);
             throw error;
         }
     }
 
     // 인증번호 발송 버튼
     sendVerificationBtn.addEventListener('click', async function() {
+        console.log('📤 인증번호 발송 버튼 클릭');
         const phone = phoneInput.value.trim();
+        console.log('📱 발송 대상 번호:', phone);
         
         if (!isValidPhoneFormat(phone)) {
+            console.warn('❌ 잘못된 휴대폰 번호 형식:', phone);
             showMessage('010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.', 'error');
             return;
         }
 
         // 010 번호 추가 검증
         if (!phone.startsWith('010-')) {
+            console.warn('❌ 010으로 시작하지 않는 번호:', phone);
             showMessage('010으로 시작하는 휴대폰 번호만 사용할 수 있습니다.', 'error');
             return;
         }
 
         try {
+            console.log('🛡️ reCAPTCHA 토큰 생성 중...');
             // reCAPTCHA 토큰 생성
             const recaptchaToken = await generateRecaptchaToken('send_verification');
+            console.log('📤 SMS 발송 요청 시작');
             await sendVerificationCode(phone, recaptchaToken);
         } catch (error) {
-            console.error('인증번호 발송 중 오류:', error);
+            console.error('❌ 인증번호 발송 중 오류:', error);
             showMessage('보안 검증에 실패했습니다. 새로고침 후 다시 시도해주세요.', 'error');
         }
     });
 
     // 인증번호 확인 버튼
     verifyCodeBtn.addEventListener('click', function() {
+        console.log('✅ 인증번호 확인 버튼 클릭');
         const code = verificationCodeInput.value.trim();
         const phone = phoneInput.value.trim();
         
+        console.log('🔢 입력된 인증번호:', code);
+        console.log('📱 인증할 휴대폰 번호:', phone);
+        
         if (code.length !== 4) {
+            console.warn('❌ 잘못된 인증번호 길이:', code.length);
             showMessage('4자리 인증번호를 입력해주세요.', 'error');
             return;
         }
@@ -518,6 +573,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 엔터키로 인증번호 확인
     verificationCodeInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
+            console.log('⌨️ 엔터키로 인증번호 확인');
             e.preventDefault();
             verifyCodeBtn.click();
         }
@@ -525,11 +581,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 폼 유효성 검사
     function validateForm() {
+        console.log('🔍 폼 유효성 검사 시작');
+        
         const nickname = nicknameInput.value.trim();
         const phone = phoneInput.value.trim();
         const email = emailInput.value.trim();
         const password = passwordInput.value;
         const passwordConfirm = passwordConfirmInput.value;
+        
+        console.log('📊 입력값 확인:', {
+            nickname: nickname,
+            phone: phone,
+            email: email,
+            passwordLength: password.length,
+            passwordConfirmLength: passwordConfirm.length,
+            isPhoneVerified: isPhoneVerified
+        });
         
         const isNicknameValid = nickname.length >= 2 && nickname.length <= 20;
         const isPhoneValid = isValidPhoneFormat(phone);
@@ -537,9 +604,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const isPasswordValid = password.length >= 8;
         const isPasswordMatch = password === passwordConfirm;
         
+        console.log('✅ 유효성 검사 결과:', {
+            isNicknameValid,
+            isPhoneValid,
+            isEmailValid,
+            isPasswordValid,
+            isPasswordMatch,
+            isPhoneVerified
+        });
+        
         const isFormValid = isNicknameValid && isPhoneValid && isEmailValid && 
                           isPasswordValid && isPasswordMatch && isPhoneVerified;
         
+        console.log('📝 전체 폼 유효성:', isFormValid);
         signupBtn.disabled = !isFormValid;
         
         return isFormValid;
@@ -547,52 +624,74 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 입력 필드 변경 시 폼 유효성 검사
     [nicknameInput, phoneInput, emailInput, passwordInput, passwordConfirmInput].forEach(input => {
-        input.addEventListener('input', validateForm);
+        input.addEventListener('input', function() {
+            console.log('📝 입력 필드 변경:', input.id, '→', input.value.substring(0, 10) + (input.value.length > 10 ? '...' : ''));
+            validateForm();
+        });
     });
 
     // 휴대폰 번호 형식 검증 (010으로 시작하는지 확인)
     function isValidPhoneFormat(phone) {
         const pattern = /^010-[0-9]{3,4}-[0-9]{4}$/;
-        return pattern.test(phone);
+        const isValid = pattern.test(phone);
+        console.log('📱 휴대폰 번호 형식 검증:', phone, '→', isValid);
+        return isValid;
     }
 
     // 이메일 형식 검증
     function isValidEmailFormat(email) {
         const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return pattern.test(email);
+        const isValid = pattern.test(email);
+        console.log('📧 이메일 형식 검증:', email, '→', isValid);
+        return isValid;
     }
 
     // 인증번호 발송 (reCAPTCHA 토큰 포함)
     async function sendVerificationCode(phone, recaptchaToken) {
+        console.log('📤 SMS 발송 함수 시작');
+        console.log('📱 발송 번호:', phone);
+        console.log('🛡️ reCAPTCHA 토큰 길이:', recaptchaToken.length);
+        
         sendVerificationBtn.disabled = true;
         sendVerificationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 발송 중...';
 
         try {
+            console.log('🌐 AJAX 요청 시작 - /auth/send-verification');
+            
+            const requestData = { 
+                phone: phone,
+                recaptcha_token: recaptchaToken
+            };
+            console.log('📤 요청 데이터:', requestData);
+            
             const response = await fetch('/auth/send-verification', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: JSON.stringify({ 
-                    phone: phone,
-                    recaptcha_token: recaptchaToken
-                })
+                body: JSON.stringify(requestData)
             });
 
+            console.log('📡 응답 상태:', response.status, response.statusText);
+            console.log('📡 응답 헤더:', [...response.headers.entries()]);
+            
             const data = await response.json();
+            console.log('📥 응답 데이터:', data);
             
             if (data.success) {
+                console.log('✅ SMS 발송 성공');
                 showMessage('인증번호가 발송되었습니다.', 'success');
                 showVerificationGroup();
                 startTimer(180); // 3분 = 180초
             } else {
+                console.error('❌ SMS 발송 실패:', data.message);
                 showMessage(data.message || '인증번호 발송에 실패했습니다.', 'error');
                 sendVerificationBtn.disabled = false;
                 sendVerificationBtn.innerHTML = '인증번호 발송';
             }
         } catch (error) {
-            console.error('Error:', error);
+            console.error('❌ AJAX 요청 오류:', error);
             showMessage('인증번호 발송 중 오류가 발생했습니다.', 'error');
             sendVerificationBtn.disabled = false;
             sendVerificationBtn.innerHTML = '인증번호 발송';
@@ -601,8 +700,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 인증번호 확인
     function verifyCode(phone, code) {
+        console.log('🔢 인증번호 확인 함수 시작');
+        console.log('📱 인증 번호:', phone);
+        console.log('🔢 입력 코드:', code);
+        
         verifyCodeBtn.disabled = true;
         verifyCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 확인 중...';
+
+        const requestData = { phone: phone, code: code };
+        console.log('📤 인증 확인 요청 데이터:', requestData);
 
         fetch('/auth/verify-code', {
             method: 'POST',
@@ -610,21 +716,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ phone: phone, code: code })
+            body: JSON.stringify(requestData)
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('📡 인증 확인 응답 상태:', response.status, response.statusText);
+            return response.json();
+        })
         .then(data => {
+            console.log('📥 인증 확인 응답 데이터:', data);
+            
             if (data.success) {
+                console.log('✅ 휴대폰 인증 성공');
                 showMessage('휴대폰 인증이 완료되었습니다.', 'success');
                 completeVerification();
             } else {
+                console.error('❌ 인증 실패:', data.message);
                 showMessage(data.message || '인증번호가 일치하지 않습니다.', 'error');
                 verifyCodeBtn.disabled = false;
                 verifyCodeBtn.innerHTML = '확인';
             }
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('❌ 인증 확인 AJAX 오류:', error);
             showMessage('인증 확인 중 오류가 발생했습니다.', 'error');
             verifyCodeBtn.disabled = false;
             verifyCodeBtn.innerHTML = '확인';
@@ -633,6 +746,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 인증 그룹 표시
     function showVerificationGroup() {
+        console.log('👁️ 인증번호 입력 그룹 표시');
         verificationGroup.style.display = 'block';
         verificationCodeInput.focus();
         sendVerificationBtn.innerHTML = '재발송';
@@ -641,6 +755,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 타이머 시작
     function startTimer(seconds) {
+        console.log('⏰ 타이머 시작:', seconds + '초');
         timeLeft = seconds;
         updateTimerDisplay();
         
@@ -649,6 +764,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateTimerDisplay();
             
             if (timeLeft <= 0) {
+                console.log('⏰ 타이머 만료');
                 clearInterval(verificationTimer);
                 expireVerification();
             }
@@ -659,21 +775,31 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTimerDisplay() {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        timerDisplay.textContent = display;
         
         if (timeLeft <= 30) {
             timerDisplay.classList.add('expired');
+            console.log('⚠️ 타이머 30초 이하:', display);
         }
     }
 
     // 인증 완료
     function completeVerification() {
+        console.log('🎉 휴대폰 인증 완료 처리 시작');
+        
         if (verificationTimer) {
             clearInterval(verificationTimer);
+            console.log('⏰ 타이머 정지');
         }
         
         isPhoneVerified = true;
         phoneVerifiedInput.value = '1';
+        
+        console.log('✅ 인증 상태 업데이트:', {
+            isPhoneVerified,
+            phoneVerifiedInputValue: phoneVerifiedInput.value
+        });
         
         // UI 업데이트
         document.querySelector('.phone-verification-group').style.display = 'none';
@@ -690,11 +816,13 @@ document.addEventListener('DOMContentLoaded', function() {
         statusDiv.innerHTML = '<i class="fas fa-check-circle"></i> 휴대폰 인증이 완료되었습니다.';
         phoneGroup.appendChild(statusDiv);
         
+        console.log('🎨 UI 업데이트 완료');
         validateForm();
     }
 
     // 인증 만료
     function expireVerification() {
+        console.log('❌ 인증 시간 만료');
         timerDisplay.textContent = '00:00';
         timerDisplay.classList.add('expired');
         verifyCodeBtn.disabled = true;
@@ -709,11 +837,14 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             sendVerificationBtn.disabled = false;
             sendVerificationBtn.innerHTML = '재발송';
+            console.log('🔄 재발송 버튼 활성화');
         }, 1000);
     }
 
     // 인증 상태 초기화
     function resetVerification() {
+        console.log('🔄 인증 상태 초기화');
+        
         if (verificationTimer) {
             clearInterval(verificationTimer);
         }
@@ -736,6 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         sendVerificationBtn.innerHTML = '인증번호 발송';
+        console.log('🔄 인증 상태 초기화 완료');
         validateForm();
     }
 
@@ -743,17 +875,36 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSendButtonState() {
         const phone = phoneInput.value.trim();
         const isValidPhone = isValidPhoneFormat(phone) && phone.startsWith('010-');
-        sendVerificationBtn.disabled = !isValidPhone || isPhoneVerified;
+        const shouldDisable = !isValidPhone || isPhoneVerified;
+        
+        console.log('🔘 발송 버튼 상태 업데이트:', {
+            phone,
+            isValidPhone,
+            isPhoneVerified,
+            shouldDisable
+        });
+        
+        sendVerificationBtn.disabled = shouldDisable;
     }
 
     // 확인 버튼 상태 업데이트
     function updateVerifyButtonState() {
         const code = verificationCodeInput.value.trim();
-        verifyCodeBtn.disabled = code.length !== 4 || timeLeft <= 0;
+        const shouldDisable = code.length !== 4 || timeLeft <= 0;
+        
+        console.log('🔘 확인 버튼 상태 업데이트:', {
+            codeLength: code.length,
+            timeLeft,
+            shouldDisable
+        });
+        
+        verifyCodeBtn.disabled = shouldDisable;
     }
 
     // 메시지 표시
     function showMessage(message, type) {
+        console.log('💬 메시지 표시:', type, message);
+        
         // 기존 메시지 제거
         const existingAlert = document.querySelector('.alert-message');
         if (existingAlert) {
@@ -778,29 +929,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 폼 제출 시 최종 검증 및 reCAPTCHA 토큰 생성
     signupForm.addEventListener('submit', async function(e) {
+        console.log('📝 회원가입 폼 제출 시작');
         e.preventDefault();
         
+        console.log('🔍 최종 폼 유효성 검사');
         if (!validateForm()) {
+            console.error('❌ 폼 유효성 검사 실패');
             showMessage('모든 필드를 올바르게 입력하고 휴대폰 인증을 완료해주세요.', 'error');
+            alert('⚠️ 디버깅: 폼 유효성 검사 실패\n\n콘솔 로그를 확인하세요.\n확인을 누르면 계속됩니다.');
             return;
         }
 
         try {
+            console.log('🛡️ 회원가입용 reCAPTCHA 토큰 생성 중...');
             // 회원가입용 reCAPTCHA 토큰 생성
             const recaptchaToken = await generateRecaptchaToken('signup');
             recaptchaTokenInput.value = recaptchaToken;
             
+            console.log('📤 회원가입 폼 실제 제출');
+            console.log('📊 제출할 데이터:', {
+                nickname: nicknameInput.value,
+                phone: phoneInput.value,
+                email: emailInput.value,
+                passwordLength: passwordInput.value.length,
+                phoneVerified: phoneVerifiedInput.value,
+                hasRecaptchaToken: !!recaptchaToken
+            });
+            
+            console.log('🚨 디버깅 모드: 폼이 제출됩니다. 오류 발생 시 콘솔 로그를 확인하세요!');
+            
             // 폼 제출
             this.submit();
         } catch (error) {
-            console.error('reCAPTCHA 토큰 생성 실패:', error);
+            console.error('❌ reCAPTCHA 토큰 생성 실패:', error);
             showMessage('보안 검증에 실패했습니다. 새로고침 후 다시 시도해주세요.', 'error');
+            alert('⚠️ 디버깅: reCAPTCHA 토큰 생성 실패\n\n' + error.message + '\n\n콘솔 로그를 확인하세요.\n확인을 누르면 계속됩니다.');
         }
     });
 
     // 초기화
+    console.log('🏁 초기화 시작');
     validateForm();
     updateSendButtonState();
+    console.log('✅ 회원가입 페이지 초기화 완료');
 });
 </script>
 
