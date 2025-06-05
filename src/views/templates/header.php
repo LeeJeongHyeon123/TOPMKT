@@ -22,9 +22,9 @@
                 <!-- 로고 -->
                 <div class="header-left">
                     <h1 class="logo">
-                        <a href="/">
+                        <a href="/" class="logo-link">
                             <div class="logo-icon">
-                                <i class="fas fa-rocket"></i>
+                                <i class="fas fa-rocket header-rocket"></i>
                             </div>
                             <span class="logo-text"><?= APP_NAME ?? '탑마케팅' ?></span>
                         </a>
@@ -150,6 +150,201 @@
 
     <!-- 사용자 메뉴 스타일 -->
     <style>
+    
+    /* 🚀 헤더 로켓 애니메이션 */
+    .header-rocket {
+        display: inline-block;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center bottom;
+        position: relative;
+        color: #3b82f6;
+        font-size: 1.8rem;
+    }
+    
+    /* 기본 헤더 로켓 애니메이션 - 우주에서 떠다니는 느낌 */
+    .header-rocket {
+        animation: headerRocketFloat 4s ease-in-out infinite;
+    }
+    
+    @keyframes headerRocketFloat {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        20% {
+            transform: translateY(-2px) rotate(3deg);
+        }
+        40% {
+            transform: translateY(-4px) rotate(0deg);
+        }
+        60% {
+            transform: translateY(-2px) rotate(-3deg);
+        }
+        80% {
+            transform: translateY(-1px) rotate(1deg);
+        }
+    }
+    
+    /* 로고 링크 호버 시 로켓 특수 효과 */
+    .logo-link {
+        position: relative;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .logo-link::before {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 50%;
+        width: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #3b82f6, #1d4ed8, #1e40af, transparent);
+        transform: translateX(-50%);
+        transition: width 0.5s ease;
+    }
+    
+    .logo-link::after {
+        content: '✨';
+        position: absolute;
+        right: -25px;
+        top: -5px;
+        opacity: 0;
+        font-size: 0.7rem;
+        transform: scale(0.8);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+    
+    /* 호버 시 로켓 엔진 점화! */
+    .logo-link:hover .header-rocket {
+        animation: headerRocketIgnition 0.8s ease-in-out;
+        transform: translateY(-3px) rotate(-8deg) scale(1.1);
+        color: #1d4ed8;
+        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
+    }
+    
+    @keyframes headerRocketIgnition {
+        0% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+        }
+        30% {
+            transform: translateY(-1px) rotate(-4deg) scale(1.05);
+        }
+        60% {
+            transform: translateY(-2px) rotate(-6deg) scale(1.08);
+        }
+        100% {
+            transform: translateY(-3px) rotate(-8deg) scale(1.1);
+        }
+    }
+    
+    /* 호버 시 추진 효과 */
+    .logo-link:hover::before {
+        width: 50px;
+        animation: headerThruster 0.4s ease-in-out infinite alternate;
+    }
+    
+    .logo-link:hover::after {
+        opacity: 1;
+        transform: scale(1) rotate(15deg);
+        animation: sparkle 1s ease-in-out infinite;
+    }
+    
+    @keyframes headerThruster {
+        0% {
+            height: 1px;
+            box-shadow: 0 0 3px #3b82f6;
+        }
+        100% {
+            height: 2px;
+            box-shadow: 0 0 6px #1d4ed8, 0 0 12px #1e40af;
+        }
+    }
+    
+    @keyframes sparkle {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1) rotate(15deg);
+        }
+        50% {
+            opacity: 0.6;
+            transform: scale(1.2) rotate(-15deg);
+        }
+    }
+    
+    /* 클릭 시 로켓 발사! */
+    .logo-link:active .header-rocket {
+        animation: headerRocketLaunch 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transform: translateY(-8px) rotate(-20deg) scale(1.15);
+    }
+    
+    @keyframes headerRocketLaunch {
+        0% {
+            transform: translateY(-3px) rotate(-8deg) scale(1.1);
+        }
+        40% {
+            transform: translateY(-5px) rotate(-15deg) scale(1.12);
+        }
+        70% {
+            transform: translateY(-10px) rotate(-18deg) scale(1.18);
+        }
+        100% {
+            transform: translateY(-8px) rotate(-20deg) scale(1.15);
+        }
+    }
+    
+    /* 로고 텍스트 호버 효과 */
+    .logo-text {
+        transition: all 0.3s ease;
+        color: #1f2937;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    .logo-link:hover .logo-text {
+        color: #1d4ed8;
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* 로고 아이콘 컨테이너 */
+    .logo-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.05));
+        transition: all 0.3s ease;
+        margin-right: 12px;
+    }
+    
+    .logo-link:hover .logo-icon {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(29, 78, 216, 0.1));
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* 모바일 반응형 */
+    @media (max-width: 768px) {
+        .header-rocket {
+            font-size: 1.5rem;
+        }
+        
+        .logo-text {
+            font-size: 1.3rem;
+        }
+        
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            margin-right: 8px;
+        }
+        
+        .logo-link::after {
+            right: -20px;
+            font-size: 0.6rem;
+        }
+    }
     
     /* 헤더 레이아웃 개선 */
     .header-content {
