@@ -51,7 +51,7 @@
                                 <img src="/assets/images/default-avatar.png" alt="프로필" 
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 <div class="avatar-fallback">
-                                    <?= strtoupper(substr($_SESSION['username'] ?? 'U', 0, 1)) ?>
+                                    👤
                                 </div>
                             </div>
                             <span class="user-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
@@ -150,14 +150,62 @@
 
     <!-- 사용자 메뉴 스타일 -->
     <style>
+    
+    /* 헤더 레이아웃 개선 */
+    .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 15px 0;
+    }
+    
+    .header-left {
+        flex: 0 0 auto;
+    }
+    
+    .main-nav {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        margin: 0 40px;
+    }
+    
     .nav-auth {
+        flex: 0 0 auto;
+    }
+    
+    /* 메인 네비게이션 메뉴 스타일 수정 */
+    .nav-menu a {
+        color: #374151 !important;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        font-size: 16px;
+    }
+    
+    .nav-menu a:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #1d4ed8 !important;
+        text-decoration: none;
+    }
+    
+    .nav-menu a.active {
+        background-color: rgba(59, 130, 246, 0.15);
+        color: #1d4ed8 !important;
+    }
+    
+    .nav-auth {
+        flex: 0 0 auto;
         display: flex;
         align-items: center;
         gap: 15px;
     }
     
     .login-btn {
-        color: white;
+        color: #374151;
         text-decoration: none;
         padding: 8px 16px;
         border-radius: 6px;
@@ -169,7 +217,8 @@
     }
     
     .login-btn:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(59, 130, 246, 0.1);
+        color: #1d4ed8;
     }
     
     .user-menu {
@@ -178,16 +227,16 @@
         align-items: center;
         gap: 10px;
         padding: 8px 12px;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.05);
         border-radius: 25px;
         cursor: pointer;
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(0, 0, 0, 0.1);
     }
     
     .user-menu:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(0, 0, 0, 0.08);
     }
     
     .user-avatar {
@@ -211,13 +260,11 @@
         display: none;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 14px;
+        font-size: 16px;
     }
     
     .user-name {
-        color: white;
+        color: #374151;
         font-size: 14px;
         font-weight: 500;
         max-width: 100px;
@@ -227,7 +274,7 @@
     }
     
     .user-menu i {
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(0, 0, 0, 0.5);
         font-size: 12px;
         transition: transform 0.3s ease;
     }
@@ -331,6 +378,21 @@
     
     /* 반응형 */
     @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px 0;
+        }
+        
+        .main-nav {
+            margin: 0;
+            order: 2;
+        }
+        
+        .nav-auth {
+            order: 3;
+        }
+        
         .user-name {
             display: none;
         }

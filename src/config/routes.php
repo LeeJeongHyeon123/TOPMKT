@@ -24,6 +24,7 @@ class Router {
             'POST:/auth/login' => ['AuthController', 'login'],
             'GET:/auth/signup' => ['AuthController', 'showSignup'],
             'POST:/auth/signup' => ['AuthController', 'signup'],
+            'GET:/auth/logout' => ['AuthController', 'logout'],
             'POST:/auth/logout' => ['AuthController', 'logout'],
             
             // 휴대폰 인증 라우트
