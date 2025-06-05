@@ -77,8 +77,8 @@
                         </p>
                         
                         <div class="hero-actions">
-                            <a href="/auth/signup" class="btn btn-primary-gradient">
-                                <i class="fas fa-rocket"></i>
+                            <a href="/auth/signup" class="btn btn-primary-gradient rocket-launch-btn">
+                                <i class="fas fa-rocket rocket-icon"></i>
                                 무료로 시작하기
                             </a>
                             <a href="/auth/login" class="btn btn-outline-white">
@@ -259,6 +259,194 @@
             }
             75% {
                 transform: rotate(10deg);
+            }
+        }
+        
+        /* 🚀 로켓 애니메이션 효과 */
+        .rocket-icon {
+            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center bottom;
+            position: relative;
+        }
+        
+        .rocket-launch-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .rocket-launch-btn::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #d97706, transparent);
+            transform: translateX(-50%);
+            transition: width 0.6s ease;
+        }
+        
+        .rocket-launch-btn::after {
+            content: '💨';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        /* 기본 로켓 애니메이션 - 둥둥 떠다니기 */
+        .rocket-icon {
+            animation: rocketFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes rocketFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-3px) rotate(2deg);
+            }
+            50% {
+                transform: translateY(-6px) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-3px) rotate(-2deg);
+            }
+        }
+        
+        /* 호버 시 로켓 발사 준비 */
+        .rocket-launch-btn:hover .rocket-icon {
+            animation: rocketPrepare 0.6s ease-in-out;
+            transform: translateY(-5px) rotate(-10deg) scale(1.1);
+        }
+        
+        @keyframes rocketPrepare {
+            0% {
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-2px) rotate(-5deg) scale(1.05);
+            }
+            100% {
+                transform: translateY(-5px) rotate(-10deg) scale(1.1);
+            }
+        }
+        
+        /* 호버 시 추진 불꽃 효과 */
+        .rocket-launch-btn:hover::before {
+            width: 60px;
+            animation: thrusterFlame 0.3s ease-in-out infinite alternate;
+        }
+        
+        .rocket-launch-btn:hover::after {
+            opacity: 1;
+            left: -15px;
+            animation: smokeTrail 1s ease-in-out infinite;
+        }
+        
+        @keyframes thrusterFlame {
+            0% {
+                height: 2px;
+                box-shadow: 0 0 5px #fbbf24;
+            }
+            100% {
+                height: 4px;
+                box-shadow: 0 0 10px #f59e0b, 0 0 20px #d97706;
+            }
+        }
+        
+        @keyframes smokeTrail {
+            0% {
+                opacity: 0.8;
+                transform: translateY(-50%) scale(1);
+            }
+            100% {
+                opacity: 0.4;
+                transform: translateY(-50%) scale(1.2);
+            }
+        }
+        
+        /* 클릭 시 로켓 발사 애니메이션 */
+        .rocket-launch-btn:active .rocket-icon {
+            animation: rocketLaunch 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(-20px) rotate(-15deg) scale(1.2);
+        }
+        
+        @keyframes rocketLaunch {
+            0% {
+                transform: translateY(-5px) rotate(-10deg) scale(1.1);
+            }
+            30% {
+                transform: translateY(-15px) rotate(-12deg) scale(1.15);
+            }
+            60% {
+                transform: translateY(-25px) rotate(-15deg) scale(1.25);
+            }
+            100% {
+                transform: translateY(-20px) rotate(-15deg) scale(1.2);
+            }
+        }
+        
+        /* 클릭 시 강력한 추진력 효과 */
+        .rocket-launch-btn:active::before {
+            width: 80px;
+            height: 6px;
+            box-shadow: 
+                0 0 15px #fbbf24, 
+                0 0 30px #f59e0b, 
+                0 0 45px #d97706,
+                0 2px 0 #ef4444,
+                0 4px 0 #dc2626;
+            animation: superThruster 0.2s ease-in-out infinite;
+        }
+        
+        .rocket-launch-btn:active::after {
+            content: '💨💨💨';
+            left: -40px;
+            font-size: 1rem;
+            animation: intenseSmokeTrail 0.4s ease-in-out infinite;
+        }
+        
+        @keyframes superThruster {
+            0% {
+                transform: translateX(-50%) scaleX(1);
+            }
+            100% {
+                transform: translateX(-50%) scaleX(1.1);
+            }
+        }
+        
+        @keyframes intenseSmokeTrail {
+            0% {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0.6;
+                transform: translateY(-50%) translateX(-10px) scale(1.3);
+            }
+        }
+        
+        /* 터치 기기를 위한 추가 효과 */
+        @media (hover: hover) {
+            .rocket-launch-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 
+                    0 8px 25px rgba(59, 130, 246, 0.3),
+                    0 4px 15px rgba(59, 130, 246, 0.2),
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        /* 모바일에서의 터치 효과 */
+        @media (hover: none) {
+            .rocket-launch-btn:active {
+                transform: translateY(-1px) scale(0.98);
             }
         }
         
