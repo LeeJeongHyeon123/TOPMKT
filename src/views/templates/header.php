@@ -161,10 +161,52 @@
         font-size: 1.8rem;
     }
     
-    /* 기본 헤더 로켓 애니메이션 - 우주에서 떠다니는 느낌 */
+    /* 페이지 로딩 시 로켓 착륙 애니메이션 */
     .header-rocket {
-        animation: headerRocketFloat 4s ease-in-out infinite;
+        animation: rocketLanding 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                   headerRocketFloat 4s ease-in-out infinite 2.5s;
     }
+    
+    @keyframes rocketLanding {
+        0% {
+            transform: translateX(-150vw) translateY(-50vh) rotate(-45deg) scale(0.3);
+            opacity: 0;
+            filter: blur(3px);
+        }
+        20% {
+            opacity: 0.3;
+            filter: blur(2px);
+        }
+        40% {
+            transform: translateX(-80vw) translateY(-20vh) rotate(-30deg) scale(0.5);
+            opacity: 0.6;
+            filter: blur(1px);
+        }
+        60% {
+            transform: translateX(-20vw) translateY(-5vh) rotate(-15deg) scale(0.8);
+            opacity: 0.8;
+            filter: blur(0.5px);
+        }
+        80% {
+            transform: translateX(-5vw) translateY(-1vh) rotate(-5deg) scale(0.95);
+            opacity: 0.9;
+            filter: blur(0px);
+        }
+        90% {
+            transform: translateX(0) translateY(2px) rotate(5deg) scale(1.1);
+            opacity: 1;
+        }
+        95% {
+            transform: translateX(0) translateY(-2px) rotate(-2deg) scale(1.05);
+        }
+        100% {
+            transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+            opacity: 1;
+            filter: blur(0px);
+        }
+    }
+    
+    /* 기본 헤더 로켓 애니메이션 - 우주에서 떠다니는 느낌 (착륙 후) */
     
     @keyframes headerRocketFloat {
         0%, 100% {
@@ -213,6 +255,128 @@
         transform: scale(0.8);
         transition: all 0.3s ease;
         pointer-events: none;
+    }
+    
+    /* 착륙 시 추진 효과 */
+    .logo-icon::before {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #ef4444, transparent);
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .logo-icon::after {
+        content: '💨';
+        position: absolute;
+        left: -35px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        font-size: 0.8rem;
+        animation: landingSmoke 2.5s ease-out;
+    }
+    
+    /* 착륙 추진 효과 애니메이션 */
+    @keyframes landingThruster {
+        0%, 70% {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+        75% {
+            width: 30px;
+            height: 3px;
+            opacity: 0.8;
+            box-shadow: 0 0 10px #fbbf24, 0 0 20px #f59e0b;
+        }
+        85% {
+            width: 40px;
+            height: 5px;
+            opacity: 1;
+            box-shadow: 0 0 15px #fbbf24, 0 0 30px #f59e0b, 0 0 45px #ef4444;
+        }
+        95% {
+            width: 20px;
+            height: 2px;
+            opacity: 0.5;
+        }
+        100% {
+            width: 0;
+            height: 0;
+            opacity: 0;
+        }
+    }
+    
+    /* 착륙 연기 효과 */
+    @keyframes landingSmoke {
+        0%, 60% {
+            opacity: 0;
+            left: -35px;
+        }
+        70% {
+            opacity: 0.8;
+            left: -25px;
+            content: '💨';
+        }
+        80% {
+            opacity: 1;
+            left: -20px;
+            content: '💨💨';
+        }
+        90% {
+            opacity: 0.6;
+            left: -15px;
+            content: '💨💨💨';
+        }
+        100% {
+            opacity: 0;
+            left: -10px;
+        }
+    }
+    
+    /* 착륙 시 로고 아이콘에 추진 효과 적용 */
+    .logo-icon {
+        position: relative;
+        overflow: visible;
+    }
+    
+    .logo-icon::before {
+        animation: landingThruster 2.5s ease-out;
+    }
+    
+    /* 착륙 완료 시 충격파 효과 */
+    @keyframes landingShockwave {
+        0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+        }
+        25% {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        75% {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+        100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 40px rgba(59, 130, 246, 0);
+        }
+    }
+    
+    /* 착륙 완료 시 로고 아이콘에 충격파 적용 */
+    .logo-icon {
+        animation: landingShockwave 1s ease-out 2.3s;
     }
     
     /* 호버 시 로켓 엔진 점화! */
@@ -299,6 +463,31 @@
         color: #1f2937;
         font-weight: 700;
         font-size: 1.5rem;
+        opacity: 0;
+        animation: logoTextAppear 2.8s ease-out forwards;
+    }
+    
+    @keyframes logoTextAppear {
+        0%, 60% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        70% {
+            opacity: 0.3;
+            transform: translateY(5px);
+        }
+        80% {
+            opacity: 0.6;
+            transform: translateY(2px);
+        }
+        90% {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .logo-link:hover .logo-text {
@@ -317,6 +506,30 @@
         background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(29, 78, 216, 0.05));
         transition: all 0.3s ease;
         margin-right: 12px;
+        position: relative;
+        overflow: visible;
+        opacity: 0;
+        animation: logoIconAppear 2.6s ease-out forwards,
+                   landingShockwave 1s ease-out 2.3s;
+    }
+    
+    @keyframes logoIconAppear {
+        0%, 50% {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        70% {
+            opacity: 0.5;
+            transform: scale(0.9);
+        }
+        85% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
     }
     
     .logo-link:hover .logo-icon {
