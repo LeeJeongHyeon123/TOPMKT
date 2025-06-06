@@ -5,6 +5,13 @@
 
 class TopMarketingLoader {
     constructor() {
+        // 중복 실행 방지: 이미 실행 중인 인스턴스가 있으면 종료
+        if (window.topMarketingLoaderActive) {
+            console.log('🚀 로딩 시스템이 이미 실행 중입니다. 중복 실행을 방지합니다.');
+            return;
+        }
+        window.topMarketingLoaderActive = true;
+        
         this.progress = 0;
         this.isLoading = false;
         this.loadingStages = [
@@ -31,10 +38,13 @@ class TopMarketingLoader {
     }
     
     createLoadingHTML() {
-        // 로딩 오버레이가 이미 존재하면 제거
+        // 로딩 오버레이가 이미 존재하면 제거 (중복 방지)
         const existingOverlay = document.getElementById('topMarketing-loading-overlay');
         if (existingOverlay) {
+            console.log('🚀 기존 로딩 오버레이 제거');
             existingOverlay.remove();
+            // 기존 플래그도 해제
+            window.topMarketingLoaderActive = false;
         }
         
         const loadingHTML = `
@@ -183,6 +193,9 @@ class TopMarketingLoader {
                     if (this.loadingOverlay && this.loadingOverlay.parentNode) {
                         this.loadingOverlay.remove();
                     }
+                    // 로딩 완료 시 플래그 해제
+                    window.topMarketingLoaderActive = false;
+                    console.log('🚀 로딩 시스템 완료 - 플래그 해제');
                 }, 500);
             }, 1000);
         }
