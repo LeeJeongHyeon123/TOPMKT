@@ -276,33 +276,22 @@ class TopMarketingLoader {
         const rocketTrail = document.querySelector('.rocket-trail');
         
         if (rocketMain) {
-            // 현재 위치 고정 (애니메이션 제거 전 위치 저장)
-            const currentTransform = window.getComputedStyle(rocketMain).transform;
-            rocketMain.style.transform = currentTransform !== 'none' ? currentTransform : 'translateY(-8px) rotate(0deg)';
+            // 기존 애니메이션은 유지하고 발사 애니메이션을 즉시 추가
+            // 이렇게 하면 애니메이션 중단 없이 부드럽게 전환됨
+            rocketMain.classList.add('rocket-launch-sequence');
             
-            // 기존 애니메이션 제거
-            rocketMain.classList.remove('rocket-fly');
+            // 발사 트레일 효과 추가
+            if (rocketTrail) {
+                rocketTrail.classList.add('rocket-launch-trail');
+            }
             
-            // 즉시 새로운 발사 시퀀스 애니메이션 추가 (딜레이 제거)
+            // 에너지 웨이브 생성
+            this.createEnergyWaves();
+            
+            // 파티클 폭발 효과
             setTimeout(() => {
-                // 인라인 스타일 제거하고 새 애니메이션 시작
-                rocketMain.style.transform = '';
-                rocketMain.classList.add('rocket-launch-sequence');
-                
-                // 발사 트레일 효과 추가
-                if (rocketTrail) {
-                    rocketTrail.classList.add('rocket-launch-trail');
-                }
-                
-                // 에너지 웨이브 생성
-                this.createEnergyWaves();
-                
-                // 파티클 폭발 효과
-                setTimeout(() => {
-                    this.createCompletionBurst();
-                }, 1000);
-                
-            }, 10); // 100ms에서 10ms로 단축
+                this.createCompletionBurst();
+            }, 1000);
         }
         
         // 4. 단계별 메시지 업데이트
