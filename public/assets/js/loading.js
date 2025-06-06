@@ -276,9 +276,20 @@ class TopMarketingLoader {
         const rocketTrail = document.querySelector('.rocket-trail');
         
         if (rocketMain) {
-            // 기존 애니메이션은 유지하고 발사 애니메이션을 즉시 추가
-            // 이렇게 하면 애니메이션 중단 없이 부드럽게 전환됨
-            rocketMain.classList.add('rocket-launch-sequence');
+            // 1. 현재 위치를 고정하여 흔들림 중지
+            rocketMain.style.animationPlayState = 'paused';
+            
+            // 2. 잠시 후 고정된 위치에서 발사 애니메이션 시작
+            setTimeout(() => {
+                // 기존 애니메이션 완전 제거하고 고정 위치 설정
+                rocketMain.style.animation = 'none';
+                rocketMain.style.transform = 'translateY(-8px) rotate(0deg)';
+                
+                // 다음 프레임에서 발사 애니메이션 시작
+                requestAnimationFrame(() => {
+                    rocketMain.classList.add('rocket-launch-sequence');
+                });
+            }, 50);
             
             // 발사 트레일 효과 추가
             if (rocketTrail) {
