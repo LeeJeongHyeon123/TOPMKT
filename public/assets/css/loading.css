@@ -444,6 +444,17 @@
     }
 }
 
+/* 🚀 우주선 정지 상태 (발사 준비) */
+.rocket-ready {
+    font-size: 4rem;
+    color: #3b82f6;
+    display: inline-block;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+    position: relative;
+    transform: translateY(-8px) rotate(0deg) !important;
+    animation: none !important;
+}
+
 /* 🚀 우주선 발사 및 비행 애니메이션 */
 .rocket-launch-sequence {
     animation: rocketLaunchComplete 4s ease-out forwards !important;

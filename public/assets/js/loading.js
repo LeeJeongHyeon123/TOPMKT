@@ -276,20 +276,18 @@ class TopMarketingLoader {
         const rocketTrail = document.querySelector('.rocket-trail');
         
         if (rocketMain) {
-            // 1. 현재 위치를 고정하여 흔들림 중지
-            rocketMain.style.animationPlayState = 'paused';
+            // 1. 기존 rocket-main 클래스 제거하여 애니메이션 완전 중지
+            rocketMain.className = '';
             
-            // 2. 잠시 후 고정된 위치에서 발사 애니메이션 시작
+            // 2. 정지 상태 클래스 추가 (완전히 고정된 위치)
+            rocketMain.classList.add('rocket-ready');
+            
+            // 3. 잠시 후 발사 애니메이션 시작
             setTimeout(() => {
-                // 기존 애니메이션 완전 제거하고 고정 위치 설정
-                rocketMain.style.animation = 'none';
-                rocketMain.style.transform = 'translateY(-8px) rotate(0deg)';
-                
-                // 다음 프레임에서 발사 애니메이션 시작
-                requestAnimationFrame(() => {
-                    rocketMain.classList.add('rocket-launch-sequence');
-                });
-            }, 50);
+                // 정지 클래스 제거하고 발사 클래스 추가
+                rocketMain.classList.remove('rocket-ready');
+                rocketMain.classList.add('rocket-launch-sequence');
+            }, 300); // 300ms 동안 완전 정지 상태 유지
             
             // 발사 트레일 효과 추가
             if (rocketTrail) {
