@@ -8,11 +8,13 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/loading.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- JavaScript -->
+    <script src="/assets/js/loading.js"></script>
     <script src="/assets/js/main.js" defer></script>
 </head>
 <body>
@@ -34,11 +36,11 @@
                 <!-- 메인 네비게이션 -->
                 <nav class="main-nav" id="main-nav">
                     <ul class="nav-menu">
-                        <li><a href="/" class="<?= $current_page === 'home' ? 'active' : '' ?>">홈</a></li>
-                        <li><a href="/community" class="<?= $current_page === 'community' ? 'active' : '' ?>">커뮤니티</a></li>
-                        <li><a href="/education" class="<?= $current_page === 'education' ? 'active' : '' ?>">교육</a></li>
-                        <li><a href="/tools" class="<?= $current_page === 'tools' ? 'active' : '' ?>">도구</a></li>
-                        <li><a href="/about" class="<?= $current_page === 'about' ? 'active' : '' ?>">소개</a></li>
+                        <li><a href="/" class="<?= ($pageSection ?? '') === 'home' ? 'active' : '' ?>">홈</a></li>
+                        <li><a href="/community" class="<?= ($pageSection ?? '') === 'community' ? 'active' : '' ?>">커뮤니티</a></li>
+                        <li><a href="/education" class="<?= ($pageSection ?? '') === 'education' ? 'active' : '' ?>">교육</a></li>
+                        <li><a href="/tools" class="<?= ($pageSection ?? '') === 'tools' ? 'active' : '' ?>">도구</a></li>
+                        <li><a href="/about" class="<?= ($pageSection ?? '') === 'about' ? 'active' : '' ?>">소개</a></li>
                     </ul>
                 </nav>
 
@@ -233,29 +235,7 @@
         transition: all 0.3s ease;
     }
     
-    .logo-link::before {
-        content: '';
-        position: absolute;
-        bottom: -3px;
-        left: 50%;
-        width: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #3b82f6, #1d4ed8, #1e40af, transparent);
-        transform: translateX(-50%);
-        transition: width 0.5s ease;
-    }
-    
-    .logo-link::after {
-        content: '✨';
-        position: absolute;
-        right: -25px;
-        top: -5px;
-        opacity: 0;
-        font-size: 0.7rem;
-        transform: scale(0.8);
-        transition: all 0.3s ease;
-        pointer-events: none;
-    }
+    /* 반짝이는 라인선 제거됨 */
     
     /* 착륙 시 추진 효과 */
     .logo-icon::before {
@@ -402,39 +382,7 @@
         }
     }
     
-    /* 호버 시 추진 효과 */
-    .logo-link:hover::before {
-        width: 50px;
-        animation: headerThruster 0.4s ease-in-out infinite alternate;
-    }
-    
-    .logo-link:hover::after {
-        opacity: 1;
-        transform: scale(1) rotate(15deg);
-        animation: sparkle 1s ease-in-out infinite;
-    }
-    
-    @keyframes headerThruster {
-        0% {
-            height: 1px;
-            box-shadow: 0 0 3px #3b82f6;
-        }
-        100% {
-            height: 2px;
-            box-shadow: 0 0 6px #1d4ed8, 0 0 12px #1e40af;
-        }
-    }
-    
-    @keyframes sparkle {
-        0%, 100% {
-            opacity: 1;
-            transform: scale(1) rotate(15deg);
-        }
-        50% {
-            opacity: 0.6;
-            transform: scale(1.2) rotate(-15deg);
-        }
-    }
+    /* 호버 시 반짝이는 효과 제거됨 */
     
     /* 클릭 시 로켓 발사! */
     .logo-link:active .header-rocket {
