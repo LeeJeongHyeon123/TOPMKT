@@ -38,9 +38,8 @@
                     <ul class="nav-menu">
                         <li><a href="/" class="<?= ($pageSection ?? '') === 'home' ? 'active' : '' ?>">홈</a></li>
                         <li><a href="/community" class="<?= ($pageSection ?? '') === 'community' ? 'active' : '' ?>">커뮤니티</a></li>
-                        <li><a href="/education" class="<?= ($pageSection ?? '') === 'education' ? 'active' : '' ?>">교육</a></li>
-                        <li><a href="/tools" class="<?= ($pageSection ?? '') === 'tools' ? 'active' : '' ?>">도구</a></li>
-                        <li><a href="/about" class="<?= ($pageSection ?? '') === 'about' ? 'active' : '' ?>">소개</a></li>
+                        <li><a href="/lectures" class="<?= ($pageSection ?? '') === 'lectures' ? 'active' : '' ?>">강의 일정</a></li>
+                        <li><a href="/events" class="<?= ($pageSection ?? '') === 'events' ? 'active' : '' ?>">행사 일정</a></li>
                     </ul>
                 </nav>
 
@@ -148,7 +147,8 @@
                 <?php unset($_SESSION['success']); ?>
             </div>
         <?php endif; ?>
-    </main>
+        
+        <!-- 페이지 컨텐츠 시작 -->
 
     <!-- 사용자 메뉴 스타일 -->
     <style>
@@ -641,25 +641,30 @@
     
     /* 드롭다운 메뉴 */
     .user-dropdown {
-        position: absolute;
-        top: calc(100% + 10px);
-        right: 0;
-        min-width: 200px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-        z-index: 1000;
-        border: 1px solid #e5e7eb;
+        position: absolute !important;
+        top: calc(100% + 10px) !important;
+        right: 0 !important;
+        min-width: 200px !important;
+        background: white !important;
+        border-radius: 8px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(-10px) !important;
+        transition: all 0.3s ease !important;
+        z-index: 1000 !important;
+        border: 1px solid #e5e7eb !important;
+        display: block !important;
+        pointer-events: none !important;
     }
     
     .user-menu.active .user-dropdown {
-        opacity: 1;
-        visibility: visible;
-        transform: translateY(0);
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(-10px) !important;
+        display: none !important;
+        z-index: 1000 !important;
+        pointer-events: none !important;
     }
     
     .dropdown-header {
@@ -730,6 +735,11 @@
         font-weight: bold;
         min-width: 16px;
         text-align: center;
+        position: static;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
     }
     
     /* 반응형 */
@@ -780,24 +790,249 @@
     document.addEventListener('DOMContentLoaded', function() {
         // 사용자 메뉴 드롭다운 토글
         const userMenu = document.querySelector('.user-menu');
-        const userDropdown = document.querySelector('.user-dropdown');
         
-        if (userMenu && userDropdown) {
+        if (userMenu) {
+            let hoverTimeout = null;
+            
+            console.log('사용자 메뉴 이벤트 리스너 설정 중...');
+            
+            // 클릭으로 드롭다운 토글
             userMenu.addEventListener('click', function(e) {
+                console.log('클릭: 드롭다운 토글');
                 e.preventDefault();
                 e.stopPropagation();
-                this.classList.toggle('active');
+                
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = null;
+                }
+                
+                // 기존 드롭다운 확인
+                let existingDropdown = document.getElementById('floating-user-dropdown');
+                
+                if (existingDropdown) {
+                    // 드롭다운이 이미 있으면 제거
+                    existingDropdown.remove();
+                    this.classList.remove('active');
+                    console.log('클릭으로 드롭다운 제거됨');
+                } else {
+                    // 새 드롭다운 생성
+                    this.classList.add('active');
+                    const rect = this.getBoundingClientRect();
+                    
+                    const floatingDropdown = document.createElement('div');
+                    floatingDropdown.id = 'floating-user-dropdown';
+                    floatingDropdown.innerHTML = `
+                        <div class="dropdown-header">
+                            <div class="user-info">
+                                <span class="user-display-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
+                                <span class="user-role"><?= ucfirst(strtolower($_SESSION['user_role'] ?? 'GENERAL')) ?> 멤버</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/profile" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>프로필</span>
+                        </a>
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>대시보드</span>
+                        </a>
+                        <a href="/messages" class="dropdown-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>메시지</span>
+                            <span class="notification-badge">3</span>
+                        </a>
+                        <a href="/settings" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>설정</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>로그아웃</span>
+                        </a>
+                    `;
+                    
+                    floatingDropdown.style.cssText = `
+                        position: fixed !important;
+                        top: ${rect.bottom + 10}px !important;
+                        right: ${window.innerWidth - rect.right}px !important;
+                        width: 200px !important;
+                        background: white !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+                        z-index: 999999 !important;
+                        border: 1px solid #e5e7eb !important;
+                        display: block !important;
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        font-family: 'Noto Sans KR', sans-serif !important;
+                        color: #374151 !important;
+                    `;
+                    
+                    // 드롭다운 내부 요소들에 대한 스타일 적용
+                    floatingDropdown.querySelectorAll('.dropdown-header').forEach(el => {
+                        el.style.cssText = 'padding: 15px; border-bottom: 1px solid #f3f4f6;';
+                    });
+                    floatingDropdown.querySelectorAll('.user-display-name').forEach(el => {
+                        el.style.cssText = 'display: block; font-weight: 600; color: #1f2937; font-size: 14px;';
+                    });
+                    floatingDropdown.querySelectorAll('.user-role').forEach(el => {
+                        el.style.cssText = 'display: block; font-size: 12px; color: #6b7280; margin-top: 2px;';
+                    });
+                    floatingDropdown.querySelectorAll('.dropdown-divider').forEach(el => {
+                        el.style.cssText = 'height: 1px; background: #f3f4f6; margin: 0;';
+                    });
+                    floatingDropdown.querySelectorAll('.dropdown-item').forEach(el => {
+                        el.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #374151; text-decoration: none; font-size: 14px; transition: background-color 0.2s ease;';
+                        el.addEventListener('mouseenter', () => el.style.backgroundColor = '#f9fafb');
+                        el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                    });
+                    floatingDropdown.querySelectorAll('.logout-item').forEach(el => {
+                        el.style.color = '#dc2626';
+                        el.addEventListener('mouseenter', () => el.style.backgroundColor = '#fef2f2');
+                        el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                    });
+                    floatingDropdown.querySelectorAll('.notification-badge').forEach(el => {
+                        el.style.cssText = 'background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: bold; min-width: 16px; text-align: center;';
+                    });
+                    
+                    document.body.appendChild(floatingDropdown);
+                    console.log('클릭으로 독립 드롭다운 생성됨');
+                    console.log('드롭다운 위치:', { top: rect.bottom + 10, right: window.innerWidth - rect.right });
+                }
+                
+                console.log('클릭 후 active 상태:', this.classList.contains('active'));
+            });
+            
+            // 마우스 호버 시 드롭다운 열기
+            userMenu.addEventListener('mouseenter', function() {
+                console.log('마우스 호버: 드롭다운 열기');
+                if (hoverTimeout) {
+                    clearTimeout(hoverTimeout);
+                    hoverTimeout = null;
+                }
+                
+                // 기존 드롭다운이 없으면 생성
+                let existingDropdown = document.getElementById('floating-user-dropdown');
+                if (!existingDropdown) {
+                    this.classList.add('active');
+                    const rect = this.getBoundingClientRect();
+                    
+                    const floatingDropdown = document.createElement('div');
+                    floatingDropdown.id = 'floating-user-dropdown';
+                    floatingDropdown.innerHTML = `
+                        <div class="dropdown-header">
+                            <div class="user-info">
+                                <span class="user-display-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
+                                <span class="user-role"><?= ucfirst(strtolower($_SESSION['user_role'] ?? 'GENERAL')) ?> 멤버</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="/profile" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>프로필</span>
+                        </a>
+                        <a href="/dashboard" class="dropdown-item">
+                            <i class="fas fa-chart-pie"></i>
+                            <span>대시보드</span>
+                        </a>
+                        <a href="/messages" class="dropdown-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>메시지</span>
+                            <span class="notification-badge">3</span>
+                        </a>
+                        <a href="/settings" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>설정</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>로그아웃</span>
+                        </a>
+                    `;
+                    
+                    floatingDropdown.style.cssText = `
+                        position: fixed !important;
+                        top: ${rect.bottom + 10}px !important;
+                        right: ${window.innerWidth - rect.right}px !important;
+                        width: 200px !important;
+                        background: white !important;
+                        border-radius: 8px !important;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+                        z-index: 999999 !important;
+                        border: 1px solid #e5e7eb !important;
+                        display: block !important;
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        font-family: 'Noto Sans KR', sans-serif !important;
+                        color: #374151 !important;
+                    `;
+                    
+                    // 드롭다운 내부 요소들에 대한 스타일 적용
+                    floatingDropdown.querySelectorAll('.dropdown-header').forEach(el => {
+                        el.style.cssText = 'padding: 15px; border-bottom: 1px solid #f3f4f6;';
+                    });
+                    floatingDropdown.querySelectorAll('.user-display-name').forEach(el => {
+                        el.style.cssText = 'display: block; font-weight: 600; color: #1f2937; font-size: 14px;';
+                    });
+                    floatingDropdown.querySelectorAll('.user-role').forEach(el => {
+                        el.style.cssText = 'display: block; font-size: 12px; color: #6b7280; margin-top: 2px;';
+                    });
+                    floatingDropdown.querySelectorAll('.dropdown-divider').forEach(el => {
+                        el.style.cssText = 'height: 1px; background: #f3f4f6; margin: 0;';
+                    });
+                    floatingDropdown.querySelectorAll('.dropdown-item').forEach(el => {
+                        el.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 12px 15px; color: #374151; text-decoration: none; font-size: 14px; transition: background-color 0.2s ease;';
+                        el.addEventListener('mouseenter', () => el.style.backgroundColor = '#f9fafb');
+                        el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                    });
+                    floatingDropdown.querySelectorAll('.logout-item').forEach(el => {
+                        el.style.color = '#dc2626';
+                        el.addEventListener('mouseenter', () => el.style.backgroundColor = '#fef2f2');
+                        el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                    });
+                    floatingDropdown.querySelectorAll('.notification-badge').forEach(el => {
+                        el.style.cssText = 'background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: bold; min-width: 16px; text-align: center;';
+                    });
+                    
+                    document.body.appendChild(floatingDropdown);
+                    console.log('호버로 독립 드롭다운 생성됨');
+                }
+            });
+            
+            // 마우스가 벗어날 때 지연 후 닫기
+            userMenu.addEventListener('mouseleave', function() {
+                console.log('마우스 벗어남: 지연 후 닫기');
+                const self = this;
+                hoverTimeout = setTimeout(function() {
+                    const existingDropdown = document.getElementById('floating-user-dropdown');
+                    if (existingDropdown) {
+                        existingDropdown.remove();
+                        self.classList.remove('active');
+                        console.log('호버 벗어남으로 독립 드롭다운 제거됨');
+                    }
+                }, 200);
             });
             
             // 외부 클릭 시 드롭다운 닫기
-            document.addEventListener('click', function() {
-                userMenu.classList.remove('active');
+            document.addEventListener('click', function(e) {
+                const existingDropdown = document.getElementById('floating-user-dropdown');
+                if (existingDropdown && !userMenu.contains(e.target) && !existingDropdown.contains(e.target)) {
+                    console.log('외부 클릭: 드롭다운 닫기');
+                    existingDropdown.remove();
+                    userMenu.classList.remove('active');
+                    console.log('외부 클릭으로 독립 드롭다운 제거됨');
+                }
             });
-            
-            // 드롭다운 내부 클릭 시 이벤트 버블링 방지
-            userDropdown.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+        } else {
+            console.log('사용자 메뉴를 찾을 수 없습니다');
         }
         
         // 로그아웃 확인
@@ -805,6 +1040,4 @@
             return confirm('정말 로그아웃하시겠습니까?');
         };
     });
-    </script>
-</body>
-</html> 
+    </script> 
