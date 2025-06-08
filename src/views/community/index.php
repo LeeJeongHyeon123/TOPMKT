@@ -24,6 +24,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     color: white;
     padding: 40px 0;
     text-align: center;
+    margin-top: 60px;
     margin-bottom: 30px;
     border-radius: 12px;
 }

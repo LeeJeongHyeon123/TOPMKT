@@ -17,28 +17,15 @@
                             글로벌 네트워크 마케팅 리더들의 커뮤니티<br>
                             함께 성장하고 성공을 만들어가는 플랫폼
                         </p>
-                        <div class="footer-social">
-                            <a href="#" class="social-link" aria-label="Facebook">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="#" class="social-link" aria-label="Instagram">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                            <a href="#" class="social-link" aria-label="LinkedIn">
-                                <i class="fab fa-linkedin-in"></i>
-                            </a>
-                            <a href="#" class="social-link" aria-label="YouTube">
-                                <i class="fab fa-youtube"></i>
-                            </a>
-                        </div>
+
                     </div>
 
                     <div class="footer-section">
                         <h3 class="footer-title">서비스</h3>
                         <ul class="footer-links">
-                            <li><a href="/posts">커뮤니티</a></li>
-                            <li><a href="/events">행사 일정</a></li>
+                            <li><a href="/community">커뮤니티</a></li>
                             <li><a href="/lectures">강의 일정</a></li>
+                            <li><a href="/events">행사 일정</a></li>
                             <?php if (!isset($_SESSION['user_id'])): ?>
                                 <li><a href="/auth/login">로그인</a></li>
                                 <li><a href="/auth/signup">회원가입</a></li>
@@ -46,22 +33,13 @@
                         </ul>
                     </div>
 
-                    <div class="footer-section">
-                        <h3 class="footer-title">고객지원</h3>
-                        <ul class="footer-links">
-                            <li><a href="/help">도움말</a></li>
-                            <li><a href="/contact">문의하기</a></li>
-                            <li><a href="/faq">자주묻는질문</a></li>
-                            <li><a href="/support">고객센터</a></li>
-                        </ul>
-                    </div>
+
 
                     <div class="footer-section">
                         <h3 class="footer-title">정책</h3>
                         <ul class="footer-links">
                             <li><a href="/terms">이용약관</a></li>
                             <li><a href="/privacy">개인정보처리방침</a></li>
-                            <li><a href="/community-rules">커뮤니티 가이드</a></li>
                         </ul>
                     </div>
                 </div>
@@ -71,17 +49,11 @@
                     <div class="footer-copyright">
                         <p>&copy; <?= date('Y') ?> <?= APP_NAME ?? '탑마케팅' ?>. All rights reserved.</p>
                         <p class="company-info">
-                            사업자등록번호: 000-00-00000 | 대표자: 홍길동 | 
-                            주소: 서울특별시 강남구 테헤란로 000길 00, 0층
+                            상호명: (주)윈카드 | 대표자: 이정현 | 사업자등록번호: 133-88-02437 | 
+                            주소: 서울시 금천구 가산디지털1로 204, 반도 아이비밸리 6층
                         </p>
                     </div>
-                    <div class="footer-language">
-                        <button class="language-toggle" id="language-toggle">
-                            <i class="fas fa-globe"></i>
-                            <span>한국어</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>

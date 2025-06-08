@@ -1051,16 +1051,49 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                 "></div>
                                 
                                 <!-- 네이버 지도 API (간단 버전) -->
-                                <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?= htmlspecialchars($naverClientId) ?>&callback=initSimpleNaverMap_<?= $lecture['id'] ?>"></script>
+                                <script type="text/javascript" 
+                                        src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?= htmlspecialchars($naverClientId) ?>&callback=initSimpleNaverMap_<?= $lecture['id'] ?>"
+                                        onerror="showMapFallback_<?= $lecture['id'] ?>()">
+                                </script>
                                 
                                 <script type="text/javascript">
+                                // 네이버 지도 API 사용 가능 여부 확인
+                                function checkNaverMapsAPI() {
+                                    return typeof naver !== 'undefined' && 
+                                           typeof naver.maps !== 'undefined' && 
+                                           typeof naver.maps.Map !== 'undefined';
+                                }
+                                
+                                // 지도 대체 UI 표시 함수
+                                function showMapFallback_<?= $lecture['id'] ?>() {
+                                    var mapContainer = document.getElementById('naverMap-<?= $lecture['id'] ?>');
+                                    if (mapContainer) {
+                                        mapContainer.innerHTML = 
+                                            '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f8fafc; color: #4a5568; border-radius: 8px; border: 1px solid #e2e8f0;">' +
+                                            '<div style="font-size: 32px; margin-bottom: 15px; color: #667eea;">🏢</div>' +
+                                            '<div style="font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #2d3748;"><?= addslashes($venueName) ?></div>' +
+                                            '<div style="font-size: 13px; margin-bottom: 20px; text-align: center; padding: 0 20px; color: #4a5568;"><?= addslashes($mapAddress) ?></div>' +
+                                            '<a href="https://map.naver.com/v5/search/<?= urlencode($mapAddress) ?>" target="_blank" ' +
+                                            'style="background: #667eea; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">' +
+                                            '📍 네이버 지도에서 보기</a>' +
+                                            '</div>';
+                                    }
+                                }
+                                
                                 // 강의별 독립적인 지도 초기화 함수
                                 function initSimpleNaverMap_<?= $lecture['id'] ?>() {
                                     try {
+                                        // 네이버 지도 API 사용 가능 여부 확인
+                                        if (!checkNaverMapsAPI()) {
+                                            console.warn('🗺️ 네이버 지도 API를 사용할 수 없습니다.');
+                                            showMapFallback_<?= $lecture['id'] ?>();
+                                            return;
+                                        }
+                                        
                                         console.log('🗺️ 네이버 지도 (강의 <?= $lecture['id'] ?>) 초기화 시작');
                                         
                                         // 지도 중심 좌표
-                                        var center = new naver.maps.LatLng(<?= $defaultCoords['lat'] ?>, <?= $defaultCoords['lng'] ?>);
+                                        var center = new naver.maps.LatLng(<?= floatval($defaultCoords['lat']) ?>, <?= floatval($defaultCoords['lng']) ?>);
                                         
                                         // 지도 옵션
                                         var mapOptions = {
@@ -1122,40 +1155,61 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                         
                                         // 마커 클릭 이벤트
                                         naver.maps.Event.addListener(marker, 'click', function() {
-                                            if (infoWindow.getMap()) {
-                                                infoWindow.close();
-                                            } else {
-                                                infoWindow.open(map, marker);
+                                            try {
+                                                if (infoWindow.getMap()) {
+                                                    infoWindow.close();
+                                                } else {
+                                                    infoWindow.open(map, marker);
+                                                }
+                                            } catch (e) {
+                                                console.warn('마커 클릭 이벤트 오류:', e);
                                             }
                                         });
                                         
                                         // 지도 클릭 시 정보창 닫기
                                         naver.maps.Event.addListener(map, 'click', function() {
-                                            infoWindow.close();
+                                            try {
+                                                infoWindow.close();
+                                            } catch (e) {
+                                                console.warn('지도 클릭 이벤트 오류:', e);
+                                            }
                                         });
                                         
                                         // 1.5초 후 정보창 자동 열기
                                         setTimeout(function() {
-                                            infoWindow.open(map, marker);
+                                            try {
+                                                infoWindow.open(map, marker);
+                                            } catch (e) {
+                                                console.warn('정보창 자동 열기 오류:', e);
+                                            }
                                         }, 1500);
                                         
                                         console.log('✅ 네이버 지도 (강의 <?= $lecture['id'] ?>) 초기화 완료');
                                         
                                     } catch (error) {
                                         console.error('❌ 네이버 지도 초기화 실패:', error);
-                                        
-                                        // 오류 시 깔끔한 대체 UI 표시
-                                        document.getElementById('naverMap-<?= $lecture['id'] ?>').innerHTML = 
-                                            '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f8fafc; color: #4a5568; border-radius: 8px; border: 1px solid #e2e8f0;">' +
-                                            '<div style="font-size: 32px; margin-bottom: 15px; color: #667eea;">🏢</div>' +
-                                            '<div style="font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #2d3748;"><?= addslashes($venueName) ?></div>' +
-                                            '<div style="font-size: 13px; margin-bottom: 20px; text-align: center; padding: 0 20px; color: #4a5568;"><?= addslashes($mapAddress) ?></div>' +
-                                            '<a href="https://map.naver.com/v5/search/<?= urlencode($mapAddress) ?>" target="_blank" ' +
-                                            'style="background: #667eea; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">' +
-                                            '📍 네이버 지도에서 보기</a>' +
-                                            '</div>';
+                                        showMapFallback_<?= $lecture['id'] ?>();
                                     }
                                 }
+                                
+                                // DOM 로드 완료 후 지도 API 확인
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    // 3초 후에도 네이버 지도 API가 로드되지 않으면 대체 UI 표시
+                                    setTimeout(function() {
+                                        if (!checkNaverMapsAPI()) {
+                                            console.warn('🗺️ 네이버 지도 API 로딩 타임아웃');
+                                            showMapFallback_<?= $lecture['id'] ?>();
+                                        }
+                                    }, 3000);
+                                });
+                                
+                                // 전역 오류 핸들러
+                                window.addEventListener('error', function(e) {
+                                    if (e.filename && e.filename.includes('maps.js')) {
+                                        console.error('네이버 지도 스크립트 오류:', e.message);
+                                        showMapFallback_<?= $lecture['id'] ?>();
+                                    }
+                                });
                                 </script>
                             </div>
                             
@@ -1293,6 +1347,27 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 </div>
 
 <script>
+// 전역 오류 핸들러 추가
+window.addEventListener('error', function(event) {
+    console.error('JavaScript 오류 감지:', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error
+    });
+});
+
+// 안전한 함수 실행 헬퍼
+function safeExecute(fn, context) {
+    try {
+        return fn.call(context);
+    } catch (error) {
+        console.warn('함수 실행 중 오류:', error);
+        return null;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📅 강의 상세 페이지 로드 완료');
     console.log('📊 강의 ID:', <?= $lecture['id'] ?>);
@@ -1379,15 +1454,25 @@ let instructorImages = [];
 let currentGalleryType = 'lecture'; // 'lecture' 또는 'instructor'
 
 // 강의 이미지 데이터 초기화
-<?php if (!empty($lecture['images'])): ?>
-lectureImages = <?= json_encode($lecture['images']) ?>;
+lectureImages = [];
+<?php if (!empty($lecture['images']) && is_array($lecture['images'])): ?>
+    <?php foreach ($lecture['images'] as $index => $image): ?>
+        lectureImages.push({
+            url: "<?= addslashes($image['url'] ?? '') ?>",
+            alt: "<?= addslashes($image['alt'] ?? '강의 이미지') ?>"
+        });
+    <?php endforeach; ?>
 <?php endif; ?>
 
 // 강사 이미지 데이터 초기화
-<?php if (!empty($instructorImages)): ?>
-instructorImages = <?= json_encode(array_map(function($img) {
-    return ['url' => $img['image_path'], 'alt' => $img['alt_text'] ?? '강사 이미지'];
-}, $instructorImages)) ?>;
+instructorImages = [];
+<?php if (!empty($instructorImages) && is_array($instructorImages)): ?>
+    <?php foreach ($instructorImages as $index => $image): ?>
+        instructorImages.push({
+            url: "<?= addslashes($image['image_path'] ?? '') ?>",
+            alt: "<?= addslashes($image['alt_text'] ?? '강사 이미지') ?>"
+        });
+    <?php endforeach; ?>
 <?php endif; ?>
 
 /**
@@ -1478,10 +1563,15 @@ function changeImage(direction) {
     }
 }
 
-// 모달 외부 클릭 시 닫기
-document.getElementById('imageModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeImageModal();
+// 모달 외부 클릭 시 닫기 (오류 방지)
+document.addEventListener('DOMContentLoaded', function() {
+    const imageModal = document.getElementById('imageModal');
+    if (imageModal) {
+        imageModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImageModal();
+            }
+        });
     }
 });
 
@@ -1515,25 +1605,30 @@ document.addEventListener('keydown', function(e) {
  * 공유하기 기능
  */
 function shareContent() {
-    const lectureTitle = '<?= addslashes(htmlspecialchars($lecture['title'])) ?>';
-    const lectureUrl = window.location.href;
-    const lectureDescription = '<?= addslashes(htmlspecialchars(substr($lecture['description'], 0, 100))) ?>...';
-    
-    // Web Share API 지원 확인
-    if (navigator.share) {
-        navigator.share({
-            title: lectureTitle,
-            text: lectureDescription,
-            url: lectureUrl
-        }).then(() => {
-            console.log('공유 성공');
-        }).catch((error) => {
-            console.log('공유 실패:', error);
+    try {
+        const lectureTitle = "<?= addslashes(htmlspecialchars($lecture['title'])) ?>";
+        const lectureUrl = window.location.href;
+        const lectureDescription = "<?= addslashes(htmlspecialchars(substr(strip_tags($lecture['description'] ?? ''), 0, 100))) ?>...";
+        
+        // Web Share API 지원 확인
+        if (navigator.share) {
+            navigator.share({
+                title: lectureTitle,
+                text: lectureDescription,
+                url: lectureUrl
+            }).then(() => {
+                console.log('공유 성공');
+            }).catch((error) => {
+                console.log('공유 실패:', error);
+                fallbackShare(lectureTitle, lectureUrl);
+            });
+        } else {
+            // 폴백: 클립보드 복사 또는 공유 옵션 표시
             fallbackShare(lectureTitle, lectureUrl);
-        });
-    } else {
-        // 폴백: 클립보드 복사 또는 공유 옵션 표시
-        fallbackShare(lectureTitle, lectureUrl);
+        }
+    } catch (error) {
+        console.error('공유 기능 오류:', error);
+        alert('공유 기능에 오류가 발생했습니다.');
     }
 }
 
@@ -1661,5 +1756,8 @@ function openInstructorImageModal(imageSrc, imageAlt) {
         if (nextBtn) nextBtn.style.display = 'none';
         
         document.body.style.overflow = 'hidden';
-      }
-  }
+    }
+}
+</script>
+
+<?php include SRC_PATH . '/views/layouts/footer.php'; ?>
