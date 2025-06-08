@@ -309,4 +309,32 @@ class User {
         $sql = "DELETE FROM user_sessions WHERE last_activity < DATE_SUB(NOW(), INTERVAL :timeout SECOND)";
         return $this->db->execute($sql, [':timeout' => $timeout]);
     }
+    
+    /**
+     * Remember Token 업데이트
+     */
+    public function updateRememberToken($userId, $token, $expires) {
+        $sql = "UPDATE users SET 
+                remember_token = :token,
+                remember_expires = :expires
+                WHERE id = :user_id";
+        
+        return $this->db->execute($sql, [
+            ':user_id' => $userId,
+            ':token' => $token,
+            ':expires' => $expires
+        ]);
+    }
+    
+    /**
+     * Remember Token으로 사용자 조회
+     */
+    public function findByRememberToken($token) {
+        $sql = "SELECT * FROM users 
+                WHERE remember_token = :token 
+                AND remember_expires > NOW() 
+                AND status = 'active'";
+        
+        return $this->db->fetch($sql, [':token' => $token]);
+    }
 } 

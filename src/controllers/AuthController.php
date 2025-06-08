@@ -41,6 +41,81 @@ class AuthController {
             return;
         }
         
+        // JSON 요청인지 확인
+        $isJsonRequest = $this->isJsonRequest();
+        
+        if ($isJsonRequest) {
+            // JSON API 요청 처리
+            $this->handleJsonLogin();
+        } else {
+            // 일반 Form 요청 처리
+            $this->handleFormLogin();
+        }
+    }
+    
+    /**
+     * JSON API 로그인 요청 처리
+     */
+    private function handleJsonLogin() {
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '잘못된 JSON 형식입니다.']);
+            return;
+        }
+        
+        $phone = $this->sanitizePhone($input['phone'] ?? '');
+        $password = $input['password'] ?? '';
+        
+        if (!$phone || empty($password)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '휴대폰 번호와 비밀번호를 모두 입력해주세요.']);
+            return;
+        }
+        
+        // 휴대폰 번호 유효성 검사
+        if (!$this->isValidPhone($phone)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.']);
+            return;
+        }
+        
+        try {
+            // 사용자 인증
+            $user = $this->userModel->login($phone, $password);
+            
+            if (!$user) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '휴대폰 번호 또는 비밀번호가 일치하지 않습니다.']);
+                return;
+            }
+            
+            // 로그인 세션 생성
+            $this->createUserSession($user);
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => $user['nickname'] . '님, 환영합니다!',
+                'user' => [
+                    'id' => $user['id'],
+                    'phone' => $user['phone'],
+                    'nickname' => $user['nickname'],
+                    'role' => $user['role']
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    /**
+     * 일반 Form 로그인 요청 처리
+     */
+    private function handleFormLogin() {
         // CSRF 토큰 검증
         if (!$this->verifyCsrfToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = '보안 토큰이 일치하지 않습니다. 다시 시도해주세요.';
@@ -50,17 +125,21 @@ class AuthController {
         
         $phone = $this->sanitizePhone($_POST['phone'] ?? '');
         $password = $_POST['password'] ?? '';
+        $redirect = $_POST['redirect'] ?? '';
+        $remember = isset($_POST['remember']) && $_POST['remember'] === '1';
         
         if (!$phone || empty($password)) {
             $_SESSION['error'] = '휴대폰 번호와 비밀번호를 모두 입력해주세요.';
-            header('Location: /auth/login');
+            $redirectUrl = !empty($redirect) ? '/auth/login?redirect=' . urlencode($redirect) : '/auth/login';
+            header('Location: ' . $redirectUrl);
             return;
         }
         
         // 휴대폰 번호 유효성 검사
         if (!$this->isValidPhone($phone)) {
             $_SESSION['error'] = '010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.';
-            header('Location: /auth/login');
+            $redirectUrl = !empty($redirect) ? '/auth/login?redirect=' . urlencode($redirect) : '/auth/login';
+            header('Location: ' . $redirectUrl);
             return;
         }
         
@@ -70,22 +149,28 @@ class AuthController {
             
             if (!$user) {
                 $_SESSION['error'] = '휴대폰 번호 또는 비밀번호가 일치하지 않습니다.';
-                header('Location: /auth/login');
+                $redirectUrl = !empty($redirect) ? '/auth/login?redirect=' . urlencode($redirect) : '/auth/login';
+                header('Location: ' . $redirectUrl);
                 return;
             }
             
             // 로그인 세션 생성
-            $this->createUserSession($user);
+            $this->createUserSession($user, $remember);
             
             $_SESSION['success'] = $user['nickname'] . '님, 환영합니다!';
             
-            // 메인 페이지로 리다이렉트
-            header('Location: /');
+            // 리다이렉트 URL이 있으면 해당 페이지로, 없으면 메인 페이지로
+            if (!empty($redirect) && $this->isValidRedirectUrl($redirect)) {
+                header('Location: ' . $redirect);
+            } else {
+                header('Location: /');
+            }
             exit;
             
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: /auth/login');
+            $redirectUrl = !empty($redirect) ? '/auth/login?redirect=' . urlencode($redirect) : '/auth/login';
+            header('Location: ' . $redirectUrl);
             return;
         }
     }
@@ -255,6 +340,101 @@ class AuthController {
             return;
         }
         
+        // JSON 요청인지 확인
+        $isJsonRequest = $this->isJsonRequest();
+        
+        if ($isJsonRequest) {
+            // JSON API 요청 처리
+            $this->handleJsonSignup();
+        } else {
+            // 일반 Form 요청 처리
+            $this->handleFormSignup();
+        }
+    }
+    
+    /**
+     * JSON API 회원가입 요청 처리
+     */
+    private function handleJsonSignup() {
+        header('Content-Type: application/json');
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '잘못된 JSON 형식입니다.']);
+            return;
+        }
+        
+        $phone = $this->sanitizePhone($input['phone'] ?? '');
+        $nickname = $this->sanitizeInput($input['nickname'] ?? '');
+        $email = filter_var($input['email'] ?? '', FILTER_SANITIZE_EMAIL);
+        $password = $input['password'] ?? '';
+        $passwordConfirm = $input['password_confirm'] ?? '';
+        
+        // 입력 검증
+        $errors = [];
+        
+        if (empty($nickname)) {
+            $errors[] = '닉네임을 입력해주세요.';
+        } elseif (strlen($nickname) < 2 || strlen($nickname) > 20) {
+            $errors[] = '닉네임은 2자 이상 20자 이하로 입력해주세요.';
+        } elseif (!preg_match('/^[가-힣a-zA-Z0-9_]+$/', $nickname)) {
+            $errors[] = '닉네임은 한글, 영문, 숫자, 언더스코어만 사용할 수 있습니다.';
+        }
+        
+        if (!$this->isValidPhone($phone)) {
+            $errors[] = '010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.';
+        }
+        
+        if (empty($password)) {
+            $errors[] = '비밀번호를 입력해주세요.';
+        } elseif (strlen($password) < 8) {
+            $errors[] = '비밀번호는 8자 이상이어야 합니다.';
+        }
+        
+        if ($password !== $passwordConfirm) {
+            $errors[] = '비밀번호가 일치하지 않습니다.';
+        }
+        
+        if (!empty($errors)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => implode(' ', $errors)]);
+            return;
+        }
+        
+        try {
+            // 회원가입 처리
+            $result = $this->userModel->create([
+                'phone' => $phone,
+                'nickname' => $nickname,
+                'email' => $email,
+                'password' => $password,
+                'role' => 'GENERAL',
+                'terms_accepted' => true,
+                'marketing_accepted' => false
+            ]);
+            
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => '회원가입이 완료되었습니다.',
+                    'redirect' => '/auth/login'
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => '회원가입 처리 중 오류가 발생했습니다.']);
+            }
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    /**
+     * 일반 Form 회원가입 요청 처리
+     */
+    private function handleFormSignup() {
         error_log('📥 POST 데이터 수신: ' . json_encode(array_keys($_POST)));
         
         // CSRF 토큰 검증
@@ -706,14 +886,100 @@ class AuthController {
                hash_equals($_SESSION['csrf_token'], $token);
     }
     
-    private function createUserSession($user) {
+    private function createUserSession($user, $remember = false) {
         // 세션에 사용자 정보 저장
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['nickname'];
         $_SESSION['phone'] = $user['phone'];
         $_SESSION['user_role'] = $user['role'];
         
+        // 로그인 상태 유지 설정
+        if ($remember) {
+            // 30일 동안 세션 유지
+            $lifetime = 30 * 24 * 60 * 60; // 30일
+            ini_set('session.gc_maxlifetime', $lifetime);
+            
+            // 세션 쿠키 수명 설정
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                session_id(),
+                time() + $lifetime,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+            
+            // 리멤버 토큰 생성 및 저장
+            $rememberToken = bin2hex(random_bytes(32));
+            $_SESSION['remember_token'] = $rememberToken;
+            $_SESSION['remember_expires'] = time() + $lifetime;
+            
+            // Remember Me 쿠키 설정
+            setcookie(
+                'remember_token',
+                $rememberToken,
+                time() + $lifetime,
+                '/',
+                '',
+                $params['secure'],
+                true // httponly
+            );
+            
+            // 데이터베이스에도 토큰 저장 (선택적)
+            try {
+                $this->userModel->updateRememberToken($user['id'], $rememberToken, date('Y-m-d H:i:s', time() + $lifetime));
+            } catch (Exception $e) {
+                error_log('Remember token 저장 실패: ' . $e->getMessage());
+            }
+        } else {
+            // 로그인 상태 유지를 선택하지 않은 경우 기본 세션 수명 (30분)
+            ini_set('session.gc_maxlifetime', 1800);
+        }
+        
         // 세션 ID 재생성 (세션 고정 공격 방지)
         session_regenerate_id(true);
+    }
+    
+    /**
+     * JSON 요청인지 확인
+     */
+    private function isJsonRequest() {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        return strpos($contentType, 'application/json') === 0;
+    }
+    
+    /**
+     * 리다이렉트 URL 유효성 검증
+     */
+    private function isValidRedirectUrl($url) {
+        // 보안상 내부 URL만 허용
+        if (empty($url)) {
+            return false;
+        }
+        
+        // 상대 경로만 허용 (절대 URL 차단)
+        if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+            return false;
+        }
+        
+        // 허용된 경로 패턴
+        $allowedPatterns = [
+            '/^\/community/',
+            '/^\/user/',
+            '/^\/post/',
+            '/^\/home/',
+            '/^\/legal/',
+            '/^\/$/'
+        ];
+        
+        foreach ($allowedPatterns as $pattern) {
+            if (preg_match($pattern, $url)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 } 
