@@ -24,7 +24,7 @@ $monthNames = [
 <style>
 /* 강의 일정 페이지 스타일 */
 .lectures-container {
-    max-width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 30px 15px 20px 15px;
     min-height: calc(100vh - 200px);
@@ -36,7 +36,7 @@ $monthNames = [
     color: white;
     padding: 40px 20px;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 60px;
     margin-bottom: 30px;
     border-radius: 12px;
     max-width: 1600px;

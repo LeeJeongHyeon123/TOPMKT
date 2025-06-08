@@ -5,6 +5,7 @@
 
 // 로그인 상태 확인
 require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+require_once SRC_PATH . '/helpers/HtmlSanitizerHelper.php';
 $isLoggedIn = AuthMiddleware::isLoggedIn();
 $currentUserId = AuthMiddleware::getCurrentUserId();
 
@@ -397,8 +398,19 @@ if (!isset($post) || !$post) {
         
         <!-- 게시글 내용 -->
         <div class="post-content">
+            <!-- 디버깅 정보 (임시) -->
+            <?php if (isset($_GET['debug'])): ?>
+                <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-left: 3px solid #007cba;">
+                    <h4>🔍 디버깅 정보</h4>
+                    <p><strong>원본 Content:</strong></p>
+                    <pre style="background: white; padding: 10px; font-size: 12px; overflow-x: auto;"><?= htmlspecialchars($post['content']) ?></pre>
+                    <p><strong>Sanitized Content:</strong></p>
+                    <pre style="background: white; padding: 10px; font-size: 12px; overflow-x: auto;"><?= htmlspecialchars(HtmlSanitizerHelper::sanitizeRichText($post['content'])) ?></pre>
+                </div>
+            <?php endif; ?>
+            
             <div class="content-body">
-                <?= nl2br(htmlspecialchars($post['content'])) ?>
+                <?= HtmlSanitizerHelper::sanitizeRichText($post['content']) ?>
             </div>
         </div>
         

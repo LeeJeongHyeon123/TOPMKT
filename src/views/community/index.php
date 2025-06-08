@@ -5,6 +5,7 @@
 
 // 로그인 상태 확인
 require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+require_once SRC_PATH . '/helpers/HtmlSanitizerHelper.php';
 $isLoggedIn = AuthMiddleware::isLoggedIn();
 $currentUserId = AuthMiddleware::getCurrentUserId();
 ?>
@@ -391,8 +392,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     </div>
                     
                     <div class="post-content-preview">
-                        <?= htmlspecialchars(mb_substr(strip_tags($post['content']), 0, 150)) ?>
-                        <?php if (mb_strlen(strip_tags($post['content'])) > 150): ?>...<?php endif; ?>
+                        <?= htmlspecialchars(HtmlSanitizerHelper::htmlToPlainText($post['content'], 150)) ?>
                     </div>
                     
                     <div class="post-stats">

@@ -1,10 +1,81 @@
 /* 탑마케팅 메인 스타일시트 */
 
+/* 기본 커서 스타일 */
+
+/* 텍스트 입력 요소는 텍스트 커서 */
+input, textarea, [contenteditable] {
+    cursor: text !important;
+}
+
+/* 클릭 가능한 요소만 포인터 커서 */
+a, button, [role="button"], .btn, [onclick], 
+.user-menu, .dropdown-toggle, .mobile-menu-toggle,
+.nav-menu a, .feature-link, .rocket-launch-btn {
+    cursor: pointer !important;
+}
+
+/* Quill 에디터 텍스트 선택 강제 활성화 - 최우선 적용 */
+html body #quill-editor .ql-editor,
+html body #quill-editor .ql-editor *,
+html body #quill-editor .ql-editor p,
+html body #quill-editor .ql-editor span,
+html body #quill-editor .ql-editor div,
+html body #quill-editor .ql-editor strong,
+html body #quill-editor .ql-editor em,
+html body #quill-editor .ql-editor u,
+html body .ql-editor,
+html body .ql-editor *,
+html body .ql-container,
+html body .ql-container *,
+body #quill-editor .ql-editor,
+body #quill-editor .ql-editor *,
+body .ql-editor,
+body .ql-editor *,
+body .ql-container,
+body .ql-container * {
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    pointer-events: auto !important;
+}
+
 /* 기본 스타일 리셋 */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+/* 기본 커서 복원 */
+html, body {
+    cursor: default;
+}
+
+/* 텍스트 요소들은 기본 커서 */
+p, span, div, h1, h2, h3, h4, h5, h6, li {
+    cursor: default;
+}
+
+/* 입력 가능한 요소들은 텍스트 커서 */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="search"], 
+textarea, 
+[contenteditable="true"] {
+    cursor: text !important;
+}
+
+/* 클릭 가능한 요소들만 포인터 커서 */
+button, 
+a, 
+[role="button"], 
+.btn, 
+[data-toggle], 
+[onclick] {
+    cursor: pointer !important;
 }
 
 body {
@@ -222,20 +293,22 @@ ul, ol {
 }
 
 .notification-badge {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background-color: #F59E0B;
+    background-color: #ef4444;
     color: #fff;
     font-size: 10px;
     font-weight: 700;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: auto;
+    min-width: 16px;
+    text-align: center;
+    position: static;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
+
 
 .user-menu {
     display: flex;

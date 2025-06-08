@@ -2,7 +2,6 @@
 /**
  * 인증 미들웨어 클래스
  */
-namespace App\Middlewares;
 
 class AuthMiddleware {
     /**
@@ -110,5 +109,53 @@ class AuthMiddleware {
         }
         
         return true;
+    }
+    
+    /**
+     * 로그인 상태 확인 (리다이렉트 없이)
+     * 
+     * @return bool 로그인 여부
+     */
+    public static function isLoggedIn() {
+        return isset($_SESSION['user_id']);
+    }
+    
+    /**
+     * 현재 사용자 ID 반환
+     * 
+     * @return int|null 사용자 ID 또는 null
+     */
+    public static function getCurrentUserId() {
+        return $_SESSION['user_id'] ?? null;
+    }
+    
+    /**
+     * 현재 사용자 역할 반환
+     * 
+     * @return string|null 사용자 역할 또는 null
+     */
+    public static function getCurrentUserRole() {
+        return $_SESSION['user_role'] ?? null;
+    }
+    
+    /**
+     * 관리자 권한 확인
+     * 
+     * @return bool 관리자 여부
+     */
+    public static function isAdmin() {
+        $role = self::getCurrentUserRole();
+        return $role === 'ADMIN' || $role === 'SUPER_ADMIN';
+    }
+    
+    /**
+     * 소유자 또는 관리자 권한 확인
+     * 
+     * @param int $ownerId 소유자 ID
+     * @return bool 권한 여부
+     */
+    public static function isOwnerOrAdmin($ownerId) {
+        $currentUserId = self::getCurrentUserId();
+        return ($currentUserId && $currentUserId == $ownerId) || self::isAdmin();
     }
 } 

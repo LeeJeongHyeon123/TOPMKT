@@ -144,8 +144,19 @@ class CommunityController {
             
             error_log('📖 게시글 조회 완료: ID=' . $postId . ', 제목=' . $post['title']);
             
+            // OG 태그 데이터 추가
+            $headerData = [
+                'page_title' => htmlspecialchars($post['title']),
+                'page_description' => htmlspecialchars(substr(strip_tags($post['content']), 0, 150)),
+                'pageSection' => 'community',
+                'og_type' => 'article',
+                'og_title' => htmlspecialchars($post['title']) . ' - 탑마케팅 커뮤니티',
+                'og_description' => htmlspecialchars(substr(strip_tags($post['content']), 0, 200)),
+                'keywords' => '마케팅 커뮤니티, ' . htmlspecialchars($post['nickname']) . ', 게시글, ' . htmlspecialchars($post['title'])
+            ];
+
             // 뷰 렌더링
-            $this->renderView('community/detail', $data);
+            $this->renderView('community/detail', $data, $headerData);
             
         } catch (Exception $e) {
             error_log('❌ CommunityController::show() 오류: ' . $e->getMessage());
@@ -217,12 +228,15 @@ class CommunityController {
                 return;
             }
             
-            // 게시글 생성
+            // 게시글 생성 (이미지 경로 추출)
             $currentUserId = AuthMiddleware::getCurrentUserId();
+            $imagePath = $this->extractImagePathFromContent($content);
+            
             $postData = [
                 'user_id' => $currentUserId,
                 'title' => $title,
-                'content' => $content
+                'content' => $content,
+                'image_path' => $imagePath
             ];
             
             $postId = $this->postModel->create($postData);
@@ -366,10 +380,13 @@ class CommunityController {
                 return;
             }
             
-            // 게시글 수정
+            // 게시글 수정 (이미지 경로 추출)
+            $imagePath = $this->extractImagePathFromContent($content);
+            
             $updateData = [
                 'title' => $title,
-                'content' => $content
+                'content' => $content,
+                'image_path' => $imagePath
             ];
             
             $success = $this->postModel->update($postId, $updateData);
@@ -464,6 +481,27 @@ class CommunityController {
         // /community/posts/{id} 패턴에서 ID 추출
         if (preg_match('/\/community\/posts\/(\d+)/', $uri, $matches)) {
             return intval($matches[1]);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * 컨텐츠에서 첫 번째 이미지 경로 추출
+     */
+    private function extractImagePathFromContent($content) {
+        // HTML에서 img 태그의 src 속성 추출
+        preg_match('/<img[^>]+src=[\'"](\/assets\/uploads\/[^"\']+)[\'"][^>]*>/i', $content, $matches);
+        
+        if (!empty($matches[1])) {
+            return $matches[1];
+        }
+        
+        // Markdown 형식의 이미지도 확인 ![alt](path)
+        preg_match('/!\[[^\]]*\]\(([^)]+)\)/', $content, $matches);
+        
+        if (!empty($matches[1]) && strpos($matches[1], '/assets/uploads/') === 0) {
+            return $matches[1];
         }
         
         return null;

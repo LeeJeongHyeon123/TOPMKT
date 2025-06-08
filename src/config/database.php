@@ -25,8 +25,7 @@ class Database {
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES " . self::CHARSET
+                PDO::ATTR_EMULATE_PREPARES => false
             ];
             
             $this->connection = new PDO($dsn, self::USERNAME, self::PASSWORD, $options);
@@ -124,6 +123,13 @@ class Database {
      * 연결 해제 방지
      */
     private function __clone() {}
+    
+    /**
+     * prepare 메서드 추가 (PDO 메서드 위임)
+     */
+    public function prepare($sql) {
+        return $this->connection->prepare($sql);
+    }
     
     /**
      * 직렬화 방지

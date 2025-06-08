@@ -107,6 +107,9 @@ require_once SRC_PATH . '/views/templates/header.php';
 
                     <!-- CSRF 토큰 -->
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                    
+                    <!-- 리다이렉트 URL -->
+                    <input type="hidden" name="redirect" value="<?= htmlspecialchars($_GET['redirect'] ?? '') ?>">
 
                     <button type="submit" class="btn btn-primary-gradient btn-large btn-full">
                         <i class="fas fa-sign-in-alt"></i>

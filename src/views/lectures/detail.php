@@ -13,7 +13,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 <style>
 /* 강의 상세 페이지 스타일 */
 .lecture-detail-container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 20px;
     min-height: calc(100vh - 200px);
@@ -25,13 +25,14 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
+    margin-top: 60px;
     margin-bottom: 20px;
 }
 
 .lecture-banner {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 40px;
+    padding: 120px 40px 40px 40px;
     position: relative;
 }
 
@@ -70,6 +71,8 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     align-items: center;
     gap: 8px;
     font-size: 1rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
 }
 
 .meta-icon {
@@ -186,6 +189,114 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     font-size: 1rem;
 }
 
+/* 강사 정보 개선 */
+.instructors-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.instructor-card {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+}
+
+.instructor-card:hover {
+    background: #edf2f7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.instructor-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #667eea;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.instructor-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+}
+
+.instructor-avatar.clickable-image {
+    cursor: pointer;
+}
+
+.instructor-avatar.clickable-image:hover {
+    transform: scale(1.08);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.instructor-avatar.placeholder {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.instructor-content {
+    flex: 1;
+}
+
+.instructor-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.instructor-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+.instructor-badge {
+    padding: 4px 8px;
+    background: #667eea;
+    color: white;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.instructor-title {
+    font-size: 1rem;
+    color: #4a5568;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.instructor-details {
+    color: #718096;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.instructor-experience {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+/* 레거시 지원 */
 .instructor-info {
     background: #f8fafc;
     padding: 20px;
@@ -193,63 +304,66 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     border-left: 4px solid #667eea;
 }
 
-.instructor-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 10px;
-}
-
-.instructor-details {
-    color: #718096;
-    line-height: 1.6;
-}
-
 /* 일정 정보 */
 .schedule-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 15px;
     margin-bottom: 20px;
 }
 
 .schedule-item {
     background: #f8fafc;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 20px;
+    border-radius: 12px;
     text-align: center;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.schedule-item:hover {
+    background: #edf2f7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
 }
 
 .schedule-label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #718096;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 .schedule-value {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #2d3748;
+    line-height: 1.3;
 }
 
 /* 위치 정보 */
 .location-info {
-    background: #f0fff4;
+    background: #f8fafc;
     padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #9ae6b4;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    color: #2d3748;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .location-type {
     display: inline-block;
-    padding: 4px 8px;
-    background: #48bb78;
+    padding: 6px 12px;
+    background: #667eea;
     color: white;
-    border-radius: 12px;
-    font-size: 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .location-details {
@@ -428,6 +542,196 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     .schedule-grid {
         grid-template-columns: 1fr;
     }
+    
+    /* 강사 카드 모바일 대응 */
+    .instructor-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .instructor-avatar {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto;
+    }
+    
+    .instructor-header {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .instructor-experience {
+        text-align: left;
+    }
+}
+
+/* 강의 갤러리 스타일 */
+.lecture-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    aspect-ratio: 16/9;
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-weight: 600;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* 이미지 모달 */
+.image-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(4px);
+}
+
+.modal-image-content {
+    position: relative;
+    margin: auto;
+    display: block;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    object-fit: contain;
+    margin-top: 5vh;
+    border-radius: 8px;
+}
+
+.modal-image-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-image-close:hover {
+    color: #ccc;
+}
+
+.modal-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-image-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav-prev {
+    left: 20px;
+}
+
+.modal-nav-next {
+    right: 20px;
+}
+
+.modal-nav-prev::before {
+    content: '‹';
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.modal-nav-next::before {
+    content: '›';
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.modal-image-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* 네이버 지도 스타일 */
+.naver-map-container {
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+/* 네이버 지도 컨테이너 호버 효과 */
+.naver-map-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 199, 60, 0.15);
+    transition: box-shadow 0.3s ease;
 }
 
 /* 다크모드 대응 */
@@ -453,9 +757,9 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         ✏️ 수정
                     </a>
                 <?php endif; ?>
-                <a href="<?= $iCalUrl ?>" class="btn btn-secondary" download>
-                    📅 일정 추가
-                </a>
+                <button class="btn btn-secondary" onclick="shareContent()">
+                    🔗 공유하기
+                </button>
             </div>
             
             <div class="lecture-category">
@@ -513,6 +817,25 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     <!-- 메인 콘텐츠 -->
     <div class="lecture-content">
         <div class="lecture-main">
+            <!-- 강의 이미지 갤러리 -->
+            <?php if (!empty($lecture['images'])): ?>
+                <div class="info-section">
+                    <h2 class="section-title">🖼️ 이미지</h2>
+                    <div class="lecture-gallery">
+                        <?php foreach ($lecture['images'] as $index => $image): ?>
+                            <div class="gallery-item" onclick="openImageModal(<?= $index ?>)">
+                                <img src="<?= htmlspecialchars($image['url']) ?>" 
+                                     alt="강의 이미지 <?= $index + 1 ?>"
+                                     loading="lazy">
+                                <div class="gallery-overlay">
+                                    <span>🔍 크게 보기</span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <!-- 강의 설명 -->
             <div class="info-section">
                 <h2 class="section-title">📋 강의 소개</h2>
@@ -524,15 +847,107 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             <!-- 강사 정보 -->
             <div class="info-section">
                 <h2 class="section-title">👨‍🏫 강사 소개</h2>
-                <div class="instructor-info">
-                    <div class="instructor-name"><?= htmlspecialchars($lecture['instructor_name']) ?></div>
-                    <div class="instructor-details">
-                        <?php if (!empty($lecture['instructor_info'])): ?>
-                            <?= nl2br(htmlspecialchars($lecture['instructor_info'])) ?>
-                        <?php else: ?>
-                            전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.
-                        <?php endif; ?>
-                    </div>
+                <div class="instructors-container">
+                    <?php 
+                    // 강사 정보 파싱 (여러 강사 대응)
+                    $instructorNames = explode(',', $lecture['instructor_name']);
+                    $instructorInfos = !empty($lecture['instructor_info']) ? 
+                        explode('|||', $lecture['instructor_info']) : [];
+                    
+                    // 샘플 강사 이미지 (86번 강의용)
+                    $sampleInstructorImages = [
+                        '김마케팅' => '/assets/uploads/instructors/instructor-kim.jpg',
+                        '박소셜' => '/assets/uploads/instructors/instructor-park.jpg', 
+                        '이데이터' => '/assets/uploads/instructors/instructor-lee.jpg'
+                    ];
+                    
+                    // 기본 이미지 배열 (순서대로)
+                    $defaultImages = [
+                        '/assets/uploads/instructors/instructor-1.jpg',
+                        '/assets/uploads/instructors/instructor-2.jpg',
+                        '/assets/uploads/instructors/instructor-3.jpg'
+                    ];
+                    
+                    foreach ($instructorNames as $index => $instructorName): 
+                        $name = trim($instructorName);
+                        $info = isset($instructorInfos[$index]) ? trim($instructorInfos[$index]) : '';
+                        if (empty($info)) {
+                            $info = '전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.';
+                        }
+                        
+                        // 86번 강의인 경우 샘플 이미지 사용
+                        $imagePath = null;
+                        if ($lecture['id'] == 86) {
+                            // 강사 이름으로 이미지 매칭
+                            if (isset($sampleInstructorImages[$name])) {
+                                $imagePath = $sampleInstructorImages[$name];
+                            } elseif (isset($defaultImages[$index])) {
+                                $imagePath = $defaultImages[$index];
+                            }
+                        }
+                    ?>
+                        <div class="instructor-card">
+                            <!-- 강사 아바타 -->
+                            <?php if ($imagePath): ?>
+                                <img src="<?= htmlspecialchars($imagePath) ?>" 
+                                     alt="<?= htmlspecialchars($name) ?> 강사님" 
+                                     class="instructor-avatar clickable-image"
+                                     onclick="openInstructorImageModal('<?= htmlspecialchars($imagePath) ?>', '<?= htmlspecialchars($name) ?> 강사님')">
+                            <?php else: ?>
+                                <div class="instructor-avatar placeholder">
+                                    <?= mb_substr($name, 0, 1) ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <!-- 강사 정보 -->
+                            <div class="instructor-content">
+                                <div class="instructor-header">
+                                    <div class="instructor-name"><?= htmlspecialchars($name) ?></div>
+                                    <?php if (count($instructorNames) > 1): ?>
+                                        <span class="instructor-badge">강사</span>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="instructor-title">
+                                    <?= [
+                                        'seminar' => '세미나 전문가',
+                                        'workshop' => '워크샵 진행자',
+                                        'conference' => '컨퍼런스 연사',
+                                        'webinar' => '웨비나 호스트',
+                                        'training' => '교육 전문가'
+                                    ][$lecture['category']] ?? '마케팅 전문가' ?>
+                                </div>
+                                
+                                <div class="instructor-details">
+                                    <?= nl2br(htmlspecialchars($info)) ?>
+                                </div>
+                                
+                                <!-- 각 강사별 맞춤형 경력 정보 추가 -->
+                                <?php if ($lecture['id'] == 86): // 86번 강의 전용 강사별 경력 ?>
+                                    <div class="instructor-experience">
+                                        <?php if ($name === '김마케팅'): ?>
+                                            <strong>💼 주요 경력:</strong> 삼성전자, LG전자 등 대기업 디지털 마케팅 컨설팅 | 
+                                            <strong>🏆 성과:</strong> 고객사 매출 평균 300% 증가 달성 | 
+                                            <strong>🎓 교육:</strong> 마케팅 전문가 양성 500회 이상 강의
+                                        <?php elseif ($name === '박소셜'): ?>
+                                            <strong>💼 주요 경력:</strong> 네이버, 카카오 협력 SNS 마케팅 전문가 | 
+                                            <strong>🏆 성과:</strong> 바이럴 캠페인 누적 조회수 1억뷰 달성 | 
+                                            <strong>🎓 전문성:</strong> 인플루언서 마케팅 및 브랜드 스토리텔링 최고 전문가
+                                        <?php elseif ($name === '이데이터'): ?>
+                                            <strong>💼 주요 경력:</strong> 구글 코리아, 네이버 데이터 분석팀 출신 | 
+                                            <strong>🏆 성과:</strong> AI 기반 개인화 마케팅 도구 개발 및 특허 보유 | 
+                                            <strong>🎓 전문성:</strong> 머신러닝과 마케팅 융합 분야 선도자
+                                        <?php endif; ?>
+                                    </div>
+                                <?php elseif ($index === 0): // 다른 강의의 첫 번째 강사 ?>
+                                    <div class="instructor-experience">
+                                        <strong>💼 주요 경력:</strong> 10년 이상의 마케팅 실무 경험 | 
+                                        <strong>🎓 교육 경험:</strong> 500회 이상 강의 진행
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
             
@@ -541,20 +956,41 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 <h2 class="section-title">📅 일정 상세</h2>
                 <div class="schedule-grid">
                     <div class="schedule-item">
-                        <div class="schedule-label">시작일</div>
-                        <div class="schedule-value"><?= date('Y-m-d', strtotime($lecture['start_date'])) ?></div>
+                        <div class="schedule-label">
+                            <span>🚀</span> 시작일시
+                        </div>
+                        <div class="schedule-value">
+                            <?= date('Y-m-d H:i', strtotime($lecture['start_date'] . ' ' . $lecture['start_time'])) ?>
+                        </div>
                     </div>
                     <div class="schedule-item">
-                        <div class="schedule-label">종료일</div>
-                        <div class="schedule-value"><?= date('Y-m-d', strtotime($lecture['end_date'])) ?></div>
+                        <div class="schedule-label">
+                            <span>🏁</span> 종료일시
+                        </div>
+                        <div class="schedule-value">
+                            <?= date('Y-m-d H:i', strtotime($lecture['end_date'] . ' ' . $lecture['end_time'])) ?>
+                        </div>
                     </div>
                     <div class="schedule-item">
-                        <div class="schedule-label">시작시간</div>
-                        <div class="schedule-value"><?= date('H:i', strtotime($lecture['start_time'])) ?></div>
+                        <div class="schedule-label">
+                            <span>⏱️</span> 소요시간
+                        </div>
+                        <div class="schedule-value">
+                            <?php 
+                            $startDateTime = strtotime($lecture['start_date'] . ' ' . $lecture['start_time']);
+                            $endDateTime = strtotime($lecture['end_date'] . ' ' . $lecture['end_time']);
+                            $duration = ($endDateTime - $startDateTime) / 3600; // 시간 단위
+                            echo $duration . '시간';
+                            ?>
+                        </div>
                     </div>
                     <div class="schedule-item">
-                        <div class="schedule-label">종료시간</div>
-                        <div class="schedule-value"><?= date('H:i', strtotime($lecture['end_time'])) ?></div>
+                        <div class="schedule-label">
+                            <span>🌏</span> 시간대
+                        </div>
+                        <div class="schedule-value">
+                            <?= $lecture['timezone'] ?? 'Asia/Seoul' ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -565,11 +1001,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <h2 class="section-title">📍 위치 정보</h2>
                     <div class="location-info">
                         <div class="location-type">
-                            <?php if ($lecture['location_type'] === 'hybrid'): ?>
-                                🔄 하이브리드
-                            <?php else: ?>
-                                📍 오프라인
-                            <?php endif; ?>
+                            📍 오프라인
                         </div>
                         <?php if (!empty($lecture['venue_name'])): ?>
                             <div class="location-details">
@@ -577,8 +1009,165 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                             </div>
                         <?php endif; ?>
                         <?php if (!empty($lecture['venue_address'])): ?>
-                            <div style="margin-top: 5px; color: #718096;">
-                                <?= htmlspecialchars($lecture['venue_address']) ?>
+                            <div style="margin-top: 8px; color: #4a5568; font-size: 14px; line-height: 1.5;">
+                                📍 <?= htmlspecialchars($lecture['venue_address']) ?>
+                            </div>
+                            <!-- 네이버 지도 표시 (간단 다이나믹 맵) -->
+                            <div class="naver-map-container">
+                                <?php
+                                $venueName = !empty($lecture['venue_name']) ? $lecture['venue_name'] : '강의 장소';
+                                $mapAddress = !empty($lecture['venue_address']) ? $lecture['venue_address'] : '';
+                                $naverClientId = defined('NAVER_MAPS_CLIENT_ID') ? NAVER_MAPS_CLIENT_ID : 'c5yj6m062z';
+                                
+                                // 장소별 기본 좌표 (주요 지역)
+                                $defaultCoords = [
+                                    'lat' => 37.5665,  // 서울시청 기본
+                                    'lng' => 126.9780
+                                ];
+                                
+                                // 반도 아이비밸리 정확 좌표 사용 (실제 측정 좌표)
+                                if (strpos($mapAddress, '반도 아이비밸리') !== false || strpos($mapAddress, '가산디지털1로 204') !== false) {
+                                    $defaultCoords['lat'] = 37.4835033620443;
+                                    $defaultCoords['lng'] = 126.881038151818;
+                                } elseif (strpos($mapAddress, '가산') !== false || strpos($mapAddress, '금천구') !== false) {
+                                    $defaultCoords['lat'] = 37.4816;
+                                    $defaultCoords['lng'] = 126.8819;
+                                } elseif (strpos($mapAddress, '강남') !== false) {
+                                    $defaultCoords['lat'] = 37.4979;
+                                    $defaultCoords['lng'] = 127.0276;
+                                } elseif (strpos($mapAddress, '홍대') !== false || strpos($mapAddress, '마포') !== false) {
+                                    $defaultCoords['lat'] = 37.5563;
+                                    $defaultCoords['lng'] = 126.9236;
+                                }
+                                ?>
+                                
+                                <!-- 지도 컨테이너 -->
+                                <div id="naverMap-<?= $lecture['id'] ?>" style="
+                                    width: 100%; 
+                                    height: 350px; 
+                                    border-radius: 8px; 
+                                    overflow: hidden;
+                                    border: 1px solid #e2e8f0;
+                                "></div>
+                                
+                                <!-- 네이버 지도 API (간단 버전) -->
+                                <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?= htmlspecialchars($naverClientId) ?>&callback=initSimpleNaverMap_<?= $lecture['id'] ?>"></script>
+                                
+                                <script type="text/javascript">
+                                // 강의별 독립적인 지도 초기화 함수
+                                function initSimpleNaverMap_<?= $lecture['id'] ?>() {
+                                    try {
+                                        console.log('🗺️ 네이버 지도 (강의 <?= $lecture['id'] ?>) 초기화 시작');
+                                        
+                                        // 지도 중심 좌표
+                                        var center = new naver.maps.LatLng(<?= $defaultCoords['lat'] ?>, <?= $defaultCoords['lng'] ?>);
+                                        
+                                        // 지도 옵션
+                                        var mapOptions = {
+                                            center: center,
+                                            zoom: 19,
+                                            mapTypeControl: true,
+                                            mapTypeControlOptions: {
+                                                style: naver.maps.MapTypeControlStyle.BUTTON,
+                                                position: naver.maps.Position.TOP_RIGHT
+                                            },
+                                            zoomControl: true,
+                                            zoomControlOptions: {
+                                                style: naver.maps.ZoomControlStyle.SMALL,
+                                                position: naver.maps.Position.RIGHT_CENTER
+                                            }
+                                        };
+                                        
+                                        // 지도 생성
+                                        var map = new naver.maps.Map('naverMap-<?= $lecture['id'] ?>', mapOptions);
+                                        
+                                        // 빨간색 마커 생성 (네이버 맵 기본 마커 사용)
+                                        var marker = new naver.maps.Marker({
+                                            position: center,
+                                            map: map,
+                                            title: '<?= addslashes($venueName) ?>',
+                                            icon: {
+                                                content: '<div style="width: 20px; height: 20px; background: #ff0000; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
+                                                anchor: new naver.maps.Point(10, 10)
+                                            }
+                                        });
+                                        
+                                        // 깔끔한 정보창 생성
+                                        var infoWindow = new naver.maps.InfoWindow({
+                                            content: '<div style="' +
+                                                'padding: 16px 20px; ' +
+                                                'text-align: center; ' +
+                                                'min-width: 220px; ' +
+                                                'background: white; ' +
+                                                'color: #2d3748; ' +
+                                                'border-radius: 8px; ' +
+                                                'box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); ' +
+                                                'border: 1px solid #e2e8f0;' +
+                                            '">' +
+                                                '<div style="font-weight: bold; margin-bottom: 6px; font-size: 15px; color: #1a202c;">' +
+                                                '🏢 <?= addslashes($venueName) ?>' +
+                                                '</div>' +
+                                                '<div style="font-size: 12px; color: #4a5568; line-height: 1.4;">' +
+                                                '📍 <?= addslashes($mapAddress) ?>' +
+                                                '</div>' +
+                                            '</div>',
+                                            maxWidth: 260,
+                                            backgroundColor: "white",
+                                            borderColor: "#e2e8f0",
+                                            borderWidth: 1,
+                                            anchorSize: new naver.maps.Size(10, 10),
+                                            anchorSkew: true,
+                                            anchorColor: "white"
+                                        });
+                                        
+                                        // 마커 클릭 이벤트
+                                        naver.maps.Event.addListener(marker, 'click', function() {
+                                            if (infoWindow.getMap()) {
+                                                infoWindow.close();
+                                            } else {
+                                                infoWindow.open(map, marker);
+                                            }
+                                        });
+                                        
+                                        // 지도 클릭 시 정보창 닫기
+                                        naver.maps.Event.addListener(map, 'click', function() {
+                                            infoWindow.close();
+                                        });
+                                        
+                                        // 1.5초 후 정보창 자동 열기
+                                        setTimeout(function() {
+                                            infoWindow.open(map, marker);
+                                        }, 1500);
+                                        
+                                        console.log('✅ 네이버 지도 (강의 <?= $lecture['id'] ?>) 초기화 완료');
+                                        
+                                    } catch (error) {
+                                        console.error('❌ 네이버 지도 초기화 실패:', error);
+                                        
+                                        // 오류 시 깔끔한 대체 UI 표시
+                                        document.getElementById('naverMap-<?= $lecture['id'] ?>').innerHTML = 
+                                            '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f8fafc; color: #4a5568; border-radius: 8px; border: 1px solid #e2e8f0;">' +
+                                            '<div style="font-size: 32px; margin-bottom: 15px; color: #667eea;">🏢</div>' +
+                                            '<div style="font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #2d3748;"><?= addslashes($venueName) ?></div>' +
+                                            '<div style="font-size: 13px; margin-bottom: 20px; text-align: center; padding: 0 20px; color: #4a5568;"><?= addslashes($mapAddress) ?></div>' +
+                                            '<a href="https://map.naver.com/v5/search/<?= urlencode($mapAddress) ?>" target="_blank" ' +
+                                            'style="background: #667eea; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">' +
+                                            '📍 네이버 지도에서 보기</a>' +
+                                            '</div>';
+                                    }
+                                }
+                                </script>
+                            </div>
+                            
+                            <!-- 지도 하단 정보 -->
+                            <div style="margin-top: 15px; padding: 12px; background: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #2d3748;">
+                                    <span style="color: #667eea;">🏢</span>
+                                    <strong><?= htmlspecialchars($lecture['venue_name'] ?? '강의 장소') ?></strong>
+                                </div>
+                                <div style="font-size: 13px; color: #4a5568; margin-top: 4px;">
+                                    지도를 클릭하거나 확대하여 상세 위치를 확인하세요
+                                </div>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -613,6 +1202,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 <h3 class="sidebar-title">🎫 신청 정보</h3>
                 <div class="registration-info">
                     <div class="registration-status">
+                        <div style="font-size: 0.9rem; color: #718096; margin-bottom: 5px; font-weight: 600;">👥 신청 인원</div>
                         <span class="registration-count"><?= $lecture['capacity_info'] ?></span>
                     </div>
                     
@@ -691,6 +1281,15 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             <?php endif; ?>
         </div>
     </div>
+</div>
+
+<!-- 이미지 모달 -->
+<div id="imageModal" class="image-modal">
+    <span class="modal-image-close" onclick="closeImageModal()">&times;</span>
+    <img class="modal-image-content" id="modalImage">
+    <button class="modal-image-nav modal-nav-prev" onclick="changeImage(-1)"></button>
+    <button class="modal-image-nav modal-nav-next" onclick="changeImage(1)"></button>
+    <div class="modal-image-counter" id="imageCounter"></div>
 </div>
 
 <script>
@@ -772,4 +1371,295 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
-</script>
+
+// 이미지 갤러리 관련 변수
+let currentImageIndex = 0;
+let lectureImages = [];
+let instructorImages = [];
+let currentGalleryType = 'lecture'; // 'lecture' 또는 'instructor'
+
+// 강의 이미지 데이터 초기화
+<?php if (!empty($lecture['images'])): ?>
+lectureImages = <?= json_encode($lecture['images']) ?>;
+<?php endif; ?>
+
+// 강사 이미지 데이터 초기화
+<?php if (!empty($instructorImages)): ?>
+instructorImages = <?= json_encode(array_map(function($img) {
+    return ['url' => $img['image_path'], 'alt' => $img['alt_text'] ?? '강사 이미지'];
+}, $instructorImages)) ?>;
+<?php endif; ?>
+
+/**
+ * 이미지 모달 열기 (강의 이미지용)
+ */
+function openImageModal(index) {
+    if (lectureImages.length === 0) return;
+    
+    currentImageIndex = index;
+    currentGalleryType = 'lecture';
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const counter = document.getElementById('imageCounter');
+    
+    modal.style.display = 'block';
+    modalImg.src = lectureImages[currentImageIndex].url;
+    counter.textContent = `${currentImageIndex + 1} / ${lectureImages.length}`;
+    
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * 강사 이미지 모달 열기 (강사 이미지 전용)
+ */
+function openInstructorImageModal(index) {
+    if (instructorImages.length === 0) return;
+    
+    currentImageIndex = index;
+    currentGalleryType = 'instructor';
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    const counter = document.getElementById('imageCounter');
+    
+    modal.style.display = 'block';
+    modalImg.src = instructorImages[currentImageIndex].url;
+    counter.textContent = `강사 이미지 ${currentImageIndex + 1} / ${instructorImages.length}`;
+    
+    document.body.style.overflow = 'hidden';
+}
+
+/**
+ * 이미지 모달 닫기
+ */
+function closeImageModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    
+    // 네비게이션 버튼 다시 보이기 (다음에 강의 이미지 갤러리에서 사용할 수 있도록)
+    const prevBtn = document.querySelector('.modal-nav-prev');
+    const nextBtn = document.querySelector('.modal-nav-next');
+    const counter = document.getElementById('imageCounter');
+    if (prevBtn) prevBtn.style.display = 'block';
+    if (nextBtn) nextBtn.style.display = 'block';
+    if (counter) counter.style.display = 'block';
+    
+    currentGalleryType = 'lecture'; // 기본값으로 리셋
+}
+
+/**
+ * 이미지 변경 (이전/다음) - 갤러리 타입별 분리
+ */
+function changeImage(direction) {
+    // 단일 강사 이미지인 경우 네비게이션 불가
+    if (currentGalleryType === 'instructor-single') return;
+    
+    const currentImages = currentGalleryType === 'instructor' ? instructorImages : lectureImages;
+    
+    if (currentImages.length === 0) return;
+    
+    currentImageIndex += direction;
+    
+    if (currentImageIndex >= currentImages.length) {
+        currentImageIndex = 0;
+    } else if (currentImageIndex < 0) {
+        currentImageIndex = currentImages.length - 1;
+    }
+    
+    const modalImg = document.getElementById('modalImage');
+    const counter = document.getElementById('imageCounter');
+    
+    modalImg.src = currentImages[currentImageIndex].url;
+    
+    if (currentGalleryType === 'instructor') {
+        counter.textContent = `강사 이미지 ${currentImageIndex + 1} / ${currentImages.length}`;
+    } else {
+        counter.textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+    }
+}
+
+// 모달 외부 클릭 시 닫기
+document.getElementById('imageModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeImageModal();
+    }
+});
+
+// 키보드 이벤트 수정 (ESC는 이미지 모달 우선, 그 다음 뒤로가기)
+document.addEventListener('keydown', function(e) {
+    const imageModal = document.getElementById('imageModal');
+    
+    if (imageModal && imageModal.style.display === 'block') {
+        // 이미지 모달이 열려있을 때
+        if (e.key === 'Escape') {
+            closeImageModal();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            // 단일 강사 이미지가 아닌 경우에만 키보드 네비게이션 허용
+            if (currentGalleryType !== 'instructor-single') {
+                if (e.key === 'ArrowLeft') {
+                    changeImage(-1);
+                } else if (e.key === 'ArrowRight') {
+                    changeImage(1);
+                }
+            }
+        }
+    } else {
+        // 이미지 모달이 없거나 닫혀있을 때
+        if (e.key === 'Escape') {
+            window.history.back();
+        }
+    }
+});
+
+/**
+ * 공유하기 기능
+ */
+function shareContent() {
+    const lectureTitle = '<?= addslashes(htmlspecialchars($lecture['title'])) ?>';
+    const lectureUrl = window.location.href;
+    const lectureDescription = '<?= addslashes(htmlspecialchars(substr($lecture['description'], 0, 100))) ?>...';
+    
+    // Web Share API 지원 확인
+    if (navigator.share) {
+        navigator.share({
+            title: lectureTitle,
+            text: lectureDescription,
+            url: lectureUrl
+        }).then(() => {
+            console.log('공유 성공');
+        }).catch((error) => {
+            console.log('공유 실패:', error);
+            fallbackShare(lectureTitle, lectureUrl);
+        });
+    } else {
+        // 폴백: 클립보드 복사 또는 공유 옵션 표시
+        fallbackShare(lectureTitle, lectureUrl);
+    }
+}
+
+/**
+ * 폴백 공유 기능 (클립보드 복사)
+ */
+function fallbackShare(title, url) {
+    // 클립보드에 URL 복사
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('🔗 링크가 클립보드에 복사되었습니다!\n다른 곳에 붙여넣기하여 공유하세요.');
+        }).catch(() => {
+            showShareModal(title, url);
+        });
+    } else {
+        showShareModal(title, url);
+    }
+}
+
+/**
+ * 공유 모달 표시
+ */
+function showShareModal(title, url) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+    
+    content.innerHTML = `
+        <h3 style="margin-bottom: 20px; color: #2d3748;">🔗 강의 공유하기</h3>
+        <p style="margin-bottom: 20px; color: #4a5568;">${title}</p>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; word-break: break-all; font-family: monospace; font-size: 14px;">
+            ${url}
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="copyToClipboard('${url}')" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                📋 복사하기
+            </button>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" style="padding: 10px 20px; background: #4267B2; color: white; text-decoration: none; border-radius: 6px;">
+                📘 Facebook
+            </a>
+            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}" target="_blank" style="padding: 10px 20px; background: #1DA1F2; color: white; text-decoration: none; border-radius: 6px;">
+                🐦 Twitter
+            </a>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding: 10px 20px; background: #a0aec0; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                닫기
+            </button>
+        </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+/**
+ * 클립보드 복사
+ */
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✅ 링크가 복사되었습니다!');
+        });
+    } else {
+        // 폴백 방법
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('✅ 링크가 복사되었습니다!');
+    }
+}
+
+/**
+ * 강사 이미지 모달 열기 (단일 이미지)
+ */
+function openInstructorImageModal(imageSrc, imageAlt) {
+    currentGalleryType = 'instructor-single'; // 특별한 타입으로 설정
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    
+    if (modal && modalImg) {
+        modal.style.display = 'block';
+        modalImg.src = imageSrc;
+        modalImg.alt = imageAlt || '강사 프로필 이미지';
+        
+        // 카운터 숨기기 (단일 이미지이므로)
+        const counter = document.getElementById('imageCounter');
+        if (counter) {
+            counter.style.display = 'none';
+        }
+        
+        // 네비게이션 버튼 숨기기
+        const prevBtn = document.querySelector('.modal-nav-prev');
+        const nextBtn = document.querySelector('.modal-nav-next');
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        
+        document.body.style.overflow = 'hidden';
+      }
+  }

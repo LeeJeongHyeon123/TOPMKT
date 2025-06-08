@@ -8,9 +8,13 @@ class TopMarketingLoader {
         // 중복 실행 방지: 이미 실행 중인 인스턴스가 있으면 종료
         if (window.topMarketingLoaderActive) {
             console.log('🚀 로딩 시스템이 이미 실행 중입니다. 중복 실행을 방지합니다.');
-            return;
+            // 기존 로더가 있으면 완전히 무효화된 객체 반환
+            return Object.create(null);
         }
         window.topMarketingLoaderActive = true;
+        
+        // 하루 첫 방문 확인
+        this.shouldShowLoading = this.getTodayFirstVisit();
         
         this.progress = 0;
         this.isLoading = false;
@@ -38,6 +42,12 @@ class TopMarketingLoader {
     }
     
     createLoadingHTML() {
+        // 페이지 리다이렉트 감지 (302 상태로 인한 중복 로딩 방지)
+        if (window.location.href.includes('/community/write') && !window.location.href.includes('?')) {
+            console.log('🚀 리다이렉트 페이지 감지 - 로딩 UI 비활성화');
+            return;
+        }
+        
         // 로딩 오버레이가 이미 존재하면 제거 (중복 방지)
         const existingOverlay = document.getElementById('topMarketing-loading-overlay');
         if (existingOverlay) {
@@ -45,6 +55,12 @@ class TopMarketingLoader {
             existingOverlay.remove();
             // 기존 플래그도 해제
             window.topMarketingLoaderActive = false;
+        }
+        
+        // 재방문 시에는 HTML 생성하지 않음
+        if (!this.shouldShowLoading) {
+            console.log('🚀 재방문으로 로딩 HTML 생성 건너뛰기');
+            return;
         }
         
         const loadingHTML = `
@@ -118,46 +134,43 @@ class TopMarketingLoader {
     }
     
     /**
-     * 방문 횟수 확인 및 업데이트
+     * 하루 첫 방문 확인 및 업데이트
      */
-    getVisitCount() {
+    getTodayFirstVisit() {
         try {
-            const visitCount = localStorage.getItem('topMarketing_visitCount');
-            const currentCount = visitCount ? parseInt(visitCount, 10) : 0;
+            const today = new Date().toDateString(); // "Mon Dec 25 2023" 형식
+            const lastVisitDate = localStorage.getItem('topMarketing_lastVisitDate');
             
-            // 방문 횟수 증가
-            localStorage.setItem('topMarketing_visitCount', (currentCount + 1).toString());
+            // 오늘 첫 방문인지 확인
+            const isFirstVisitToday = lastVisitDate !== today;
             
-            console.log(`🚀 방문 횟수: ${currentCount + 1}회 (${currentCount === 0 ? '첫 방문' : '재방문'})`);
-            
-            return currentCount + 1;
+            if (isFirstVisitToday) {
+                // 오늘 첫 방문: 날짜 업데이트
+                localStorage.setItem('topMarketing_lastVisitDate', today);
+                console.log(`🚀 오늘 첫 방문: ${today}`);
+                return true;
+            } else {
+                // 오늘 이미 방문함
+                console.log(`🚀 오늘 재방문: ${today} (로딩 UI 건너뛰기)`);
+                return false;
+            }
         } catch (error) {
-            console.warn('🚀 localStorage 접근 불가, 기본 로딩 속도 사용:', error);
-            return 1; // localStorage 사용 불가 시 첫 방문으로 처리
+            console.warn('🚀 localStorage 접근 불가, 첫 방문으로 처리:', error);
+            return true; // localStorage 사용 불가 시 첫 방문으로 처리
         }
     }
     
     /**
-     * 방문 횟수에 따른 로딩 설정 조정
+     * 하루 첫 방문 시만 로딩 설정 반환
      */
-    getLoadingConfig(visitCount) {
-        if (visitCount === 1) {
-            // 첫 방문: 현재와 동일한 속도
-            return {
-                duration: 3000,        // 3초
-                interval: [300, 500],  // 300-500ms 간격
-                progressStep: [5, 20], // 5-20% 씩 증가
-                description: '첫 방문 환영 로딩'
-            };
-        } else {
-            // 재방문: 빠른 속도
-            return {
-                duration: 800,        // 0.8초 (73% 단축)
-                interval: [80, 150],  // 80-150ms 간격 (더욱 빠른 업데이트)
-                progressStep: [15, 35], // 15-35% 씩 증가 (더욱 빠른 진행)
-                description: '재방문 초고속 로딩'
-            };
-        }
+    getLoadingConfig() {
+        // 하루 첫 방문 시에만 로딩 표시
+        return {
+            duration: 3000,        // 3초
+            interval: [300, 500],  // 300-500ms 간격
+            progressStep: [5, 20], // 5-20% 씩 증가
+            description: '오늘 첫 방문 환영 로딩'
+        };
     }
     
     show() {
@@ -195,6 +208,9 @@ class TopMarketingLoader {
                     }
                     // 로딩 완료 시 플래그 해제
                     window.topMarketingLoaderActive = false;
+                    // 커서 스타일도 정상화
+                    document.body.style.cursor = '';
+                    document.documentElement.style.cursor = '';
                     console.log('🚀 로딩 시스템 완료 - 플래그 해제');
                 }, 500);
             }, 1000);
@@ -228,10 +244,15 @@ class TopMarketingLoader {
     }
     
     simulateLoading() {
-        // 방문 횟수 확인 및 로딩 설정 적용
-        const visitCount = this.getVisitCount();
-        const config = this.getLoadingConfig(visitCount);
+        if (!this.shouldShowLoading) {
+            // 오늘 재방문: 로딩 UI 완전 건너뛰기
+            console.log('🚀 오늘 재방문으로 로딩 UI 건너뛰기');
+            this.skipLoading();
+            return;
+        }
         
+        // 오늘 첫 방문: 로딩 UI 표시
+        const config = this.getLoadingConfig();
         console.log(`🚀 로딩 시뮬레이션 시작 (${config.description})`);
         console.log(`🚀 로딩 설정: 소요시간 ${config.duration}ms, 진행 간격 ${config.interval[0]}-${config.interval[1]}ms`);
         
@@ -251,7 +272,7 @@ class TopMarketingLoader {
                 
                 setTimeout(() => {
                     this.hide();
-                }, visitCount === 1 ? 500 : 200); // 재방문 시 더 빠른 완료
+                }, 500); // 첫 방문 시 완료 대기
             }
             
             this.updateProgress(progress);
@@ -268,6 +289,23 @@ class TopMarketingLoader {
             }
             
         }, config.interval[0] + Math.random() * (config.interval[1] - config.interval[0])); // 동적 간격
+    }
+    
+    /**
+     * 로딩 UI 건너뛰기 (재방문 시)
+     */
+    skipLoading() {
+        console.log('🚀 로딩 UI 건너뛰기 - 즉시 페이지 표시');
+        
+        // 플래그 해제
+        window.topMarketingLoaderActive = false;
+        
+        // 페이지가 이미 로드된 상태이므로 추가 작업 없음
+        // body의 overflow 속성도 정상 상태 유지
+        document.body.style.overflow = '';
+        // 커서 스타일도 정상화
+        document.body.style.cursor = '';
+        document.documentElement.style.cursor = '';
     }
     
     showSuccess() {
@@ -289,18 +327,28 @@ class TopMarketingLoader {
         const rocketTrail = document.querySelector('.rocket-trail');
         
         if (rocketMain) {
-            // 1. 기존 rocket-main 클래스 제거하여 애니메이션 완전 중지
+            // 1. 모든 기존 애니메이션과 클래스 완전 제거
             rocketMain.className = '';
+            rocketMain.style.animation = 'none';
+            rocketMain.style.transform = 'translateY(-8px) rotate(0deg)';
+            rocketMain.style.position = 'relative';
             
-            // 2. 정지 상태 클래스 추가 (완전히 고정된 위치)
+            // 2. 강제로 정지 상태 스타일 적용
             rocketMain.classList.add('rocket-ready');
             
-            // 3. 잠시 후 발사 애니메이션 시작
+            // 3. 리다이렉트 페이지에서는 발사 애니메이션 건너뛰기
+            if (window.location.href.includes('/community/write')) {
+                console.log('🚀 리다이렉트 페이지에서 발사 애니메이션 생략');
+                return;
+            }
+            
+            // 4. 일반 페이지에서만 발사 애니메이션 실행
             setTimeout(() => {
-                // 정지 클래스 제거하고 발사 클래스 추가
-                rocketMain.classList.remove('rocket-ready');
-                rocketMain.classList.add('rocket-launch-sequence');
-            }, 300); // 300ms 동안 완전 정지 상태 유지
+                if (rocketMain && !window.location.href.includes('/community/write')) {
+                    rocketMain.classList.remove('rocket-ready');
+                    rocketMain.classList.add('rocket-launch-sequence');
+                }
+            }, 300);
             
             // 발사 트레일 효과 추가
             if (rocketTrail) {
@@ -402,12 +450,15 @@ class TopMarketingLoader {
     
     // 커스텀 로딩 시작
     startCustomLoading(options = {}) {
-        const visitCount = this.getVisitCount();
-        const config = this.getLoadingConfig(visitCount);
+        if (!this.shouldShowLoading) {
+            console.log('🚀 오늘 재방문으로 커스텀 로딩 건너뛰기');
+            return;
+        }
         
+        const config = this.getLoadingConfig();
         const {
             stages = this.loadingStages,
-            duration = config.duration, // 방문 횟수에 따른 기본 duration
+            duration = config.duration,
             autoHide = true
         } = options;
         
@@ -424,14 +475,14 @@ class TopMarketingLoader {
     }
     
     /**
-     * 방문 통계 초기화 (디버깅용)
+     * 오늘 방문 기록 초기화 (디버깅용)
      */
-    resetVisitCount() {
+    resetTodayVisit() {
         try {
-            localStorage.removeItem('topMarketing_visitCount');
-            console.log('🚀 방문 횟수 초기화 완료');
+            localStorage.removeItem('topMarketing_lastVisitDate');
+            console.log('🚀 오늘 방문 기록 초기화 완료');
         } catch (error) {
-            console.warn('🚀 방문 횟수 초기화 실패:', error);
+            console.warn('🚀 오늘 방문 기록 초기화 실패:', error);
         }
     }
     
@@ -440,18 +491,22 @@ class TopMarketingLoader {
      */
     getVisitStats() {
         try {
-            const visitCount = localStorage.getItem('topMarketing_visitCount');
-            const count = visitCount ? parseInt(visitCount, 10) : 0;
+            const today = new Date().toDateString();
+            const lastVisitDate = localStorage.getItem('topMarketing_lastVisitDate');
+            const isFirstVisitToday = lastVisitDate !== today;
+            
             return {
-                visitCount: count,
-                isFirstVisit: count <= 1,
-                nextLoadingSpeed: count <= 1 ? '일반 속도' : '고속'
+                today: today,
+                lastVisitDate: lastVisitDate || '방문 기록 없음',
+                isFirstVisitToday: isFirstVisitToday,
+                loadingStatus: isFirstVisitToday ? '로딩 UI 표시' : '로딩 UI 건너뛰기'
             };
         } catch (error) {
             return {
-                visitCount: 0,
-                isFirstVisit: true,
-                nextLoadingSpeed: '일반 속도',
+                today: new Date().toDateString(),
+                lastVisitDate: '확인 불가',
+                isFirstVisitToday: true,
+                loadingStatus: '로딩 UI 표시',
                 error: error.message
             };
         }
@@ -464,6 +519,14 @@ let topMarketingLoader;
 // DOM 로드 완료 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM 로드 완료 - 로딩 시스템 초기화');
+    
+    // 특정 리다이렉트 페이지에서는 로딩 시스템 완전 비활성화
+    if (window.location.href.includes('/community/write') && !window.location.search) {
+        console.log('🚀 리다이렉트 페이지 감지 - 로딩 시스템 비활성화');
+        window.topMarketingLoaderActive = true; // 플래그 설정하여 다른 인스턴스 방지
+        return;
+    }
+    
     topMarketingLoader = new TopMarketingLoader();
 });
 
@@ -506,17 +569,22 @@ window.TopMarketingLoading = {
         }
         return null;
     },
-    resetVisitCount: () => {
+    resetTodayVisit: () => {
         if (topMarketingLoader) {
-            topMarketingLoader.resetVisitCount();
+            topMarketingLoader.resetTodayVisit();
         }
     },
-    // 방문 횟수에 따른 적응형 로딩
+    // 하루 첫 방문에 따른 적응형 로딩
     smartLoading: (options = {}) => {
         if (topMarketingLoader) {
-            const visitCount = topMarketingLoader.getVisitCount();
-            const config = topMarketingLoader.getLoadingConfig(visitCount);
+            const isFirstVisitToday = topMarketingLoader.getTodayFirstVisit();
             
+            if (!isFirstVisitToday) {
+                console.log('🚀 오늘 재방문으로 스마트 로딩 건너뛰기');
+                return;
+            }
+            
+            const config = topMarketingLoader.getLoadingConfig();
             const smartOptions = {
                 ...options,
                 duration: config.duration,

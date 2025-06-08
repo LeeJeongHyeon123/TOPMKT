@@ -41,7 +41,16 @@ class Router {
             'PUT:/users/{id}' => ['UserController', 'updateUser'],
             'DELETE:/users/{id}' => ['UserController', 'deleteUser'],
             
-            // 게시글 라우트
+            // 커뮤니티 게시판 라우트
+            'GET:/community' => ['CommunityController', 'index'],
+            'GET:/community/posts/{id}' => ['CommunityController', 'show'],
+            'GET:/community/write' => ['CommunityController', 'showWrite'],
+            'POST:/community/posts' => ['CommunityController', 'create'],
+            'GET:/community/posts/{id}/edit' => ['CommunityController', 'showEdit'],
+            'PUT:/community/posts/{id}' => ['CommunityController', 'update'],
+            'DELETE:/community/posts/{id}' => ['CommunityController', 'delete'],
+            
+            // 기존 게시글 라우트 (호환성 유지)
             'GET:/posts' => ['PostController', 'index'],
             'GET:/posts/{id}' => ['PostController', 'show'],
             'POST:/posts' => ['PostController', 'create'],
@@ -52,6 +61,29 @@ class Router {
             'POST:/posts/{id}/comments' => ['CommentController', 'create'],
             'PUT:/comments/{id}' => ['CommentController', 'update'],
             'DELETE:/comments/{id}' => ['CommentController', 'delete'],
+            
+            // 미디어 업로드 라우트
+            'POST:/api/media/upload-image' => ['MediaController', 'uploadImage'],
+            
+            // 강의 일정 라우트
+            'GET:/lectures' => ['LectureController', 'index'],
+            'GET:/lectures/{id}' => ['LectureController', 'show'],
+            'GET:/lectures/create' => ['LectureController', 'create'],
+            'POST:/lectures/store' => ['LectureController', 'store'],
+            'GET:/lectures/{id}/edit' => ['LectureController', 'edit'],
+            'POST:/lectures/{id}/update' => ['LectureController', 'update'],
+            'POST:/lectures/{id}/delete' => ['LectureController', 'delete'],
+            'POST:/lectures/{id}/register' => ['LectureController', 'register'],
+            'GET:/lectures/{id}/ical' => ['LectureController', 'generateICal'],
+            
+            // 행사 일정 라우트
+            'GET:/events' => ['EventController', 'index'],
+            'GET:/events/{id}' => ['EventController', 'show'],
+            'GET:/events/write' => ['EventController', 'showWrite'],
+            'POST:/events' => ['EventController', 'create'],
+            'GET:/events/{id}/edit' => ['EventController', 'showEdit'],
+            'PUT:/events/{id}' => ['EventController', 'update'],
+            'DELETE:/events/{id}' => ['EventController', 'delete'],
         ];
     }
     
@@ -81,33 +113,97 @@ class Router {
         // 라우트 키 생성
         $routeKey = $method . ':' . $uri;
         
-        // 라우트 검색
+        // 정적 라우트 먼저 검색
         if (isset($this->routes[$routeKey])) {
-            // 컨트롤러와 액션 호출
-            list($controllerName, $action) = $this->routes[$routeKey];
-            $controllerPath = SRC_PATH . '/controllers/' . $controllerName . '.php';
-            
-            if (file_exists($controllerPath)) {
-                require_once $controllerPath;
-                if (class_exists($controllerName)) {
-                    $controller = new $controllerName();
-                    if (method_exists($controller, $action)) {
-                        $controller->$action();
-                        return;
-                    } else {
-                        error_log("Method $action not found in $controllerName");
-                    }
-                } else {
-                    error_log("Controller class $controllerName not found");
-                }
-            } else {
-                error_log("Controller file not found: $controllerPath");
+            $this->executeRoute($this->routes[$routeKey]);
+            return;
+        }
+        
+        // 동적 라우트 검색
+        foreach ($this->routes as $pattern => $route) {
+            if ($this->matchDynamicRoute($pattern, $routeKey)) {
+                $this->executeRoute($route);
+                return;
             }
         }
         
-        // 매칭되는 라우트가 없거나 오류가 발생하면 404 페이지 표시
+        // 매칭되는 라우트가 없으면 404 페이지 표시
         header('HTTP/1.1 404 Not Found');
         $this->show404();
+    }
+    
+    /**
+     * 동적 라우트 매칭
+     */
+    private function matchDynamicRoute($pattern, $requestRoute) {
+        // {id} 패턴을 정규식으로 변환
+        $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
+        $regexPattern = '#^' . str_replace('/', '\/', $regexPattern) . '$#';
+        
+        return preg_match($regexPattern, $requestRoute);
+    }
+    
+    /**
+     * 라우트 실행
+     */
+    private function executeRoute($route) {
+        list($controllerName, $action) = $route;
+        $controllerPath = SRC_PATH . '/controllers/' . $controllerName . '.php';
+        
+        if (file_exists($controllerPath)) {
+            require_once $controllerPath;
+            if (class_exists($controllerName)) {
+                $controller = new $controllerName();
+                if (method_exists($controller, $action)) {
+                    // 동적 라우트에서 파라미터 추출
+                    $params = $this->extractRouteParams();
+                    if (!empty($params)) {
+                        $controller->$action(...$params);
+                    } else {
+                        $controller->$action();
+                    }
+                    return;
+                } else {
+                    error_log("Method $action not found in $controllerName");
+                }
+            } else {
+                error_log("Controller class $controllerName not found");
+            }
+        } else {
+            error_log("Controller file not found: $controllerPath");
+        }
+        
+        // 컨트롤러 실행 실패 시 500 에러
+        header('HTTP/1.1 500 Internal Server Error');
+        echo '<h1>500 Internal Server Error</h1>';
+        echo '<p>An error occurred while processing your request.</p>';
+    }
+    
+    /**
+     * 라우트 파라미터 추출
+     */
+    private function extractRouteParams() {
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = rtrim($uri, '/');
+        if (empty($uri)) {
+            $uri = '/';
+        }
+        
+        $method = $_SERVER['REQUEST_METHOD'];
+        $routeKey = $method . ':' . $uri;
+        
+        foreach ($this->routes as $pattern => $route) {
+            $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
+            $regexPattern = '#^' . str_replace('/', '\/', $regexPattern) . '$#';
+            
+            if (preg_match($regexPattern, $routeKey, $matches)) {
+                // 첫 번째 매치는 전체 문자열이므로 제거
+                array_shift($matches);
+                return $matches;
+            }
+        }
+        
+        return [];
     }
     
     /**

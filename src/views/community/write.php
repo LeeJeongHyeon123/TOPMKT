@@ -261,6 +261,177 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
     }
 }
 
+/* Quill.js 에디터 커스터마이징 */
+.ql-editor {
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 20px;
+    min-height: 280px;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+.ql-editor.ql-blank::before {
+    color: #9ca3af;
+    font-style: normal;
+    left: 20px;
+}
+
+.ql-toolbar {
+    border-top: 2px solid #e2e8f0;
+    border-left: 2px solid #e2e8f0;
+    border-right: 2px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 8px 8px 0 0;
+    background: #f8fafc;
+}
+
+.ql-container {
+    border-left: 2px solid #e2e8f0;
+    border-right: 2px solid #e2e8f0;
+    border-bottom: 2px solid #e2e8f0;
+    border-radius: 0 0 8px 8px;
+    font-family: inherit;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+.ql-toolbar:focus-within + .ql-container,
+.ql-container:focus-within {
+    border-color: #48bb78;
+    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+.ql-toolbar .ql-picker-label:hover,
+.ql-toolbar .ql-picker-item:hover,
+.ql-toolbar button:hover {
+    color: #48bb78;
+}
+
+.ql-toolbar button.ql-active,
+.ql-toolbar .ql-picker-label.ql-active,
+.ql-toolbar .ql-picker-item.ql-selected {
+    color: #48bb78;
+}
+
+.ql-snow .ql-tooltip {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ql-snow .ql-tooltip input[type=text] {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.ql-snow .ql-tooltip a.ql-action::after {
+    color: #48bb78;
+}
+
+/* 이미지 업로드 피드백 */
+.ql-editor img {
+    max-width: 100%;
+    height: auto;
+    margin: 10px 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 텍스트 선택 강제 활성화 - 최우선 적용 */
+*[class*="ql-"],
+#quill-editor,
+#quill-editor *,
+.ql-editor,
+.ql-editor *,
+.ql-container,
+.ql-container *,
+.ql-editor p,
+.ql-editor div,
+.ql-editor span,
+.ql-editor strong,
+.ql-editor em,
+.ql-editor u,
+.ql-editor ol,
+.ql-editor ul,
+.ql-editor li,
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3 {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    -webkit-touch-callout: default !important;
+    -webkit-user-drag: text !important;
+    pointer-events: auto !important;
+    cursor: text !important;
+}
+
+/* 에디터 영역 커서 강제 설정 */
+.ql-editor {
+    cursor: text !important;
+}
+
+.ql-editor:hover {
+    cursor: text !important;
+}
+
+/* 모든 텍스트 요소에 텍스트 커서 적용 */
+.ql-editor *:not(img):not(button):not(input) {
+    cursor: text !important;
+}
+
+/* 기본 커서 스타일 제거 */
+.ql-editor, .ql-editor * {
+    cursor: text !important;
+}
+
+/* 최우선 순위로 텍스트 커서 적용 */
+#quill-editor .ql-editor,
+#quill-editor .ql-editor *,
+#quill-editor .ql-container,
+#quill-editor .ql-container * {
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    pointer-events: auto !important;
+}
+
+/* 전역 스타일 덮어쓰기 */
+body #quill-editor .ql-editor,
+body #quill-editor .ql-editor *,
+html #quill-editor .ql-editor,
+html #quill-editor .ql-editor * {
+    cursor: text !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* 드래그 선택 활성화 */
+.ql-editor p,
+.ql-editor span,
+.ql-editor div,
+.ql-editor strong,
+.ql-editor em,
+.ql-editor u {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
 /* 다크모드 대응 */
 @media (prefers-color-scheme: dark) {
     .write-form {
@@ -282,8 +453,32 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
         border-color: #48bb78;
         background: #4a5568;
     }
+    
+    .ql-toolbar {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .ql-container {
+        border-color: #718096;
+    }
+    
+    .ql-editor {
+        background: #4a5568;
+        color: #e2e8f0;
+    }
+    
+    .ql-snow .ql-tooltip {
+        background: #4a5568;
+        border-color: #718096;
+        color: #e2e8f0;
+    }
 }
 </style>
+
+<!-- Quill.js CDN - 최신 안정 버전 2.0 (deprecated 이벤트 문제 완전 해결) -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 
 <div class="write-container">
     <!-- 헤더 섹션 -->
@@ -322,16 +517,19 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
             <div id="titleCounter" class="char-counter">0 / 200</div>
         </div>
         
-        <!-- 내용 입력 -->
+        <!-- 내용 입력 (리치 텍스트 에디터) -->
         <div class="form-group">
             <label for="content" class="form-label required">내용</label>
+            <div id="quill-editor" style="height: 300px; border: 2px solid #e2e8f0; border-radius: 8px; user-select: text; -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text;"></div>
             <textarea id="content" 
                       name="content" 
-                      class="form-input form-textarea" 
-                      placeholder="게시글 내용을 입력해주세요&#10;&#10;• 구체적이고 유용한 정보를 공유해주세요&#10;• 예의를 지키고 타인을 배려하는 글을 작성해주세요&#10;• 개인정보나 민감한 정보는 포함하지 마세요"
-                      maxlength="10000"
+                      style="display: none;"
                       required><?= isset($post) ? htmlspecialchars($post['content']) : '' ?></textarea>
             <div id="contentCounter" class="char-counter">0 / 10,000</div>
+            <div class="editor-tips" style="margin-top: 8px; font-size: 12px; color: #718096;">
+                💡 <strong>에디터 사용법:</strong> 
+                텍스트 선택 후 포맷 적용 | 이미지 업로드 버튼 클릭 | Ctrl+Z로 실행 취소
+            </div>
         </div>
         
         <!-- 버튼 영역 -->
@@ -376,7 +574,321 @@ document.addEventListener('DOMContentLoaded', function() {
     const isEdit = <?= $isEdit ? 'true' : 'false' ?>;
     const postId = <?= isset($post) ? $post['id'] : 'null' ?>;
     
-    // 문자 수 카운터 업데이트
+    // Quill.js 에디터 초기화
+    let quill;
+    
+    // 이미지 업로드 핸들러
+    function imageHandler() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/jpeg,image/jpg,image/png,image/gif,image/webp');
+        input.style.display = 'none';
+        
+        input.onchange = async function() {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // 파일 크기 검증 (10MB)
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('파일 크기는 10MB를 초과할 수 없습니다.');
+                return;
+            }
+            
+            // 로딩 표시
+            const range = quill.getSelection();
+            quill.insertText(range.index, '이미지 업로드 중...', 'italic', true);
+            
+            try {
+                // FormData 생성
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+                
+                // 업로드 요청
+                const response = await fetch('/api/media/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                // 업로드 중 텍스트 제거
+                quill.deleteText(range.index, '이미지 업로드 중...'.length);
+                
+                if (result.success) {
+                    // 이미지 삽입
+                    quill.insertEmbed(range.index, 'image', result.data.url);
+                    quill.setSelection(range.index + 1);
+                    console.log('✅ 이미지 업로드 성공:', result.data.url);
+                } else {
+                    alert('이미지 업로드 실패: ' + result.message);
+                }
+                
+            } catch (error) {
+                // 업로드 중 텍스트 제거
+                quill.deleteText(range.index, '이미지 업로드 중...'.length);
+                console.error('이미지 업로드 오류:', error);
+                alert('이미지 업로드 중 오류가 발생했습니다.');
+            }
+        };
+        
+        input.click();
+    }
+    
+    // Quill 에디터 초기화
+    quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        placeholder: '게시글 내용을 입력해주세요...\n\n• 구체적이고 유용한 정보를 공유해주세요\n• 예의를 지키고 타인을 배려하는 글을 작성해주세요\n• 개인정보나 민감한 정보는 포함하지 마세요',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'align': [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: imageHandler
+                }
+            }
+        },
+        bounds: '#quill-editor'
+    });
+    
+    // Quill 에디터의 기본 이벤트를 덮어쓰기
+    const editor = quill.root;
+    
+    // Quill의 selection 모듈에 접근해서 텍스트 선택 강제 활성화
+    quill.on('selection-change', function(range, oldRange, source) {
+        console.log('Selection changed:', range, source);
+    });
+    
+    // 에디터에서 마우스 이벤트 처리
+    let isMouseDown = false;
+    let startPos = null;
+    
+    editor.addEventListener('mousedown', function(e) {
+        console.log('마우스 다운:', e.target);
+        isMouseDown = true;
+        startPos = { x: e.clientX, y: e.clientY };
+        
+        // 기본 Quill 이벤트를 막지 않고 텍스트 선택 허용
+        e.target.style.userSelect = 'text';
+        e.target.style.webkitUserSelect = 'text';
+    });
+    
+    editor.addEventListener('mousemove', function(e) {
+        if (isMouseDown) {
+            console.log('드래그 중');
+            // 드래그 거리 계산
+            const distance = Math.sqrt(
+                Math.pow(e.clientX - startPos.x, 2) + 
+                Math.pow(e.clientY - startPos.y, 2)
+            );
+            
+            if (distance > 5) { // 5px 이상 드래그시 텍스트 선택 모드
+                console.log('텍스트 선택 모드 활성화');
+                document.body.style.userSelect = 'text';
+                e.target.style.userSelect = 'text';
+            }
+        }
+        
+        // 커서 스타일 강제 적용
+        e.target.style.cursor = 'text';
+    });
+    
+    document.addEventListener('mouseup', function(e) {
+        if (isMouseDown) {
+            console.log('마우스 업');
+            isMouseDown = false;
+            startPos = null;
+            document.body.style.userSelect = '';
+        }
+    });
+    
+    // DOM 요소에 직접 스타일 적용
+    editor.style.cssText += 'cursor: text !important; user-select: text !important;';
+    editor.setAttribute('contenteditable', 'true');
+    
+    console.log('Quill 에디터 초기화 완료, 에디터 요소:', editor);
+    
+    // 텍스트 선택 강제 활성화
+    setTimeout(function() {
+        const editor = document.querySelector('.ql-editor');
+        const container = document.querySelector('.ql-container');
+        const quillDiv = document.querySelector('#quill-editor');
+        
+        if (editor) {
+            editor.style.userSelect = 'text';
+            editor.style.webkitUserSelect = 'text';
+            editor.style.mozUserSelect = 'text';
+            editor.style.msUserSelect = 'text';
+            editor.style.cursor = 'text';
+            editor.style.pointerEvents = 'auto';
+            
+            // 모든 자식 요소에도 적용
+            const allElements = editor.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.userSelect = 'text';
+                el.style.webkitUserSelect = 'text';
+                el.style.mozUserSelect = 'text';
+                el.style.msUserSelect = 'text';
+                el.style.cursor = 'text';
+                el.style.pointerEvents = 'auto';
+            });
+            
+            console.log('✅ 텍스트 선택 및 커서 활성화 완료');
+        }
+        
+        // 전역 스타일 추가로 강제 적용 - 최대 우선순위
+        const style = document.createElement('style');
+        style.textContent = `
+            html body div#quill-editor div.ql-editor,
+            html body div#quill-editor div.ql-editor *,
+            html body div#quill-editor div.ql-editor p,
+            html body div#quill-editor div.ql-editor span,
+            html body div#quill-editor div.ql-editor div,
+            html body div#quill-editor div.ql-editor strong,
+            html body div#quill-editor div.ql-editor em,
+            html body div#quill-editor div.ql-editor u,
+            html body div#quill-editor div.ql-editor h1,
+            html body div#quill-editor div.ql-editor h2,
+            html body div#quill-editor div.ql-editor h3,
+            html body div#quill-editor div.ql-editor ol,
+            html body div#quill-editor div.ql-editor ul,
+            html body div#quill-editor div.ql-editor li {
+                cursor: text !important;
+                user-select: text !important;
+                -webkit-user-select: text !important;
+                -moz-user-select: text !important;
+                -ms-user-select: text !important;
+                pointer-events: auto !important;
+            }
+            
+            /* 모든 것을 덮어쓰는 스타일 */
+            [data-editor="true"] * {
+                cursor: text !important;
+                user-select: text !important;
+                -webkit-user-select: text !important;
+                -moz-user-select: text !important;
+                -ms-user-select: text !important;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // 에디터에 data 속성 추가
+        setTimeout(() => {
+            const editorElement = document.querySelector('#quill-editor');
+            if (editorElement) {
+                editorElement.setAttribute('data-editor', 'true');
+                console.log('에디터에 data-editor 속성 추가됨');
+            }
+        }, 200);
+        
+        // 강력한 커서 스타일 적용 - 지속적으로 확인
+        const forceCursorStyle = () => {
+            const editorElements = document.querySelectorAll('#quill-editor, #quill-editor *, .ql-editor, .ql-editor *, .ql-container, .ql-container *');
+            editorElements.forEach(el => {
+                if (el) {
+                    el.style.setProperty('cursor', 'text', 'important');
+                    el.style.setProperty('user-select', 'text', 'important');
+                    el.style.setProperty('-webkit-user-select', 'text', 'important');
+                    el.style.setProperty('-moz-user-select', 'text', 'important');
+                    el.style.setProperty('-ms-user-select', 'text', 'important');
+                    el.style.setProperty('pointer-events', 'auto', 'important');
+                }
+            });
+        };
+        
+        // 즉시 실행
+        forceCursorStyle();
+        
+        // 100ms마다 재적용 (처음 5초간)
+        let count = 0;
+        const interval = setInterval(() => {
+            forceCursorStyle();
+            count++;
+            if (count > 50) { // 5초 후 중단
+                clearInterval(interval);
+                console.log('✅ 커서 스타일 강제 적용 완료');
+            }
+        }, 100);
+        
+        // 디버깅용 전역 함수
+        window.debugCursor = () => {
+            const editor = document.querySelector('.ql-editor');
+            if (editor) {
+                console.log('에디터 찾음:', editor);
+                console.log('현재 커서 스타일:', getComputedStyle(editor).cursor);
+                console.log('현재 user-select:', getComputedStyle(editor).userSelect);
+                
+                // 강제로 스타일 재적용
+                forceCursorStyle();
+                
+                console.log('재적용 후 커서 스타일:', getComputedStyle(editor).cursor);
+            } else {
+                console.log('에디터를 찾을 수 없음');
+            }
+        };
+        
+        console.log('👉 브라우저 콘솔에서 window.debugCursor() 함수를 실행해보세요');
+        
+        // 새로 추가되는 요소에도 텍스트 선택 활성화
+        if (editor) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            node.style.userSelect = 'text';
+                            node.style.webkitUserSelect = 'text';
+                            node.style.mozUserSelect = 'text';
+                            node.style.msUserSelect = 'text';
+                            node.style.cursor = 'text';
+                            node.style.pointerEvents = 'auto';
+                            
+                            // 자식 요소들에도 적용
+                            const children = node.querySelectorAll('*');
+                            children.forEach(child => {
+                                child.style.userSelect = 'text';
+                                child.style.webkitUserSelect = 'text';
+                                child.style.mozUserSelect = 'text';
+                                child.style.msUserSelect = 'text';
+                                child.style.cursor = 'text';
+                                child.style.pointerEvents = 'auto';
+                            });
+                        }
+                    });
+                });
+            });
+            
+            observer.observe(editor, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }, 100);
+    
+    // 에디터 내용이 변경될 때마다 히든 textarea 업데이트
+    quill.on('text-change', function() {
+        const htmlContent = quill.root.innerHTML;
+        contentTextarea.value = htmlContent;
+        
+        // 텍스트 길이 계산 (HTML 태그 제외)
+        const textContent = quill.getText();
+        updateContentCharCounter(textContent.length);
+    });
+    
+    // 기존 내용이 있으면 에디터에 설정
+    if (contentTextarea.value.trim()) {
+        quill.root.innerHTML = contentTextarea.value;
+    }
+    
+    // 문자 수 카운터 업데이트 함수들
     function updateCharCounter(input, counter, maxLength) {
         const currentLength = input.value.length;
         counter.textContent = `${currentLength.toLocaleString()} / ${maxLength.toLocaleString()}`;
@@ -391,17 +903,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    function updateContentCharCounter(currentLength) {
+        const maxLength = 10000;
+        contentCounter.textContent = `${currentLength.toLocaleString()} / ${maxLength.toLocaleString()}`;
+        
+        // 경고 및 오류 상태 표시
+        contentCounter.className = 'char-counter';
+        if (currentLength > maxLength * 0.9) {
+            contentCounter.classList.add('warning');
+        }
+        if (currentLength >= maxLength) {
+            contentCounter.classList.add('error');
+        }
+    }
+    
     // 초기 문자 수 카운터 설정
     updateCharCounter(titleInput, titleCounter, 200);
-    updateCharCounter(contentTextarea, contentCounter, 10000);
+    updateContentCharCounter(quill.getText().length);
     
-    // 실시간 문자 수 업데이트
+    // 실시간 문자 수 업데이트 (제목만)
     titleInput.addEventListener('input', function() {
         updateCharCounter(this, titleCounter, 200);
-    });
-    
-    contentTextarea.addEventListener('input', function() {
-        updateCharCounter(this, contentCounter, 10000);
     });
     
     // 폼 제출 처리
@@ -409,7 +931,13 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         const title = titleInput.value.trim();
-        const content = contentTextarea.value.trim();
+        
+        // 에디터 내용을 HTML로 가져오기
+        const editorHtml = quill.root.innerHTML;
+        const editorText = quill.getText().trim();
+        
+        // 히든 textarea에 HTML 내용 설정
+        contentTextarea.value = editorHtml;
         
         // 유효성 검사
         if (!title) {
@@ -424,15 +952,15 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (!content) {
+        if (!editorText || editorText.length <= 1) {
             alert('내용을 입력해주세요.');
-            contentTextarea.focus();
+            quill.focus();
             return;
         }
         
-        if (content.length > 10000) {
+        if (editorText.length > 10000) {
             alert('내용은 10,000자 이내로 입력해주세요.');
-            contentTextarea.focus();
+            quill.focus();
             return;
         }
         
@@ -442,7 +970,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 폼 데이터 준비
         const formData = new FormData();
         formData.append('title', title);
-        formData.append('content', content);
+        formData.append('content', editorHtml);
         formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
         
         // API 요청
@@ -534,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     window.addEventListener('beforeunload', function(e) {
-        if (!isSubmitting && (titleInput.value.trim() || contentTextarea.value.trim())) {
+        if (!isSubmitting && (titleInput.value.trim() || quill.getText().trim().length > 1)) {
             const message = '작성 중인 내용이 있습니다. 페이지를 벗어나시겠습니까?';
             e.returnValue = message;
             return message;

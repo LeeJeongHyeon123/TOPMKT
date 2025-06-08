@@ -652,17 +652,43 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('📱 발송 번호:', phone);
         console.log('🛡️ reCAPTCHA 토큰 길이:', recaptchaToken.length);
         
+        // 🚀 SMS 발송용 로딩 UI 표시
+        if (window.TopMarketingLoading) {
+            window.TopMarketingLoading.custom({
+                stages: [
+                    '보안 검증 중...',
+                    '알리고 SMS 서비스 연결 중...',
+                    '인증번호 생성 중...',
+                    '📱 메시지 발송 중...',
+                    '발송 완료! 📨'
+                ],
+                duration: 3000,
+                autoHide: false
+            });
+        }
+        
         sendVerificationBtn.disabled = true;
         sendVerificationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 발송 중...';
 
         try {
             console.log('🌐 AJAX 요청 시작 - /auth/send-verification');
             
+            // 로딩 단계 업데이트
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('서버 연결 중...');
+                window.TopMarketingLoading.setProgress(30);
+            }
+            
             const requestData = { 
                 phone: phone,
                 recaptcha_token: recaptchaToken
             };
             console.log('📤 요청 데이터:', requestData);
+            
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('인증번호 생성 중...');
+                window.TopMarketingLoading.setProgress(60);
+            }
             
             const response = await fetch('/auth/send-verification', {
                 method: 'POST',
@@ -676,22 +702,49 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('📡 응답 상태:', response.status, response.statusText);
             console.log('📡 응답 헤더:', [...response.headers.entries()]);
             
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('📱 SMS 발송 중...');
+                window.TopMarketingLoading.setProgress(90);
+            }
+            
             const data = await response.json();
             console.log('📥 응답 데이터:', data);
             
             if (data.success) {
                 console.log('✅ SMS 발송 성공');
+                
+                // 성공 시 로딩 완료
+                if (window.TopMarketingLoading) {
+                    window.TopMarketingLoading.setStage('발송 완료! 📨');
+                    window.TopMarketingLoading.setProgress(100);
+                    setTimeout(() => {
+                        window.TopMarketingLoading.hide();
+                    }, 1000);
+                }
+                
                 showMessage('인증번호가 발송되었습니다.', 'success');
                 showVerificationGroup();
                 startTimer(180); // 3분 = 180초
             } else {
                 console.error('❌ SMS 발송 실패:', data.message);
+                
+                // 실패 시 로딩 숨김
+                if (window.TopMarketingLoading) {
+                    window.TopMarketingLoading.hide();
+                }
+                
                 showMessage(data.message || '인증번호 발송에 실패했습니다.', 'error');
                 sendVerificationBtn.disabled = false;
                 sendVerificationBtn.innerHTML = '인증번호 발송';
             }
         } catch (error) {
             console.error('❌ AJAX 요청 오류:', error);
+            
+            // 오류 시 로딩 숨김
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.hide();
+            }
+            
             showMessage('인증번호 발송 중 오류가 발생했습니다.', 'error');
             sendVerificationBtn.disabled = false;
             sendVerificationBtn.innerHTML = '인증번호 발송';
@@ -941,10 +994,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
+            // 🚀 로딩 UI 표시
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.custom({
+                    stages: [
+                        '보안 검증 준비 중...',
+                        'reCAPTCHA 토큰 생성 중...',
+                        '회원 정보 암호화 중...',
+                        '데이터베이스 연결 중...',
+                        '계정 생성 중...',
+                        '환영합니다! 🎉'
+                    ],
+                    duration: 5000,
+                    autoHide: false
+                });
+            }
+            
             console.log('🛡️ 회원가입용 reCAPTCHA 토큰 생성 중...');
+            
+            // reCAPTCHA 토큰 생성 중 로딩 단계 업데이트
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('reCAPTCHA 보안 검증 중...');
+                window.TopMarketingLoading.setProgress(20);
+            }
+            
             // 회원가입용 reCAPTCHA 토큰 생성
             const recaptchaToken = await generateRecaptchaToken('signup');
             recaptchaTokenInput.value = recaptchaToken;
+            
+            // 데이터 준비 단계
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('회원 정보 검증 중...');
+                window.TopMarketingLoading.setProgress(50);
+            }
             
             console.log('📤 회원가입 폼 실제 제출');
             console.log('📊 제출할 데이터:', {
@@ -956,12 +1038,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 hasRecaptchaToken: !!recaptchaToken
             });
             
+            // 제출 직전 단계
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.setStage('계정 생성 중...');
+                window.TopMarketingLoading.setProgress(80);
+            }
+            
             console.log('🚨 디버깅 모드: 폼이 제출됩니다. 오류 발생 시 콘솔 로그를 확인하세요!');
             
             // 폼 제출
             this.submit();
         } catch (error) {
             console.error('❌ reCAPTCHA 토큰 생성 실패:', error);
+            
+            // 오류 시 로딩 숨김
+            if (window.TopMarketingLoading) {
+                window.TopMarketingLoading.hide();
+            }
+            
             showMessage('보안 검증에 실패했습니다. 새로고침 후 다시 시도해주세요.', 'error');
             alert('⚠️ 디버깅: reCAPTCHA 토큰 생성 실패\n\n' + error.message + '\n\n콘솔 로그를 확인하세요.\n확인을 누르면 계속됩니다.');
         }

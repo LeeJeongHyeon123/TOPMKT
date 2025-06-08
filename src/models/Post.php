@@ -2,7 +2,6 @@
 /**
  * 게시글 모델 클래스
  */
-namespace App\Models;
 
 class Post {
     private $db;
@@ -11,7 +10,8 @@ class Post {
      * 생성자
      */
     public function __construct() {
-        $this->db = getDbConnection();
+        require_once SRC_PATH . '/config/database.php';
+        $this->db = Database::getInstance();
     }
     
     /**
@@ -27,14 +27,15 @@ class Post {
         $params = [];
         
         $sql = "
-            SELECT p.*, u.name as author_name 
+            SELECT p.*, u.nickname as author_name
             FROM posts p
-            JOIN users u ON p.user_id = u.user_id
+            JOIN users u ON p.user_id = u.id
+            WHERE 1=1
         ";
         
         if ($search) {
-            $sql .= " WHERE (p.title LIKE :search OR p.content LIKE :search)";
-            $params['search'] = "%$search%";
+            $sql .= " AND (p.title LIKE :search OR p.content LIKE :search)";
+            $params[':search'] = "%$search%";
         }
         
         $sql .= " ORDER BY p.created_at DESC LIMIT :offset, :limit";
@@ -42,7 +43,7 @@ class Post {
         $stmt = $this->db->prepare($sql);
         
         foreach ($params as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+            $stmt->bindValue($key, $value);
         }
         
         $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
@@ -59,21 +60,16 @@ class Post {
      * @return int 게시글 총 개수
      */
     public function getTotalCount($search = null) {
-        $sql = "SELECT COUNT(*) FROM posts";
+        $sql = "SELECT COUNT(*) FROM posts WHERE 1=1";
         $params = [];
         
         if ($search) {
-            $sql .= " WHERE (title LIKE :search OR content LIKE :search)";
-            $params['search'] = "%$search%";
+            $sql .= " AND (title LIKE :search OR content LIKE :search)";
+            $params[':search'] = "%$search%";
         }
         
         $stmt = $this->db->prepare($sql);
-        
-        if ($search) {
-            $stmt->bindValue(':search', "%$search%");
-        }
-        
-        $stmt->execute();
+        $stmt->execute($params);
         
         return $stmt->fetchColumn();
     }
@@ -86,14 +82,14 @@ class Post {
      */
     public function getById($id) {
         $stmt = $this->db->prepare("
-            SELECT p.*, u.name as author_name 
+            SELECT p.*, u.nickname as author_name
             FROM posts p
-            JOIN users u ON p.user_id = u.user_id
-            WHERE p.post_id = :id
+            JOIN users u ON p.user_id = u.id
+            WHERE p.id = :id
         ");
         
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -103,15 +99,17 @@ class Post {
      * @return int 생성된 게시글 ID
      */
     public function create($data) {
+        // image_path 컬럼 포함하여 INSERT
         $stmt = $this->db->prepare("
-            INSERT INTO posts (user_id, title, content, created_at)
-            VALUES (:user_id, :title, :content, NOW())
+            INSERT INTO posts (user_id, title, content, image_path, created_at, updated_at)
+            VALUES (:user_id, :title, :content, :image_path, NOW(), NOW())
         ");
         
         $stmt->execute([
             'user_id' => $data['user_id'],
             'title' => $data['title'],
-            'content' => $data['content']
+            'content' => $data['content'],
+            'image_path' => $data['image_path'] ?? null
         ]);
         
         return $this->db->lastInsertId();
@@ -127,14 +125,15 @@ class Post {
     public function update($id, $data) {
         $stmt = $this->db->prepare("
             UPDATE posts 
-            SET title = :title, content = :content, updated_at = NOW()
-            WHERE post_id = :id
+            SET title = :title, content = :content, image_path = :image_path, updated_at = NOW()
+            WHERE id = :id
         ");
         
         return $stmt->execute([
             'id' => $id,
             'title' => $data['title'],
-            'content' => $data['content']
+            'content' => $data['content'],
+            'image_path' => $data['image_path'] ?? null
         ]);
     }
     
@@ -145,7 +144,7 @@ class Post {
      * @return bool 성공 여부
      */
     public function delete($id) {
-        $stmt = $this->db->prepare("DELETE FROM posts WHERE post_id = :id");
+        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = :id");
         return $stmt->execute(['id' => $id]);
     }
     

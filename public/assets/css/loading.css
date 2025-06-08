@@ -444,15 +444,22 @@
     }
 }
 
-/* 🚀 우주선 정지 상태 (발사 준비) */
+/* 🚀 우주선 정지 상태 (발사 준비) - 최강 고정 */
 .rocket-ready {
-    font-size: 4rem;
-    color: #3b82f6;
-    display: inline-block;
-    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
-    position: relative;
+    font-size: 4rem !important;
+    color: #3b82f6 !important;
+    display: inline-block !important;
+    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5)) !important;
+    position: relative !important;
     transform: translateY(-8px) rotate(0deg) !important;
     animation: none !important;
+    transition: none !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* 🚀 우주선 발사 및 비행 애니메이션 */
