@@ -131,14 +131,24 @@ class EventController extends LectureController {
                 return;
             }
             
+            // OG 메타 태그용 깨끗한 설명 생성
+            $cleanDescription = $this->generateCleanDescription($event['description']);
+            
+            // OG 이미지 설정 (행사 이미지가 있으면 첫 번째 이미지 사용)
+            $ogImage = 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-og-image.png?v=' . date('Ymd');
+            if (!empty($event['images']) && isset($event['images'][0]['url'])) {
+                $ogImage = 'https://' . $_SERVER['HTTP_HOST'] . $event['images'][0]['url'];
+            }
+            
             // 뷰에 전달할 데이터
             $data = [
                 'page_title' => $event['title'],
-                'page_description' => mb_substr(strip_tags($event['description']), 0, 160),
+                'page_description' => $cleanDescription,
                 'event' => $event,
                 'current_user' => $this->getCurrentUser(),
                 'og_title' => $event['title'] . ' - 탑마케팅 행사',
-                'og_description' => mb_substr(strip_tags($event['description']), 0, 160),
+                'og_description' => $cleanDescription,
+                'og_image' => $ogImage,
                 'og_type' => 'article'
             ];
             
@@ -372,11 +382,11 @@ class EventController extends LectureController {
      * 뷰 렌더링 헬퍼
      */
     private function render($view, $data = []) {
+        // 데이터 추출 (헤더에서 사용할 수 있도록 먼저 실행)
+        extract($data);
+        
         // 헤더 포함
         require_once SRC_PATH . '/views/templates/header.php';
-        
-        // 데이터 추출
-        extract($data);
         
         // 메인 뷰 파일 포함
         $viewPath = SRC_PATH . "/views/{$view}.php";
@@ -515,6 +525,41 @@ class EventController extends LectureController {
             return ['year' => $year + 1, 'month' => 1];
         }
         return ['year' => $year, 'month' => $month + 1];
+    }
+    
+    /**
+     * OG 메타 태그용 깨끗한 설명 생성
+     */
+    private function generateCleanDescription($description) {
+        // 1. Markdown 문법 제거
+        $text = preg_replace('/\*\*(.*?)\*\*/', '$1', $description); // **볼드** 제거
+        $text = preg_replace('/\*(.*?)\*/', '$1', $text); // *이탤릭* 제거
+        $text = preg_replace('/#{1,6}\s/', '', $text); // # 헤더 제거
+        $text = preg_replace('/\[(.*?)\]\(.*?\)/', '$1', $text); // [링크](url) 제거
+        $text = preg_replace('/```.*?```/s', '', $text); // 코드 블록 제거
+        $text = preg_replace('/`(.*?)`/', '$1', $text); // 인라인 코드 제거
+        
+        // 2. 이모지와 특수 문자 정리
+        $text = preg_replace('/[🎯💼🎁🤝📍⭐🔥💡📊🚀]+/', '', $text); // 이모지 제거
+        $text = preg_replace('/•\s*/', '- ', $text); // 불릿 포인트 정리
+        
+        // 3. HTML 태그 제거
+        $text = strip_tags($text);
+        
+        // 4. 연속된 공백과 줄바꿈 정리
+        $text = preg_replace('/\s+/', ' ', $text);
+        $text = trim($text);
+        
+        // 5. 첫 번째 문장만 추출하여 깔끔하게
+        $sentences = preg_split('/[.!?]\s+/', $text);
+        $firstSentence = trim($sentences[0]);
+        
+        // 6. 길이 제한 (160자)
+        if (mb_strlen($firstSentence) > 160) {
+            $firstSentence = mb_substr($firstSentence, 0, 157) . '...';
+        }
+        
+        return $firstSentence;
     }
     
     /**

@@ -499,6 +499,42 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     font-weight: 500;
 }
 
+/* 행사 액션 버튼 */
+.event-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
 
 /* 반응형 */
 @media (max-width: 768px) {
@@ -602,6 +638,12 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         <?php endif; ?>
                     </span>
                 </div>
+            </div>
+            
+            <div class="event-actions">
+                <button class="btn btn-secondary btn-share" onclick="shareEventContent()">
+                    🔗 공유하기
+                </button>
             </div>
         </div>
     </div>
@@ -1090,4 +1132,136 @@ document.getElementById('imageModal').addEventListener('click', function(e) {
     }
 });
 <?php endif; ?>
+
+/**
+ * 행사 공유하기 기능
+ */
+function shareEventContent() {
+    try {
+        const eventTitle = "<?= addslashes(htmlspecialchars($event['title'])) ?>";
+        const eventUrl = window.location.href;
+        const eventDescription = "<?= addslashes(htmlspecialchars(substr(strip_tags($event['description'] ?? ''), 0, 100))) ?>...";
+        
+        // Web Share API 지원 확인
+        if (navigator.share) {
+            navigator.share({
+                title: eventTitle,
+                text: eventDescription,
+                url: eventUrl
+            }).then(() => {
+                console.log('공유 성공');
+            }).catch((error) => {
+                console.log('공유 실패:', error);
+                fallbackShare(eventTitle, eventUrl);
+            });
+        } else {
+            // 폴백: 클립보드 복사 또는 공유 옵션 표시
+            fallbackShare(eventTitle, eventUrl);
+        }
+    } catch (error) {
+        console.error('공유 기능 오류:', error);
+        alert('공유 기능에 오류가 발생했습니다.');
+    }
+}
+
+/**
+ * 폴백 공유 기능 (클립보드 복사)
+ */
+function fallbackShare(title, url) {
+    // 클립보드에 URL 복사
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('🔗 링크가 클립보드에 복사되었습니다!\n다른 곳에 붙여넣기하여 공유하세요.');
+        }).catch(() => {
+            showShareModal(title, url);
+        });
+    } else {
+        showShareModal(title, url);
+    }
+}
+
+/**
+ * 공유 모달 표시
+ */
+function showShareModal(title, url) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    `;
+    
+    content.innerHTML = `
+        <h3 style="margin-bottom: 20px; color: #2d3748;">🔗 행사 공유하기</h3>
+        <p style="margin-bottom: 20px; color: #4a5568;">${title}</p>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; word-break: break-all; font-family: monospace; font-size: 14px;">
+            ${url}
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button onclick="copyToClipboard('${url}')" style="padding: 10px 20px; background: #4A90E2; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                📋 복사하기
+            </button>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" style="padding: 10px 20px; background: #4267B2; color: white; text-decoration: none; border-radius: 6px;">
+                📘 Facebook
+            </a>
+            <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}" target="_blank" style="padding: 10px 20px; background: #1DA1F2; color: white; text-decoration: none; border-radius: 6px;">
+                🐦 Twitter
+            </a>
+            <a href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank" style="padding: 10px 20px; background: #0088CC; color: white; text-decoration: none; border-radius: 6px;">
+                📤 Telegram
+            </a>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding: 10px 20px; background: #a0aec0; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                닫기
+            </button>
+        </div>
+    `;
+    
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+/**
+ * 클립보드 복사
+ */
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('✅ 링크가 복사되었습니다!');
+        });
+    } else {
+        // 폴백 방법
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('✅ 링크가 복사되었습니다!');
+    }
+}
 </script>
