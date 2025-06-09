@@ -11,7 +11,7 @@
     <meta property="og:url" content="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>">
     <meta property="og:title" content="<?= $og_title ?? ($page_title ? $page_title . ' - 탑마케팅' : '탑마케팅 - 마케팅 전문가들의 지식 공유 플랫폼') ?>">
     <meta property="og:description" content="<?= $og_description ?? ($page_description ?? '마케팅 전문가들이 모여 지식을 공유하고 함께 성장하는 플랫폼입니다. 세미나, 워크샵, 커뮤니티를 통해 최신 마케팅 트렌드를 만나보세요.') ?>">
-    <meta property="og:image" content="<?= $og_image ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-logo-og.svg' ?>">
+    <meta property="og:image" content="<?= $og_image ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-og-image.png?v=' . date('Ymd') ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="탑마케팅">
@@ -22,7 +22,7 @@
     <meta property="twitter:url" content="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>">
     <meta property="twitter:title" content="<?= $og_title ?? ($page_title ? $page_title . ' - 탑마케팅' : '탑마케팅 - 마케팅 전문가들의 지식 공유 플랫폼') ?>">
     <meta property="twitter:description" content="<?= $og_description ?? ($page_description ?? '마케팅 전문가들이 모여 지식을 공유하고 함께 성장하는 플랫폼입니다. 세미나, 워크샵, 커뮤니티를 통해 최신 마케팅 트렌드를 만나보세요.') ?>">
-    <meta property="twitter:image" content="<?= $og_image ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-logo-og.svg' ?>">
+    <meta property="twitter:image" content="<?= $og_image ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-og-image.png?v=' . date('Ymd') ?>">
     
     <!-- 추가 메타 태그 -->
     <meta name="keywords" content="<?= $keywords ?? '마케팅, 네트워크 마케팅, 세미나, 워크샵, 커뮤니티, 마케팅 교육, 온라인 강의' ?>">

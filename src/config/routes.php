@@ -78,12 +78,14 @@ class Router {
             
             // 행사 일정 라우트
             'GET:/events' => ['EventController', 'index'],
-            'GET:/events/{id}' => ['EventController', 'show'],
-            'GET:/events/write' => ['EventController', 'showWrite'],
-            'POST:/events' => ['EventController', 'create'],
-            'GET:/events/{id}/edit' => ['EventController', 'showEdit'],
-            'PUT:/events/{id}' => ['EventController', 'update'],
-            'DELETE:/events/{id}' => ['EventController', 'delete'],
+            'GET:/events/detail' => ['EventController', 'detail'],
+            'GET:/events/create' => ['EventController', 'create'],
+            'POST:/events/store' => ['EventController', 'store'],
+            'GET:/events/{id}/edit' => ['EventController', 'edit'],
+            'POST:/events/{id}/update' => ['EventController', 'update'],
+            'POST:/events/{id}/delete' => ['EventController', 'delete'],
+            'POST:/events/{id}/register' => ['EventController', 'register'],
+            'GET:/events/{id}/ical' => ['EventController', 'generateICal'],
         ];
     }
     

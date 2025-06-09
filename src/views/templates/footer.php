@@ -50,7 +50,7 @@
                         <p>&copy; <?= date('Y') ?> <?= APP_NAME ?? '탑마케팅' ?>. All rights reserved.</p>
                         <p class="company-info">
                             상호명: (주)윈카드 | 대표자: 이정현 | 사업자등록번호: 133-88-02437 | 
-                            주소: 서울시 금천구 가산디지털1로 204, 반도 아이비밸리 6층
+                            전화번호: <a href="tel:070-4138-8899">070-4138-8899</a> | 이메일: <a href="mailto:jh@wincard.kr">jh@wincard.kr</a> | 주소: 서울시 금천구 가산디지털1로 204, 반도 아이비밸리 6층
                         </p>
                     </div>
 

@@ -43,20 +43,6 @@ require_once SRC_PATH . '/views/templates/header.php';
                     <span>둘러보기</span>
                 </a>
             </div>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">10,204+</span>
-                    <span class="stat-label">활성 멤버</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">1,203+</span>
-                    <span class="stat-label">콘텐츠</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">171+</span>
-                    <span class="stat-label">행사/강의</span>
-                </div>
-            </div>
         </div>
     </div>
 </section>

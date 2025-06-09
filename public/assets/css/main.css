@@ -509,7 +509,6 @@ ul, ol {
     color: #fff;
     padding: 80px 0;
     text-align: center;
-    margin-bottom: 60px;
 }
 
 .hero-content {
@@ -1695,6 +1694,10 @@ body {
     transform: translateX(2px);
 }
 
+.btn i {
+    margin-right: 8px;
+}
+
 .btn-primary-gradient {
     background: var(--primary-gradient);
     color: white;
@@ -1735,7 +1738,7 @@ body {
 
 /* 히어로 섹션 */
 .hero-section.modern-hero {
-    min-height: 100vh;
+    min-height: 70vh;
     background: var(--primary-gradient);
     position: relative;
     display: flex;
@@ -1876,7 +1879,7 @@ body {
     gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .hero-stats {
@@ -2876,6 +2879,10 @@ body {
     transform: translateX(2px);
 }
 
+.btn i {
+    margin-right: 8px;
+}
+
 .btn-primary-gradient {
     background: var(--primary-gradient);
     color: white;
@@ -2916,7 +2923,7 @@ body {
 
 /* 히어로 섹션 */
 .hero-section.modern-hero {
-    min-height: 100vh;
+    min-height: 70vh;
     background: var(--primary-gradient);
     position: relative;
     display: flex;
@@ -3057,7 +3064,7 @@ body {
     gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .hero-stats {
