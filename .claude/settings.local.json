@@ -30,7 +30,11 @@
       "Bash(chown:*)",
       "Bash(docker exec:*)",
       "WebFetch(domain:api.ncloud-docs.com)",
-      "WebFetch(domain:navermaps.github.io)"
+      "WebFetch(domain:navermaps.github.io)",
+      "WebFetch(domain:www.topmktx.com)",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }
