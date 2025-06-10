@@ -139,6 +139,15 @@ class AuthMiddleware {
     }
     
     /**
+     * 현재 사용자 프로필 이미지 경로 반환
+     * 
+     * @return string|null 프로필 이미지 경로 또는 null
+     */
+    public static function getCurrentUserProfileImage() {
+        return $_SESSION['profile_image'] ?? null;
+    }
+    
+    /**
      * 관리자 권한 확인
      * 
      * @return bool 관리자 여부

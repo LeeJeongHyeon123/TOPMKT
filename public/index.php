@@ -45,7 +45,7 @@ try {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['nickname'];
             $_SESSION['phone'] = $user['phone'];
-            $_SESSION['user_role'] = $user['role'];
+            $_SESSION['user_role'] = $user['role'] ?? 'GENERAL';
             $_SESSION['last_activity'] = time();
             
             // 세션 ID 재생성

@@ -2,129 +2,190 @@
 /**
  * 댓글 관련 컨트롤러
  */
-namespace App\Controllers;
+
+require_once SRC_PATH . '/models/Comment.php';
+require_once SRC_PATH . '/helpers/ResponseHelper.php';
+require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
 
 class CommentController {
+    private $commentModel;
+    
+    public function __construct() {
+        $this->commentModel = new Comment();
+    }
+    
     /**
      * 댓글 작성 처리
      */
-    public function create() {
-        // 로그인 확인
-        if (!isset($_SESSION['user_id'])) {
-            header('HTTP/1.1 401 Unauthorized');
-            return;
-        }
-        
-        // URL에서 게시글 ID 추출
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        preg_match('/\/posts\/(\d+)\/comments/', $uri, $matches);
-        $post_id = $matches[1] ?? null;
-        
-        if (!$post_id) {
-            header('HTTP/1.1 404 Not Found');
-            return;
-        }
-        
-        // POST 요청 확인
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('HTTP/1.1 405 Method Not Allowed');
-            return;
-        }
-        
-        // 입력 데이터 검증
-        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_STRING);
-        
-        if (empty($content)) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(['error' => '댓글 내용을 입력해주세요.']);
-            return;
-        }
-        
-        // 댓글 저장 (실제 구현에서는 DB에 저장)
-        // ...
-        
-        // 응답 처리
-        if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'message' => '댓글이 작성되었습니다.',
-                'comment_id' => 3 // 실제 구현에서는 DB에서 생성된 ID 반환
+    public function store() {
+        try {
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                ResponseHelper::json(['success' => false, 'message' => '로그인이 필요합니다.'], 401);
+                return;
+            }
+            
+            // JSON 입력 데이터 읽기
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (!$input) {
+                ResponseHelper::json(['success' => false, 'message' => '잘못된 요청 형식입니다.'], 400);
+                return;
+            }
+            
+            // 입력 데이터 검증
+            $postId = intval($input['post_id'] ?? 0);
+            $parentId = isset($input['parent_id']) ? intval($input['parent_id']) : null;
+            $content = trim($input['content'] ?? '');
+            
+            // 내용 정규화 - 불필요한 줄바꿈 제거
+            $content = preg_replace('/\r\n|\r/', "\n", $content); // 윈도우/맥 줄바꿈을 유닉스 스타일로
+            $content = preg_replace('/\n+/', "\n", $content); // 연속된 줄바꿈을 하나로
+            $content = trim($content); // 앞뒤 공백 제거
+            
+            if (!$postId || empty($content)) {
+                ResponseHelper::json(['success' => false, 'message' => '필수 입력값이 누락되었습니다.'], 400);
+                return;
+            }
+            
+            // 댓글 저장
+            $commentId = $this->commentModel->create([
+                'post_id' => $postId,
+                'user_id' => AuthMiddleware::getCurrentUserId(),
+                'parent_id' => $parentId,
+                'content' => $content
             ]);
-        } else {
-            header('Location: /posts/' . $post_id);
+            
+            if ($commentId) {
+                ResponseHelper::json([
+                    'success' => true,
+                    'message' => '댓글이 작성되었습니다.',
+                    'comment_id' => $commentId
+                ]);
+            } else {
+                ResponseHelper::json(['success' => false, 'message' => '댓글 작성에 실패했습니다.'], 500);
+            }
+            
+        } catch (Exception $e) {
+            error_log("댓글 작성 중 오류: " . $e->getMessage());
+            ResponseHelper::json(['success' => false, 'message' => '댓글 작성 중 오류가 발생했습니다.'], 500);
         }
     }
     
     /**
      * 댓글 수정 처리
      */
-    public function update() {
-        // 로그인 확인
-        if (!isset($_SESSION['user_id'])) {
-            header('HTTP/1.1 401 Unauthorized');
-            return;
+    public function update($commentId) {
+        try {
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                ResponseHelper::json(['success' => false, 'message' => '로그인이 필요합니다.'], 401);
+                return;
+            }
+            
+            // JSON 입력 데이터 읽기
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (!$input) {
+                ResponseHelper::json(['success' => false, 'message' => '잘못된 요청 형식입니다.'], 400);
+                return;
+            }
+            
+            $content = trim($input['content'] ?? '');
+            
+            // 내용 정규화 - 불필요한 줄바꿈 제거
+            $content = preg_replace('/\r\n|\r/', "\n", $content); // 윈도우/맥 줄바꿈을 유닉스 스타일로
+            $content = preg_replace('/\n+/', "\n", $content); // 연속된 줄바꿈을 하나로
+            $content = trim($content); // 앞뒤 공백 제거
+            
+            if (empty($content)) {
+                ResponseHelper::json(['success' => false, 'message' => '댓글 내용을 입력해주세요.'], 400);
+                return;
+            }
+            
+            // 댓글 작성자 확인
+            if (!$this->commentModel->isOwner($commentId, AuthMiddleware::getCurrentUserId())) {
+                ResponseHelper::json(['success' => false, 'message' => '수정 권한이 없습니다.'], 403);
+                return;
+            }
+            
+            // 댓글 수정
+            $success = $this->commentModel->update($commentId, [
+                'content' => $content
+            ]);
+            
+            if ($success) {
+                ResponseHelper::json([
+                    'success' => true,
+                    'message' => '댓글이 수정되었습니다.'
+                ]);
+            } else {
+                ResponseHelper::json(['success' => false, 'message' => '댓글 수정에 실패했습니다.'], 500);
+            }
+            
+        } catch (Exception $e) {
+            error_log("댓글 수정 중 오류: " . $e->getMessage());
+            ResponseHelper::json(['success' => false, 'message' => '댓글 수정 중 오류가 발생했습니다.'], 500);
         }
-        
-        // URL에서 댓글 ID 추출
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        preg_match('/\/comments\/(\d+)/', $uri, $matches);
-        $comment_id = $matches[1] ?? null;
-        
-        if (!$comment_id) {
-            header('HTTP/1.1 404 Not Found');
-            return;
-        }
-        
-        // 댓글 작성자 확인 (실제 구현에서는 DB에서 확인)
-        // 임시로 항상 본인 댓글로 가정
-        
-        // PUT 요청 데이터 파싱
-        parse_str(file_get_contents("php://input"), $putData);
-        
-        // 입력 데이터 검증
-        $content = filter_var($putData['content'] ?? '', FILTER_SANITIZE_STRING);
-        
-        if (empty($content)) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(['error' => '댓글 내용을 입력해주세요.']);
-            return;
-        }
-        
-        // 댓글 업데이트 (실제 구현에서는 DB 업데이트)
-        // ...
-        
-        // 응답 처리
-        header('Content-Type: application/json');
-        echo json_encode(['message' => '댓글이 수정되었습니다.']);
     }
     
     /**
      * 댓글 삭제 처리
      */
-    public function delete() {
-        // 로그인 확인
-        if (!isset($_SESSION['user_id'])) {
-            header('HTTP/1.1 401 Unauthorized');
-            return;
+    public function delete($commentId) {
+        try {
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                ResponseHelper::json(['success' => false, 'message' => '로그인이 필요합니다.'], 401);
+                return;
+            }
+            
+            // 댓글 작성자 확인
+            if (!$this->commentModel->isOwner($commentId, AuthMiddleware::getCurrentUserId())) {
+                ResponseHelper::json(['success' => false, 'message' => '삭제 권한이 없습니다.'], 403);
+                return;
+            }
+            
+            // 댓글 삭제 (soft delete)
+            $success = $this->commentModel->delete($commentId);
+            
+            if ($success) {
+                ResponseHelper::json([
+                    'success' => true,
+                    'message' => '댓글이 삭제되었습니다.'
+                ]);
+            } else {
+                ResponseHelper::json(['success' => false, 'message' => '댓글 삭제에 실패했습니다.'], 500);
+            }
+            
+        } catch (Exception $e) {
+            error_log("댓글 삭제 중 오류: " . $e->getMessage());
+            ResponseHelper::json(['success' => false, 'message' => '댓글 삭제 중 오류가 발생했습니다.'], 500);
         }
-        
-        // URL에서 댓글 ID 추출
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        preg_match('/\/comments\/(\d+)/', $uri, $matches);
-        $comment_id = $matches[1] ?? null;
-        
-        if (!$comment_id) {
-            header('HTTP/1.1 404 Not Found');
-            return;
-        }
-        
-        // 댓글 작성자 확인 (실제 구현에서는 DB에서 확인)
-        // 임시로 항상 본인 댓글로 가정
-        
-        // 댓글 삭제 (실제 구현에서는 DB에서 삭제)
-        // ...
-        
-        // 응답 처리
-        header('HTTP/1.1 204 No Content');
     }
-} 
+    
+    /**
+     * 댓글 목록 조회
+     */
+    public function list() {
+        try {
+            // 쿼리 파라미터에서 post_id 가져오기
+            $postId = intval($_GET['post_id'] ?? 0);
+            
+            if (!$postId) {
+                ResponseHelper::json(['success' => false, 'message' => 'post_id가 필요합니다.'], 400);
+                return;
+            }
+            
+            $comments = $this->commentModel->getByPostId($postId);
+            
+            ResponseHelper::json([
+                'success' => true,
+                'comments' => $comments,
+                'count' => count($comments)
+            ]);
+            
+        } catch (Exception $e) {
+            error_log("댓글 목록 조회 중 오류: " . $e->getMessage());
+            ResponseHelper::json(['success' => false, 'message' => '댓글 목록 조회 중 오류가 발생했습니다.'], 500);
+        }
+    }
+}

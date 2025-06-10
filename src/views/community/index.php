@@ -143,10 +143,40 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     border-bottom: 1px solid #e2e8f0;
     transition: background-color 0.2s ease;
     cursor: pointer;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
 }
 
 .post-item:hover {
     background-color: #f8fafc;
+}
+
+.post-author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.post-author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.post-content-wrapper {
+    flex: 1;
+    min-width: 0;
 }
 
 .post-item:last-child {
@@ -380,32 +410,60 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
         <div class="post-list">
             <?php foreach ($posts as $post): ?>
                 <div class="post-item" onclick="location.href='/community/posts/<?= $post['id'] ?>'">
-                    <div class="post-title">
-                        <?= htmlspecialchars($post['title']) ?>
-                        <?php if ($post['comment_count'] > 0): ?>
-                            <span style="color: #e53e3e; font-size: 0.9rem;">[<?= $post['comment_count'] ?>]</span>
+                    <!-- 작성자 프로필 이미지 -->
+                    <div class="post-author-avatar">
+                        <?php 
+                        $profileImage = $post['profile_image'] ?? null;
+                        $authorName = $post['author_name'] ?? $post['nickname'] ?? '익명';
+                        
+                        if ($profileImage): ?>
+                            <img src="<?= htmlspecialchars($profileImage) ?>" alt="<?= htmlspecialchars($authorName) ?>" 
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 1.1rem;">
+                                <?= mb_substr($authorName, 0, 1) ?>
+                            </div>
+                        <?php else: ?>
+                            <?= mb_substr($authorName, 0, 1) ?>
                         <?php endif; ?>
                     </div>
                     
-                    <div class="post-meta">
-                        <span class="post-author">👤 <?= htmlspecialchars($post['author_name'] ?? $post['nickname'] ?? '익명') ?></span>
-                        <span class="post-date">📅 <?= date('Y-m-d H:i', strtotime($post['created_at'])) ?></span>
-                    </div>
-                    
-                    <div class="post-content-preview">
-                        <?= htmlspecialchars(HtmlSanitizerHelper::htmlToPlainText($post['content'], 150)) ?>
-                    </div>
-                    
-                    <div class="post-stats">
-                        <span class="stat-item">
-                            👁️ <?= number_format($post['view_count'] ?? 0) ?>
-                        </span>
-                        <span class="stat-item">
-                            💬 <?= number_format($post['comment_count'] ?? 0) ?>
-                        </span>
-                        <span class="stat-item">
-                            ❤️ <?= number_format($post['like_count'] ?? 0) ?>
-                        </span>
+                    <!-- 게시글 내용 -->
+                    <div class="post-content-wrapper">
+                        <div class="post-title">
+                            <?= htmlspecialchars($post['title']) ?>
+                            <?php if (($post['comment_count'] ?? 0) > 0): ?>
+                                <span style="color: #e53e3e; font-size: 0.9rem;">[<?= $post['comment_count'] ?>]</span>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span class="post-author">👤 <?= htmlspecialchars($authorName) ?></span>
+                            <span class="post-date">📅 <?= date('Y-m-d H:i', strtotime($post['created_at'])) ?></span>
+                        </div>
+                        
+                        <div class="post-content-preview">
+                            <?php
+                            // 성능 최적화: 이미 DB에서 잘린 content_preview 사용
+                            $content = $post['content_preview'] ?? $post['content'] ?? '';
+                            $preview = htmlspecialchars(mb_substr(strip_tags($content), 0, 150));
+                            if (mb_strlen($content) > 150) {
+                                $preview .= '...';
+                            }
+                            echo $preview;
+                            ?>
+                        </div>
+                        
+                        <div class="post-stats">
+                            <span class="stat-item">
+                                👁️ <?= number_format($post['view_count'] ?? 0) ?>
+                            </span>
+                            <span class="stat-item">
+                                💬 <?= number_format($post['comment_count'] ?? 0) ?>
+                            </span>
+                            <span class="stat-item">
+                                ❤️ <?= number_format($post['like_count'] ?? 0) ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -448,8 +506,10 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <?php if ($endPage < $totalPages - 1): ?>
                         <span class="page-link disabled">...</span>
                     <?php endif; ?>
-                    <a href="?page=<?= $totalPages ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
-                       class="page-link"><?= $totalPages ?></a>
+                    <?php if ($totalPages > 0): ?>
+                        <a href="?page=<?= $totalPages ?><?= !empty($search) ? '&search=' . urlencode($search) : '' ?>" 
+                           class="page-link"><?= number_format($totalPages) ?></a>
+                    <?php endif; ?>
                 <?php endif; ?>
                 
                 <!-- 다음 페이지 -->
@@ -494,12 +554,18 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 </div>
 
 <script>
-// 게시글 클릭 이벤트 (이미 onclick으로 처리되어 있지만 추가 기능용)
+// 성능 모니터링 및 사용자 경험 개선
 document.addEventListener('DOMContentLoaded', function() {
+    const loadStartTime = performance.now();
+    
     console.log('📋 커뮤니티 게시판 로드 완료');
     console.log('📊 게시글 수:', <?= count($posts ?? []) ?>);
     console.log('📄 현재 페이지:', <?= isset($currentPage) ? $currentPage : 1 ?>);
     console.log('📄 총 페이지:', <?= isset($totalPages) ? $totalPages : 1 ?>);
+    
+    const loadEndTime = performance.now();
+    const loadTime = Math.round(loadEndTime - loadStartTime);
+    console.log(`⚡ 페이지 렌더링 완료: ${loadTime}ms`);
     
     // 검색 폼 엔터키 처리
     const searchInput = document.querySelector('.search-input');
@@ -561,6 +627,15 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             // 사용자에게는 오류를 표시하지 않고 조용히 처리
+            event.preventDefault();
+        }
+    });
+    
+    // 브라우저 확장 프로그램 비동기 오류 무시
+    window.addEventListener('unhandledrejection', function(event) {
+        if (event.reason && event.reason.message && 
+            event.reason.message.includes('message channel closed')) {
+            // 브라우저 확장 프로그램 오류는 조용히 무시
             event.preventDefault();
         }
     });

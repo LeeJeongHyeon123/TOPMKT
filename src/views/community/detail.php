@@ -75,8 +75,17 @@ if (!isset($post) || !$post) {
     align-items: center;
     gap: 20px;
     font-size: 0.9rem;
-    opacity: 0.9;
+    opacity: 1 !important;
     flex-wrap: wrap;
+    color: #ffffff !important;
+}
+
+.post-meta .meta-item {
+    color: #ffffff !important;
+}
+
+.post-meta .meta-item strong {
+    color: #ffffff !important;
 }
 
 .meta-item {
@@ -125,63 +134,93 @@ if (!isset($post) || !$post) {
 }
 
 .btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 8px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
+    gap: 8px;
+    transition: all 0.2s ease;
+    background: #ffffff;
+    color: #374151;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
-    background: #4299e1;
-    color: white;
+    border-color: #e5e7eb;
 }
 
 .btn-primary:hover {
-    background: #3182ce;
-    transform: translateY(-1px);
+    background: #f8fafc;
+    border-color: #d1d5db;
+}
+
+.btn-primary.liked {
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    color: white;
+    border-color: transparent;
+}
+
+.btn-primary.liked:hover {
+    background: linear-gradient(135deg, #ff5252, #f44336);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
 }
 
 .btn-success {
-    background: #48bb78;
-    color: white;
+    border-color: #e5e7eb;
 }
 
 .btn-success:hover {
-    background: #38a169;
+    background: #f0fdf4;
+    border-color: #d1d5db;
+    color: #16a34a;
 }
 
 .btn-warning {
-    background: #ed8936;
-    color: white;
+    border-color: #e5e7eb;
 }
 
 .btn-warning:hover {
-    background: #dd6b20;
+    background: #fffbeb;
+    border-color: #d1d5db;
+    color: #d97706;
 }
 
 .btn-danger {
-    background: #e53e3e;
-    color: white;
+    border-color: #e5e7eb;
 }
 
 .btn-danger:hover {
-    background: #c53030;
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #dc2626;
 }
 
 .btn-secondary {
-    background: #718096;
-    color: white;
+    border-color: #e5e7eb;
 }
 
 .btn-secondary:hover {
-    background: #4a5568;
+    background: #f8fafc;
+    border-color: #d1d5db;
+    color: #4b5563;
 }
 
 .author-info {
@@ -224,34 +263,52 @@ if (!isset($post) || !$post) {
 .comments-section {
     background: white;
     border-radius: 12px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
+    margin-top: 30px;
 }
 
-.comments-header {
+.comments-section h3 {
     padding: 20px 30px;
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
     font-weight: 600;
     color: #2d3748;
+    margin: 0;
+}
+
+.comment-form {
+    padding: 20px 30px;
 }
 
 .comments-list {
     padding: 20px 30px;
 }
 
-.comment-placeholder {
-    text-align: center;
-    padding: 40px 20px;
-    color: #718096;
+.comment-item {
+    margin-bottom: 15px;
 }
 
-.comment-placeholder i {
-    font-size: 2rem;
-    margin-bottom: 15px;
-    color: #cbd5e0;
+.comment-content {
+    white-space: pre-wrap;
+    word-break: break-word;
 }
+
+.comment-edit-form textarea {
+    font-family: inherit;
+}
+
+.reply-form {
+    transition: all 0.3s ease;
+}
+
+/* 댓글 들여쓰기 스타일 */
+.ml-12 { margin-left: 3rem; }
+.ml-24 { margin-left: 6rem; }
+.ml-36 { margin-left: 9rem; }
+.ml-48 { margin-left: 12rem; }
+.ml-60 { margin-left: 15rem; }
 
 .back-to-list {
     position: fixed;
@@ -388,11 +445,6 @@ if (!isset($post) || !$post) {
                 <div class="meta-item">
                     📅 <?= date('Y년 m월 d일 H:i', strtotime($post['created_at'])) ?>
                 </div>
-                <?php if (isset($post['updated_at']) && $post['updated_at'] !== $post['created_at']): ?>
-                    <div class="meta-item">
-                        ✏️ <?= date('Y-m-d H:i', strtotime($post['updated_at'])) ?> 수정됨
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
         
@@ -432,8 +484,8 @@ if (!isset($post) || !$post) {
             <!-- 액션 버튼들 -->
             <div class="post-actions">
                 <?php if ($isLoggedIn): ?>
-                    <button class="btn btn-primary" id="likeBtn">
-                        ❤️ 좋아요
+                    <button class="btn btn-primary <?= $isLiked ? 'liked' : '' ?>" id="likeBtn">
+                        <?= $isLiked ? '❤️' : '🤍' ?> 좋아요 <?= $post['like_count'] ?>
                     </button>
                     <button class="btn btn-success" id="shareBtn">
                         📤 공유
@@ -458,10 +510,24 @@ if (!isset($post) || !$post) {
         <!-- 작성자 정보 -->
         <div class="author-info">
             <div class="author-avatar">
-                <?= mb_substr($post['author_name'] ?? $post['nickname'] ?? '익명', 0, 1) ?>
+                <?php 
+                $profileImage = $post['profile_image'] ?? null;
+                $defaultImage = '/assets/images/default-avatar.png';
+                $authorName = $post['author_name'] ?? $post['nickname'] ?? '익명';
+                
+                if ($profileImage): ?>
+                    <img src="<?= htmlspecialchars($profileImage) ?>" alt="<?= htmlspecialchars($authorName) ?>" 
+                         style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.2rem;">
+                        <?= mb_substr($authorName, 0, 1) ?>
+                    </div>
+                <?php else: ?>
+                    <?= mb_substr($authorName, 0, 1) ?>
+                <?php endif; ?>
             </div>
             <div class="author-details">
-                <div class="author-name"><?= htmlspecialchars($post['author_name'] ?? $post['nickname'] ?? '익명') ?></div>
+                <div class="author-name"><?= htmlspecialchars($authorName) ?></div>
                 <div class="author-role">
                     <?php
                     $role = $post['role'] ?? 'GENERAL';
@@ -485,17 +551,29 @@ if (!isset($post) || !$post) {
         </div>
     </div>
     
-    <!-- 댓글 섹션 (향후 구현) -->
-    <div class="comments-section">
-        <div class="comments-header">
-            💬 댓글 <?= number_format($post['comment_count'] ?? 0) ?>개
-        </div>
-        <div class="comments-list">
-            <div class="comment-placeholder">
-                <div>💭</div>
-                <p>댓글 기능은 곧 추가될 예정입니다.</p>
-            </div>
-        </div>
+    <!-- 댓글 섹션 -->
+    <div class="comments-section" id="comments-section">
+        <?php 
+        // 댓글 모델 로드
+        require_once SRC_PATH . '/models/Comment.php';
+        $commentModel = new Comment();
+        
+        // 페이지네이션 설정
+        $commentsPerPage = 20;
+        $currentPage = isset($_GET['comment_page']) ? max(1, intval($_GET['comment_page'])) : 1;
+        
+        // 댓글 총 개수 조회
+        $totalComments = $commentModel->getCountByPostId($post['id']);
+        $totalPages = ceil($totalComments / $commentsPerPage);
+        
+        // 현재 페이지 댓글 조회
+        $comments = $commentModel->getByPostId($post['id'], $currentPage, $commentsPerPage);
+        
+        // 댓글 뷰 포함
+        $postId = $post['id'];
+        $currentUserId = $_SESSION['user_id'] ?? null;
+        include SRC_PATH . '/views/comment/list.php';
+        ?>
     </div>
 </div>
 
@@ -503,6 +581,16 @@ if (!isset($post) || !$post) {
 <button class="back-to-list" onclick="location.href='/community'" title="목록으로 돌아가기">
     📋
 </button>
+
+<!-- 댓글 시스템은 comment/list.php에서 내장 JavaScript 사용 -->
+
+<!-- 현재 사용자 정보 (댓글 시스템용) -->
+<?php if ($isLoggedIn): ?>
+<div data-user-id="<?= $currentUserId ?>" style="display: none;"></div>
+<?php endif; ?>
+
+<!-- 게시글 정보 (댓글 시스템용) -->
+<div data-post-id="<?= $post['id'] ?>" style="display: none;"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -519,8 +607,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const likeBtn = document.getElementById('likeBtn');
     if (likeBtn && isLoggedIn) {
         likeBtn.addEventListener('click', function() {
-            // 향후 좋아요 기능 구현
-            alert('좋아요 기능은 곧 추가될 예정입니다! 💝');
+            // 로딩 상태 표시
+            const originalText = this.innerHTML;
+            this.disabled = true;
+            this.innerHTML = '🔄 처리 중...';
+            
+            // CSRF 토큰 가져오기
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            
+            fetch(`/api/posts/${postId}/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 좋아요 상태에 따라 버튼 텍스트 변경
+                    if (data.action === 'liked') {
+                        this.innerHTML = '❤️ 좋아요 ' + data.like_count;
+                        this.classList.add('liked');
+                    } else {
+                        this.innerHTML = '🤍 좋아요 ' + data.like_count;
+                        this.classList.remove('liked');
+                    }
+                    
+                    // 통계 업데이트
+                    const likeStat = document.querySelector('.stat-item:has(❤️)');
+                    if (likeStat) {
+                        likeStat.innerHTML = '❤️ 좋아요 ' + data.like_count;
+                    }
+                } else {
+                    alert(data.message || '좋아요 처리 중 오류가 발생했습니다.');
+                    this.innerHTML = originalText;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+                this.innerHTML = originalText;
+            })
+            .finally(() => {
+                this.disabled = false;
+            });
         });
     }
     

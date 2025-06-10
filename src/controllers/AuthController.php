@@ -102,7 +102,7 @@ class AuthController {
                     'id' => $user['id'],
                     'phone' => $user['phone'],
                     'nickname' => $user['nickname'],
-                    'role' => $user['role']
+                    'role' => $user['role'] ?? 'GENERAL'
                 ]
             ]);
             
@@ -700,45 +700,72 @@ class AuthController {
      * 로그아웃 처리
      */
     public function logout() {
-        // 사용자 세션 로그 기록
-        if (isset($_SESSION['user_id'])) {
-            try {
-                $this->userModel->logUserActivity($_SESSION['user_id'], 'LOGOUT', '로그아웃');
-                
-                // 데이터베이스 세션 정리
-                $this->userModel->destroyUserSessions($_SESSION['user_id']);
-            } catch (Exception $e) {
-                error_log('Logout session cleanup failed: ' . $e->getMessage());
+        try {
+            // 사용자 정보 로깅 (선택적)
+            if (isset($_SESSION['user_id'])) {
+                error_log('User ' . $_SESSION['user_id'] . ' logged out');
             }
+            
+            // Remember Me 쿠키 삭제
+            if (isset($_COOKIE['remember_token'])) {
+                setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+            }
+            
+            // 세션 변수 초기화
+            $_SESSION = [];
+            
+            // 세션 쿠키 삭제
+            if (ini_get('session.use_cookies')) {
+                $params = session_get_cookie_params();
+                setcookie(
+                    session_name(),
+                    '',
+                    time() - 42000,
+                    $params['path'],
+                    $params['domain'],
+                    $params['secure'],
+                    $params['httponly']
+                );
+            }
+            
+            // 세션 삭제
+            session_destroy();
+            
+            // 성공 메시지를 위한 새 세션 시작
+            session_start();
+            $_SESSION['success'] = '로그아웃이 완료되었습니다.';
+            
+            // 메인 페이지로 리다이렉트
+            header('Location: /');
+            exit;
+            
+        } catch (Exception $e) {
+            // 에러 발생 시 디버깅 정보 표시
+            echo "<h1>로그아웃 에러 발생</h1>";
+            echo "<div style='background: #ffebee; padding: 20px; margin: 20px; border: 1px solid #f44336;'>";
+            echo "<h2>에러 메시지:</h2>";
+            echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<h2>에러 위치:</h2>";
+            echo "<p>" . htmlspecialchars($e->getFile()) . " : " . $e->getLine() . "</p>";
+            echo "<h2>스택 트레이스:</h2>";
+            echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+            echo "</div>";
+            echo "<a href='/' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none;'>메인으로 돌아가기</a>";
+            exit;
+        } catch (Error $e) {
+            // Fatal Error 발생 시 디버깅 정보 표시
+            echo "<h1>로그아웃 Fatal Error 발생</h1>";
+            echo "<div style='background: #ffebee; padding: 20px; margin: 20px; border: 1px solid #f44336;'>";
+            echo "<h2>에러 메시지:</h2>";
+            echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
+            echo "<h2>에러 위치:</h2>";
+            echo "<p>" . htmlspecialchars($e->getFile()) . " : " . $e->getLine() . "</p>";
+            echo "<h2>스택 트레이스:</h2>";
+            echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+            echo "</div>";
+            echo "<a href='/' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none;'>메인으로 돌아가기</a>";
+            exit;
         }
-        
-        // 세션 변수 초기화
-        $_SESSION = [];
-        
-        // 세션 쿠키 삭제
-        if (ini_get('session.use_cookies')) {
-            $params = session_get_cookie_params();
-            setcookie(
-                session_name(),
-                '',
-                time() - 42000,
-                $params['path'],
-                $params['domain'],
-                $params['secure'],
-                $params['httponly']
-            );
-        }
-        
-        // 세션 삭제
-        session_destroy();
-        
-        // 성공 메시지를 위한 새 세션 시작
-        session_start();
-        $_SESSION['success'] = '로그아웃이 완료되었습니다.';
-        
-        // 메인 페이지로 리다이렉트
-        header('Location: /');
-        exit;
     }
     
     /**
@@ -891,7 +918,8 @@ class AuthController {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['nickname'];
         $_SESSION['phone'] = $user['phone'];
-        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['user_role'] = $user['role'] ?? 'GENERAL';
+        $_SESSION['profile_image'] = $user['profile_image'] ?? null;
         
         // 로그인 상태 유지 설정
         if ($remember) {

@@ -58,9 +58,14 @@ class Router {
             'DELETE:/posts/{id}' => ['PostController', 'delete'],
             
             // 댓글 라우트
-            'POST:/posts/{id}/comments' => ['CommentController', 'create'],
-            'PUT:/comments/{id}' => ['CommentController', 'update'],
-            'DELETE:/comments/{id}' => ['CommentController', 'delete'],
+            'POST:/api/comments' => ['CommentController', 'store'],
+            'PUT:/api/comments/{id}' => ['CommentController', 'update'],
+            'DELETE:/api/comments/{id}' => ['CommentController', 'delete'],
+            'GET:/api/comments' => ['CommentController', 'list'],
+            
+            // 좋아요 라우트
+            'POST:/api/posts/{id}/like' => ['LikeController', 'togglePostLike'],
+            'GET:/api/posts/{id}/like' => ['LikeController', 'getPostLikeStatus'],
             
             // 미디어 업로드 라우트
             'POST:/api/media/upload-image' => ['MediaController', 'uploadImage'],

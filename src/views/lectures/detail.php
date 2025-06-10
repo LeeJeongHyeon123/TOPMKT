@@ -1760,4 +1760,4 @@ function openInstructorImageModal(imageSrc, imageAlt) {
 }
 </script>
 
-<?php include SRC_PATH . '/views/layouts/footer.php'; ?>
+<?php include SRC_PATH . '/views/templates/footer.php'; ?>

@@ -58,15 +58,39 @@ class CommunityController {
             
             error_log('📄 요청 파라미터: page=' . $page . ', search=' . ($search ?? 'null'));
             
-            // 게시글 목록 조회
-            error_log('📊 게시글 목록 조회 시작');
-            $posts = $this->postModel->getList($page, $pageSize, $search);
-            error_log('📊 게시글 목록 조회 완료: ' . count($posts) . '개');
-            
+            // 성능 최적화: 총 개수를 먼저 조회해서 페이지 범위 검증
+            $start_time = microtime(true);
             $totalCount = $this->postModel->getTotalCount($search);
-            error_log('📊 총 게시글 수: ' . $totalCount);
-            
             $totalPages = ceil($totalCount / $pageSize);
+            
+            // 페이지 범위 검증 - 존재하지 않는 페이지는 첫 페이지로 리다이렉트
+            if ($page > $totalPages && $totalPages > 0) {
+                error_log("⚠️ 잘못된 페이지 요청: {$page} (최대: {$totalPages})");
+                $redirectUrl = '/community' . ($search ? '?search=' . urlencode($search) : '');
+                header('HTTP/1.1 301 Moved Permanently');
+                header('Location: ' . $redirectUrl);
+                exit;
+            }
+            
+            
+            // 게시글 목록 조회 (성능 모니터링 포함)
+            $list_start = microtime(true);
+            $posts = $this->postModel->getList($page, $pageSize, $search);
+            $list_time = round((microtime(true) - $list_start) * 1000, 2);
+            
+            $query_time = round((microtime(true) - $start_time) * 1000, 2);
+            
+            // 성능 상세 로깅
+            if ($page > 1000) {
+                error_log("🐌 큰 페이지 성능 분석: 페이지 {$page}, 총 시간: {$query_time}ms, 목록 조회: {$list_time}ms");
+            }
+            
+            // 캐시 히트 여부 로깅
+            $listCacheKey = CacheHelper::getPostListCacheKey($page, $pageSize, $search);
+            $countCacheKey = CacheHelper::getPostCountCacheKey($search);
+            $isCached = CacheHelper::has($listCacheKey) && CacheHelper::has($countCacheKey);
+            
+            error_log("📊 데이터 조회 완료: {$query_time}ms, 게시글 {$totalCount}개 중 " . count($posts) . "개 조회" . ($isCached ? ' (캐시 히트)' : ' (DB 쿼리)'));
             
             // 뷰에 전달할 데이터 준비
             $data = [
@@ -81,6 +105,19 @@ class CommunityController {
             ];
             
             error_log('📊 게시글 조회 완료: ' . count($posts) . '개, 페이지: ' . $page . '/' . $totalPages);
+            
+            // 메모리 사용량 모니터링
+            $memoryUsage = round(memory_get_usage(true) / 1024 / 1024, 2);
+            $peakMemory = round(memory_get_peak_usage(true) / 1024 / 1024, 2);
+            error_log("💾 메모리 사용량: {$memoryUsage}MB (최대: {$peakMemory}MB)");
+            
+            // 캐시 효율성 로깅
+            if ($isCached) {
+                error_log('⚡ 캐시 활용으로 빠른 응답 완료');
+            } else {
+                error_log('🔄 데이터베이스 쿼리 실행 (캐시 미스)');
+            }
+            
             error_log('📄 뷰 렌더링 시작');
             
             // 뷰 렌더링
@@ -136,10 +173,25 @@ class CommunityController {
             $currentUserId = AuthMiddleware::getCurrentUserId();
             $isOwner = $currentUserId && $currentUserId == $post['user_id'];
             
+            // 좋아요 정보 조회 (테이블이 없으면 기본값 사용)
+            $isLiked = false;
+            if ($currentUserId) {
+                try {
+                    $likeStmt = $this->db->prepare("SELECT id FROM post_likes WHERE post_id = :post_id AND user_id = :user_id");
+                    $likeStmt->execute(['post_id' => $postId, 'user_id' => $currentUserId]);
+                    $isLiked = (bool)$likeStmt->fetch();
+                } catch (Exception $e) {
+                    // post_likes 테이블이 없는 경우 기본값 사용
+                    error_log('post_likes 테이블 접근 실패: ' . $e->getMessage());
+                    $isLiked = false;
+                }
+            }
+            
             $data = [
                 'post' => $post,
                 'isOwner' => $isOwner,
-                'currentUserId' => $currentUserId
+                'currentUserId' => $currentUserId,
+                'isLiked' => $isLiked
             ];
             
             error_log('📖 게시글 조회 완료: ID=' . $postId . ', 제목=' . $post['title']);
@@ -152,7 +204,7 @@ class CommunityController {
                 'og_type' => 'article',
                 'og_title' => htmlspecialchars($post['title']) . ' - 탑마케팅 커뮤니티',
                 'og_description' => htmlspecialchars(substr(strip_tags($post['content']), 0, 200)),
-                'keywords' => '마케팅 커뮤니티, ' . htmlspecialchars($post['nickname']) . ', 게시글, ' . htmlspecialchars($post['title'])
+                'keywords' => '마케팅 커뮤니티, ' . htmlspecialchars($post['author_name']) . ', 게시글, ' . htmlspecialchars($post['title'])
             ];
 
             // 뷰 렌더링
@@ -510,21 +562,24 @@ class CommunityController {
     /**
      * 뷰 렌더링
      */
-    private function renderView($viewName, $data = []) {
+    private function renderView($viewName, $data = [], $headerData = []) {
         // 뷰 데이터를 변수로 추출
         extract($data);
         
         // 공통 헤더 포함
-        $headerData = [
-            'title' => '커뮤니티 게시판 - 탑마케팅',
-            'description' => '탑마케팅 커뮤니티에서 정보를 공유하고 소통하세요',
+        $defaultHeaderData = [
+            'page_title' => '커뮤니티 게시판',
+            'page_description' => '탑마케팅 커뮤니티에서 정보를 공유하고 소통하세요',
             'pageSection' => 'community'  // currentPage와 겹치지 않도록 변수명 변경
         ];
+        
+        // 전달받은 헤더 데이터와 기본값 병합
+        $headerData = array_merge($defaultHeaderData, $headerData);
         
         extract($headerData);
         
         // 헤더 include
-        include SRC_PATH . '/views/templates/header.php';
+        require_once SRC_PATH . '/views/templates/header.php';
         
         // 메인 뷰 include
         $viewPath = SRC_PATH . '/views/' . $viewName . '.php';
@@ -537,5 +592,74 @@ class CommunityController {
         
         // 푸터 include
         include SRC_PATH . '/views/templates/footer.php';
+    }
+    
+    /**
+     * 캐시 상태 확인 (관리자용)
+     */
+    public function cacheStatus() {
+        // 관리자 권한 확인
+        if (!AuthMiddleware::isAdmin()) {
+            ResponseHelper::jsonError('권한이 없습니다.', 403);
+            return;
+        }
+        
+        $cacheDir = '/tmp/topmkt_cache';
+        $status = [
+            'cache_enabled' => is_dir($cacheDir),
+            'cache_files' => 0,
+            'total_size' => 0,
+            'oldest_cache' => null,
+            'newest_cache' => null
+        ];
+        
+        if (is_dir($cacheDir)) {
+            $files = glob($cacheDir . '/*.cache');
+            $status['cache_files'] = count($files);
+            
+            foreach ($files as $file) {
+                $status['total_size'] += filesize($file);
+                $mtime = filemtime($file);
+                
+                if (!$status['oldest_cache'] || $mtime < $status['oldest_cache']) {
+                    $status['oldest_cache'] = $mtime;
+                }
+                
+                if (!$status['newest_cache'] || $mtime > $status['newest_cache']) {
+                    $status['newest_cache'] = $mtime;
+                }
+            }
+        }
+        
+        $status['total_size_mb'] = round($status['total_size'] / 1024 / 1024, 2);
+        $status['oldest_cache_formatted'] = $status['oldest_cache'] ? date('Y-m-d H:i:s', $status['oldest_cache']) : null;
+        $status['newest_cache_formatted'] = $status['newest_cache'] ? date('Y-m-d H:i:s', $status['newest_cache']) : null;
+        
+        ResponseHelper::json(['success' => true, 'cache_status' => $status]);
+    }
+    
+    /**
+     * 캐시 비우기 (관리자용)
+     */
+    public function clearCache() {
+        // 관리자 권한 확인
+        if (!AuthMiddleware::isAdmin()) {
+            ResponseHelper::jsonError('권한이 없습니다.', 403);
+            return;
+        }
+        
+        try {
+            $result = CacheHelper::clear();
+            
+            if ($result) {
+                error_log('🗑️ 관리자가 캐시를 모두 삭제했습니다');
+                ResponseHelper::jsonSuccess('캐시가 성공적으로 삭제되었습니다.');
+            } else {
+                ResponseHelper::jsonError('캐시 삭제에 실패했습니다.');
+            }
+        } catch (Exception $e) {
+            error_log('❌ 캐시 삭제 오류: ' . $e->getMessage());
+            ResponseHelper::jsonError('캐시 삭제 중 오류가 발생했습니다.');
+        }
     }
 }
