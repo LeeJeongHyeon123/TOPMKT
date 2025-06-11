@@ -144,7 +144,41 @@ class AuthMiddleware {
      * @return string|null 프로필 이미지 경로 또는 null
      */
     public static function getCurrentUserProfileImage() {
-        return $_SESSION['profile_image'] ?? null;
+        // 세션에 저장된 값 우선 사용
+        if (isset($_SESSION['profile_image']) && !empty($_SESSION['profile_image'])) {
+            return $_SESSION['profile_image'];
+        }
+        
+        // 세션에 없으면 데이터베이스에서 조회
+        $currentUserId = self::getCurrentUserId();
+        if (!$currentUserId) {
+            return null;
+        }
+        
+        try {
+            require_once SRC_PATH . '/config/database.php';
+            $db = Database::getInstance();
+            
+            $stmt = $db->prepare("
+                SELECT profile_image_thumb 
+                FROM users 
+                WHERE id = :user_id AND status = 'active'
+            ");
+            $stmt->execute([':user_id' => $currentUserId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            $profileImage = $result ? $result['profile_image_thumb'] : null;
+            
+            // 세션에 저장하여 다음 요청에서 재사용
+            if ($profileImage) {
+                $_SESSION['profile_image'] = $profileImage;
+            }
+            
+            return $profileImage;
+        } catch (Exception $e) {
+            error_log('프로필 이미지 조회 오류: ' . $e->getMessage());
+            return null;
+        }
     }
     
     /**
@@ -167,4 +201,5 @@ class AuthMiddleware {
         $currentUserId = self::getCurrentUserId();
         return ($currentUserId && $currentUserId == $ownerId) || self::isAdmin();
     }
+    
 } 

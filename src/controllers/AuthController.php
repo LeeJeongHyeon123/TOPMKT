@@ -847,14 +847,16 @@ class AuthController {
         $result = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
         
         if ($result === false) {
-            error_log('reCAPTCHA API 호출 실패');
+            error_log('reCAPTCHA API 호출 실패 - URL: https://www.google.com/recaptcha/api/siteverify');
             return false;
         }
+        
+        error_log('reCAPTCHA API 응답: ' . $result);
         
         $resultArray = json_decode($result, true);
         
         if (!$resultArray) {
-            error_log('reCAPTCHA 응답 파싱 실패');
+            error_log('reCAPTCHA 응답 파싱 실패 - Raw response: ' . $result);
             return false;
         }
         
@@ -863,6 +865,8 @@ class AuthController {
         $score = $resultArray['score'] ?? 0;
         $receivedAction = $resultArray['action'] ?? '';
         
+        error_log('reCAPTCHA 검증 결과 - Success: ' . ($isSuccess ? 'true' : 'false') . ', Action: ' . $receivedAction . ', Expected: ' . $action . ', Score: ' . $score);
+        
         // 액션이 일치하고, 성공했으며, 점수가 0.5 이상인 경우 통과
         if ($isSuccess && $receivedAction === $action && $score >= 0.5) {
             return true;
@@ -870,7 +874,7 @@ class AuthController {
         
         // 실패 로그 기록
         $errorCodes = $resultArray['error-codes'] ?? [];
-        error_log('reCAPTCHA 검증 실패 - Action: ' . $action . ', Score: ' . $score . ', Errors: ' . implode(', ', $errorCodes));
+        error_log('reCAPTCHA 검증 실패 - Action: ' . $action . ', Score: ' . $score . ', Errors: ' . implode(', ', $errorCodes) . ', Full response: ' . json_encode($resultArray));
         
         return false;
     }

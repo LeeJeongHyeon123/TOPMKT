@@ -4,6 +4,8 @@
  * 대용량 데이터 성능 최적화를 위한 간단한 파일 기반 캐시
  */
 
+require_once __DIR__ . '/WebLogger.php';
+
 class CacheHelper {
     private static $cacheDir = '/tmp/topmkt_cache';
     private static $defaultTtl = 300; // 5분
@@ -46,9 +48,14 @@ class CacheHelper {
      * 캐시 조회
      */
     public static function get($key) {
+        $cacheStartTime = microtime(true);
+        WebLogger::log("💾 [CACHE] 캐시 조회 시작: " . substr($key, 0, 50) . "...");
+        
         $cacheFile = self::getCacheKey($key);
         
         if (!file_exists($cacheFile)) {
+            $cacheTime = (microtime(true) - $cacheStartTime) * 1000;
+            WebLogger::log("💾 [CACHE] 캐시 미스: " . round($cacheTime, 2) . "ms");
             return null;
         }
         
@@ -56,9 +63,13 @@ class CacheHelper {
         
         if (!$cacheData || $cacheData['expires'] < time()) {
             self::delete($key);
+            $cacheTime = (microtime(true) - $cacheStartTime) * 1000;
+            WebLogger::log("💾 [CACHE] 캐시 만료: " . round($cacheTime, 2) . "ms");
             return null;
         }
         
+        $cacheTime = (microtime(true) - $cacheStartTime) * 1000;
+        WebLogger::log("💾 [CACHE] 캐시 히트: " . round($cacheTime, 2) . "ms");
         return $cacheData['data'];
     }
     
@@ -102,14 +113,27 @@ class CacheHelper {
      * 캐시 또는 콜백 실행
      */
     public static function remember($key, $callback, $ttl = null) {
+        $rememberStartTime = microtime(true);
+        WebLogger::log("🔄 [CACHE] Remember 시작: " . substr($key, 0, 50) . "...");
+        
         $cached = self::get($key);
         
         if ($cached !== null) {
+            $rememberTime = (microtime(true) - $rememberStartTime) * 1000;
+            WebLogger::log("🔄 [CACHE] Remember 완료 (캐시 사용): " . round($rememberTime, 2) . "ms");
             return $cached;
         }
         
+        WebLogger::log("🔄 [CACHE] 콜백 함수 실행 시작");
+        $callbackStartTime = microtime(true);
         $data = $callback();
+        $callbackTime = (microtime(true) - $callbackStartTime) * 1000;
+        WebLogger::log("🔄 [CACHE] 콜백 함수 실행 완료: " . round($callbackTime, 2) . "ms");
+        
         self::set($key, $data, $ttl);
+        
+        $rememberTime = (microtime(true) - $rememberStartTime) * 1000;
+        WebLogger::log("🔄 [CACHE] Remember 완료 (새 데이터): " . round($rememberTime, 2) . "ms");
         
         return $data;
     }

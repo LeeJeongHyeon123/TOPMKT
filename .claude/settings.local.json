@@ -34,7 +34,13 @@
       "WebFetch(domain:www.topmktx.com)",
       "Bash(python3:*)",
       "Bash(python:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git tag:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(service httpd:*)",
+      "Bash(service apache2:*)",
+      "Bash(service nginx:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

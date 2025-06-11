@@ -8,6 +8,9 @@ require_once SRC_PATH . '/models/Post.php';
 require_once SRC_PATH . '/models/User.php';
 require_once SRC_PATH . '/helpers/ResponseHelper.php';
 require_once SRC_PATH . '/helpers/ValidationHelper.php';
+require_once SRC_PATH . '/helpers/SearchHelper.php';
+require_once SRC_PATH . '/helpers/PerformanceDebugger.php';
+require_once SRC_PATH . '/helpers/WebLogger.php';
 require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
 
 class CommunityController {
@@ -53,15 +56,60 @@ class CommunityController {
             $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
             $pageSize = 20; // 한 페이지당 게시글 수
             
-            // 검색어 가져오기
-            $search = isset($_GET['search']) ? trim($_GET['search']) : null;
+            // 검색어 및 필터 가져오기
+            $searchRaw = isset($_GET['search']) ? trim($_GET['search']) : null;
+            $filter = isset($_GET['filter']) ? trim($_GET['filter']) : 'all';
+            $search = null;
+            $searchValidation = null;
             
-            error_log('📄 요청 파라미터: page=' . $page . ', search=' . ($search ?? 'null'));
+            // 필터 유효성 검증
+            $allowedFilters = ['all', 'title', 'content', 'author'];
+            if (!in_array($filter, $allowedFilters)) {
+                $filter = 'all';
+            }
+            
+            if ($searchRaw) {
+                $searchValidation = SearchHelper::validateSearchTerm($searchRaw);
+                if ($searchValidation['valid']) {
+                    $search = $searchValidation['cleaned'];
+                } else {
+                    error_log('❌ 검색어 유효성 검증 실패: ' . $searchValidation['message']);
+                    // 유효하지 않은 검색어는 무시하고 전체 목록 표시
+                    $search = null;
+                }
+            }
+            
+            error_log('📄 요청 파라미터: page=' . $page . ', search=' . ($search ? '[검색어있음]' : 'null'));
+            
+            // 성능 디버깅 시작
+            WebLogger::init();
+            $requestStartTime = microtime(true);
+            WebLogger::log("🚀 [CONTROLLER] 커뮤니티 인덱스 시작: " . date('H:i:s.u'));
+            
+            if ($search) {
+                WebLogger::log("🔍 [CONTROLLER] 검색 요청: '$search' (필터: $filter)");
+            }
+            
+            PerformanceDebugger::reset();
+            PerformanceDebugger::startTimer('community_index_total');
             
             // 성능 최적화: 총 개수를 먼저 조회해서 페이지 범위 검증
+            WebLogger::log("📊 [CONTROLLER] 총 개수 조회 시작");
+            $countStartTime = microtime(true);
             $start_time = microtime(true);
-            $totalCount = $this->postModel->getTotalCount($search);
+            PerformanceDebugger::startTimer('total_count_query');
+            $totalCount = $this->postModel->getTotalCount($search, $filter);
+            PerformanceDebugger::endTimer('total_count_query');
+            $countTime = (microtime(true) - $countStartTime) * 1000;
+            WebLogger::log("📊 [CONTROLLER] 총 개수 조회 완료: {$totalCount}개, " . round($countTime, 2) . "ms");
+            
             $totalPages = ceil($totalCount / $pageSize);
+            
+            // 검색 로그 기록 (SearchHelper 사용)
+            if ($search) {
+                $searchTime = microtime(true) - $start_time;
+                SearchHelper::logSearch($search, $totalCount, $searchTime);
+            }
             
             // 페이지 범위 검증 - 존재하지 않는 페이지는 첫 페이지로 리다이렉트
             if ($page > $totalPages && $totalPages > 0) {
@@ -74,11 +122,24 @@ class CommunityController {
             
             
             // 게시글 목록 조회 (성능 모니터링 포함)
+            WebLogger::log("📝 [CONTROLLER] 게시글 목록 조회 시작");
             $list_start = microtime(true);
-            $posts = $this->postModel->getList($page, $pageSize, $search);
+            PerformanceDebugger::startTimer('post_list_total');
+            $posts = $this->postModel->getList($page, $pageSize, $search, $filter);
+            PerformanceDebugger::endTimer('post_list_total');
             $list_time = round((microtime(true) - $list_start) * 1000, 2);
+            WebLogger::log("📝 [CONTROLLER] 게시글 목록 조회 완료: " . count($posts) . "개, " . $list_time . "ms");
             
             $query_time = round((microtime(true) - $start_time) * 1000, 2);
+            
+            // 전체 성능 디버깅 종료
+            $totalTimer = PerformanceDebugger::endTimer('community_index_total');
+            $totalRequestTime = (microtime(true) - $requestStartTime) * 1000;
+            
+            WebLogger::log("🏁 [CONTROLLER] 전체 요청 완료: " . round($totalRequestTime, 2) . "ms");
+            
+            // 성능 리포트 생성
+            $performanceReport = PerformanceDebugger::logReport('커뮤니티 인덱스' . ($search ? " 검색: '$search'" : ''));
             
             // 성능 상세 로깅
             if ($page > 1000) {
@@ -90,7 +151,13 @@ class CommunityController {
             $countCacheKey = CacheHelper::getPostCountCacheKey($search);
             $isCached = CacheHelper::has($listCacheKey) && CacheHelper::has($countCacheKey);
             
-            error_log("📊 데이터 조회 완료: {$query_time}ms, 게시글 {$totalCount}개 중 " . count($posts) . "개 조회" . ($isCached ? ' (캐시 히트)' : ' (DB 쿼리)'));
+            // 검색 성능 로깅 강화
+            if ($search) {
+                SearchHelper::logSearch($search, $totalCount, $query_time / 1000);
+                error_log("🔍 검색 완료 ['{$search}']: {$query_time}ms, {$totalCount}개 결과, " . count($posts) . "개 표시" . ($isCached ? ' (캐시)' : ' (DB)'));
+            } else {
+                error_log("📊 데이터 조회 완료: {$query_time}ms, 게시글 {$totalCount}개 중 " . count($posts) . "개 조회" . ($isCached ? ' (캐시 히트)' : ' (DB 쿼리)'));
+            }
             
             // 뷰에 전달할 데이터 준비
             $data = [
@@ -99,9 +166,12 @@ class CommunityController {
                 'totalPages' => $totalPages,
                 'totalCount' => $totalCount,
                 'search' => $search,
+                'filter' => $filter,
                 'pageSize' => $pageSize,
                 'hasNextPage' => $page < $totalPages,
-                'hasPrevPage' => $page > 1
+                'hasPrevPage' => $page > 1,
+                'performanceLogs' => WebLogger::getLogs(), // 성능 로그 추가
+                'showDebugInfo' => isset($_GET['debug']) || $search // 검색 시 또는 debug 파라미터 시 표시
             ];
             
             error_log('📊 게시글 조회 완료: ' . count($posts) . '개, 페이지: ' . $page . '/' . $totalPages);

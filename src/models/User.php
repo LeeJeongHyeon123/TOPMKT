@@ -206,12 +206,21 @@ class User {
         $fields = [];
         $params = [':id' => $userId];
         
-        $allowedFields = ['nickname', 'email', 'bio', 'birth_date', 'gender'];
+        $allowedFields = [
+            'nickname', 'email', 'bio', 'birth_date', 'gender', 
+            'website_url', 'social_links',
+            'profile_image_original', 'profile_image_profile', 'profile_image_thumb'
+        ];
         
         foreach ($allowedFields as $field) {
             if (isset($profileData[$field])) {
-                $fields[] = "$field = :$field";
-                $params[":$field"] = $profileData[$field];
+                if ($field === 'social_links' && is_array($profileData[$field])) {
+                    $fields[] = "$field = :$field";
+                    $params[":$field"] = json_encode($profileData[$field]);
+                } else {
+                    $fields[] = "$field = :$field";
+                    $params[":$field"] = $profileData[$field];
+                }
             }
         }
         
@@ -228,6 +237,181 @@ class User {
         }
         
         return $result > 0;
+    }
+    
+    /**
+     * 프로필 통계 조회 (활동 지표)
+     */
+    public function getProfileStats($userId) {
+        $stats = [];
+        
+        // 게시글 수
+        $sql = "SELECT COUNT(*) as post_count FROM posts WHERE user_id = :user_id AND status = 'published'";
+        $result = $this->db->fetch($sql, [':user_id' => $userId]);
+        $stats['post_count'] = $result['post_count'] ?? 0;
+        
+        // 댓글 수
+        $sql = "SELECT COUNT(*) as comment_count FROM comments WHERE user_id = :user_id AND status = 'active'";
+        $result = $this->db->fetch($sql, [':user_id' => $userId]);
+        $stats['comment_count'] = $result['comment_count'] ?? 0;
+        
+        // 좋아요 받은 수 계산
+        try {
+            $sql = "SELECT SUM(like_count) as total_likes FROM posts WHERE user_id = :user_id AND status = 'published'";
+            $result = $this->db->fetch($sql, [':user_id' => $userId]);
+            $stats['like_count'] = intval($result['total_likes'] ?? 0);
+            
+            // 디버깅 로그
+            error_log("📊 사용자 ID {$userId}의 좋아요 수 계산: " . json_encode([
+                'user_id' => $userId,
+                'raw_result' => $result,
+                'total_likes' => $stats['like_count']
+            ]));
+        } catch (Exception $e) {
+            error_log('좋아요 수 계산 오류: ' . $e->getMessage());
+            $stats['like_count'] = 0;
+        }
+        
+        // 가입일 계산
+        $sql = "SELECT created_at FROM users WHERE id = :user_id";
+        $result = $this->db->fetch($sql, [':user_id' => $userId]);
+        if ($result) {
+            $joinDate = new DateTime($result['created_at']);
+            $now = new DateTime();
+            $interval = $now->diff($joinDate);
+            $stats['join_days'] = $interval->days;
+        } else {
+            $stats['join_days'] = 0;
+        }
+        
+        return $stats;
+    }
+    
+    /**
+     * 최근 게시글 조회
+     */
+    public function getRecentPosts($userId, $limit = 5) {
+        $sql = "SELECT id, title, created_at, view_count, like_count, comment_count 
+                FROM posts 
+                WHERE user_id = :user_id AND status = 'published'
+                ORDER BY created_at DESC 
+                LIMIT :limit";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * 최근 댓글 조회
+     */
+    public function getRecentComments($userId, $limit = 5) {
+        $sql = "SELECT c.id, c.content, c.created_at, p.title as post_title, p.id as post_id
+                FROM comments c
+                JOIN posts p ON c.post_id = p.id
+                WHERE c.user_id = :user_id AND c.status = 'active'
+                ORDER BY c.created_at DESC 
+                LIMIT :limit";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * 프로필 이미지 업데이트
+     */
+    public function updateProfileImages($userId, $originalPath, $profilePath, $thumbPath) {
+        $sql = "UPDATE users SET 
+                profile_image_original = :original,
+                profile_image_profile = :profile,
+                profile_image_thumb = :thumb,
+                updated_at = NOW()
+                WHERE id = :user_id";
+        
+        $params = [
+            ':user_id' => $userId,
+            ':original' => $originalPath,
+            ':profile' => $profilePath,
+            ':thumb' => $thumbPath
+        ];
+        
+        $result = $this->db->execute($sql, $params);
+        
+        if ($result) {
+            $this->logUserActivity($userId, 'PROFILE_IMAGE_UPDATED', '프로필 이미지 변경');
+        }
+        
+        return $result > 0;
+    }
+    
+    /**
+     * 소셜 링크 업데이트
+     */
+    public function updateSocialLinks($userId, $socialLinks) {
+        $sql = "UPDATE users SET 
+                social_links = :social_links,
+                updated_at = NOW()
+                WHERE id = :user_id";
+        
+        $result = $this->db->execute($sql, [
+            ':user_id' => $userId,
+            ':social_links' => json_encode($socialLinks)
+        ]);
+        
+        if ($result) {
+            $this->logUserActivity($userId, 'SOCIAL_LINKS_UPDATED', '소셜 링크 업데이트');
+        }
+        
+        return $result > 0;
+    }
+    
+    /**
+     * 프로필 정보 조회 (공개용)
+     */
+    public function getPublicProfile($identifier) {
+        // 닉네임 또는 ID로 조회 가능
+        if (is_numeric($identifier)) {
+            $sql = "SELECT id, nickname, email, bio, birth_date, gender, website_url, 
+                           social_links, profile_image_original, profile_image_profile, 
+                           profile_image_thumb, role, created_at, last_login
+                    FROM users 
+                    WHERE id = :identifier AND status = 'active'";
+        } else {
+            $sql = "SELECT id, nickname, email, bio, birth_date, gender, website_url, 
+                           social_links, profile_image_original, profile_image_profile, 
+                           profile_image_thumb, role, created_at, last_login
+                    FROM users 
+                    WHERE nickname = :identifier AND status = 'active'";
+        }
+        
+        $user = $this->db->fetch($sql, [':identifier' => $identifier]);
+        
+        if ($user && $user['social_links']) {
+            $user['social_links'] = json_decode($user['social_links'], true);
+        }
+        
+        return $user;
+    }
+    
+    /**
+     * 완전한 프로필 정보 조회 (본인용)
+     */
+    public function getFullProfile($userId) {
+        $sql = "SELECT * FROM users WHERE id = :user_id AND status = 'active'";
+        $user = $this->db->fetch($sql, [':user_id' => $userId]);
+        
+        if ($user && $user['social_links']) {
+            $user['social_links'] = json_decode($user['social_links'], true);
+        }
+        
+        return $user;
     }
     
     /**

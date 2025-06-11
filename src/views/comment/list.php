@@ -301,7 +301,7 @@ function renderComment($comment, $currentUserId = null, $depth = 0) {
     $isOwner = $currentUserId && $comment['user_id'] == $currentUserId;
     $isReply = $depth > 0;
     ?>
-    <div class="comment-item <?= $isReply ? 'reply' : '' ?>" data-comment-id="<?= $comment['id'] ?>" data-depth="<?= $depth ?>">
+    <div class="comment-item <?= $isReply ? 'reply' : '' ?>" id="comment-<?= $comment['id'] ?>" data-comment-id="<?= $comment['id'] ?>" data-depth="<?= $depth ?>">
         <div class="comment-card">
             <div class="comment-header">
                 <div class="comment-author">
@@ -796,4 +796,32 @@ function deleteComment(commentId) {
         alert('댓글 삭제 중 오류가 발생했습니다.');
     });
 }
+
+// 페이지 로드 시 해시 앵커로 스크롤
+document.addEventListener('DOMContentLoaded', function() {
+    // URL 해시가 comment-로 시작하는 경우 해당 댓글로 스크롤
+    if (window.location.hash && window.location.hash.startsWith('#comment-')) {
+        const commentId = window.location.hash.substring(9); // #comment- 제거
+        const commentElement = document.getElementById('comment-' + commentId);
+        
+        if (commentElement) {
+            // 약간의 딜레이 후 스크롤 (페이지 완전 로드 대기)
+            setTimeout(function() {
+                commentElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+                
+                // 댓글 하이라이트 효과
+                commentElement.style.transition = 'background-color 0.3s ease';
+                commentElement.style.backgroundColor = '#fef3cd';
+                
+                // 3초 후 하이라이트 제거
+                setTimeout(function() {
+                    commentElement.style.backgroundColor = '';
+                }, 3000);
+            }, 500);
+        }
+    }
+});
 </script>

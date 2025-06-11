@@ -194,7 +194,11 @@ class TopMarketingLoader {
                 setTimeout(() => {
                     this.loadingOverlay.style.display = 'none';
                     document.body.style.overflow = '';
-                    this.updateProgress(0); // 다음 로딩을 위해 초기화
+                    // 진행률 초기화를 조용히 처리 (로그 출력 없이)
+                    this.progress = 0;
+                    if (this.progressBar) {
+                        this.progressBar.style.width = '0%';
+                    }
                 }, 300);
             }
         }, remainingTime);
@@ -247,6 +251,48 @@ class TopMarketingLoader {
     setMessage(message) {
         if (this.loadingStageElement) {
             this.loadingStageElement.textContent = message;
+        }
+    }
+    
+    // 스테이지 설정 (setStage 별칭)
+    setStage(stage) {
+        this.setMessage(stage);
+    }
+    
+    // 커스텀 로딩 (단계별 로딩)
+    custom(options = {}) {
+        const {
+            stages = ['처리 중...'],
+            duration = 3000,
+            autoHide = true
+        } = options;
+        
+        this.show();
+        
+        if (stages.length > 0) {
+            const stageInterval = duration / stages.length;
+            let currentStageIndex = 0;
+            
+            // 첫 번째 스테이지 표시
+            this.setMessage(stages[0]);
+            this.setProgress(10);
+            
+            const stageTimer = setInterval(() => {
+                currentStageIndex++;
+                if (currentStageIndex < stages.length) {
+                    this.setMessage(stages[currentStageIndex]);
+                    const progress = ((currentStageIndex + 1) / stages.length) * 90 + 10;
+                    this.setProgress(progress);
+                } else {
+                    clearInterval(stageTimer);
+                    if (autoHide) {
+                        this.setProgress(100);
+                        setTimeout(() => {
+                            this.hide();
+                        }, 500);
+                    }
+                }
+            }, stageInterval);
         }
     }
     
@@ -335,6 +381,16 @@ window.TopMarketingLoading = {
     setMessage: (message) => {
         if (topMarketingLoader) {
             topMarketingLoader.setMessage(message);
+        }
+    },
+    setStage: (stage) => {
+        if (topMarketingLoader) {
+            topMarketingLoader.setStage(stage);
+        }
+    },
+    custom: (options) => {
+        if (topMarketingLoader) {
+            topMarketingLoader.custom(options);
         }
     }
 };

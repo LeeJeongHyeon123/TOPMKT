@@ -35,11 +35,18 @@ class Router {
             'GET:/terms' => ['LegalController', 'showTerms'],
             'GET:/privacy' => ['LegalController', 'showPrivacy'],
             
-            // 사용자 라우트
+            // 사용자 라우트 (기존)
             'GET:/users/me' => ['UserController', 'showProfile'],
             'GET:/users/{id}' => ['UserController', 'getUser'],
             'PUT:/users/{id}' => ['UserController', 'updateUser'],
             'DELETE:/users/{id}' => ['UserController', 'deleteUser'],
+            
+            // 프로필 라우트 (새로 추가)
+            'GET:/profile' => ['UserController', 'showMyProfile'],
+            'GET:/profile/edit' => ['UserController', 'showEditProfile'],
+            'POST:/profile/update' => ['UserController', 'updateProfile'],
+            'POST:/profile/upload-image' => ['UserController', 'uploadProfileImage'],
+            'GET:/profile/{nickname}' => ['UserController', 'showPublicProfile'],
             
             // 커뮤니티 게시판 라우트
             'GET:/community' => ['CommunityController', 'index'],
@@ -107,8 +114,9 @@ class Router {
             $_SERVER['REQUEST_METHOD'] = 'GET';
         }
         
-        // 요청 URI 파싱
+        // 요청 URI 파싱 및 URL 디코딩
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = urldecode($uri); // URL 디코딩 추가
         $uri = rtrim($uri, '/');
         if (empty($uri)) {
             $uri = '/';
@@ -143,9 +151,15 @@ class Router {
      * 동적 라우트 매칭
      */
     private function matchDynamicRoute($pattern, $requestRoute) {
-        // {id} 패턴을 정규식으로 변환
-        $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
-        $regexPattern = '#^' . str_replace('/', '\/', $regexPattern) . '$#';
+        // 닉네임 라우트 특별 처리
+        if (strpos($pattern, '{nickname}') !== false) {
+            $regexPattern = preg_replace('/\{nickname\}/', '([^\/]+)', $pattern);
+        } else {
+            // {id} 패턴을 정규식으로 변환 (숫자만)
+            $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
+        }
+        
+        $regexPattern = '#^' . str_replace('/', '\/', $regexPattern) . '$#u';
         
         return preg_match($regexPattern, $requestRoute);
     }
@@ -200,13 +214,26 @@ class Router {
         $routeKey = $method . ':' . $uri;
         
         foreach ($this->routes as $pattern => $route) {
-            $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
+            // 닉네임 라우트 특별 처리
+            if (strpos($pattern, '{nickname}') !== false) {
+                $regexPattern = preg_replace('/\{nickname\}/', '([^\/]+)', $pattern);
+            } else {
+                $regexPattern = preg_replace('/\{[^}]+\}/', '(\d+)', $pattern);
+            }
+            
             $regexPattern = '#^' . str_replace('/', '\/', $regexPattern) . '$#';
             
             if (preg_match($regexPattern, $routeKey, $matches)) {
                 // 첫 번째 매치는 전체 문자열이므로 제거
                 array_shift($matches);
-                return $matches;
+                
+                // URL 디코딩 처리 (한국어 닉네임 지원)
+                $decodedParams = [];
+                foreach ($matches as $param) {
+                    $decodedParams[] = urldecode($param);
+                }
+                
+                return $decodedParams;
             }
         }
         

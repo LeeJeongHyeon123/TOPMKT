@@ -27,7 +27,7 @@ class Comment {
         $offset = ($page - 1) * $limit;
         
         $stmt = $this->db->prepare("
-            SELECT c.*, u.nickname as author_name, u.profile_image
+            SELECT c.*, u.nickname as author_name, u.profile_image_thumb as profile_image
             FROM comments c
             JOIN users u ON c.user_id = u.id
             WHERE c.post_id = :post_id AND c.status = 'active'
@@ -58,7 +58,7 @@ class Comment {
      */
     public function getAllByPostId($postId) {
         $stmt = $this->db->prepare("
-            SELECT c.*, u.nickname as author_name, u.profile_image
+            SELECT c.*, u.nickname as author_name, u.profile_image_thumb as profile_image
             FROM comments c
             JOIN users u ON c.user_id = u.id
             WHERE c.post_id = :post_id AND c.status = 'active'
