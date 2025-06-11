@@ -7,6 +7,7 @@
 
 // 오류 표시
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 try {
@@ -22,13 +23,23 @@ try {
 
     // 기본 세션 시작
     if (session_status() === PHP_SESSION_NONE) {
-        session_start([
-            'cookie_httponly' => true,
-            'cookie_secure' => false, // HTTPS 환경에서만 true
-            'cookie_samesite' => 'Strict',
-            'gc_maxlifetime' => 2592000, // 30일
-            'cookie_lifetime' => 0 // 브라우저 종료시
-        ]);
+        // PHP 버전에 따른 세션 설정
+        if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
+            session_start([
+                'cookie_httponly' => true,
+                'cookie_secure' => false, // HTTPS 환경에서만 true
+                'cookie_samesite' => 'Strict',
+                'gc_maxlifetime' => 2592000, // 30일
+                'cookie_lifetime' => 0 // 브라우저 종료시
+            ]);
+        } else {
+            // PHP 7.3 미만에서는 cookie_samesite 지원 안함
+            ini_set('session.cookie_httponly', 1);
+            ini_set('session.cookie_secure', 0);
+            ini_set('session.gc_maxlifetime', 2592000);
+            ini_set('session.cookie_lifetime', 0);
+            session_start();
+        }
     }
     
     // Remember Token을 통한 자동 로그인 처리
