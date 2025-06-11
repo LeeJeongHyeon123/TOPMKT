@@ -89,7 +89,7 @@ class Post {
                     p.status,
                     p.created_at,
                     u.nickname as author_name,
-                    u.profile_image_thumb as profile_image
+                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
                 FROM posts p
                 JOIN users u ON p.user_id = u.id
                 WHERE p.status = 'published'
@@ -170,7 +170,7 @@ class Post {
                     p.status,
                     p.created_at,
                     u.nickname as author_name,
-                    u.profile_image_thumb as profile_image,
+                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image,
                     CASE 
                         WHEN p.title LIKE ? THEN 3
                         WHEN u.nickname LIKE ? THEN 2
@@ -219,7 +219,7 @@ class Post {
                     p.status,
                     p.created_at,
                     u.nickname as author_name,
-                    u.profile_image_thumb as profile_image
+                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
                 FROM posts p
                 FORCE INDEX (idx_posts_list_performance)
                 JOIN users u ON p.user_id = u.id
@@ -318,7 +318,9 @@ class Post {
      */
     public function getById($id) {
         $stmt = $this->db->prepare("
-            SELECT p.*, u.nickname as author_name, u.profile_image_thumb as profile_image
+            SELECT p.*, 
+                   u.nickname as author_name,
+                   COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
             FROM posts p
             JOIN users u ON p.user_id = u.id
             WHERE p.id = :id

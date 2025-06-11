@@ -223,41 +223,30 @@ if (!isset($post) || !$post) {
     color: #4b5563;
 }
 
-.author-info {
+.author-meta-with-avatar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 20px 30px;
-    background: #f0fff4;
-    border-top: 1px solid #e2e8f0;
+    gap: 8px;
 }
 
-.author-avatar {
-    width: 50px;
-    height: 50px;
+.author-avatar-small {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-.author-details {
-    flex: 1;
-}
-
-.author-name {
     font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 4px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    transition: transform 0.2s ease;
 }
 
-.author-role {
-    font-size: 0.8rem;
-    color: #718096;
+.author-avatar-small:hover {
+    transform: scale(1.1);
 }
 
 .comments-section {
@@ -366,9 +355,7 @@ if (!isset($post) || !$post) {
         justify-content: center;
     }
     
-    .author-info {
-        padding: 15px 20px;
-    }
+
     
     .back-to-list {
         bottom: 20px;
@@ -376,6 +363,117 @@ if (!isset($post) || !$post) {
         width: 50px;
         height: 50px;
         font-size: 1rem;
+    }
+}
+
+/* 프로필 이미지 모달 스타일 */
+.profile-image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.profile-image-modal .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    min-width: 400px;
+    max-width: 95vw;
+    max-height: 95vh;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.profile-image-modal .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+}
+
+.profile-image-modal .modal-header h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.profile-image-modal .modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #718096;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.profile-image-modal .modal-close:hover {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+.profile-image-modal .modal-body {
+    padding: 24px;
+    text-align: center;
+    background: white;
+    max-height: calc(95vh - 80px);
+    overflow: auto;
+}
+
+.profile-image-modal .modal-body img {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    max-width: calc(95vw - 100px);
+    max-height: calc(95vh - 150px);
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+/* 모바일에서 더 큰 이미지 표시 */
+@media (max-width: 768px) {
+    .profile-image-modal .modal-content {
+        min-width: 300px;
+        max-width: 98vw;
+        max-height: 98vh;
+        margin: 10px;
+    }
+    
+    .profile-image-modal .modal-body {
+        padding: 16px;
+        max-height: calc(98vh - 60px);
+    }
+    
+    .profile-image-modal .modal-body img {
+        max-width: calc(98vw - 50px);
+        max-height: calc(98vh - 120px);
+    }
+    
+    .profile-image-modal .modal-header {
+        padding: 15px 20px;
+    }
+    
+    .profile-image-modal .modal-header h3 {
+        font-size: 1.1rem;
     }
 }
 
@@ -397,9 +495,21 @@ if (!isset($post) || !$post) {
         border-color: #718096;
     }
     
-    .author-info {
-        background: #2d5016;
+    .profile-image-modal .modal-content {
+        background: #2d3748;
     }
+    
+    .profile-image-modal .modal-header {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .profile-image-modal .modal-header h3 {
+        color: #e2e8f0;
+    }
+}
+    
+
 }
 
 /* 애니메이션 */
@@ -436,11 +546,34 @@ if (!isset($post) || !$post) {
     <!-- 게시글 컨테이너 -->
     <div class="post-container">
         <!-- 게시글 헤더 -->
+        <?php 
+        // 변수를 먼저 정의
+        $profileImage = $post['profile_image'] ?? null;
+        $defaultImage = '/assets/images/default-avatar.png';
+        $authorName = $post['author_name'] ?? $post['nickname'] ?? '익명';
+        ?>
+        
         <div class="post-header">
             <h1 class="post-title"><?= htmlspecialchars($post['title']) ?></h1>
             <div class="post-meta">
-                <div class="meta-item">
-                    👤 <strong><?= htmlspecialchars($post['author_name'] ?? $post['nickname'] ?? '익명') ?></strong>
+                <div class="meta-item author-meta-with-avatar">
+                    <div class="author-avatar-small profile-image-clickable" 
+                         data-user-id="<?= htmlspecialchars($post['user_id']) ?>" 
+                         data-user-name="<?= htmlspecialchars($authorName) ?>" 
+                         style="cursor: pointer;" 
+                         title="프로필 이미지 크게 보기">
+                        <?php if ($profileImage): ?>
+                            <img src="<?= htmlspecialchars($profileImage) ?>" alt="<?= htmlspecialchars($authorName) ?>" 
+                                 style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem;">
+                                <?= mb_substr($authorName, 0, 1) ?>
+                            </div>
+                        <?php else: ?>
+                            <?= mb_substr($authorName, 0, 1) ?>
+                        <?php endif; ?>
+                    </div>
+                    <span><strong><?= htmlspecialchars($authorName) ?></strong></span>
                 </div>
                 <div class="meta-item">
                     📅 <?= date('Y년 m월 d일 H:i', strtotime($post['created_at'])) ?>
@@ -506,49 +639,7 @@ if (!isset($post) || !$post) {
                 </a>
             </div>
         </div>
-        
-        <!-- 작성자 정보 -->
-        <div class="author-info">
-            <div class="author-avatar">
-                <?php 
-                $profileImage = $post['profile_image'] ?? null;
-                $defaultImage = '/assets/images/default-avatar.png';
-                $authorName = $post['author_name'] ?? $post['nickname'] ?? '익명';
-                
-                if ($profileImage): ?>
-                    <img src="<?= htmlspecialchars($profileImage) ?>" alt="<?= htmlspecialchars($authorName) ?>" 
-                         style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.2rem;">
-                        <?= mb_substr($authorName, 0, 1) ?>
-                    </div>
-                <?php else: ?>
-                    <?= mb_substr($authorName, 0, 1) ?>
-                <?php endif; ?>
-            </div>
-            <div class="author-details">
-                <div class="author-name"><?= htmlspecialchars($authorName) ?></div>
-                <div class="author-role">
-                    <?php
-                    $role = $post['role'] ?? 'GENERAL';
-                    switch ($role) {
-                        case 'SUPER_ADMIN':
-                        case 'ADMIN':
-                            echo '🛡️ 관리자';
-                            break;
-                        case 'PREMIUM':
-                            echo '⭐ 프리미엄 회원';
-                            break;
-                        case 'COMPANY':
-                            echo '🏢 기업 회원';
-                            break;
-                        default:
-                            echo '👤 일반 회원';
-                    }
-                    ?>
-                </div>
-            </div>
-        </div>
+
     </div>
     
     <!-- 댓글 섹션 -->
@@ -582,6 +673,19 @@ if (!isset($post) || !$post) {
     📋
 </button>
 
+<!-- 프로필 이미지 확대 모달 -->
+<div id="profileImageModal" class="profile-image-modal" onclick="closeProfileImageModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="modalUserName">사용자 프로필</h3>
+            <button class="modal-close" onclick="closeProfileImageModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <img id="modalProfileImage" src="" alt="프로필 이미지" style="max-width: 100%; max-height: 100%; width: auto; height: auto; border-radius: 12px; object-fit: contain;">
+        </div>
+    </div>
+</div>
+
 <!-- 댓글 시스템은 comment/list.php에서 내장 JavaScript 사용 -->
 
 <!-- 현재 사용자 정보 (댓글 시스템용) -->
@@ -596,7 +700,7 @@ if (!isset($post) || !$post) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 게시글 상세보기 페이지 로드 완료');
     console.log('📝 게시글 ID:', <?= $post['id'] ?>);
-    console.log('👤 작성자:', '<?= htmlspecialchars($post['author_name'] ?? $post['nickname'] ?? '익명') ?>');
+    console.log('👤 작성자:', '<?= addslashes(htmlspecialchars($post['author_name'] ?? $post['nickname'] ?? '익명')) ?>');
     console.log('🔑 소유자 여부:', <?= $isOwner ? 'true' : 'false' ?>);
     
     const isLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
@@ -774,5 +878,145 @@ document.addEventListener('DOMContentLoaded', function() {
         
         lastScrollTop = scrollTop;
     });
+    
+    // 프로필 이미지 클릭 이벤트 처리 (지연 로딩)
+    const profileImages = document.querySelectorAll('.profile-image-clickable');
+    profileImages.forEach(element => {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            
+            if (!userId) {
+                console.error('사용자 ID가 없습니다.');
+                return false;
+            }
+            
+            // AJAX로 원본 이미지 URL 가져오기
+            fetchProfileImage(userId, userName);
+            
+            return false;
+        });
+    });
 });
+
+// AJAX로 원본 프로필 이미지 정보 가져오기
+function fetchProfileImage(userId, userName) {
+    const modal = document.getElementById('profileImageModal');
+    const modalImage = document.getElementById('modalProfileImage');
+    const modalUserName = document.getElementById('modalUserName');
+    
+    if (!modal || !modalImage || !modalUserName) {
+        console.error('프로필 모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 모달 열기 및 로딩 상태 표시
+    modalUserName.textContent = userName + '님의 프로필';
+    modalImage.style.display = 'none';
+    modalImage.src = ''; // 기존 이미지 제거
+    modal.style.display = 'block';
+    
+    // 로딩 스피너 표시
+    const modalBody = modalImage.parentNode;
+    const loadingSpinner = document.createElement('div');
+    loadingSpinner.id = 'imageLoadingSpinner';
+    loadingSpinner.innerHTML = '<div style="text-align: center; padding: 50px; color: #666;"><div style="display: inline-block; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div><p style="margin-top: 15px;">이미지 로딩 중...</p></div>';
+    modalBody.appendChild(loadingSpinner);
+    
+    // 스피너 애니메이션 CSS 추가
+    if (!document.getElementById('spinnerStyle')) {
+        const style = document.createElement('style');
+        style.id = 'spinnerStyle';
+        style.textContent = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+        document.head.appendChild(style);
+    }
+    
+    // AJAX 요청
+    fetch(`/api/users/${userId}/profile-image`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 로딩 스피너 제거
+            const spinner = document.getElementById('imageLoadingSpinner');
+            if (spinner) {
+                spinner.remove();
+            }
+            
+            if (data.original_image) {
+                showProfileImageModal(data.original_image, userName);
+            } else {
+                alert('원본 프로필 이미지를 찾을 수 없습니다.');
+                closeProfileImageModal();
+            }
+        })
+        .catch(error => {
+            console.error('프로필 이미지 로딩 오류:', error);
+            
+            // 로딩 스피너 제거
+            const spinner = document.getElementById('imageLoadingSpinner');
+            if (spinner) {
+                spinner.remove();
+            }
+            
+            alert('이미지를 불러오는 중 오류가 발생했습니다.');
+            closeProfileImageModal();
+        });
+        
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', handleModalEscKey);
+}
+
+// 프로필 이미지 모달 함수
+function showProfileImageModal(imageSrc, userName) {
+    if (!imageSrc || imageSrc.trim() === '') {
+        alert('원본 프로필 이미지를 찾을 수 없습니다.');
+        return;
+    }
+    
+    const modal = document.getElementById('profileImageModal');
+    const modalImage = document.getElementById('modalProfileImage');
+    const modalUserName = document.getElementById('modalUserName');
+    
+    if (!modal || !modalImage || !modalUserName) {
+        console.error('프로필 모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 이미지 미리 로딩 후 표시
+    const img = new Image();
+    img.onload = function() {
+        modalImage.src = imageSrc;
+        modalImage.style.display = 'block';
+    };
+    img.onerror = function() {
+        modalImage.style.display = 'none';
+        alert('이미지를 로딩할 수 없습니다.');
+        closeProfileImageModal();
+    };
+    img.src = imageSrc;
+}
+
+function closeProfileImageModal() {
+    const modal = document.getElementById('profileImageModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // ESC 키 이벤트 제거
+    document.removeEventListener('keydown', handleModalEscKey);
+}
+
+function handleModalEscKey(event) {
+    if (event.key === 'Escape') {
+        closeProfileImageModal();
+    }
+}
 </script>

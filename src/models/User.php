@@ -521,4 +521,20 @@ class User {
         
         return $this->db->fetch($sql, [':token' => $token]);
     }
+    
+    /**
+     * 사용자 프로필 이미지 정보 조회 (API용)
+     */
+    public function getProfileImageInfo($userId) {
+        $sql = "SELECT 
+                    id,
+                    nickname,
+                    profile_image_original,
+                    profile_image_profile,
+                    profile_image_thumb
+                FROM users 
+                WHERE id = :id AND status != 'deleted'";
+        
+        return $this->db->fetch($sql, [':id' => $userId]);
+    }
 } 

@@ -337,7 +337,12 @@ class LectureController {
             SELECT 
                 l.*,
                 u.nickname as organizer_name,
+                u.nickname as author_name,
                 u.email as organizer_email,
+                u.profile_image_original,
+                u.profile_image_profile,
+                COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image,
+                u.bio as author_bio,
                 CASE WHEN l.max_participants IS NULL THEN '무제한' 
                      ELSE CONCAT(l.registration_count, '/', l.max_participants) 
                 END as capacity_info,

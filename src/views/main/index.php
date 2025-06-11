@@ -48,11 +48,16 @@
                                 </div>
                                 <div class="quick-stat">
                                     <div class="stat-icon">
-                                        <i class="fas fa-trophy"></i>
+                                        <i class="fas fa-heart"></i>
                                     </div>
                                     <div class="stat-info">
-                                        <div class="stat-number"><?= ucfirst(strtolower($_SESSION['user_role'] ?? 'GENERAL')) ?></div>
-                                        <div class="stat-label">등급</div>
+                                        <div class="stat-number">
+                                            <?php 
+                                            // 활동 포인트 계산 (임시)
+                                            echo isset($_SESSION['user_id']) ? '1,247' : '0';
+                                            ?>
+                                        </div>
+                                        <div class="stat-label">활동 포인트</div>
                                     </div>
                                 </div>
                             </div>

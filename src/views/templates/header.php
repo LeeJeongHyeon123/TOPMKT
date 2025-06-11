@@ -99,7 +99,6 @@
                                 <div class="dropdown-header">
                                     <div class="user-info">
                                         <span class="user-display-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
-                                        <span class="user-role"><?= ucfirst(strtolower($_SESSION['user_role'] ?? 'GENERAL')) ?> 멤버</span>
                                     </div>
                                 </div>
                                 <div class="dropdown-divider"></div>
@@ -107,18 +106,10 @@
                                     <i class="fas fa-user"></i>
                                     <span>프로필</span>
                                 </a>
-                                <a href="/dashboard" class="dropdown-item">
-                                    <i class="fas fa-chart-pie"></i>
-                                    <span>대시보드</span>
-                                </a>
                                 <a href="/messages" class="dropdown-item">
                                     <i class="fas fa-envelope"></i>
                                     <span>메시지</span>
                                     <span class="notification-badge">3</span>
-                                </a>
-                                <a href="/settings" class="dropdown-item">
-                                    <i class="fas fa-cog"></i>
-                                    <span>설정</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
@@ -716,13 +707,6 @@
         font-size: 14px;
     }
     
-    .user-role {
-        display: block;
-        font-size: 12px;
-        color: #6b7280;
-        margin-top: 2px;
-    }
-    
     .dropdown-divider {
         height: 1px;
         background: #f3f4f6;
@@ -856,7 +840,6 @@
                         <div class="dropdown-header">
                             <div class="user-info">
                                 <span class="user-display-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
-                                <span class="user-role"><?= ucfirst(strtolower($_SESSION['user_role'] ?? 'GENERAL')) ?> 멤버</span>
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
@@ -864,18 +847,10 @@
                             <i class="fas fa-user"></i>
                             <span>프로필</span>
                         </a>
-                        <a href="/dashboard" class="dropdown-item">
-                            <i class="fas fa-chart-pie"></i>
-                            <span>대시보드</span>
-                        </a>
                         <a href="/messages" class="dropdown-item">
                             <i class="fas fa-envelope"></i>
                             <span>메시지</span>
                             <span class="notification-badge">3</span>
-                        </a>
-                        <a href="/settings" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            <span>설정</span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
@@ -910,9 +885,7 @@
                     floatingDropdown.querySelectorAll('.user-display-name').forEach(el => {
                         el.style.cssText = 'display: block; font-weight: 600; color: #1f2937; font-size: 14px;';
                     });
-                    floatingDropdown.querySelectorAll('.user-role').forEach(el => {
-                        el.style.cssText = 'display: block; font-size: 12px; color: #6b7280; margin-top: 2px;';
-                    });
+
                     floatingDropdown.querySelectorAll('.dropdown-divider').forEach(el => {
                         el.style.cssText = 'height: 1px; background: #f3f4f6; margin: 0;';
                     });

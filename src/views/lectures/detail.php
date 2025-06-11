@@ -734,6 +734,133 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     transition: box-shadow 0.3s ease;
 }
 
+/* 프로필 이미지 모달 스타일 */
+.profile-image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.profile-image-modal .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    min-width: 300px;
+    max-width: 90vw;
+    max-height: 90vh;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.profile-image-modal .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+}
+
+.profile-image-modal .modal-header h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.profile-image-modal .modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #718096;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.profile-image-modal .modal-close:hover {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+.profile-image-modal .modal-body {
+    padding: 24px;
+    text-align: center;
+    background: white;
+}
+
+.profile-image-modal .modal-body img {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 작성자 정보 카드 (컴팩트) */
+.author-info-card {
+    border-left: 3px solid #667eea;
+}
+
+.author-info-compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.author-avatar-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.author-avatar-small:hover {
+    transform: scale(1.1);
+}
+
+.author-details-compact {
+    flex: 1;
+    min-width: 0;
+}
+
+.author-name-compact {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 2px;
+}
+
+.author-meta-compact {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-bottom: 4px;
+}
+
+.author-bio-compact {
+    font-size: 0.8rem;
+    color: #4a5568;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 /* 다크모드 대응 */
 @media (prefers-color-scheme: dark) {
     .lecture-header, .lecture-main, .sidebar-card {
@@ -743,6 +870,19 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     
     .schedule-item, .instructor-info, .participant-item, .related-lecture-item {
         background: #4a5568;
+    }
+    
+    .profile-image-modal .modal-content {
+        background: #2d3748;
+    }
+    
+    .profile-image-modal .modal-header {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .profile-image-modal .modal-header h3 {
+        color: #e2e8f0;
     }
 }
 </style>
@@ -844,6 +984,8 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 </div>
             </div>
             
+
+
             <!-- 강사 정보 -->
             <div class="info-section">
                 <h2 class="section-title">👨‍🏫 강사 소개</h2>
@@ -1333,6 +1475,43 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     </div>
                 </div>
             <?php endif; ?>
+
+            <!-- 작성자 정보 -->
+            <?php if (isset($lecture['author_name']) || isset($lecture['user_id'])): ?>
+                <div class="sidebar-card author-info-card">
+                    <h3 class="sidebar-title">✍️ 작성자</h3>
+                    <div class="author-info-compact">
+                        <div class="author-avatar-small" onclick="showProfileImageModal('<?= addslashes(htmlspecialchars($lecture['profile_image_original'] ?? $lecture['profile_image_profile'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($lecture['author_name'] ?? $lecture['nickname'] ?? '작성자')) ?>')" style="cursor: pointer;" title="프로필 이미지 크게 보기">
+                            <?php 
+                            $authorImage = $lecture['profile_image'] ?? null;
+                            $authorName = $lecture['author_name'] ?? $lecture['nickname'] ?? '작성자';
+                            
+                            if ($authorImage): ?>
+                                <img src="<?= htmlspecialchars($authorImage) ?>" 
+                                     alt="<?= htmlspecialchars($authorName) ?>" 
+                                     style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem;">
+                                    <?= mb_substr($authorName, 0, 1) ?>
+                                </div>
+                            <?php else: ?>
+                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem;">
+                                    <?= mb_substr($authorName, 0, 1) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="author-details-compact">
+                            <div class="author-name-compact"><?= htmlspecialchars($authorName) ?></div>
+                            <div class="author-meta-compact">
+                                📅 <?= date('Y.m.d', strtotime($lecture['created_at'])) ?>
+                            </div>
+                            <?php if (!empty($lecture['author_bio'])): ?>
+                                <div class="author-bio-compact"><?= htmlspecialchars(mb_substr(strip_tags($lecture['author_bio']), 0, 80)) ?>...</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -1343,7 +1522,20 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     <img class="modal-image-content" id="modalImage">
     <button class="modal-image-nav modal-nav-prev" onclick="changeImage(-1)"></button>
     <button class="modal-image-nav modal-nav-next" onclick="changeImage(1)"></button>
-    <div class="modal-image-counter" id="imageCounter"></div>
+    <div class="modal-image-counter" id="imageCounter">    </div>
+</div>
+
+<!-- 프로필 이미지 확대 모달 -->
+<div id="profileImageModal" class="profile-image-modal" onclick="closeProfileImageModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="modalUserName">사용자 프로필</h3>
+            <button class="modal-close" onclick="closeProfileImageModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <img id="modalProfileImage" src="" alt="프로필 이미지" style="min-width: 200px; min-height: 200px; max-width: 500px; max-height: 500px; width: auto; height: auto; border-radius: 8px;">
+        </div>
+    </div>
 </div>
 
 <script>
@@ -1756,6 +1948,58 @@ function openInstructorImageModal(imageSrc, imageAlt) {
         if (nextBtn) nextBtn.style.display = 'none';
         
         document.body.style.overflow = 'hidden';
+    }
+}
+
+// 프로필 이미지 모달 함수
+function showProfileImageModal(imageSrc, userName) {
+    if (!imageSrc || imageSrc.trim() === '') {
+        alert('원본 프로필 이미지를 찾을 수 없습니다.');
+        return; // 이미지가 없으면 모달을 열지 않음
+    }
+    
+    const modal = document.getElementById('profileImageModal');
+    const modalImage = document.getElementById('modalProfileImage');
+    const modalUserName = document.getElementById('modalUserName');
+    
+    if (!modal || !modalImage || !modalUserName) {
+        console.error('프로필 모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 이미지 로딩 상태 표시
+    modalImage.style.display = 'none';
+    modalUserName.textContent = userName + '의 프로필';
+    modal.style.display = 'block';
+    
+    // 새 이미지 객체로 로딩 확인
+    const img = new Image();
+    img.onload = function() {
+        modalImage.src = imageSrc;
+        modalImage.style.display = 'block';
+    };
+    img.onerror = function() {
+        modalImage.style.display = 'none';
+        alert('이미지를 로딩할 수 없습니다.');
+        closeProfileImageModal();
+    };
+    img.src = imageSrc;
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', handleProfileModalEscKey);
+}
+
+function closeProfileImageModal() {
+    const modal = document.getElementById('profileImageModal');
+    modal.style.display = 'none';
+    
+    // ESC 키 이벤트 제거
+    document.removeEventListener('keydown', handleProfileModalEscKey);
+}
+
+function handleProfileModalEscKey(event) {
+    if (event.key === 'Escape') {
+        closeProfileImageModal();
     }
 }
 </script>

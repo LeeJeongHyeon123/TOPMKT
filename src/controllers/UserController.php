@@ -677,4 +677,47 @@ class UserController {
         // 계정 삭제는 향후 구현
         ResponseHelper::json(['error' => 'Not implemented'], 501);
     }
+    
+    /**
+     * 사용자 원본 프로필 이미지 API (/api/users/{id}/profile-image)
+     */
+    public function getProfileImage($userId = null) {
+        // URL에서 사용자 ID 추출
+        if ($userId === null) {
+            $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            if (preg_match('/\/api\/users\/(\d+)\/profile-image/', $uri, $matches)) {
+                $userId = $matches[1];
+            }
+        }
+        
+        if (!$userId) {
+            ResponseHelper::json(['error' => 'User ID is required'], 400);
+            return;
+        }
+        
+        try {
+            // User 모델의 메서드 사용
+            $user = $this->userModel->getProfileImageInfo($userId);
+            
+            if (!$user) {
+                ResponseHelper::json(['error' => 'User not found'], 404);
+                return;
+            }
+            
+            // 원본 이미지 우선순위로 반환
+            $originalImage = $user['profile_image_original'] ?? $user['profile_image_profile'] ?? null;
+            
+            ResponseHelper::json([
+                'user_id' => $user['id'],
+                'nickname' => $user['nickname'],
+                'original_image' => $originalImage,
+                'profile_image' => $user['profile_image_profile'],
+                'thumb_image' => $user['profile_image_thumb']
+            ]);
+            
+        } catch (Exception $e) {
+            error_log('프로필 이미지 API 오류: ' . $e->getMessage());
+            ResponseHelper::json(['error' => 'Internal server error'], 500);
+        }
+    }
 }

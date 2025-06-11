@@ -77,6 +77,9 @@ class Router {
             // 미디어 업로드 라우트
             'POST:/api/media/upload-image' => ['MediaController', 'uploadImage'],
             
+            // 사용자 프로필 이미지 API
+            'GET:/api/users/{id}/profile-image' => ['UserController', 'getProfileImage'],
+            
             // 강의 일정 라우트
             'GET:/lectures' => ['LectureController', 'index'],
             'GET:/lectures/{id}' => ['LectureController', 'show'],
