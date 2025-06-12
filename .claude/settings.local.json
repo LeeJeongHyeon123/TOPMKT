@@ -43,7 +43,8 @@
       "Bash(mv:*)",
       "Bash(mariadb:*)",
       "Bash(journalctl:*)",
-      "Bash(git remote get-url:*)"
+      "Bash(git remote get-url:*)",
+      "Bash(./scripts/docker_db_backup.sh:*)"
     ],
     "deny": []
   }
