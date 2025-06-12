@@ -2271,6 +2271,11 @@ body {
     position: relative;
 }
 
+/* lecture-content 패딩 제거 */
+.lecture-content {
+    padding: 0;
+}
+
 .event-date-badge,
 .lecture-date-badge {
     position: absolute;
@@ -3454,6 +3459,11 @@ body {
 .lecture-content {
     padding: 24px;
     position: relative;
+}
+
+/* lecture-content 패딩 제거 */
+.lecture-content {
+    padding: 0;
 }
 
 .event-date-badge,
@@ -4846,4 +4856,25 @@ body {
 /* 카운터 초기화 */
 .auth-form {
     counter-reset: step-counter;
+}
+
+/* 채팅 알림 전용 스타일 */
+.alert.chat-notification {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.alert.chat-notification:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.alert.chat-notification .alert-icon {
+    color: white;
+}
+
+.alert.chat-notification .alert-close {
+    color: white;
 }

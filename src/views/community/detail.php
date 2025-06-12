@@ -223,6 +223,16 @@ if (!isset($post) || !$post) {
     color: #4b5563;
 }
 
+.btn-info {
+    border-color: #e5e7eb;
+}
+
+.btn-info:hover {
+    background: #eff6ff;
+    border-color: #d1d5db;
+    color: #2563eb;
+}
+
 .author-meta-with-avatar {
     display: flex;
     align-items: center;
@@ -623,6 +633,11 @@ if (!isset($post) || !$post) {
                     <button class="btn btn-success" id="shareBtn">
                         📤 공유
                     </button>
+                    <?php if (!$isOwner && isset($post['user_id']) && $post['user_id']): ?>
+                        <button class="btn btn-info" id="chatBtn" data-author-id="<?= htmlspecialchars($post['user_id']) ?>" data-author-name="<?= htmlspecialchars($authorName) ?>">
+                            💬 채팅하기
+                        </button>
+                    <?php endif; ?>
                 <?php endif; ?>
                 
                 <?php if ($isOwner): ?>
@@ -835,6 +850,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 deleteBtn.disabled = false;
                 deleteBtn.innerHTML = '🗑️ 삭제';
             });
+        });
+    }
+    
+    // 채팅 버튼 처리
+    const chatBtn = document.getElementById('chatBtn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', function() {
+            const authorId = this.getAttribute('data-author-id');
+            const authorName = this.getAttribute('data-author-name');
+            
+            if (!authorId) {
+                alert('작성자 정보를 찾을 수 없습니다.');
+                return;
+            }
+            
+            // 채팅 페이지로 이동하면서 해당 사용자와 채팅 시작
+            window.location.href = `/chat#user-${authorId}`;
         });
     }
     

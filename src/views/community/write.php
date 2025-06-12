@@ -29,10 +29,11 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 }
 
 .write-header {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 30px;
     text-align: center;
+    margin-top: 60px;
     margin-bottom: 30px;
     border-radius: 12px;
 }
@@ -86,8 +87,8 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 
 .form-input:focus {
     outline: none;
-    border-color: #48bb78;
-    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-textarea {
@@ -137,13 +138,13 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-primary:disabled {
@@ -172,15 +173,15 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 }
 
 .form-tips {
-    background: #f0fff4;
-    border: 1px solid #9ae6b4;
+    background: #f3f4ff;
+    border: 1px solid #a5b4fc;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
 }
 
 .form-tips h4 {
-    color: #22543d;
+    color: #4c1d95;
     margin: 0 0 10px 0;
     font-size: 14px;
 }
@@ -188,7 +189,7 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 .form-tips ul {
     margin: 0;
     padding-left: 20px;
-    color: #276749;
+    color: #5b21b6;
     font-size: 13px;
 }
 
@@ -221,7 +222,7 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
     width: 40px;
     height: 40px;
     border: 4px solid #e2e8f0;
-    border-top: 4px solid #48bb78;
+    border-top: 4px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 15px;
@@ -303,8 +304,8 @@ $submitText = $isEdit ? '수정하기' : '작성하기';
 
 .ql-toolbar:focus-within + .ql-container,
 .ql-container:focus-within {
-    border-color: #48bb78;
-    box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .ql-toolbar .ql-picker-label:hover,
@@ -450,7 +451,7 @@ html #quill-editor .ql-editor * {
     }
     
     .form-input:focus {
-        border-color: #48bb78;
+        border-color: #667eea;
         background: #4a5568;
     }
     

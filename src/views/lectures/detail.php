@@ -122,12 +122,13 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 }
 
 .btn-edit {
-    background: #ed8936;
+    background: rgba(255, 255, 255, 0.2);
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn-edit:hover {
-    background: #dd6b20;
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* 콘텐츠 레이아웃 */
@@ -400,7 +401,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 }
 
 .btn-register {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     font-size: 1.1rem;
     padding: 15px 30px;
@@ -415,7 +416,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 
 .btn-register:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
 .btn-register:disabled {
@@ -859,6 +860,67 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+
+/* 프로필 방문 버튼 */
+.btn-visit-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    justify-content: center;
+    height: 44px;
+    margin: 0;
+}
+
+.btn-visit-profile:hover {
+    background: #5a67d8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}
+
+.btn-visit-profile i {
+    font-size: 0.875rem;
+}
+
+.btn-chat-author {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.btn-chat-author:hover {
+    background: #5a67d8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-chat-author i {
+    font-size: 0.875rem;
 }
 
 /* 다크모드 대응 */
@@ -1510,6 +1572,18 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                             <?php endif; ?>
                         </div>
                     </div>
+                    <div style="display: flex; gap: 10px; margin-top: 12px; align-items: center;">
+                        <?php if (isset($lecture['user_id'])): ?>
+                            <a href="/profile/<?= $lecture['user_id'] ?>" class="btn-visit-profile" style="flex: 1;">
+                                <i class="fas fa-user"></i> 프로필 방문
+                            </a>
+                            <?php if ($isLoggedIn && $lecture['user_id'] != $currentUserId): ?>
+                                <button onclick="startChatWithAuthor(<?= $lecture['user_id'] ?>, '<?= addslashes(htmlspecialchars($authorName)) ?>')" class="btn-chat-author" title="채팅하기">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -1796,6 +1870,17 @@ document.addEventListener('keydown', function(e) {
 /**
  * 공유하기 기능
  */
+// 작성자와 채팅 시작
+function startChatWithAuthor(authorId, authorName) {
+    if (!authorId) {
+        alert('작성자 정보를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 채팅 페이지로 이동하면서 해당 사용자와 채팅 시작
+    window.location.href = `/chat#user-${authorId}`;
+}
+
 function shareContent() {
     try {
         const lectureTitle = "<?= addslashes(htmlspecialchars($lecture['title'])) ?>";

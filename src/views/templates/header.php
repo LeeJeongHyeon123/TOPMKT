@@ -29,6 +29,9 @@
     <meta name="author" content="탑마케팅">
     <meta name="robots" content="index, follow">
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
+    <?php if (isset($_SESSION['user_id'])): ?>
+    <meta name="user-id" content="<?= $_SESSION['user_id'] ?>">
+    <?php endif; ?>
     <link rel="canonical" href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>">
     
     <!-- 파비콘 - 모든 페이지 통일 -->
@@ -47,6 +50,13 @@
     <!-- JavaScript -->
     <script src="/assets/js/loading.js"></script>
     <script src="/assets/js/main.js" defer></script>
+    
+    <!-- Firebase SDK (채팅 알림용) -->
+    <?php if (isset($_SESSION['user_id']) && $_SERVER['REQUEST_URI'] !== '/chat'): ?>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="/assets/js/chat-notifications.js"></script>
+    <?php endif; ?>
 </head>
 <body>
     <header class="main-header modern-header">
@@ -106,10 +116,9 @@
                                     <i class="fas fa-user"></i>
                                     <span>프로필</span>
                                 </a>
-                                <a href="/messages" class="dropdown-item">
+                                <a href="/chat" class="dropdown-item">
                                     <i class="fas fa-envelope"></i>
-                                    <span>메시지</span>
-                                    <span class="notification-badge">3</span>
+                                    <span>채팅</span>
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
@@ -834,6 +843,11 @@
                     this.classList.add('active');
                     const rect = this.getBoundingClientRect();
                     
+                    // 현재 읽지 않은 메시지 수 가져오기
+                    const currentBadge = document.getElementById('chatNotificationBadge');
+                    const unreadCount = currentBadge ? parseInt(currentBadge.textContent) || 0 : 0;
+                    const badgeHtml = unreadCount > 0 ? `<span class="notification-badge dropdown-chat-badge" style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: bold; min-width: 16px; text-align: center;">${unreadCount}</span>` : '';
+                    
                     const floatingDropdown = document.createElement('div');
                     floatingDropdown.id = 'floating-user-dropdown';
                     floatingDropdown.innerHTML = `
@@ -847,10 +861,10 @@
                             <i class="fas fa-user"></i>
                             <span>프로필</span>
                         </a>
-                        <a href="/messages" class="dropdown-item">
+                        <a href="/chat" class="dropdown-item">
                             <i class="fas fa-envelope"></i>
-                            <span>메시지</span>
-                            <span class="notification-badge">3</span>
+                            <span>채팅</span>
+                            ${badgeHtml}
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">

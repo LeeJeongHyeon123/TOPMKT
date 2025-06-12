@@ -413,6 +413,7 @@ if (typeof $ !== 'undefined') {
 // Fetch API 인터셉터
 if (window.fetch) {
     const originalFetch = window.fetch;
+    window.originalFetch = originalFetch; // 전역에 원본 fetch 저장
     let activeRequests = 0;
     
     window.fetch = function(...args) {

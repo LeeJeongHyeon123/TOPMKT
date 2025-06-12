@@ -40,7 +40,9 @@
       "Bash(service httpd:*)",
       "Bash(service apache2:*)",
       "Bash(service nginx:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(mariadb:*)",
+      "Bash(journalctl:*)"
     ],
     "deny": []
   }

@@ -579,6 +579,121 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
         right: 15px;
     }
 }
+
+/* 작성자 정보 스타일 */
+.author-info-card {
+    border-left: 3px solid #4A90E2;
+}
+
+.author-info-compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.author-avatar-small {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.author-avatar-small:hover {
+    transform: scale(1.1);
+}
+
+.author-details-compact {
+    flex: 1;
+    min-width: 0;
+}
+
+.author-name-compact {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 2px;
+}
+
+.author-meta-compact {
+    font-size: 0.8rem;
+    color: #718096;
+    margin-bottom: 4px;
+}
+
+.author-bio-compact {
+    font-size: 0.8rem;
+    color: #4a5568;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* 프로필 방문 버튼 */
+.btn-visit-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #4A90E2;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    justify-content: center;
+    height: 44px;
+    margin: 0;
+}
+
+.btn-visit-profile:hover {
+    background: #357ABD;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    text-decoration: none;
+}
+
+.btn-visit-profile i {
+    font-size: 0.875rem;
+}
+
+/* 채팅 버튼 */
+.btn-chat-author {
+    background: #4A90E2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.btn-chat-author:hover {
+    background: #357ABD;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-chat-author i {
+    font-size: 0.875rem;
+}
 </style>
 
 <div class="event-detail-container">
@@ -844,6 +959,55 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 </div>
             </div>
             <?php endif; ?>
+            <?php endif; ?>
+            
+            <!-- 작성자 정보 -->
+            <?php if (isset($event['user_id'])): ?>
+                <div class="info-card author-info-card">
+                    <h3><i class="fas fa-user-edit"></i> 작성자</h3>
+                    <div class="author-info-compact">
+                        <div class="author-avatar-small" onclick="showProfileImageModal('<?= addslashes(htmlspecialchars($event['profile_image_original'] ?? $event['profile_image'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($event['author_name'] ?? $event['nickname'] ?? '작성자')) ?>')" style="cursor: pointer;" title="프로필 이미지 크게 보기">
+                            <?php 
+                            $authorImage = $event['profile_image'] ?? null;
+                            $authorName = $event['author_name'] ?? $event['nickname'] ?? '작성자';
+                            
+                            if ($authorImage): ?>
+                                <img src="<?= htmlspecialchars($authorImage) ?>" 
+                                     alt="<?= htmlspecialchars($authorName) ?>" 
+                                     style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div style="display: none; width: 100%; height: 100%; background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%); border-radius: 50%; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem;">
+                                    <?= mb_substr($authorName, 0, 1) ?>
+                                </div>
+                            <?php else: ?>
+                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.9rem;">
+                                    <?= mb_substr($authorName, 0, 1) ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="author-details-compact">
+                            <div class="author-name-compact"><?= htmlspecialchars($authorName) ?></div>
+                            <div class="author-meta-compact">
+                                📅 <?= date('Y.m.d', strtotime($event['created_at'])) ?>
+                            </div>
+                            <?php if (!empty($event['author_bio'])): ?>
+                                <div class="author-bio-compact"><?= htmlspecialchars(mb_substr(strip_tags($event['author_bio']), 0, 80)) ?>...</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 12px; align-items: center;">
+                        <?php if (isset($event['user_id'])): ?>
+                            <a href="/profile/<?= $event['user_id'] ?>" class="btn-visit-profile" style="flex: 1;">
+                                <i class="fas fa-user"></i> 프로필 방문
+                            </a>
+                            <?php if ($isLoggedIn && $event['user_id'] != $currentUserId): ?>
+                                <button onclick="startChatWithAuthor(<?= $event['user_id'] ?>, '<?= addslashes(htmlspecialchars($authorName)) ?>')" class="btn-chat-author" title="채팅하기">
+                                    <i class="fas fa-comment"></i>
+                                </button>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </div>
@@ -1263,5 +1427,103 @@ function copyToClipboard(text) {
         document.body.removeChild(textArea);
         alert('✅ 링크가 복사되었습니다!');
     }
+}
+
+// 프로필 이미지 모달 함수
+function showProfileImageModal(imageSrc, userName) {
+    if (!imageSrc || imageSrc.trim() === '') {
+        alert('원본 프로필 이미지를 찾을 수 없습니다.');
+        return; // 이미지가 없으면 모달을 열지 않음
+    }
+    
+    // 프로필 이미지 모달이 없으면 생성
+    let modal = document.getElementById('profileImageModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'profileImageModal';
+        modal.style.cssText = `
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        `;
+        
+        modal.innerHTML = `
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border-radius: 16px; min-width: 300px; max-width: 90vw; max-height: 90vh; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); overflow: hidden;">
+                <div style="padding: 20px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+                    <h3 id="modalUserName" style="margin: 0; color: #2d3748; font-size: 1.2rem; font-weight: 600;"></h3>
+                    <button onclick="closeProfileImageModal()" style="background: none; border: none; font-size: 28px; color: #718096; cursor: pointer; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.2s ease;">&times;</button>
+                </div>
+                <div style="padding: 24px; text-align: center; background: white;">
+                    <img id="modalProfileImage" src="" alt="프로필 이미지" style="min-width: 200px; min-height: 200px; max-width: 500px; max-height: 500px; width: auto; height: auto; border-radius: 8px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);">
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // 모달 배경 클릭 시 닫기
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeProfileImageModal();
+            }
+        });
+    }
+    
+    const modalImage = modal.querySelector('#modalProfileImage');
+    const modalUserName = modal.querySelector('#modalUserName');
+    
+    // 이미지 로딩 상태 표시
+    modalImage.style.display = 'none';
+    modalUserName.textContent = userName + '의 프로필';
+    modal.style.display = 'block';
+    
+    // 새 이미지 객체로 로딩 확인
+    const img = new Image();
+    img.onload = function() {
+        modalImage.src = imageSrc;
+        modalImage.style.display = 'block';
+    };
+    img.onerror = function() {
+        modalImage.style.display = 'none';
+        alert('이미지를 로딩할 수 없습니다.');
+        closeProfileImageModal();
+    };
+    img.src = imageSrc;
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', handleProfileModalEscKey);
+}
+
+function closeProfileImageModal() {
+    const modal = document.getElementById('profileImageModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    
+    // ESC 키 이벤트 제거
+    document.removeEventListener('keydown', handleProfileModalEscKey);
+}
+
+function handleProfileModalEscKey(event) {
+    if (event.key === 'Escape') {
+        closeProfileImageModal();
+    }
+}
+
+// 작성자와 채팅 시작
+function startChatWithAuthor(authorId, authorName) {
+    if (!authorId) {
+        alert('작성자 정보를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 채팅 페이지로 이동하면서 해당 사용자와 채팅 시작
+    window.location.href = `/chat#user-${authorId}`;
 }
 </script>

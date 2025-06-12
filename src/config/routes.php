@@ -101,6 +101,13 @@ class Router {
             'POST:/events/{id}/delete' => ['EventController', 'delete'],
             'POST:/events/{id}/register' => ['EventController', 'register'],
             'GET:/events/{id}/ical' => ['EventController', 'generateICal'],
+            
+            // 채팅 라우트
+            'GET:/chat' => ['ChatController', 'index'],
+            'GET:/chat/rooms' => ['ChatController', 'getRooms'],
+            'POST:/chat/rooms' => ['ChatController', 'createRoom'],
+            'GET:/chat/search-users' => ['ChatController', 'searchUsers'],
+            'GET:/chat/firebase-token' => ['ChatController', 'getFirebaseToken'],
         ];
     }
     

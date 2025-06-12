@@ -167,6 +167,16 @@
     color: #dc2626;
 }
 
+.comment-btn.chat {
+    color: #000000;
+    font-size: 1rem;
+}
+
+.comment-btn.chat:hover {
+    color: #000000;
+    background: #f3f4f6;
+}
+
 .comment-content {
     color: #374151;
     line-height: 1.6;
@@ -331,16 +341,21 @@ function renderComment($comment, $currentUserId = null, $depth = 0) {
                         </div>
                     </div>
                 </div>
-                <?php if ($isOwner): ?>
                 <div class="comment-actions-btn">
-                    <button onclick="editComment(<?= $comment['id'] ?>)" class="comment-btn edit">
-                        수정
-                    </button>
-                    <button onclick="deleteComment(<?= $comment['id'] ?>)" class="comment-btn delete">
-                        삭제
-                    </button>
+                    <?php if ($currentUserId && !$isOwner && $comment['user_id']): ?>
+                        <button onclick="startChatWithCommentAuthor(<?= $comment['user_id'] ?>, '<?= addslashes(htmlspecialchars($comment['author_name'])) ?>')" class="comment-btn chat" title="채팅하기">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    <?php endif; ?>
+                    <?php if ($isOwner): ?>
+                        <button onclick="editComment(<?= $comment['id'] ?>)" class="comment-btn edit">
+                            수정
+                        </button>
+                        <button onclick="deleteComment(<?= $comment['id'] ?>)" class="comment-btn delete">
+                            삭제
+                        </button>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
             </div>
             <div class="comment-content" id="comment-content-<?= $comment['id'] ?>">
                 <?php
@@ -795,6 +810,17 @@ function deleteComment(commentId) {
         console.error('Error:', error);
         alert('댓글 삭제 중 오류가 발생했습니다.');
     });
+}
+
+// 댓글 작성자와 채팅 시작
+function startChatWithCommentAuthor(authorId, authorName) {
+    if (!authorId) {
+        alert('댓글 작성자 정보를 찾을 수 없습니다.');
+        return;
+    }
+    
+    // 채팅 페이지로 이동하면서 해당 사용자와 채팅 시작
+    window.location.href = `/chat#user-${authorId}`;
 }
 
 // 페이지 로드 시 해시 앵커로 스크롤

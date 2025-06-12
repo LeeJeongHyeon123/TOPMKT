@@ -537,4 +537,32 @@ class User {
         
         return $this->db->fetch($sql, [':id' => $userId]);
     }
+    
+    /**
+     * 채팅용 사용자 검색
+     */
+    public function searchUsers($query, $currentUserId = null) {
+        try {
+            // 정확한 닉네임 일치 검색
+            $sql = "SELECT id, nickname, email, bio, profile_image_thumb as profile_image, created_at FROM users WHERE nickname = ? LIMIT 20";
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->execute([$query]);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("사용자 검색 쿼리: " . $query);
+            error_log("사용자 검색 결과 수: " . count($result));
+            
+            // 현재 사용자 제외
+            if ($currentUserId) {
+                $result = array_filter($result, function($user) use ($currentUserId) {
+                    return $user['id'] != $currentUserId;
+                });
+            }
+            
+            return array_values($result);
+        } catch (Exception $e) {
+            error_log("User::searchUsers 오류: " . $e->getMessage());
+            return [];
+        }
+    }
 } 

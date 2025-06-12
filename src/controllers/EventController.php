@@ -166,14 +166,17 @@ class EventController extends LectureController {
      */
     private function getEventById($eventId) {
         $sql = "SELECT 
-                    id, title, description, instructor_name, instructor_info,
-                    start_date, end_date, start_time, end_time,
-                    location_type, venue_name, venue_address, online_link,
-                    max_participants, registration_fee, category, status,
-                    content_type, event_scale, has_networking, sponsor_info,
-                    dress_code, parking_info, created_at, user_id, instructor_image, youtube_video
-                FROM lectures 
-                WHERE id = ? AND content_type = 'event' AND status = 'published'";
+                    l.id, l.title, l.description, l.instructor_name, l.instructor_info,
+                    l.start_date, l.end_date, l.start_time, l.end_time,
+                    l.location_type, l.venue_name, l.venue_address, l.online_link,
+                    l.max_participants, l.registration_fee, l.category, l.status,
+                    l.content_type, l.event_scale, l.has_networking, l.sponsor_info,
+                    l.dress_code, l.parking_info, l.created_at, l.user_id, l.instructor_image, l.youtube_video,
+                    u.nickname as author_name, u.bio as author_bio, 
+                    u.profile_image, u.profile_image_original
+                FROM lectures l
+                LEFT JOIN users u ON l.user_id = u.id
+                WHERE l.id = ? AND l.content_type = 'event' AND l.status = 'published'";
         
         $stmt = $this->db->getConnection()->prepare($sql);
         $stmt->execute([$eventId]);
