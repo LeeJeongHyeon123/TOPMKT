@@ -42,7 +42,8 @@
       "Bash(service nginx:*)",
       "Bash(mv:*)",
       "Bash(mariadb:*)",
-      "Bash(journalctl:*)"
+      "Bash(journalctl:*)",
+      "Bash(git remote get-url:*)"
     ],
     "deny": []
   }
