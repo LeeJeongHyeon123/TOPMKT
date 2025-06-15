@@ -47,7 +47,9 @@
       "Bash(./scripts/docker_db_backup.sh:*)",
       "Bash(bun:*)",
       "Bash(npx cursor-talk-to-figma-mcp:*)",
-      "Bash(node --version)"
+      "Bash(node --version)",
+      "Bash(git remote set-url:*)",
+      "Bash(git fetch:*)"
     ],
     "deny": []
   }
