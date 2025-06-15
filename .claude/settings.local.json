@@ -49,7 +49,10 @@
       "Bash(npx cursor-talk-to-figma-mcp:*)",
       "Bash(node --version)",
       "Bash(git remote set-url:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(env)",
+      "Bash(printenv)",
+      "Bash(crontab:*)"
     ],
     "deny": []
   }
