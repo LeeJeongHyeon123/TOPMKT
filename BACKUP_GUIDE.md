@@ -1,7 +1,13 @@
 # 🔥 탑마케팅 플랫폼 완전 백업 및 복구 가이드
 
 **생성일**: 2025-06-12  
+**최종 업데이트**: 2025-06-12  
 **목적**: 서버가 통째로 삭제되어도 완전 복구 가능한 백업 시스템
+
+**✅ 백업 시스템 완료 상태**: 
+- Git 백업: GitHub에 완전 백업 완료
+- DB 백업: 자동화 스크립트로 매일 백업 (`/backup/topmkt/`)
+- 복구 스크립트: 원클릭 복구 시스템 구축 완료
 
 ---
 
@@ -37,7 +43,18 @@
 
 ## 🚀 완전 복구 절차
 
-### 1단계: 서버 환경 준비
+### 🔄 자동 복구 (권장)
+
+```bash
+# 새 서버에서 원클릭 복구
+wget https://raw.githubusercontent.com/LeeJeongHyeon123/topmkt/main/scripts/restore.sh
+chmod +x restore.sh
+./restore.sh www.topmktx.com
+```
+
+### 📋 수동 복구 절차
+
+#### 1단계: 서버 환경 준비
 
 ```bash
 # 1. 기본 패키지 설치 (Ubuntu/CentOS)
@@ -87,7 +104,11 @@ sudo mysql_secure_installation
 # 3. 데이터베이스 생성 및 스키마 복구
 mysql -u root -p < database/schema.sql
 
-# 4. 사용자 생성 및 권한 부여
+# 4. 실제 데이터 복원 (백업 파일이 있는 경우)
+# 최신 백업에서 복원:
+gunzip -c /backup/topmkt/topmkt_backup_YYYYMMDD_HHMMSS.sql.gz | mysql -u root -p topmkt
+
+# 5. 사용자 생성 및 권한 부여
 mysql -u root -p
 ```
 

@@ -44,7 +44,10 @@
       "Bash(mariadb:*)",
       "Bash(journalctl:*)",
       "Bash(git remote get-url:*)",
-      "Bash(./scripts/docker_db_backup.sh:*)"
+      "Bash(./scripts/docker_db_backup.sh:*)",
+      "Bash(bun:*)",
+      "Bash(npx cursor-talk-to-figma-mcp:*)",
+      "Bash(node --version)"
     ],
     "deny": []
   }

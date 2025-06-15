@@ -207,6 +207,59 @@ CREATE TABLE `event_images` (
 -- FULLTEXT 인덱스 추가 (검색 성능 최적화)
 ALTER TABLE `posts` ADD FULLTEXT(`title`, `content`);
 
+-- users 테이블에 기업 인증 상태 필드 추가
+ALTER TABLE `users` ADD COLUMN `corp_status` ENUM('none', 'pending', 'approved', 'rejected') DEFAULT 'none' AFTER `role`;
+ALTER TABLE `users` ADD COLUMN `corp_approved_at` TIMESTAMP NULL AFTER `corp_status`;
+
+-- 기업 프로필 테이블
+CREATE TABLE `company_profiles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL UNIQUE,
+  `company_name` varchar(255) NOT NULL,
+  `business_number` varchar(100) NOT NULL,
+  `representative_name` varchar(100) NOT NULL,
+  `representative_phone` varchar(20) NOT NULL,
+  `company_address` text NOT NULL,
+  `business_registration_file` varchar(255) NOT NULL,
+  `is_overseas` boolean DEFAULT 0,
+  
+  -- 심사 관련
+  `status` enum('pending', 'approved', 'rejected') DEFAULT 'pending',
+  `admin_notes` text NULL,
+  `processed_by` int(11) NULL,
+  `processed_at` timestamp NULL,
+  
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_business_number` (`business_number`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`processed_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 기업 인증 신청/수정 이력 관리
+CREATE TABLE `company_application_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `action_type` enum('apply', 'reapply', 'modify', 'approve', 'reject') NOT NULL,
+  `old_data` longtext NULL,
+  `new_data` longtext NULL,
+  `admin_notes` text NULL,
+  `created_by` int(11) NOT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_action_type` (`action_type`),
+  KEY `idx_created_at` (`created_at`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 기본 설정 데이터 삽입
 INSERT INTO `settings` (`key_name`, `value`, `description`, `type`, `is_public`) VALUES
 ('site_name', '탑마케팅', '사이트 이름', 'STRING', TRUE),

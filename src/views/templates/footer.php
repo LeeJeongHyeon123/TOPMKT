@@ -114,5 +114,13 @@
             });
         });
     </script>
+    
+    <!-- 레이지 로딩 스크립트 -->
+    <?php
+    if (file_exists(SRC_PATH . '/helpers/LazyLoadHelper.php')) {
+        require_once SRC_PATH . '/helpers/LazyLoadHelper.php';
+        echo LazyLoadHelper::getScript();
+    }
+    ?>
 </body>
 </html> 

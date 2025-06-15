@@ -1096,6 +1096,8 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                 <img src="<?= htmlspecialchars($imagePath) ?>" 
                                      alt="<?= htmlspecialchars($name) ?> 강사님" 
                                      class="instructor-avatar clickable-image"
+                                     loading="lazy"
+                                     decoding="async"
                                      onclick="openInstructorImageModal('<?= htmlspecialchars($imagePath) ?>', '<?= htmlspecialchars($name) ?> 강사님')">
                             <?php else: ?>
                                 <div class="instructor-avatar placeholder">

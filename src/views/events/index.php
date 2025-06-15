@@ -133,7 +133,7 @@ $monthNames = [
     border: none;
     padding: 12px 24px;
     border-radius: 50px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
     transition: all 0.3s;
@@ -142,11 +142,18 @@ $monthNames = [
     gap: 8px;
 }
 
+.create-event-btn:link,
+.create-event-btn:visited,
+.create-event-btn:focus,
+.create-event-btn:active {
+    text-decoration: none !important;
+}
+
 .create-event-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
     color: white;
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 /* 캘린더 스타일 */
@@ -437,11 +444,29 @@ $monthNames = [
         </div>
 
         <!-- 행사 등록 버튼 -->
-        <?php if ($isLoggedIn && in_array($current_user['role'] ?? '', ['PREMIUM', 'ADMIN', 'SUPER_ADMIN'])): ?>
-        <a href="/events/create" class="create-event-btn">
-            <i class="fas fa-plus"></i>
-            새 행사 등록
-        </a>
+        <?php if ($isLoggedIn): ?>
+            <?php 
+            // 기업회원 권한 확인
+            require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+            $permission = CorporateMiddleware::checkLectureEventPermission();
+            
+            if ($permission['hasPermission']): ?>
+                <a href="/events/create" class="create-event-btn">
+                    <i class="fas fa-plus"></i>
+                    새 행사 등록
+                </a>
+            <?php else: ?>
+                <a href="/corp/info" class="create-event-btn" style="background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);" 
+                   title="<?= htmlspecialchars($permission['message']) ?>">
+                    <i class="fas fa-calendar-plus"></i>
+                    행사 일정 등록
+                </a>
+            <?php endif; ?>
+        <?php else: ?>
+            <a href="/auth/login?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="create-event-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                로그인 후 등록
+            </a>
         <?php endif; ?>
     </div>
 

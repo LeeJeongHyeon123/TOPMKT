@@ -117,6 +117,14 @@ require_once SRC_PATH . '/views/templates/header.php';
                         </li>
                         <li>회사는 운영상, 기술상의 필요에 따라 제공하고 있는 전부 또는 일부 서비스를 변경할 수 있습니다.</li>
                         <li>회사는 무료로 제공되는 서비스의 일부 또는 전부를 회사의 정책 및 운영의 필요상 수정, 중단, 변경할 수 있으며, 이에 대하여 관련법에 특별한 규정이 없는 한 회원에게 별도의 보상을 하지 않습니다.</li>
+                        <li>회사는 사용자 경험 향상을 위해 다음과 같은 기술적 조치를 시행할 수 있습니다:
+                            <ul>
+                                <li><strong>레이지 로딩:</strong> 이미지 및 콘텐츠의 효율적 로딩을 위한 기술</li>
+                                <li><strong>캐싱:</strong> 웹사이트 성능 향상을 위한 임시 데이터 저장</li>
+                                <li><strong>압축:</strong> 데이터 전송 최적화를 위한 압축 기술</li>
+                                <li>위 기술들은 개인정보를 수집하거나 추적하지 않으며, 서비스 품질 향상 목적으로만 사용됩니다.</li>
+                            </ul>
+                        </li>
                     </ol>
                 </section>
 
@@ -180,10 +188,12 @@ require_once SRC_PATH . '/views/templates/header.php';
                     <h2>제15조 (연락처)</h2>
                     <p>본 약관에 관한 문의사항이나 서비스 이용 중 발생한 문제에 대해서는 다음의 연락처로 문의하시기 바랍니다:</p>
                     <div class="contact-info">
-                        <p><strong>상호:</strong> 탑마케팅(TopMKT)</p>
-                        <p><strong>이메일:</strong> support@topmktx.com</p>
-                        <p><strong>고객센터:</strong> 1588-1234 (평일 09:00-18:00)</p>
-                        <p><strong>주소:</strong> 서울특별시 강남구 테헤란로 123, 456호</p>
+                        <p><strong>상호:</strong> (주)윈카드</p>
+                        <p><strong>대표자:</strong> 이정현</p>
+                        <p><strong>사업자등록번호:</strong> 133-88-02437</p>
+                        <p><strong>이메일:</strong> jh@wincard.kr</p>
+                        <p><strong>고객센터:</strong> 070-4138-8899 (평일 09:00-18:00)</p>
+                        <p><strong>주소:</strong> 서울시 금천구 가산디지털1로 204, 반도 아이비밸리 6층</p>
                     </div>
                 </section>
 

@@ -108,6 +108,20 @@ class Router {
             'POST:/chat/rooms' => ['ChatController', 'createRoom'],
             'GET:/chat/search-users' => ['ChatController', 'searchUsers'],
             'GET:/chat/firebase-token' => ['ChatController', 'getFirebaseToken'],
+            
+            // 기업회원 라우트
+            'GET:/corp/info' => ['CorporateController', 'info'],
+            'GET:/corp/apply' => ['CorporateController', 'apply'],
+            'POST:/corp/apply' => ['CorporateController', 'apply'],
+            'GET:/corp/status' => ['CorporateController', 'status'],
+            'GET:/corp/edit' => ['CorporateController', 'edit'],
+            'POST:/corp/edit' => ['CorporateController', 'edit'],
+            
+            // 요가 랜딩페이지 테스트 라우트
+            'GET:/yoga-landing' => ['YogaController', 'landing'],
+            
+            // Tvelia 여행사 웹사이트 라우트
+            'GET:/tvelia-travel' => ['TveliaController', 'landing'],
         ];
     }
     

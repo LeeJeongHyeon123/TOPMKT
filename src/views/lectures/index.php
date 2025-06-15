@@ -135,13 +135,57 @@ $monthNames = [
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
-    text-decoration: none;
+    text-decoration: none !important;
     transition: all 0.3s ease;
+}
+
+.btn-create:link,
+.btn-create:visited,
+.btn-create:focus,
+.btn-create:active {
+    text-decoration: none !important;
 }
 
 .btn-create:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
+    text-decoration: none !important;
+}
+
+/* 색상 범례 스타일 */
+.color-legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend-color.offline {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.legend-color.online {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
 }
 
 /* 캘린더 스타일 */
@@ -231,9 +275,6 @@ $monthNames = [
     background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
 }
 
-.lecture-item.hybrid {
-    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-}
 
 .lecture-time {
     font-size: 0.75rem;
@@ -513,6 +554,15 @@ $monthNames = [
     .lecture-list-meta {
         grid-template-columns: 1fr;
     }
+    
+    /* 모바일에서 범례 세로 배치 */
+    .color-legend {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        margin: 15px 0;
+        padding: 12px;
+    }
 }
 
 /* 매우 작은 화면 (모바일 세로) */
@@ -709,9 +759,6 @@ $monthNames = [
     border-left-color: #48bb78;
 }
 
-.modal-lecture-item.hybrid {
-    border-left-color: #ed8936;
-}
 
 .modal-lecture-time {
     font-size: 0.9rem;
@@ -804,6 +851,18 @@ $monthNames = [
         <p>다양한 마케팅 강의와 세미나 일정을 확인하고 신청하세요</p>
     </div>
     
+    <!-- 색상 범례 -->
+    <div class="color-legend">
+        <div class="legend-item">
+            <div class="legend-color offline"></div>
+            <span>🏢 오프라인 강의</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color online"></div>
+            <span>💻 온라인 강의</span>
+        </div>
+    </div>
+    
     <!-- 캘린더 컨트롤 영역 -->
     <div class="calendar-controls">
         <!-- 월 네비게이션 -->
@@ -834,16 +893,19 @@ $monthNames = [
             
             <?php if ($isLoggedIn): ?>
                 <?php 
-                $canCreate = in_array($_SESSION['user_role'] ?? '', ['PREMIUM', 'ADMIN', 'SUPER_ADMIN']);
-                if ($canCreate): ?>
+                // 기업회원 권한 확인
+                require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+                $permission = CorporateMiddleware::checkLectureEventPermission();
+                
+                if ($permission['hasPermission']): ?>
                     <a href="/lectures/create" class="btn-create">
                         ➕ 강의 등록
                     </a>
                 <?php else: ?>
-                    <span class="btn-create" style="background: #a0aec0; cursor: not-allowed;" 
-                          title="기업회원만 강의를 등록할 수 있습니다">
-                        🏢 기업회원 전용
-                    </span>
+                    <a href="/corp/info" class="btn-create" style="background: #a0aec0;" 
+                       title="<?= htmlspecialchars($permission['message']) ?>">
+                        📝 강의 일정 등록
+                    </a>
                 <?php endif; ?>
             <?php else: ?>
                 <a href="/auth/login?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="btn-create">
@@ -929,8 +991,6 @@ $monthNames = [
                                             <div class="meta-item">
                                                 <?php if ($lecture['location_type'] === 'online'): ?>
                                                     💻 온라인
-                                                <?php elseif ($lecture['location_type'] === 'hybrid'): ?>
-                                                    🔄 하이브리드
                                                 <?php else: ?>
                                                     📍 <?= htmlspecialchars($lecture['venue_name'] ?? '오프라인') ?>
                                                 <?php endif; ?>

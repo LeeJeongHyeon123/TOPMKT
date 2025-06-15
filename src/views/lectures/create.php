@@ -8,6 +8,16 @@ require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
 $isLoggedIn = AuthMiddleware::isLoggedIn();
 $currentUserId = AuthMiddleware::getCurrentUserId();
 
+// 기업회원 권한 확인
+require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+$permission = CorporateMiddleware::checkLectureEventPermission();
+
+if (!$permission['hasPermission']) {
+    $_SESSION['error_message'] = $permission['message'];
+    header('Location: /corp/info');
+    exit;
+}
+
 // CSRF 토큰 생성
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -412,14 +422,10 @@ if (!isset($_SESSION['csrf_token'])) {
                         <input type="radio" name="location_type" value="online" required>
                         <span>💻 온라인</span>
                     </label>
-                    <label class="radio-item">
-                        <input type="radio" name="location_type" value="hybrid" required>
-                        <span>🔄 하이브리드</span>
-                    </label>
                 </div>
             </div>
             
-            <!-- 오프라인/하이브리드 필드 -->
+            <!-- 오프라인 필드 -->
             <div id="offline-fields" class="location-fields">
                 <div class="form-grid">
                     <div class="form-group">
@@ -435,7 +441,7 @@ if (!isset($_SESSION['csrf_token'])) {
                 </div>
             </div>
             
-            <!-- 온라인/하이브리드 필드 -->
+            <!-- 온라인 필드 -->
             <div id="online-fields" class="location-fields">
                 <div class="form-group">
                     <label for="online_link" class="form-label">온라인 링크</label>
@@ -535,10 +541,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 offlineFields.classList.add('active');
                 break;
             case 'online':
-                onlineFields.classList.add('active');
-                break;
-            case 'hybrid':
-                offlineFields.classList.add('active');
                 onlineFields.classList.add('active');
                 break;
         }
@@ -660,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 위치 타입별 필수 필드 검사
         const locationType = document.querySelector('input[name="location_type"]:checked');
         if (locationType) {
-            if (locationType.value === 'offline' || locationType.value === 'hybrid') {
+            if (locationType.value === 'offline') {
                 const venueField = document.getElementById('venue_name');
                 if (!venueField.value.trim()) {
                     alert('오프라인 진행 시 장소명은 필수입니다.');
@@ -669,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             
-            if (locationType.value === 'online' || locationType.value === 'hybrid') {
+            if (locationType.value === 'online') {
                 const linkField = document.getElementById('online_link');
                 if (!linkField.value.trim()) {
                     alert('온라인 진행 시 온라인 링크는 필수입니다.');

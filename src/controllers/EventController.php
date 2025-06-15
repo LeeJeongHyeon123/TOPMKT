@@ -256,10 +256,14 @@ class EventController extends LectureController {
             exit;
         }
         
-        // 권한 확인 (PREMIUM 이상)
-        if (!in_array($currentUser['role'], ['PREMIUM', 'ADMIN', 'SUPER_ADMIN'])) {
-            $this->showErrorPage("행사 등록 권한이 없습니다. 프리미엄 멤버십이 필요합니다.", 403);
-            return;
+        // 기업회원 권한 확인
+        require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+        $permission = CorporateMiddleware::checkLectureEventPermission();
+        
+        if (!$permission['hasPermission']) {
+            $_SESSION['error_message'] = $permission['message'];
+            header('Location: /corp/info');
+            exit;
         }
         
         $data = [
@@ -281,10 +285,18 @@ class EventController extends LectureController {
             return;
         }
         
-        // 로그인 및 권한 확인
+        // 로그인 및 기업회원 권한 확인
         $currentUser = $this->getCurrentUser();
-        if (!$currentUser || !in_array($currentUser['role'], ['PREMIUM', 'ADMIN', 'SUPER_ADMIN'])) {
-            ResponseHelper::json(['success' => false, 'message' => '권한이 없습니다.'], 403);
+        if (!$currentUser) {
+            ResponseHelper::json(['success' => false, 'message' => '로그인이 필요합니다.'], 401);
+            return;
+        }
+        
+        require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+        $permission = CorporateMiddleware::checkLectureEventPermission();
+        
+        if (!$permission['hasPermission']) {
+            ResponseHelper::json(['success' => false, 'message' => $permission['message']], 403);
             return;
         }
         

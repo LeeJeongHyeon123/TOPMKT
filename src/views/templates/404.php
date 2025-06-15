@@ -180,7 +180,7 @@ require_once SRC_PATH . '/views/templates/header.php';
         <div class="helpful-links">
             <h3>도움이 될 만한 링크</h3>
             <div class="links-grid">
-                <a href="/posts" class="helpful-link">
+                <a href="/community" class="helpful-link">
                     <i class="fas fa-comments"></i>
                     커뮤니티
                 </a>

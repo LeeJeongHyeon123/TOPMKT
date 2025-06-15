@@ -25,9 +25,14 @@
     <meta property="twitter:image" content="<?= $og_image ?? 'https://' . $_SERVER['HTTP_HOST'] . '/assets/images/topmkt-og-image.png?v=' . date('Ymd') ?>">
     
     <!-- 추가 메타 태그 -->
-    <meta name="keywords" content="<?= $keywords ?? '마케팅, 네트워크 마케팅, 세미나, 워크샵, 커뮤니티, 마케팅 교육, 온라인 강의' ?>">
-    <meta name="author" content="탑마케팅">
+    <meta name="keywords" content="<?= $keywords ?? '마케팅, 네트워크 마케팅, 세미나, 워크샵, 커뮤니티, 마케팅 교육, 온라인 강의, 탑마케팅, TopMKT, 비즈니스 매칭, 마케팅 플랫폼' ?>">
+    <meta name="author" content="(주)윈카드">
     <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="msapplication-navbutton-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
     <?php if (isset($_SESSION['user_id'])): ?>
     <meta name="user-id" content="<?= $_SESSION['user_id'] ?>">
@@ -47,6 +52,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- 레이지 로딩 스타일 -->
+    <?php
+    if (file_exists(SRC_PATH . '/helpers/LazyLoadHelper.php')) {
+        require_once SRC_PATH . '/helpers/LazyLoadHelper.php';
+        echo LazyLoadHelper::getStyles();
+    }
+    ?>
+    
     <!-- JavaScript -->
     <script src="/assets/js/loading.js"></script>
     <script src="/assets/js/main.js" defer></script>
@@ -56,6 +69,37 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="/assets/js/chat-notifications.js"></script>
+    <?php endif; ?>
+    
+    <!-- 구조화 데이터 (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "탑마케팅",
+        "alternateName": "TopMKT",
+        "url": "https://www.topmktx.com",
+        "description": "글로벌 네트워크 마케팅 리더들의 커뮤니티 플랫폼",
+        "publisher": {
+            "@type": "Organization",
+            "name": "(주)윈카드",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.topmktx.com/assets/images/logo.png"
+            }
+        },
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.topmktx.com/community?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    
+    <?php if (isset($structured_data)): ?>
+    <script type="application/ld+json">
+    <?= json_encode($structured_data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+    </script>
     <?php endif; ?>
 </head>
 <body>

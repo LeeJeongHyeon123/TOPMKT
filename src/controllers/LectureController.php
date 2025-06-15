@@ -154,14 +154,14 @@ class LectureController {
             exit;
         }
         
-        // 권한 확인 (기업회원, 관리자만 가능)
-        if (!$this->canCreateLecture()) {
-            header("HTTP/1.0 403 Forbidden");
-            $this->renderView('templates/403', [
-                'title' => '접근 권한 없음',
-                'message' => '강의 등록은 기업회원만 가능합니다. 기업회원 인증을 진행해주세요.'
-            ]);
-            return;
+        // 기업회원 권한 확인
+        require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+        $permission = CorporateMiddleware::checkLectureEventPermission();
+        
+        if (!$permission['hasPermission']) {
+            $_SESSION['error_message'] = $permission['message'];
+            header('Location: /corp/info');
+            exit;
         }
         
         try {
@@ -202,9 +202,12 @@ class LectureController {
                 return;
             }
             
-            // 권한 확인 (기업회원, 관리자만 가능)
-            if (!$this->canCreateLecture()) {
-                ResponseHelper::sendError('강의 등록은 기업회원만 가능합니다.', 403);
+            // 기업회원 권한 확인
+            require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+            $permission = CorporateMiddleware::checkLectureEventPermission();
+            
+            if (!$permission['hasPermission']) {
+                ResponseHelper::sendError($permission['message'], 403);
                 return;
             }
             
@@ -570,14 +573,9 @@ class LectureController {
      * 강의 생성 권한 확인
      */
     private function canCreateLecture() {
-        if (!isset($_SESSION['user_role'])) {
-            return false;
-        }
-        
-        $userRole = $_SESSION['user_role'];
-        
-        // 기업회원(PREMIUM), 관리자, 최고관리자만 가능
-        return in_array($userRole, ['PREMIUM', 'ADMIN', 'SUPER_ADMIN']);
+        require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+        $permission = CorporateMiddleware::checkLectureEventPermission();
+        return $permission['hasPermission'];
     }
     
     /**
