@@ -11,16 +11,22 @@ class Database {
     private static $instance = null;
     private $connection;
     
-    // 데이터베이스 설정
+    // 데이터베이스 설정 (환경변수 우선, 기본값 fallback)
     private const HOST = 'localhost';
     private const DB_NAME = 'topmkt';
     private const USERNAME = 'root';
-    private const PASSWORD = 'Dnlszkem1!';
+    private const PASSWORD = ''; // 환경변수에서 로드
     private const CHARSET = 'utf8mb4';
     
     private function __construct() {
         try {
-            $dsn = 'mysql:host=' . self::HOST . ';dbname=' . self::DB_NAME . ';charset=' . self::CHARSET;
+            // 환경변수에서 데이터베이스 설정 로드 (보안 강화)
+            $host = $_ENV['DB_HOST'] ?? self::HOST;
+            $dbname = $_ENV['DB_NAME'] ?? self::DB_NAME;
+            $username = $_ENV['DB_USERNAME'] ?? self::USERNAME;
+            $password = $_ENV['DB_PASSWORD'] ?? 'Dnlszkem1!'; // 임시 fallback (운영 시 제거 필요)
+            
+            $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname . ';charset=' . self::CHARSET;
             
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -28,7 +34,7 @@ class Database {
                 PDO::ATTR_EMULATE_PREPARES => false
             ];
             
-            $this->connection = new PDO($dsn, self::USERNAME, self::PASSWORD, $options);
+            $this->connection = new PDO($dsn, $username, $password, $options);
             
         } catch (PDOException $e) {
             error_log('Database connection failed: ' . $e->getMessage());

@@ -25,6 +25,13 @@ class CommentController {
                 return;
             }
             
+            // CSRF 토큰 검증
+            $csrfToken = $_POST['csrf_token'] ?? $_REQUEST['csrf_token'] ?? '';
+            if (empty($csrfToken) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
+                ResponseHelper::json(['success' => false, 'message' => 'CSRF 토큰이 유효하지 않습니다.'], 403);
+                return;
+            }
+            
             // JSON 입력 데이터 읽기
             $input = json_decode(file_get_contents('php://input'), true);
             if (!$input) {
@@ -82,6 +89,13 @@ class CommentController {
                 return;
             }
             
+            // CSRF 토큰 검증
+            $csrfToken = $_POST['csrf_token'] ?? $_REQUEST['csrf_token'] ?? '';
+            if (empty($csrfToken) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
+                ResponseHelper::json(['success' => false, 'message' => 'CSRF 토큰이 유효하지 않습니다.'], 403);
+                return;
+            }
+            
             // JSON 입력 데이터 읽기
             $input = json_decode(file_get_contents('php://input'), true);
             if (!$input) {
@@ -135,6 +149,13 @@ class CommentController {
             // 로그인 확인
             if (!AuthMiddleware::isLoggedIn()) {
                 ResponseHelper::json(['success' => false, 'message' => '로그인이 필요합니다.'], 401);
+                return;
+            }
+            
+            // CSRF 토큰 검증
+            $csrfToken = $_POST['csrf_token'] ?? $_REQUEST['csrf_token'] ?? '';
+            if (empty($csrfToken) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrfToken)) {
+                ResponseHelper::json(['success' => false, 'message' => 'CSRF 토큰이 유효하지 않습니다.'], 403);
                 return;
             }
             

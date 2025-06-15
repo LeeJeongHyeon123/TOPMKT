@@ -66,6 +66,13 @@ class MediaController {
             $safeFileName = $this->generateSafeFileName($extension);
             $fullPath = $uploadDir . '/' . $safeFileName;
             
+            // 경로 조작 공격 방지
+            $realUploadPath = realpath($uploadDir);
+            $realTargetPath = realpath(dirname($fullPath)) . '/' . basename($fullPath);
+            if (!$realUploadPath || strpos($realTargetPath, $realUploadPath) !== 0) {
+                return $this->jsonResponse(false, '잘못된 업로드 경로입니다.', null, 400);
+            }
+            
             // 파일 이동
             if (!move_uploaded_file($uploadedFile['tmp_name'], $fullPath)) {
                 error_log("파일 이동 실패: {$uploadedFile['tmp_name']} -> $fullPath");
@@ -148,12 +155,12 @@ class MediaController {
         $uploadDir = $this->uploadBasePath . "/posts/{$year}/{$month}";
         
         if (!is_dir($uploadDir)) {
-            if (!mkdir($uploadDir, 0777, true)) {
+            if (!mkdir($uploadDir, 0755, true)) {
                 error_log("디렉토리 생성 실패: $uploadDir");
                 return false;
             }
-            // 생성된 디렉토리 권한 확실히 설정
-            chmod($uploadDir, 0777);
+            // 생성된 디렉토리 권한 설정 (보안 강화: 0755)
+            chmod($uploadDir, 0755);
             error_log("디렉토리 생성 완료: $uploadDir");
         }
         

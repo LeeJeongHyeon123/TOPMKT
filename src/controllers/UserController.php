@@ -393,14 +393,22 @@ class UserController {
                 return;
             }
             
-            // 업로드 디렉토리 생성
+            // 업로드 디렉토리 생성 (보안 강화)
             $uploadDir = ROOT_PATH . '/public/assets/uploads/profiles/' . date('Y/m');
             if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+                mkdir($uploadDir, 0755, true);
             }
             
-            // 안전한 파일명 생성
-            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            // 안전한 파일명 생성 (확장자 검증 추가)
+            $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+            if (!in_array($extension, $allowedExtensions)) {
+                ResponseHelper::json(['error' => '허용되지 않는 파일 확장자입니다.'], 400);
+                return;
+            }
+            
+            // 경로 조작 공격 방지
+            $cleanExtension = preg_replace('/[^a-z0-9]/', '', $extension);
             $filename = 'user_' . $currentUserId . '_' . time() . '_' . bin2hex(random_bytes(8));
             
             // 3가지 크기로 이미지 저장

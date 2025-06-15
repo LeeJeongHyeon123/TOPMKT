@@ -161,6 +161,7 @@ function submitComment() {
     const formData = new FormData();
     formData.append('post_id', currentPostId);
     formData.append('content', content);
+    formData.append('csrf_token', getCsrfToken());
     
     fetch('/api/comments', {
         method: 'POST',
@@ -229,6 +230,7 @@ function submitReply(parentId) {
     formData.append('post_id', currentPostId);
     formData.append('parent_id', parentId);
     formData.append('content', content);
+    formData.append('csrf_token', getCsrfToken());
     
     fetch('/api/comments', {
         method: 'POST',
@@ -295,6 +297,7 @@ function updateComment(commentId) {
     const formData = new FormData();
     formData.append('comment_id', commentId);
     formData.append('content', content);
+    formData.append('csrf_token', getCsrfToken());
     
     fetch('/api/comments', {
         method: 'PUT',
@@ -330,6 +333,7 @@ function deleteComment(commentId) {
     
     const formData = new FormData();
     formData.append('comment_id', commentId);
+    formData.append('csrf_token', getCsrfToken());
     
     fetch('/api/comments', {
         method: 'DELETE',
@@ -368,6 +372,14 @@ function updateCommentCount(count) {
 function getCurrentUserId() {
     const userElement = document.querySelector('[data-user-id]');
     return userElement ? userElement.dataset.userId : null;
+}
+
+/**
+ * CSRF 토큰 가져오기
+ */
+function getCsrfToken() {
+    const tokenElement = document.querySelector('meta[name="csrf-token"]');
+    return tokenElement ? tokenElement.getAttribute('content') : '';
 }
 
 /**

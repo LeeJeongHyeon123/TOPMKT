@@ -51,7 +51,12 @@ function initializeFirebase() {
     console.log('🔔 Firebase 초기화 시작...');
     
     // Firebase 설정 가져오기
-    fetch('/chat/firebase-token')
+    fetch('/chat/firebase-token', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': getCsrfToken()
+        }
+    })
         .then(response => {
             console.log('🔔 Firebase 설정 응답:', response);
             return response.json();
@@ -236,7 +241,12 @@ async function getRoomPartnerInfo(roomId, roomData) {
     try {
         // 상대방 정보 API 호출 - 원본 fetch 사용 (로딩 표시 안 함)
         const fetchFn = window.originalFetch || fetch;
-        const response = await fetchFn(`/api/users/${partnerId}/profile-image`);
+        const response = await fetchFn(`/api/users/${partnerId}/profile-image`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': getCsrfToken()
+            }
+        });
         const data = await response.json();
         
         return {
@@ -394,6 +404,14 @@ function updateBadgeDisplay() {
  * 전역 함수로 노출 (채팅 페이지에서 사용)
  */
 window.resetChatNotificationCount = resetUnreadCount;
+
+/**
+ * CSRF 토큰 가져오기
+ */
+function getCsrfToken() {
+    const tokenElement = document.querySelector('meta[name="csrf-token"]');
+    return tokenElement ? tokenElement.getAttribute('content') : '';
+}
 
 /**
  * 초기 읽지 않은 메시지 수 계산
