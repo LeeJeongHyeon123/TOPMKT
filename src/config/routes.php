@@ -119,6 +119,12 @@ class Router {
             
             // 관리자 라우트
             'GET:/admin' => ['AdminController', 'dashboard'],
+            'GET:/admin/corporate/pending' => ['AdminController', 'corporatePending'],
+            'GET:/admin/corporate/list' => ['AdminController', 'corporateList'],
+            'POST:/admin/corporate/process' => ['AdminController', 'corporateProcess'],
+            'POST:/admin/corporate/detail' => ['AdminController', 'corporateApplicationDetail'],
+            'GET:/admin/document/view' => ['AdminController', 'viewDocument'],
+            'POST:/admin/corporate/manage' => ['AdminController', 'manageCorporateMember'],
             
             // 요가 랜딩페이지 테스트 라우트
             'GET:/yoga-landing' => ['YogaController', 'landing'],

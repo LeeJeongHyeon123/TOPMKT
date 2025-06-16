@@ -33,6 +33,7 @@
     <meta name="msapplication-navbutton-color" content="#6366f1">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
     <?php if (isset($_SESSION['user_id'])): ?>
     <meta name="user-id" content="<?= $_SESSION['user_id'] ?>">
@@ -1002,5 +1003,29 @@
         window.confirmLogout = function() {
             return confirm('정말 로그아웃하시겠습니까?');
         };
+        
+        // 전역 에러 핸들러 (브라우저 확장 프로그램 에러 방지)
+        window.addEventListener('error', function(e) {
+            // 브라우저 확장 프로그램 관련 에러는 무시
+            if (e.message && e.message.includes('message channel closed')) {
+                e.preventDefault();
+                return false;
+            }
+            if (e.message && e.message.includes('asynchronous response')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Promise rejection 에러 핸들러
+        window.addEventListener('unhandledrejection', function(e) {
+            // 브라우저 확장 프로그램 관련 에러는 무시
+            if (e.reason && e.reason.message && 
+                (e.reason.message.includes('message channel closed') || 
+                 e.reason.message.includes('asynchronous response'))) {
+                e.preventDefault();
+                return false;
+            }
+        });
     });
     </script> 

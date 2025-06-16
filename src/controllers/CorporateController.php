@@ -7,7 +7,10 @@
 require_once SRC_PATH . '/config/database.php';
 require_once SRC_PATH . '/models/Corporate.php';
 require_once SRC_PATH . '/helpers/CorporateFileUpload.php';
+require_once SRC_PATH . '/helpers/ValidationHelper.php';
 require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+
+use App\Helpers\ValidationHelper;
 
 class CorporateController {
     private $corporateModel;
@@ -266,7 +269,7 @@ class CorporateController {
         }
         
         // 전화번호 형식 검증
-        if (!ValidationHelper::validatePhone($post['representative_phone'])) {
+        if (!ValidationHelper::isValidPhone($post['representative_phone'])) {
             return ['success' => false, 'message' => '올바른 전화번호 형식을 입력해주세요.'];
         }
         
@@ -306,7 +309,7 @@ class CorporateController {
         }
         
         // 전화번호 형식 검증
-        if (!ValidationHelper::validatePhone($post['representative_phone'])) {
+        if (!ValidationHelper::isValidPhone($post['representative_phone'])) {
             return ['success' => false, 'message' => '올바른 전화번호 형식을 입력해주세요.'];
         }
         

@@ -5,7 +5,7 @@
  */
 
 class CorporateFileUpload {
-    private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+    private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
     private const MAX_SIZE = 10 * 1024 * 1024; // 10MB
     private const UPLOAD_PATH = '/assets/uploads/corp_docs/';
     
@@ -87,15 +87,15 @@ class CorporateFileUpload {
         finfo_close($finfo);
         
         if (!in_array($mimeType, self::ALLOWED_TYPES)) {
-            return ['success' => false, 'message' => 'JPG, PNG, PDF 파일만 업로드 가능합니다.'];
+            return ['success' => false, 'message' => 'JPG, PNG, WebP, PDF 파일만 업로드 가능합니다.'];
         }
         
         // 파일 확장자 검증
         $extension = self::getFileExtension($file['name']);
-        $allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'pdf'];
         
         if (!in_array($extension, $allowedExtensions)) {
-            return ['success' => false, 'message' => 'JPG, PNG, PDF 파일만 업로드 가능합니다.'];
+            return ['success' => false, 'message' => 'JPG, PNG, WebP, PDF 파일만 업로드 가능합니다.'];
         }
         
         // 파일 내용 검증 (기본적인 헤더 확인)
@@ -125,6 +125,9 @@ class CorporateFileUpload {
             ],
             'image/png' => [
                 "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", // PNG
+            ],
+            'image/webp' => [
+                "RIFF", // WebP
             ],
             'application/pdf' => [
                 "%PDF-", // PDF

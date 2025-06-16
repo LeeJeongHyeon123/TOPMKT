@@ -1821,29 +1821,39 @@ function updateLastMessage(roomId) {
 }
 
 /**
- * 시간 포맷팅
+ * 시간 포맷팅 (메시지 시간용)
  */
 function formatTime(timestamp) {
     if (!timestamp) return '';
     
     const date = new Date(timestamp);
     const now = new Date();
-    const diffInHours = (now - date) / (1000 * 60 * 60);
     
-    if (diffInHours < 24) {
+    // 오늘인지 확인 (년, 월, 일이 모두 같은지)
+    const isToday = date.getFullYear() === now.getFullYear() &&
+                   date.getMonth() === now.getMonth() &&
+                   date.getDate() === now.getDate();
+    
+    if (isToday) {
+        // 오늘이면 시간만 표시
         return date.toLocaleTimeString('ko-KR', { 
             hour: '2-digit', 
             minute: '2-digit' 
         });
-    } else if (diffInHours < 24 * 7) {
-        return date.toLocaleDateString('ko-KR', { 
-            weekday: 'short' 
-        });
     } else {
-        return date.toLocaleDateString('ko-KR', { 
-            month: 'short', 
-            day: 'numeric' 
-        });
+        // 오늘이 아니면 년월일 시분초 요일 모두 표시
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        // 요일 구하기
+        const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+        const weekday = weekdays[date.getDay()];
+        
+        return `${year}.${month}.${day}(${weekday}) ${hours}:${minutes}:${seconds}`;
     }
 }
 

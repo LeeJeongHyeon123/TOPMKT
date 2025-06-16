@@ -4,6 +4,44 @@
  */
 
 /**
+ * SMS 헬퍼 클래스
+ */
+class SmsHelper {
+    
+    /**
+     * SMS 발송
+     * 
+     * @param string $phone 수신자 전화번호
+     * @param string $message 메시지 내용
+     * @param string $title 제목 (장문일 경우)
+     * @return array 발송 결과
+     */
+    public function send($phone, $message, $title = '') {
+        return sendSms($phone, $message, $title);
+    }
+    
+    /**
+     * 전화번호 포맷팅
+     * 
+     * @param string $phone 전화번호
+     * @return string 포맷팅된 전화번호
+     */
+    public function formatPhone($phone) {
+        return formatPhone($phone);
+    }
+    
+    /**
+     * 전화번호 유효성 검사
+     * 
+     * @param string $phone 전화번호
+     * @return bool 유효 여부
+     */
+    public function isValidPhone($phone) {
+        return isValidPhone($phone);
+    }
+}
+
+/**
  * 간편 SMS 발송 함수
  * 
  * @param string $phone 수신자 전화번호

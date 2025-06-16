@@ -495,7 +495,7 @@ body.admin-page {
                         <i>🏢</i> 인증 대기 
                         <?php if ($todayStats['pendingCorps'] > 0): ?>
                             <span style="background: #e53e3e; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: auto;">
-                                <?= $todayStats['pendingCorps'] ?>
+                                <?= number_format($todayStats['pendingCorps']) ?>
                             </span>
                         <?php endif; ?>
                     </a>

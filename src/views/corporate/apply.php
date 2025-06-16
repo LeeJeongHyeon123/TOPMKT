@@ -497,14 +497,14 @@
                     <div class="file-upload-area" onclick="document.getElementById('business_registration_file').click()">
                         <div class="file-upload-icon">📄</div>
                         <div class="file-upload-text">클릭하거나 파일을 드래그하여 업로드</div>
-                        <div class="file-upload-hint">JPG, PNG, PDF 파일 (최대 10MB)</div>
+                        <div class="file-upload-hint">JPG, PNG, WebP, PDF 파일 (최대 10MB)</div>
                     </div>
                     
                     <input type="file" 
                            id="business_registration_file" 
                            name="business_registration_file" 
                            class="file-input" 
-                           accept=".jpg,.jpeg,.png,.pdf"
+                           accept=".jpg,.jpeg,.png,.webp,.pdf"
                            required>
                     
                     <div id="selected_file" class="selected-file" style="display: none;">
@@ -618,9 +618,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 파일 타입 검증
-        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
         if (!allowedTypes.includes(file.type)) {
-            alert('JPG, PNG, PDF 파일만 업로드 가능합니다.');
+            alert('JPG, PNG, WebP, PDF 파일만 업로드 가능합니다.');
             fileInput.value = '';
             return;
         }
