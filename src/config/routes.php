@@ -117,6 +117,9 @@ class Router {
             'GET:/corp/edit' => ['CorporateController', 'edit'],
             'POST:/corp/edit' => ['CorporateController', 'edit'],
             
+            // 관리자 라우트
+            'GET:/admin' => ['AdminController', 'dashboard'],
+            
             // 요가 랜딩페이지 테스트 라우트
             'GET:/yoga-landing' => ['YogaController', 'landing'],
             

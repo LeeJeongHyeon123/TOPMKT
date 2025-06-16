@@ -139,6 +139,49 @@ class AuthMiddleware {
     }
     
     /**
+     * 현재 사용자 정보 반환
+     * 
+     * @return array|null 사용자 정보 배열 또는 null
+     */
+    public static function getCurrentUser() {
+        $userId = self::getCurrentUserId();
+        if (!$userId) {
+            return null;
+        }
+        
+        // 세션에 저장된 기본 정보 반환
+        if (isset($_SESSION['user_data'])) {
+            return $_SESSION['user_data'];
+        }
+        
+        // 세션에 없으면 데이터베이스에서 조회
+        try {
+            require_once SRC_PATH . '/config/database.php';
+            $db = Database::getInstance();
+            
+            $stmt = $db->prepare("
+                SELECT id, nickname, phone, email, role, status, 
+                       profile_image_thumb, created_at, updated_at
+                FROM users 
+                WHERE id = :user_id AND status = 'active'
+            ");
+            $stmt->execute([':user_id' => $userId]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($user) {
+                // 세션에 저장하여 다음 요청에서 재사용
+                $_SESSION['user_data'] = $user;
+                return $user;
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            error_log('사용자 정보 조회 오류: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
      * 현재 사용자 프로필 이미지 경로 반환
      * 
      * @return string|null 프로필 이미지 경로 또는 null
