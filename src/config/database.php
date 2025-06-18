@@ -4,7 +4,7 @@
  */
 
 /**
- * 데이터베이스 연결 설정
+ * 데이터베이스 연결 설정 (MySQLi + Socket 방식)
  */
 
 class Database {
@@ -12,7 +12,7 @@ class Database {
     private $connection;
     
     // 데이터베이스 설정 (환경변수 우선, 기본값 fallback)
-    private const HOST = 'localhost';
+    private const SOCKET_PATH = '/var/lib/mysql/mysql.sock'; // MySQL 소켓 파일 경로
     private const DB_NAME = 'topmkt';
     private const USERNAME = 'root';
     private const PASSWORD = ''; // 환경변수에서 로드
@@ -20,23 +20,34 @@ class Database {
     
     private function __construct() {
         try {
+            // 프로젝트별 로그 경로 설정
+            $projectLogPath = '/var/www/html/topmkt/logs/topmkt_errors.log';
+            ini_set('log_errors', 1);
+            ini_set('error_log', $projectLogPath);
+            
             // 환경변수에서 데이터베이스 설정 로드 (보안 강화)
-            $host = $_ENV['DB_HOST'] ?? self::HOST;
+            $socket_path = $_ENV['DB_SOCKET'] ?? self::SOCKET_PATH;
             $dbname = $_ENV['DB_NAME'] ?? self::DB_NAME;
             $username = $_ENV['DB_USERNAME'] ?? self::USERNAME;
-            $password = $_ENV['DB_PASSWORD'] ?? 'Dnlszkem1!'; // 임시 fallback (운영 시 제거 필요)
+            $password = $_ENV['DB_PASSWORD'] ?? 'Dnlszkem1!'; // 새로운 비밀번호로 업데이트
             
-            $dsn = 'mysql:host=' . $host . ';dbname=' . $dbname . ';charset=' . self::CHARSET;
+            // MySQLi 소켓 방식 연결 (Socket-based connection for better performance)
+            $this->connection = new mysqli('localhost', $username, $password, $dbname, 3306, $socket_path);
             
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false
-            ];
+            if ($this->connection->connect_error) {
+                throw new Exception('데이터베이스 연결에 실패했습니다: ' . $this->connection->connect_error);
+            }
             
-            $this->connection = new PDO($dsn, $username, $password, $options);
+            // 문자셋 설정
+            $this->connection->set_charset(self::CHARSET);
             
-        } catch (PDOException $e) {
+            // UTF-8 세션 변수 강제 설정
+            $this->connection->query("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $this->connection->query("SET character_set_client = utf8mb4");
+            $this->connection->query("SET character_set_connection = utf8mb4");
+            $this->connection->query("SET character_set_results = utf8mb4");
+            
+        } catch (Exception $e) {
             error_log('Database connection failed: ' . $e->getMessage());
             throw new Exception('데이터베이스 연결에 실패했습니다.');
         }
@@ -53,7 +64,7 @@ class Database {
     }
     
     /**
-     * PDO 연결 객체 반환
+     * MySQLi 연결 객체 반환
      */
     public function getConnection() {
         return $this->connection;
@@ -64,10 +75,90 @@ class Database {
      */
     public function query($sql, $params = []) {
         try {
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute($params);
-            return $stmt;
-        } catch (PDOException $e) {
+            if (is_array($params) && count($params) > 0) {
+                // PDO 스타일 파라미터(:param)를 MySQLi 스타일(?)로 변환
+                $convertedSql = $sql;
+                $convertedParams = [];
+                
+                foreach ($params as $key => $value) {
+                    if (strpos($key, ':') === 0) {
+                        // :param 형태의 파라미터를 ?로 변환
+                        $convertedSql = str_replace($key, '?', $convertedSql);
+                        $convertedParams[] = $value;
+                    } else {
+                        $convertedParams[] = $value;
+                    }
+                }
+                
+                $stmt = $this->connection->prepare($convertedSql);
+                if (!$stmt) {
+                    throw new Exception('Prepare failed: ' . $this->connection->error);
+                }
+                
+                // 파라미터 바인딩
+                if (!empty($convertedParams)) {
+                    $types = '';
+                    foreach ($convertedParams as $param) {
+                        if (is_null($param)) {
+                            $types .= 's'; // NULL을 문자열로 처리
+                        } elseif (is_int($param)) {
+                            $types .= 'i';
+                        } elseif (is_float($param)) {
+                            $types .= 'd';
+                        } else {
+                            $types .= 's';
+                        }
+                    }
+                    
+                    // 디버깅: 파라미터 바인딩 로그
+                    error_log("=== MySQLi 파라미터 바인딩 ===");
+                    error_log("변환된 SQL: " . $convertedSql);
+                    error_log("바인딩 타입: " . $types);
+                    error_log("바인딩 값들: " . json_encode($convertedParams));
+                    
+                    // 글로벌 변수에 바인딩 정보 저장 (모든 쿼리)
+                    $GLOBALS['debug_last_binding'] = [
+                        'sql' => $convertedSql,
+                        'types' => $types,
+                        'params' => $convertedParams,
+                        'is_update' => stripos($convertedSql, 'UPDATE') === 0
+                    ];
+                    
+                    // UPDATE 쿼리 전용 (공백 제거 후 체크)
+                    if (stripos(trim($convertedSql), 'UPDATE') === 0) {
+                        $GLOBALS['debug_update_binding'] = [
+                            'sql' => $convertedSql,
+                            'types' => $types,
+                            'params' => $convertedParams
+                        ];
+                    }
+                    
+                    $stmt->bind_param($types, ...$convertedParams);
+                }
+                
+                if (!$stmt->execute()) {
+                    throw new Exception('Execute failed: ' . $stmt->error);
+                }
+                
+                return $stmt;
+            } else {
+                // 파라미터 없이 실행되는 경우 로깅
+                if (stripos(trim($sql), 'UPDATE') === 0) {
+                    $GLOBALS['debug_update_binding'] = [
+                        'sql' => $sql,
+                        'types' => 'NO_PARAMS',
+                        'params' => 'NO_PARAMS',
+                        'reason' => 'empty_params_array'
+                    ];
+                }
+                
+                $result = $this->connection->query($sql);
+                if (!$result) {
+                    throw new Exception('Query failed: ' . $this->connection->error);
+                }
+                return $result;
+            }
+        } catch (Exception $e) {
             error_log('Query failed: ' . $e->getMessage() . ' | SQL: ' . $sql);
             throw new Exception('데이터베이스 쿼리 실행에 실패했습니다.');
         }
@@ -77,38 +168,70 @@ class Database {
      * 단일 행 조회
      */
     public function fetch($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetch();
+        $result = $this->query($sql, $params);
+        
+        if ($result instanceof mysqli_stmt) {
+            $result_set = $result->get_result();
+            return $result_set ? $result_set->fetch_assoc() : false;
+        } else {
+            return $result->fetch_assoc();
+        }
     }
     
     /**
      * 다중 행 조회
      */
     public function fetchAll($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->fetchAll();
+        $result = $this->query($sql, $params);
+        $rows = [];
+        
+        if ($result instanceof mysqli_stmt) {
+            $result_set = $result->get_result();
+            if ($result_set) {
+                while ($row = $result_set->fetch_assoc()) {
+                    $rows[] = $row;
+                }
+            }
+        } else {
+            while ($row = $result->fetch_assoc()) {
+                $rows[] = $row;
+            }
+        }
+        
+        return $rows;
     }
     
     /**
      * INSERT/UPDATE/DELETE 실행
      */
     public function execute($sql, $params = []) {
-        $stmt = $this->query($sql, $params);
-        return $stmt->rowCount();
+        try {
+            $result = $this->query($sql, $params);
+            $affected = $this->connection->affected_rows;
+            
+            // 디버깅 정보 로깅
+            error_log("Database execute - affected_rows: " . $affected);
+            error_log("Database execute - connection error: " . $this->connection->error);
+            
+            return $affected;
+        } catch (Exception $e) {
+            error_log("Database execute exception: " . $e->getMessage());
+            throw $e;
+        }
     }
     
     /**
      * 마지막 삽입 ID 반환
      */
     public function lastInsertId() {
-        return $this->connection->lastInsertId();
+        return $this->connection->insert_id;
     }
     
     /**
      * 트랜잭션 시작
      */
     public function beginTransaction() {
-        return $this->connection->beginTransaction();
+        return $this->connection->begin_transaction();
     }
     
     /**
@@ -131,7 +254,7 @@ class Database {
     private function __clone() {}
     
     /**
-     * prepare 메서드 추가 (PDO 메서드 위임)
+     * prepare 메서드 추가 (MySQLi 메서드 위임)
      */
     public function prepare($sql) {
         return $this->connection->prepare($sql);
