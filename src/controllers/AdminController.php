@@ -775,35 +775,14 @@ class AdminController {
     }
     
     /**
-     * 관리자 전용 뷰 렌더링 (헤더/푸터 없음)
+     * 관리자 전용 뷰 렌더링 - 새로운 템플릿 시스템 사용
      */
     private function renderView($viewPath, $data = [], $headerData = []) {
         // 데이터를 변수로 추출
         extract($data);
         extract($headerData);
         
-        // 관리자 페이지 전용 레이아웃
-        ?>
-        <!DOCTYPE html>
-        <html lang="ko">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title><?= $title ?? '관리자 페이지 - 탑마케팅' ?></title>
-            <meta name="description" content="<?= $description ?? '탑마케팅 관리자 페이지' ?>">
-            <meta name="robots" content="noindex, nofollow">
-            <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-        </head>
-        <?php
-        
-        // 메인 뷰 포함
+        // 새로운 템플릿 시스템 사용
         include SRC_PATH . '/views/' . $viewPath . '.php';
-        
-        ?>
-        </html>
-        <?php
     }
 }

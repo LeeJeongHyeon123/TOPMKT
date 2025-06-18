@@ -35,7 +35,7 @@ class AuthMiddleware {
         $userRole = $_SESSION['user_role'];
         
         // 관리자는 모든 권한 허용
-        if ($userRole === 'ADMIN') {
+        if ($userRole === 'ADMIN' || $userRole === 'SUPER_ADMIN' || $userRole === 'ROLE_ADMIN') {
             return true;
         }
         
@@ -89,7 +89,7 @@ class AuthMiddleware {
         $userRole = $_SESSION['user_role'];
         
         // 관리자는 모든 권한 허용
-        if ($userRole === 'ADMIN') {
+        if ($userRole === 'ADMIN' || $userRole === 'SUPER_ADMIN' || $userRole === 'ROLE_ADMIN') {
             return true;
         }
         
@@ -231,7 +231,7 @@ class AuthMiddleware {
      */
     public static function isAdmin() {
         $role = self::getCurrentUserRole();
-        return $role === 'ADMIN' || $role === 'SUPER_ADMIN';
+        return $role === 'ADMIN' || $role === 'SUPER_ADMIN' || $role === 'ROLE_ADMIN';
     }
     
     /**

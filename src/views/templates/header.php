@@ -862,6 +862,15 @@
     </style>
 
     <script>
+    <?php
+    // 관리자 권한 확인을 위한 JavaScript 변수 설정
+    require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+    $isAdmin = AuthMiddleware::isAdmin();
+    ?>
+    
+    // 관리자 여부를 JavaScript 변수로 전달
+    const isAdmin = <?= $isAdmin ? 'true' : 'false' ?>;
+    
     document.addEventListener('DOMContentLoaded', function() {
         // 사용자 메뉴 드롭다운 토글
         const userMenu = document.querySelector('.user-menu');
@@ -893,6 +902,14 @@
                     const unreadCount = currentBadge ? parseInt(currentBadge.textContent) || 0 : 0;
                     const badgeHtml = unreadCount > 0 ? `<span class="notification-badge dropdown-chat-badge" style="background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: bold; min-width: 16px; text-align: center;">${unreadCount}</span>` : '';
                     
+                    // 관리자 메뉴 HTML 생성
+                    const adminMenuHtml = isAdmin ? `
+                        <a href="/admin" class="dropdown-item admin-item">
+                            <i class="fas fa-cog"></i>
+                            <span>관리자 페이지</span>
+                        </a>
+                        <div class="dropdown-divider"></div>` : '';
+                    
                     const floatingDropdown = document.createElement('div');
                     floatingDropdown.id = 'floating-user-dropdown';
                     floatingDropdown.innerHTML = `
@@ -911,6 +928,7 @@
                             <span>채팅</span>
                             ${badgeHtml}
                         </a>
+                        ${adminMenuHtml}
                         <div class="dropdown-divider"></div>
                         <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
                             <i class="fas fa-sign-out-alt"></i>
@@ -957,6 +975,19 @@
                         el.style.color = '#dc2626';
                         el.addEventListener('mouseenter', () => el.style.backgroundColor = '#fef2f2');
                         el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                    });
+                    
+                    // 관리자 메뉴 아이템 스타일
+                    floatingDropdown.querySelectorAll('.admin-item').forEach(el => {
+                        el.style.color = '#7c3aed';
+                        el.addEventListener('mouseenter', () => el.style.backgroundColor = '#f3f0ff');
+                        el.addEventListener('mouseleave', () => el.style.backgroundColor = 'transparent');
+                        
+                        // 관리자 아이콘 스타일
+                        const icon = el.querySelector('i');
+                        if (icon) {
+                            icon.style.color = '#7c3aed';
+                        }
                     });
                     floatingDropdown.querySelectorAll('.notification-badge').forEach(el => {
                         el.style.cssText = 'background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: auto; font-weight: bold; min-width: 16px; text-align: center;';

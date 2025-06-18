@@ -29,8 +29,8 @@ if (!isset($_SESSION['csrf_token'])) {
 .lecture-create-container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
-    min-height: calc(100vh - 200px);
+    padding: 30px 20px 40px;
+    min-height: calc(100vh - 160px);
 }
 
 .create-header {
@@ -38,6 +38,7 @@ if (!isset($_SESSION['csrf_token'])) {
     color: white;
     padding: 40px;
     text-align: center;
+    margin-top: 60px;
     margin-bottom: 30px;
     border-radius: 12px;
 }
@@ -282,6 +283,77 @@ if (!isset($_SESSION['csrf_token'])) {
     }
 }
 
+/* 이미지 업로드 스타일 */
+.image-upload-area {
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.image-upload-area:hover {
+    border-color: #667eea;
+    background: #f1f5f9;
+}
+
+.upload-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+}
+
+.upload-icon {
+    font-size: 2rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.upload-placeholder p {
+    margin: 10px 0 5px;
+    font-weight: 500;
+}
+
+.upload-help {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.image-preview {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+}
+
+.image-preview img {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: background-color 0.3s ease;
+}
+
+.remove-image:hover {
+    background: #dc2626;
+}
+
 /* 다크모드 대응 */
 @media (prefers-color-scheme: dark) {
     .create-form {
@@ -296,6 +368,11 @@ if (!isset($_SESSION['csrf_token'])) {
     }
     
     .location-fields {
+        background: #4a5568;
+        border-color: #718096;
+    }
+    
+    .image-upload-area {
         background: #4a5568;
         border-color: #718096;
     }
@@ -323,6 +400,15 @@ if (!isset($_SESSION['csrf_token'])) {
                            placeholder="예: 디지털 마케팅 전략 완벽 가이드" required>
                     <div class="form-help">참가자들이 쉽게 이해할 수 있는 명확한 제목을 입력하세요</div>
                     <div class="form-error" id="title-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content_type" class="form-label required">콘텐츠 유형</label>
+                    <select id="content_type" name="content_type" class="form-select" required>
+                        <option value="">선택해주세요</option>
+                        <option value="lecture" selected>강의</option>
+                        <option value="event">행사</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
@@ -373,6 +459,27 @@ if (!isset($_SESSION['csrf_token'])) {
                     <textarea id="instructor_info" name="instructor_info" class="form-textarea" 
                               placeholder="강사의 경력, 전문분야, 주요 실적 등을 소개해주세요"></textarea>
                     <div class="form-help">강사의 전문성을 어필할 수 있는 내용을 작성해주세요</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="instructor_image" class="form-label">강사 프로필 이미지</label>
+                    <div class="image-upload-area" id="imageUploadArea">
+                        <input type="file" id="instructor_image" name="instructor_image" 
+                               accept="image/*" style="display: none;">
+                        <div class="upload-placeholder" id="uploadPlaceholder">
+                            <i class="fas fa-camera upload-icon"></i>
+                            <p>클릭하여 강사 이미지 업로드</p>
+                            <span class="upload-help">JPG, PNG 파일 (최대 5MB)</span>
+                        </div>
+                        <div class="image-preview" id="imagePreview" style="display: none;">
+                            <img id="previewImg" src="" alt="미리보기">
+                            <button type="button" class="remove-image" id="removeImage">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-help">강사의 프로필 이미지를 업로드하면 참가자들에게 더 신뢰감을 줄 수 있습니다</div>
+                    <div class="form-error" id="instructor_image-error"></div>
                 </div>
             </div>
         </div>
@@ -464,9 +571,9 @@ if (!isset($_SESSION['csrf_token'])) {
                 </div>
                 
                 <div class="form-group">
-                    <label for="registration_fee" class="form-label">참가비 (원)</label>
-                    <input type="number" id="registration_fee" name="registration_fee" 
-                           class="form-input" min="0" value="0" placeholder="0">
+                    <label for="price" class="form-label">참가비 (원)</label>
+                    <input type="number" id="price" name="price" 
+                           class="form-input" min="0" step="0.01" value="0" placeholder="0">
                     <div class="form-help">무료인 경우 0을 입력하세요</div>
                 </div>
                 
@@ -475,6 +582,70 @@ if (!isset($_SESSION['csrf_token'])) {
                     <input type="datetime-local" id="registration_deadline" name="registration_deadline" 
                            class="form-input">
                     <div class="form-help">마감일이 없으면 비워두세요</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 행사 추가 정보 (행사일 때만 표시) -->
+        <div class="form-section" id="event-section" style="display: none;">
+            <h2 class="section-title">🎪 행사 추가 정보</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="event_scale" class="form-label">행사 규모</label>
+                    <select id="event_scale" name="event_scale" class="form-select">
+                        <option value="">선택해주세요</option>
+                        <option value="small">소규모 (50명 이하)</option>
+                        <option value="medium">중규모 (50-200명)</option>
+                        <option value="large">대규모 (200명 이상)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dress_code" class="form-label">복장 규정</label>
+                    <select id="dress_code" name="dress_code" class="form-select">
+                        <option value="">선택해주세요</option>
+                        <option value="casual">캐주얼</option>
+                        <option value="business_casual">비즈니스 캐주얼</option>
+                        <option value="business">비즈니스</option>
+                        <option value="formal">정장</option>
+                    </select>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="sponsor_info" class="form-label">후원사 정보</label>
+                    <textarea id="sponsor_info" name="sponsor_info" class="form-textarea" 
+                              placeholder="후원사 또는 협력사 정보를 입력해주세요"></textarea>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="parking_info" class="form-label">주차 정보</label>
+                    <textarea id="parking_info" name="parking_info" class="form-textarea" 
+                              placeholder="주차 가능 여부, 주차비, 주차장 위치 등을 안내해주세요"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">네트워킹 세션</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" id="has_networking" name="has_networking" value="1">
+                            <span>네트워킹 세션 포함</span>
+                        </label>
+                    </div>
+                    <div class="form-help">참가자들 간의 네트워킹 시간이 포함되는지 체크해주세요</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 미디어 정보 -->
+        <div class="form-section">
+            <h2 class="section-title">📹 미디어 정보</h2>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="youtube_video" class="form-label">YouTube 동영상 URL</label>
+                    <input type="url" id="youtube_video" name="youtube_video" class="form-input" 
+                           placeholder="https://www.youtube.com/watch?v=...">
+                    <div class="form-help">강의 소개 영상이나 관련 동영상 링크가 있으면 입력해주세요</div>
+                    <div class="form-error" id="youtube_video-error"></div>
                 </div>
             </div>
         </div>
@@ -554,6 +725,23 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('change', toggleLocationFields);
     });
     
+    // 콘텐츠 유형별 섹션 표시/숨김
+    const contentTypeSelect = document.getElementById('content_type');
+    const eventSection = document.getElementById('event-section');
+    
+    function toggleContentSections() {
+        const contentType = contentTypeSelect.value;
+        if (contentType === 'event') {
+            eventSection.style.display = 'block';
+        } else {
+            eventSection.style.display = 'none';
+        }
+    }
+    
+    contentTypeSelect.addEventListener('change', toggleContentSections);
+    // 초기 설정
+    toggleContentSections();
+    
     // 날짜 유효성 검사
     const startDateInput = document.getElementById('start_date');
     const endDateInput = document.getElementById('end_date');
@@ -593,6 +781,207 @@ document.addEventListener('DOMContentLoaded', function() {
     startTimeInput.addEventListener('change', validateTimes);
     endTimeInput.addEventListener('change', validateTimes);
     
+    // 실시간 필드 검증
+    function addRealTimeValidation() {
+        // 제목 검증
+        const titleInput = document.getElementById('title');
+        titleInput.addEventListener('blur', function() {
+            if (this.value.trim().length === 0) {
+                showError('title', '강의 제목을 입력해주세요.');
+            } else if (this.value.trim().length < 5) {
+                showError('title', '강의 제목은 5자 이상 입력해주세요.');
+            } else {
+                clearError('title');
+            }
+        });
+        
+        // 설명 검증
+        const descriptionInput = document.getElementById('description');
+        descriptionInput.addEventListener('blur', function() {
+            if (this.value.trim().length === 0) {
+                showError('description', '강의 설명을 입력해주세요.');
+            } else if (this.value.trim().length < 20) {
+                showError('description', '강의 설명은 20자 이상 입력해주세요.');
+            } else {
+                clearError('description');
+            }
+        });
+        
+        // 강사명 검증
+        const instructorInput = document.getElementById('instructor_name');
+        instructorInput.addEventListener('blur', function() {
+            if (this.value.trim().length === 0) {
+                showError('instructor_name', '강사명을 입력해주세요.');
+            } else {
+                clearError('instructor_name');
+            }
+        });
+        
+        // 온라인 링크 검증
+        const onlineLinkInput = document.getElementById('online_link');
+        onlineLinkInput.addEventListener('blur', function() {
+            const locationType = document.querySelector('input[name="location_type"]:checked');
+            if (locationType && locationType.value === 'online') {
+                if (this.value.trim().length === 0) {
+                    showError('online_link', '온라인 링크를 입력해주세요.');
+                } else if (!isValidUrl(this.value)) {
+                    showError('online_link', '올바른 URL 형식을 입력해주세요.');
+                } else {
+                    clearError('online_link');
+                }
+            }
+        });
+        
+        // 장소명 검증
+        const venueInput = document.getElementById('venue_name');
+        venueInput.addEventListener('blur', function() {
+            const locationType = document.querySelector('input[name="location_type"]:checked');
+            if (locationType && locationType.value === 'offline') {
+                if (this.value.trim().length === 0) {
+                    showError('venue_name', '장소명을 입력해주세요.');
+                } else {
+                    clearError('venue_name');
+                }
+            }
+        });
+        
+        // 참가자 수 검증
+        const maxParticipantsInput = document.getElementById('max_participants');
+        maxParticipantsInput.addEventListener('blur', function() {
+            if (this.value && parseInt(this.value) < 1) {
+                showError('max_participants', '최대 참가자 수는 1명 이상이어야 합니다.');
+            } else {
+                clearError('max_participants');
+            }
+        });
+        
+        // YouTube URL 검증
+        const youtubeInput = document.getElementById('youtube_video');
+        youtubeInput.addEventListener('blur', function() {
+            if (this.value && !isValidYouTubeUrl(this.value)) {
+                showError('youtube_video', '올바른 YouTube URL을 입력해주세요.');
+            } else {
+                clearError('youtube_video');
+            }
+        });
+    }
+    
+    // URL 유효성 검사 함수
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+    
+    // YouTube URL 유효성 검사 함수
+    function isValidYouTubeUrl(url) {
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        return youtubeRegex.test(url);
+    }
+    
+    // 실시간 검증 활성화
+    addRealTimeValidation();
+    
+    // 이미지 업로드 기능
+    function initImageUpload() {
+        const uploadArea = document.getElementById('imageUploadArea');
+        const fileInput = document.getElementById('instructor_image');
+        const placeholder = document.getElementById('uploadPlaceholder');
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const removeBtn = document.getElementById('removeImage');
+        
+        // 업로드 영역 클릭 시 파일 선택
+        uploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+        
+        // 파일 선택 시 미리보기
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // 파일 유효성 검사
+                if (!validateImageFile(file)) {
+                    return;
+                }
+                
+                // 미리보기 표시
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    placeholder.style.display = 'none';
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                
+                clearError('instructor_image');
+            }
+        });
+        
+        // 이미지 제거
+        removeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            fileInput.value = '';
+            placeholder.style.display = 'block';
+            preview.style.display = 'none';
+            previewImg.src = '';
+        });
+        
+        // 드래그 앤 드롭 지원
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#667eea';
+            uploadArea.style.background = '#f1f5f9';
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e2e8f0';
+            uploadArea.style.background = '#f8fafc';
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e2e8f0';
+            uploadArea.style.background = '#f8fafc';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (validateImageFile(file)) {
+                    fileInput.files = files;
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            }
+        });
+    }
+    
+    // 이미지 파일 유효성 검사
+    function validateImageFile(file) {
+        // 파일 형식 검사
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            showError('instructor_image', 'JPG, PNG, GIF 파일만 업로드 가능합니다.');
+            return false;
+        }
+        
+        // 파일 크기 검사 (5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showError('instructor_image', '파일 크기는 5MB 이하여야 합니다.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // 이미지 업로드 초기화
+    initImageUpload();
+    
     // 폼 제출 처리
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -616,21 +1005,58 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-Requested-With': 'XMLHttpRequest'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            // 서버 응답 상태 확인
+            if (!response.ok) {
+                throw new Error(`서버 오류: ${response.status} ${response.statusText}`);
+            }
+            
+            // JSON 응답 검증
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('서버에서 올바르지 않은 응답을 받았습니다.');
+            }
+            
+            return response.json();
+        })
         .then(data => {
             showLoading(false);
             
+            // 응답 데이터 검증
+            if (typeof data !== 'object' || data === null) {
+                throw new Error('서버에서 올바르지 않은 데이터를 받았습니다.');
+            }
+            
             if (data.success) {
-                alert('강의가 성공적으로 등록되었습니다!');
-                window.location.href = data.redirectUrl || '/lectures';
+                // 성공 메시지 표시
+                showSuccessMessage('강의가 성공적으로 등록되었습니다!');
+                hasUnsavedChanges = false;
+                
+                // 리다이렉트
+                setTimeout(() => {
+                    window.location.href = data.redirectUrl || '/lectures';
+                }, 1500);
             } else {
-                alert(data.message || '강의 등록 중 오류가 발생했습니다.');
+                // 서버 검증 오류 처리
+                if (data.errors && Array.isArray(data.errors)) {
+                    showFieldErrors(data.errors);
+                } else {
+                    showErrorMessage(data.message || '강의 등록 중 오류가 발생했습니다.');
+                }
             }
         })
         .catch(error => {
             console.error('폼 제출 오류:', error);
             showLoading(false);
-            alert('강의 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
+            
+            // 네트워크 오류 타입별 처리
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                showErrorMessage('네트워크 연결을 확인해주세요.');
+            } else if (error.message.includes('서버 오류')) {
+                showErrorMessage('서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            } else {
+                showErrorMessage(error.message || '강의 등록 중 예상치 못한 오류가 발생했습니다.');
+            }
         });
     });
     
@@ -718,6 +1144,59 @@ document.addEventListener('DOMContentLoaded', function() {
         loading.style.display = show ? 'block' : 'none';
         buttons.forEach(btn => {
             btn.disabled = show;
+        });
+    }
+    
+    // 성공 메시지 표시
+    function showSuccessMessage(message) {
+        // 기존 메시지 제거
+        const existingMsg = document.querySelector('.success-notification');
+        if (existingMsg) existingMsg.remove();
+        
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-notification';
+        successDiv.innerHTML = `
+            <div style="background: #10b981; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+                <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+                ${message}
+            </div>
+        `;
+        form.insertBefore(successDiv, form.firstChild);
+        successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    // 에러 메시지 표시
+    function showErrorMessage(message) {
+        // 기존 메시지 제거
+        const existingMsg = document.querySelector('.error-notification');
+        if (existingMsg) existingMsg.remove();
+        
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-notification';
+        errorDiv.innerHTML = `
+            <div style="background: #ef4444; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                ${message}
+            </div>
+        `;
+        form.insertBefore(errorDiv, form.firstChild);
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    // 필드별 에러 표시
+    function showFieldErrors(errors) {
+        // 기존 에러 초기화
+        document.querySelectorAll('.form-error').forEach(el => {
+            el.style.display = 'none';
+            el.textContent = '';
+        });
+        document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
+            el.style.borderColor = '#e2e8f0';
+        });
+        
+        // 에러 메시지 표시
+        errors.forEach(error => {
+            showErrorMessage(error);
         });
     }
     

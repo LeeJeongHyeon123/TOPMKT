@@ -178,8 +178,8 @@ class LectureController {
             ];
             
             $headerData = [
-                'title' => '강의 등록 - 탑마케팅',
-                'description' => '새로운 강의나 세미나를 등록하세요',
+                'page_title' => '강의 등록 - 탑마케팅',
+                'page_description' => '새로운 강의나 세미나를 등록하세요',
                 'pageSection' => 'lectures'
             ];
             
@@ -220,7 +220,10 @@ class LectureController {
             // 입력 데이터 검증
             $validationResult = $this->validateLectureData($_POST);
             if (!$validationResult['valid']) {
-                ResponseHelper::sendError($validationResult['message'], 400);
+                ResponseHelper::sendError([
+                    'message' => $validationResult['message'],
+                    'errors' => $validationResult['errors'] ?? []
+                ], 400);
                 return;
             }
             
@@ -593,6 +596,11 @@ class LectureController {
         if (empty($data['start_time'])) $errors[] = '시작 시간을 입력해주세요.';
         if (empty($data['end_time'])) $errors[] = '종료 시간을 입력해주세요.';
         
+        // 콘텐츠 유형 검증
+        if (empty($data['content_type']) || !in_array($data['content_type'], ['lecture', 'event'])) {
+            $errors[] = '콘텐츠 유형을 올바르게 선택해주세요.';
+        }
+        
         // 날짜 유효성 검증
         if (!empty($data['start_date']) && !empty($data['end_date'])) {
             if (strtotime($data['start_date']) > strtotime($data['end_date'])) {
@@ -612,10 +620,100 @@ class LectureController {
             $errors[] = '최대 참가자 수는 1명 이상이어야 합니다.';
         }
         
+        // 위치 타입별 필수 필드 검증
+        if (!empty($data['location_type'])) {
+            if ($data['location_type'] === 'offline') {
+                if (empty($data['venue_name'])) {
+                    $errors[] = '오프라인 진행 시 장소명은 필수입니다.';
+                }
+            } elseif ($data['location_type'] === 'online') {
+                if (empty($data['online_link'])) {
+                    $errors[] = '온라인 진행 시 온라인 링크는 필수입니다.';
+                } elseif (!filter_var($data['online_link'], FILTER_VALIDATE_URL)) {
+                    $errors[] = '올바른 URL 형식을 입력해주세요.';
+                }
+            }
+        } else {
+            $errors[] = '진행 방식을 선택해주세요.';
+        }
+        
+        // 카테고리 검증
+        if (empty($data['category'])) {
+            $errors[] = '강의 유형을 선택해주세요.';
+        }
+        
+        // 과거 날짜 검증
+        if (!empty($data['start_date']) && strtotime($data['start_date']) < strtotime(date('Y-m-d'))) {
+            $errors[] = '시작 날짜는 오늘 이후여야 합니다.';
+        }
+        
+        // YouTube URL 검증
+        if (!empty($data['youtube_video'])) {
+            $pattern = '/^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/';
+            if (!preg_match($pattern, $data['youtube_video'])) {
+                $errors[] = '올바른 YouTube URL을 입력해주세요.';
+            }
+        }
+        
+        // 행사 관련 필드 검증 (행사일 때만)
+        if (!empty($data['content_type']) && $data['content_type'] === 'event') {
+            if (!empty($data['event_scale']) && !in_array($data['event_scale'], ['small', 'medium', 'large'])) {
+                $errors[] = '올바른 행사 규모를 선택해주세요.';
+            }
+            if (!empty($data['dress_code']) && !in_array($data['dress_code'], ['casual', 'business_casual', 'business', 'formal'])) {
+                $errors[] = '올바른 복장 규정을 선택해주세요.';
+            }
+        }
+        
+        // 중복 강의 검증 (제목, 날짜, 시간이 동일한 경우)
+        if (!empty($data['title']) && !empty($data['start_date']) && !empty($data['start_time'])) {
+            $duplicateCheck = $this->checkDuplicateLecture($data);
+            if (!$duplicateCheck['valid']) {
+                $errors[] = $duplicateCheck['message'];
+            }
+        }
+        
         return [
             'valid' => empty($errors),
+            'errors' => $errors,
             'message' => empty($errors) ? '' : implode(' ', $errors)
         ];
+    }
+    
+    /**
+     * 중복 강의 검사
+     */
+    private function checkDuplicateLecture($data) {
+        try {
+            $sql = "
+                SELECT COUNT(*) as count 
+                FROM lectures 
+                WHERE title = :title 
+                AND start_date = :start_date 
+                AND start_time = :start_time 
+                AND status IN ('published', 'draft')
+            ";
+            
+            $result = $this->db->fetchOne($sql, [
+                ':title' => $data['title'],
+                ':start_date' => $data['start_date'],
+                ':start_time' => $data['start_time']
+            ]);
+            
+            if ($result && $result['count'] > 0) {
+                return [
+                    'valid' => false,
+                    'message' => '동일한 제목, 날짜, 시간의 강의가 이미 등록되어 있습니다.'
+                ];
+            }
+            
+            return ['valid' => true];
+            
+        } catch (Exception $e) {
+            error_log("중복 강의 검사 오류: " . $e->getMessage());
+            // 에러 시에는 통과시킴 (보수적 접근)
+            return ['valid' => true];
+        }
     }
     
     /**

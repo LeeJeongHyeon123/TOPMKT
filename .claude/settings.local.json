@@ -52,7 +52,8 @@
       "Bash(git fetch:*)",
       "Bash(env)",
       "Bash(printenv)",
-      "Bash(crontab:*)"
+      "Bash(crontab:*)",
+      "Bash(true)"
     ],
     "deny": []
   }
