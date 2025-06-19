@@ -48,11 +48,10 @@ class AdminController {
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
         
-        $stmt = $this->db->prepare("
+        $this->db->execute("
             INSERT INTO user_logs (user_id, action, description, ip_address, user_agent, created_at)
             VALUES (?, ?, ?, ?, ?, NOW())
-        ");
-        $stmt->execute([$userId, 'ADMIN_ACCESS', $action, $ip, $userAgent]);
+        ", [$userId, 'ADMIN_ACCESS', $action, $ip, $userAgent]);
     }
     
     /**
@@ -104,27 +103,23 @@ class AdminController {
         $today = date('Y-m-d');
         
         // 신규 가입자
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE DATE(created_at) = ?");
-        $stmt->execute([$today]);
-        $todaySignups = $stmt->fetchColumn();
+        $result = $this->db->fetch("SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = ?", [$today]);
+        $todaySignups = $result ? $result['count'] : 0;
         
         // 오늘 게시글
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM posts WHERE DATE(created_at) = ?");
-        $stmt->execute([$today]);
-        $todayPosts = $stmt->fetchColumn();
+        $result = $this->db->fetch("SELECT COUNT(*) as count FROM posts WHERE DATE(created_at) = ?", [$today]);
+        $todayPosts = $result ? $result['count'] : 0;
         
         // 활성 사용자 (최근 30분)
-        $stmt = $this->db->prepare("
-            SELECT COUNT(DISTINCT user_id) FROM user_sessions 
+        $result = $this->db->fetch("
+            SELECT COUNT(DISTINCT user_id) as count FROM user_sessions 
             WHERE updated_at >= DATE_SUB(NOW(), INTERVAL 30 MINUTE)
         ");
-        $stmt->execute();
-        $activeUsers = $stmt->fetchColumn();
+        $activeUsers = $result ? $result['count'] : 0;
         
         // 대기 중인 기업인증
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM company_profiles WHERE status = 'pending'");
-        $stmt->execute();
-        $pendingCorps = $stmt->fetchColumn();
+        $result = $this->db->fetch("SELECT COUNT(*) as count FROM company_profiles WHERE status = 'pending'");
+        $pendingCorps = $result ? $result['count'] : 0;
         
         return [
             'signups' => (int)$todaySignups,
@@ -141,11 +136,10 @@ class AdminController {
         $weeklySignups = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = date('Y-m-d', strtotime("-{$i} days"));
-            $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE DATE(created_at) = ?");
-            $stmt->execute([$date]);
+            $result = $this->db->fetch("SELECT COUNT(*) as count FROM users WHERE DATE(created_at) = ?", [$date]);
             $weeklySignups[] = [
                 'date' => $date,
-                'count' => (int)$stmt->fetchColumn()
+                'count' => $result ? (int)$result['count'] : 0
             ];
         }
         
@@ -159,7 +153,7 @@ class AdminController {
      */
     private function getUrgentTasks() {
         // 대기 중인 기업인증
-        $stmt = $this->db->prepare("
+        $pendingCorps = $this->db->fetchAll("
             SELECT cp.*, u.nickname 
             FROM company_profiles cp 
             JOIN users u ON cp.user_id = u.id 
@@ -167,8 +161,6 @@ class AdminController {
             ORDER BY cp.created_at ASC 
             LIMIT 5
         ");
-        $stmt->execute();
-        $pendingCorps = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         return [
             'pendingCorps' => $pendingCorps,
@@ -182,18 +174,16 @@ class AdminController {
      */
     private function getRecentActivities() {
         // 최근 게시글
-        $stmt = $this->db->prepare("
+        $recentPosts = $this->db->fetchAll("
             SELECT p.*, u.nickname 
             FROM posts p 
             JOIN users u ON p.user_id = u.id 
             ORDER BY p.created_at DESC 
             LIMIT 5
         ");
-        $stmt->execute();
-        $recentPosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // 최근 댓글
-        $stmt = $this->db->prepare("
+        $recentComments = $this->db->fetchAll("
             SELECT c.*, u.nickname, p.title as post_title 
             FROM comments c 
             JOIN users u ON c.user_id = u.id 
@@ -201,8 +191,6 @@ class AdminController {
             ORDER BY c.created_at DESC 
             LIMIT 5
         ");
-        $stmt->execute();
-        $recentComments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         return [
             'posts' => $recentPosts,
@@ -294,22 +282,20 @@ class AdminController {
      * 대기 중인 기업인증 신청 목록 조회
      */
     private function getPendingCorporateApplications() {
-        $stmt = $this->db->prepare("
+        return $this->db->fetchAll("
             SELECT cp.*, u.nickname, u.phone, u.email, u.created_at as user_created_at
             FROM company_profiles cp 
             JOIN users u ON cp.user_id = u.id 
             WHERE cp.status = 'pending' 
             ORDER BY cp.created_at ASC
         ");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     /**
      * 전체 기업회원 목록 조회
      */
     private function getCorporateMembers() {
-        $stmt = $this->db->prepare("
+        return $this->db->fetchAll("
             SELECT cp.*, u.nickname, u.phone, u.email, u.corp_approved_at,
                    (SELECT COUNT(*) FROM posts WHERE user_id = u.id) as post_count,
                    (SELECT COUNT(*) FROM lectures WHERE user_id = u.id) as lecture_count
@@ -318,8 +304,6 @@ class AdminController {
             WHERE cp.status IN ('approved', 'rejected', 'suspended') 
             ORDER BY cp.processed_at DESC, cp.created_at DESC
         ");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     /**
@@ -332,38 +316,33 @@ class AdminController {
             $adminUserId = AuthMiddleware::getCurrentUserId();
             
             // 신청 정보 조회
-            $stmt = $this->db->prepare("SELECT * FROM company_profiles WHERE id = ? AND status = 'pending'");
-            $stmt->execute([$applicationId]);
-            $application = $stmt->fetch(PDO::FETCH_ASSOC);
+            $application = $this->db->fetch("SELECT * FROM company_profiles WHERE id = ? AND status = 'pending'", [$applicationId]);
             
             if (!$application) {
                 throw new Exception('유효하지 않은 신청입니다.');
             }
             
             // company_profiles 테이블 업데이트
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 UPDATE company_profiles 
                 SET status = ?, admin_notes = ?, processed_by = ?, processed_at = NOW() 
                 WHERE id = ?
-            ");
-            $stmt->execute([$action === 'approve' ? 'approved' : 'rejected', $adminNotes, $adminUserId, $applicationId]);
+            ", [$action === 'approve' ? 'approved' : 'rejected', $adminNotes, $adminUserId, $applicationId]);
             
             // users 테이블의 corp_status 업데이트
             $corpStatus = $action === 'approve' ? 'approved' : 'rejected';
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 UPDATE users 
                 SET corp_status = ?, corp_approved_at = " . ($action === 'approve' ? 'NOW()' : 'NULL') . " 
                 WHERE id = ?
-            ");
-            $stmt->execute([$corpStatus, $application['user_id']]);
+            ", [$corpStatus, $application['user_id']]);
             
             // 이력 기록
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 INSERT INTO company_application_history 
                 (user_id, action_type, admin_notes, created_by, created_at) 
                 VALUES (?, ?, ?, ?, NOW())
-            ");
-            $stmt->execute([
+            ", [
                 $application['user_id'], 
                 $action, 
                 $adminNotes, 
@@ -469,7 +448,7 @@ class AdminController {
      * 기업인증 신청 상세 정보 조회
      */
     private function getApplicationDetail($applicationId) {
-        $stmt = $this->db->prepare("
+        $application = $this->db->fetch("
             SELECT cp.*, u.nickname, u.phone, u.email, u.created_at as user_created_at,
                    u.corp_status, u.corp_approved_at,
                    admin_user.nickname as processed_by_name
@@ -477,24 +456,20 @@ class AdminController {
             LEFT JOIN users u ON cp.user_id = u.id 
             LEFT JOIN users admin_user ON cp.processed_by = admin_user.id
             WHERE cp.id = ?
-        ");
-        $stmt->execute([$applicationId]);
-        $application = $stmt->fetch(PDO::FETCH_ASSOC);
+        ", [$applicationId]);
         
         if (!$application) {
             return null;
         }
         
         // 처리 이력 조회
-        $stmt = $this->db->prepare("
+        $history = $this->db->fetchAll("
             SELECT cah.*, u.nickname as created_by_name
             FROM company_application_history cah
             LEFT JOIN users u ON cah.created_by = u.id
             WHERE cah.user_id = ?
             ORDER BY cah.created_at DESC
-        ");
-        $stmt->execute([$application['user_id']]);
-        $history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        ", [$application['user_id']]);
         
         $application['history'] = $history;
         
@@ -509,9 +484,7 @@ class AdminController {
             require_once SRC_PATH . '/helpers/SmsHelper.php';
             
             // 사용자 정보 조회
-            $stmt = $this->db->prepare("SELECT phone, nickname FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->db->fetch("SELECT phone, nickname FROM users WHERE id = ?", [$userId]);
             
             if (!$user) {
                 error_log("SMS 발송 실패: 사용자를 찾을 수 없음 (ID: {$userId})");
@@ -635,44 +608,39 @@ class AdminController {
             $adminUserId = AuthMiddleware::getCurrentUserId();
             
             // 기업 정보 조회
-            $stmt = $this->db->prepare("
+            $member = $this->db->fetch("
                 SELECT cp.*, u.nickname 
                 FROM company_profiles cp 
                 JOIN users u ON cp.user_id = u.id 
                 WHERE cp.id = ?
-            ");
-            $stmt->execute([$memberId]);
-            $member = $stmt->fetch(PDO::FETCH_ASSOC);
+            ", [$memberId]);
             
             if (!$member) {
                 throw new Exception('기업회원을 찾을 수 없습니다.');
             }
             
             // company_profiles 테이블 업데이트
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 UPDATE company_profiles 
                 SET status = ?, processed_by = ?, processed_at = NOW() 
                 WHERE id = ?
-            ");
-            $stmt->execute([$newStatus, $adminUserId, $memberId]);
+            ", [$newStatus, $adminUserId, $memberId]);
             
             // users 테이블의 corp_status 업데이트
             $userStatus = $newStatus;
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 UPDATE users 
                 SET corp_status = ?, corp_approved_at = " . ($newStatus === 'approved' ? 'NOW()' : 'NULL') . " 
                 WHERE id = ?
-            ");
-            $stmt->execute([$userStatus, $member['user_id']]);
+            ", [$userStatus, $member['user_id']]);
             
             // 이력 기록
             $actionType = $newStatus === 'approved' ? 'reapprove' : 'suspend';
-            $stmt = $this->db->prepare("
+            $this->db->execute("
                 INSERT INTO company_application_history 
                 (user_id, action_type, admin_notes, created_by, created_at) 
                 VALUES (?, ?, ?, ?, NOW())
-            ");
-            $stmt->execute([
+            ", [
                 $member['user_id'], 
                 $actionType, 
                 $reason, 
@@ -697,12 +665,11 @@ class AdminController {
      * 관리자 메모 업데이트
      */
     private function updateAdminMemo($memberId, $adminMemo) {
-        $stmt = $this->db->prepare("
+        $this->db->execute("
             UPDATE company_profiles 
             SET admin_memo = ? 
             WHERE id = ?
-        ");
-        $stmt->execute([$adminMemo, $memberId]);
+        ", [$adminMemo, $memberId]);
         
         return ['success' => true, 'message' => '관리자 메모가 업데이트되었습니다.'];
     }
@@ -715,12 +682,11 @@ class AdminController {
             throw new Exception('대표자명과 연락처는 필수입니다.');
         }
         
-        $stmt = $this->db->prepare("
+        $this->db->execute("
             UPDATE company_profiles 
             SET representative_name = ?, representative_phone = ? 
             WHERE id = ?
-        ");
-        $stmt->execute([$repName, $repPhone, $memberId]);
+        ", [$repName, $repPhone, $memberId]);
         
         return ['success' => true, 'message' => '연락처 정보가 업데이트되었습니다.'];
     }
@@ -733,9 +699,7 @@ class AdminController {
             require_once SRC_PATH . '/helpers/SmsHelper.php';
             
             // 사용자 정보 조회
-            $stmt = $this->db->prepare("SELECT phone, nickname FROM users WHERE id = ?");
-            $stmt->execute([$userId]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user = $this->db->fetch("SELECT phone, nickname FROM users WHERE id = ?", [$userId]);
             
             if (!$user || !$user['phone']) {
                 return false;

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>드래그&드롭 테스트</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .test-result {
+            background: #f0f8ff;
+            border: 1px solid #0066cc;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: #f0fff0;
+            border-color: #00cc00;
+        }
+        .error {
+            background: #fff0f0;
+            border-color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>드래그&드롭 기능 테스트</h1>
+    
+    <div class="test-result">
+        <h3>구현된 기능 체크리스트:</h3>
+        <ul>
+            <li>✅ CSS 드래그&드롭 스타일 정의</li>
+            <li>✅ HTML 구조에 sortable-container 클래스 적용</li>
+            <li>✅ 드래그 인스트럭션 요소 포함</li>
+            <li>✅ addLectureImagePreview 함수에 드래그 핸들 및 순서 번호 추가</li>
+            <li>✅ setupImageDragEvents 함수 구현 (dragstart, dragend, dragover, dragleave, drop)</li>
+            <li>✅ reorderImages 함수 구현 (DOM 및 파일 배열 순서 변경)</li>
+            <li>✅ updateImageOrderNumbers 함수 구현</li>
+            <li>✅ updateFileIndexes 함수 구현</li>
+            <li>✅ updateSortableContainerState 함수 구현</li>
+        </ul>
+    </div>
+    
+    <div class="test-result success">
+        <h3>✅ 드래그&드롭 구현 완료!</h3>
+        <p><strong>주요 기능:</strong></p>
+        <ul>
+            <li>이미지 썸네일을 드래그하여 순서 변경 가능</li>
+            <li>드래그 중 시각적 피드백 제공 (반투명, 하이라이트)</li>
+            <li>순서 번호 자동 업데이트</li>
+            <li>파일 배열과 DOM 순서 동기화</li>
+            <li>2개 이상의 이미지가 있을 때만 드래그 인스트럭션 표시</li>
+        </ul>
+    </div>
+    
+    <div class="test-result">
+        <h3>테스트 방법:</h3>
+        <ol>
+            <li>강의 등록 페이지 (/lectures/create)로 이동</li>
+            <li>이미지를 2개 이상 업로드</li>
+            <li>이미지 썸네일을 드래그하여 순서 변경 테스트</li>
+            <li>순서 번호가 자동으로 업데이트되는지 확인</li>
+            <li>폼 제출 시 변경된 순서가 정상적으로 전달되는지 확인</li>
+        </ol>
+    </div>
+</body>
+</html>

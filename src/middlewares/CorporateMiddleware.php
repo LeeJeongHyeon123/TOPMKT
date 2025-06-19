@@ -39,10 +39,9 @@ class CorporateMiddleware {
             $db = Database::getInstance();
             
             $sql = "SELECT corp_status FROM users WHERE id = ? AND corp_status = 'approved'";
-            $stmt = $db->prepare($sql);
-            $stmt->execute([$_SESSION['user_id']]);
+            $result = $db->fetch($sql, [$_SESSION['user_id']]);
             
-            return $stmt->fetch() !== false;
+            return $result !== false;
             
         } catch (Exception $e) {
             error_log('CorporateMiddleware::hasCorpPermission() error: ' . $e->getMessage());
@@ -63,10 +62,8 @@ class CorporateMiddleware {
             $db = Database::getInstance();
             
             $sql = "SELECT corp_status FROM users WHERE id = ?";
-            $stmt = $db->prepare($sql);
-            $stmt->execute([$_SESSION['user_id']]);
+            $result = $db->fetch($sql, [$_SESSION['user_id']]);
             
-            $result = $stmt->fetch();
             return $result ? $result['corp_status'] : 'none';
             
         } catch (Exception $e) {
@@ -160,10 +157,9 @@ class CorporateMiddleware {
             $db = Database::getInstance();
             
             $sql = "SELECT role FROM users WHERE id = ? AND role IN ('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')";
-            $stmt = $db->prepare($sql);
-            $stmt->execute([$_SESSION['user_id']]);
+            $result = $db->fetch($sql, [$_SESSION['user_id']]);
             
-            if (!$stmt->fetch()) {
+            if (!$result) {
                 http_response_code(403);
                 die('접근 권한이 없습니다.');
             }

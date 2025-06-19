@@ -53,7 +53,21 @@
       "Bash(env)",
       "Bash(printenv)",
       "Bash(crontab:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(sed:*)",
+      "Bash(systemctl:*)",
+      "Bash(ip route:*)",
+      "Bash(route:*)",
+      "Bash(node:*)",
+      "Bash(service mysql:*)",
+      "Bash(docker inspect:*)",
+      "Bash(service mariadb restart:*)",
+      "Bash(docker-compose:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(# 프로모션 배너 이미지 (요리 일러스트)\ncp /workspace/public/assets/uploads/temp_figma_images/자산_1_4x_1_1_10462.png /workspace/public/assets/uploads/temp_figma_images/promo-cooking.png\n\n# 상품 이미지들 (근처 상품)\ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4841.png /workspace/public/assets/uploads/temp_figma_images/product-chicken.png\ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4862.png /workspace/public/assets/uploads/temp_figma_images/product-pizza.png  \ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4900.png /workspace/public/assets/uploads/temp_figma_images/product-pizza2.png\n\n# 찜한 상품 이미지들\ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4921.png /workspace/public/assets/uploads/temp_figma_images/wishlist-pizza.png\ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4942.png /workspace/public/assets/uploads/temp_figma_images/wishlist-sandwich.png\ncp /workspace/public/assets/uploads/temp_figma_images/Product_Image_1_4963.png /workspace/public/assets/uploads/temp_figma_images/wishlist-salad.png\n\n# 매장 이미지들\ncp /workspace/public/assets/uploads/temp_figma_images/Store_image_1_10489.png /workspace/public/assets/uploads/temp_figma_images/store-mexican.png\ncp /workspace/public/assets/uploads/temp_figma_images/Store_image_1_10491.png /workspace/public/assets/uploads/temp_figma_images/store-poke.png\ncp /workspace/public/assets/uploads/temp_figma_images/Store_image_1_10495.png /workspace/public/assets/uploads/temp_figma_images/store-coffee.png\ncp /workspace/public/assets/uploads/temp_figma_images/Store_image_1_10508.png /workspace/public/assets/uploads/temp_figma_images/store-noodle.png)",
+      "Bash(/workspace/test_figma_api.sh:*)",
+      "Bash(/workspace/extract_figma_styles.sh:*)",
+      "Bash(/workspace/complete_figma_analysis.sh:*)"
     ],
     "deny": []
   }

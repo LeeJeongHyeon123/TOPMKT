@@ -4,7 +4,7 @@
  */
 
 // 경로 설정
-define('ROOT_PATH', '/workspace');
+define('ROOT_PATH', __DIR__);
 define('SRC_PATH', ROOT_PATH . '/src');
 
 // 데이터베이스 설정 파일 로드
@@ -21,25 +21,23 @@ try {
     echo "=== 데이터베이스 정보 ===\n";
     
     // 현재 데이터베이스 확인
-    $stmt = $db->query("SELECT DATABASE() as current_db");
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $result = $db->fetch("SELECT DATABASE() as current_db");
     echo "현재 데이터베이스: " . $result['current_db'] . "\n";
     
     // 테이블 목록 확인
     echo "\n=== 테이블 목록 ===\n";
-    $stmt = $db->query("SHOW TABLES");
-    $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $tables = $db->fetchAll("SHOW TABLES");
     
     foreach ($tables as $table) {
+        $tableName = array_values($table)[0]; // 첫 번째 값 가져오기
         // 각 테이블의 행 수 확인
-        $countStmt = $db->query("SELECT COUNT(*) as count FROM `$table`");
-        $count = $countStmt->fetch(PDO::FETCH_ASSOC)['count'];
-        echo "- $table: $count 행\n";
+        $count = $db->fetch("SELECT COUNT(*) as count FROM `$tableName`");
+        echo "- $tableName: " . $count['count'] . " 행\n";
     }
     
     // 데이터베이스 크기 확인
     echo "\n=== 데이터베이스 크기 ===\n";
-    $stmt = $db->query("
+    $size = $db->fetch("
         SELECT 
             table_schema AS 'Database',
             ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS 'Size (MB)'
@@ -47,23 +45,20 @@ try {
         WHERE table_schema = DATABASE()
         GROUP BY table_schema
     ");
-    $size = $stmt->fetch(PDO::FETCH_ASSOC);
     echo "데이터베이스 크기: " . $size['Size (MB)'] . " MB\n";
     
     // 사용자 정보 확인
     echo "\n=== 데이터베이스 사용자 정보 ===\n";
-    $stmt = $db->query("SELECT USER() as user, CURRENT_USER() as current_user");
-    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+    $userInfo = $db->fetch("SELECT USER() as user");
     echo "접속 사용자: " . $userInfo['user'] . "\n";
-    echo "현재 사용자: " . $userInfo['current_user'] . "\n";
     
     // 백업 권한 확인
     echo "\n=== 백업 권한 확인 ===\n";
     try {
-        $stmt = $db->query("SHOW GRANTS FOR CURRENT_USER()");
-        $grants = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $grants = $db->fetchAll("SHOW GRANTS FOR CURRENT_USER()");
         foreach ($grants as $grant) {
-            echo $grant . "\n";
+            $grantText = array_values($grant)[0]; // 첫 번째 값 가져오기
+            echo $grantText . "\n";
         }
     } catch (Exception $e) {
         echo "권한 확인 실패: " . $e->getMessage() . "\n";

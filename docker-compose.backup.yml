@@ -5,6 +5,49 @@
 version: '3.8'
 
 services:
+  # Claude CLI 컨테이너 (개발용)
+  claude-cli:
+    image: node:18-bullseye-slim
+    container_name: claude-cli-session
+    volumes:
+      - ./:/workspace
+      - /var/lib/mysql/mysql.sock:/var/run/mysqld/mysqld.sock  # MySQL 소켓 공유
+    working_dir: /workspace
+    environment:
+      - DB_HOST=localhost  # 소켓 연결용
+      - DB_NAME=topmkt
+      - DB_USERNAME=root
+      - DB_PASSWORD=Dnlszkem1!
+      - DB_SOCKET=/var/run/mysqld/mysqld.sock
+    command: tail -f /dev/null  # 컨테이너 유지
+    networks:
+      - topmkt_network
+    # MySQL 클라이언트 및 PHP-MySQLi 설치
+    depends_on:
+      - setup-claude-cli
+    restart: unless-stopped
+
+  # Claude CLI 초기 설정
+  setup-claude-cli:
+    image: node:18-bullseye-slim
+    container_name: setup-claude-cli
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
+    command: >
+      bash -c "
+      echo '=== Claude CLI 환경 설정 시작 ===' &&
+      apt-get update &&
+      apt-get install -y mysql-client php php-mysqli php-pdo-mysql &&
+      echo '=== MySQL 클라이언트 설치 완료 ===' &&
+      echo '=== PHP MySQLi 확장 설치 완료 ===' &&
+      php -m | grep -E '(mysqli|pdo_mysql|mysqlnd)' &&
+      echo '=== 설정 완료 ==='
+      "
+    networks:
+      - topmkt_network
+    restart: "no"
+
   # 웹 서버 (Nginx + PHP-FPM)
   web:
     image: nginx:alpine

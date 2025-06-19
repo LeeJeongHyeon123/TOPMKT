@@ -107,8 +107,8 @@ class LectureController {
             // 신청자 목록 (일부만)
             $registrations = $this->getLectureRegistrations($lectureId, 5);
             
-            // 관련 강의 추천
-            $relatedLectures = $this->getRelatedLectures($lecture['category'], $lectureId, 3);
+            // 관련 강의 추천 (같은 기업의 강의만)
+            $relatedLectures = $this->getRelatedLectures($lecture['category'], $lectureId, $lecture['user_id'], 3);
             
             // 강의 이미지 조회
             $lectureImages = $this->getLectureImages($lectureId);
@@ -321,42 +321,145 @@ class LectureController {
             file_put_contents($debugLog, "\n=== 강의 이미지 병합 시작 ===\n", FILE_APPEND);
             file_put_contents($debugLog, "새로 업로드된 이미지: " . json_encode($uploadedImages) . "\n", FILE_APPEND);
             
-            // 1. 기존 이미지 먼저 추가
-            if (isset($_POST['existing_lecture_images']) && !empty($_POST['existing_lecture_images'])) {
-                file_put_contents($debugLog, "기존 이미지 JSON 길이: " . strlen($_POST['existing_lecture_images']) . "\n", FILE_APPEND);
+            // Check if ordered_lecture_images parameter exists (drag & drop reordering)
+            if (isset($_POST['ordered_lecture_images']) && !empty($_POST['ordered_lecture_images'])) {
+                file_put_contents($debugLog, "=== 순서 정렬된 이미지 데이터 처리 ===\n", FILE_APPEND);
+                file_put_contents($debugLog, "ordered_lecture_images JSON 길이: " . strlen($_POST['ordered_lecture_images']) . "\n", FILE_APPEND);
+                
                 try {
-                    $existingImages = json_decode($_POST['existing_lecture_images'], true);
-                    file_put_contents($debugLog, "JSON 디코드 결과: " . var_export($existingImages, true) . "\n", FILE_APPEND);
-                    if (is_array($existingImages)) {
-                        $finalLectureImages = $existingImages;
-                        file_put_contents($debugLog, "기존 강의 이미지 병합: " . count($existingImages) . "개\n", FILE_APPEND);
-                        error_log("기존 강의 이미지 병합: " . count($existingImages) . "개");
+                    $orderedImages = json_decode($_POST['ordered_lecture_images'], true);
+                    file_put_contents($debugLog, "순서 정렬 JSON 디코드 결과: " . var_export($orderedImages, true) . "\n", FILE_APPEND);
+                    
+                    if (is_array($orderedImages)) {
+                        // Process ordered images based on display_order
+                        $imagesByOrder = [];
+                        $newImagesByName = [];
+                        
+                        // Create lookup array for new uploaded images
+                        foreach ($uploadedImages as $newImage) {
+                            if (isset($newImage['file_name'])) {
+                                $newImagesByName[$newImage['file_name']] = $newImage;
+                            }
+                        }
+                        
+                        // Process each ordered image item
+                        foreach ($orderedImages as $orderedItem) {
+                            if (isset($orderedItem['display_order'])) {
+                                $order = (int)$orderedItem['display_order'];
+                                
+                                // Check if this is a new uploaded image (매칭 개선)
+                                $matchedImageData = null;
+                                
+                                // 1. file_name으로 직접 매칭 시도
+                                if (isset($orderedItem['file_name']) && isset($newImagesByName[$orderedItem['file_name']])) {
+                                    $matchedImageData = $newImagesByName[$orderedItem['file_name']];
+                                } 
+                                // 2. 파일 크기로 매칭 시도 (더 안전한 방식)
+                                else if (isset($orderedItem['file_size']) && isset($orderedItem['is_new'])) {
+                                    $targetSize = (int)$orderedItem['file_size'];
+                                    foreach ($uploadedImages as $uploadedImage) {
+                                        if (isset($uploadedImage['file_size']) && (int)$uploadedImage['file_size'] === $targetSize) {
+                                            $matchedImageData = $uploadedImage;
+                                            file_put_contents($debugLog, "파일 크기 매칭 성공: 크기 {$targetSize} -> {$matchedImageData['file_name']}\n", FILE_APPEND);
+                                            break;
+                                        }
+                                    }
+                                }
+                                // 3. temp_index로 매칭 시도 (fallback)
+                                else if (isset($orderedItem['temp_index']) && isset($orderedItem['is_new'])) {
+                                    $tempIndex = (int)$orderedItem['temp_index'];
+                                    if (isset($uploadedImages[$tempIndex])) {
+                                        $matchedImageData = $uploadedImages[$tempIndex];
+                                        file_put_contents($debugLog, "temp_index 매칭 성공: 인덱스 {$tempIndex} -> {$matchedImageData['file_name']}\n", FILE_APPEND);
+                                    }
+                                }
+                                // 4. original_name으로 매칭 시도 (호환성)
+                                else if (isset($orderedItem['file_name'])) {
+                                    foreach ($newImagesByName as $uploadedImage) {
+                                        if (isset($uploadedImage['original_name']) && $uploadedImage['original_name'] === $orderedItem['file_name']) {
+                                            $matchedImageData = $uploadedImage;
+                                            file_put_contents($debugLog, "원본명 매칭 성공: {$orderedItem['file_name']} -> {$uploadedImage['file_name']}\n", FILE_APPEND);
+                                            break;
+                                        }
+                                    }
+                                }
+                                
+                                if ($matchedImageData) {
+                                    // Use matched uploaded image data with the specified order
+                                    $imageData = $matchedImageData;
+                                    $imageData['display_order'] = $order;
+                                    
+                                    // Ensure file_path is always set for new uploaded images
+                                    if (!isset($imageData['file_path']) && isset($imageData['file_name'])) {
+                                        $imageData['file_path'] = '/assets/uploads/lectures/' . $imageData['file_name'];
+                                        file_put_contents($debugLog, "file_path 누락으로 생성됨: " . $imageData['file_path'] . "\n", FILE_APPEND);
+                                    }
+                                    
+                                    $imagesByOrder[$order] = $imageData;
+                                    file_put_contents($debugLog, "새 이미지 순서 적용: " . $imageData['file_name'] . " (순서: $order, file_path: " . ($imageData['file_path'] ?? 'MISSING') . ")\n", FILE_APPEND);
+                                } else {
+                                    // Use existing image data with updated order
+                                    $orderedItem['display_order'] = $order;
+                                    
+                                    // Ensure file_path is set for existing images that might be missing it
+                                    if (!isset($orderedItem['file_path']) && isset($orderedItem['file_name'])) {
+                                        $orderedItem['file_path'] = '/assets/uploads/lectures/' . $orderedItem['file_name'];
+                                        file_put_contents($debugLog, "기존 이미지 file_path 누락으로 생성됨: " . $orderedItem['file_path'] . "\n", FILE_APPEND);
+                                    }
+                                    
+                                    $imagesByOrder[$order] = $orderedItem;
+                                    file_put_contents($debugLog, "기존 이미지 순서 적용: " . ($orderedItem['file_name'] ?? 'UNKNOWN') . " (순서: $order, file_path: " . ($orderedItem['file_path'] ?? 'MISSING') . ")\n", FILE_APPEND);
+                                }
+                            }
+                        }
+                        
+                        // Sort by display_order and create final array (드래그&드롭 순서 유지)
+                        ksort($imagesByOrder);
+                        $finalLectureImages = array_values($imagesByOrder);
+                        
+                        // display_order는 사용자가 드래그&드롭으로 설정한 순서를 유지
+                        
+                        file_put_contents($debugLog, "display_order 재설정 완료: " . json_encode(array_column($finalLectureImages, 'display_order')) . "\n", FILE_APPEND);
+                        
+                        file_put_contents($debugLog, "순서 정렬된 최종 이미지: " . count($finalLectureImages) . "개\n", FILE_APPEND);
+                        error_log("순서 정렬된 강의 이미지 처리 완료: " . count($finalLectureImages) . "개");
                     } else {
-                        file_put_contents($debugLog, "경고: 기존 이미지가 배열이 아님\n", FILE_APPEND);
+                        file_put_contents($debugLog, "경고: 순서 정렬 데이터가 배열이 아님\n", FILE_APPEND);
+                        // Fall back to existing logic
+                        $this->processLegacyImageMerging($debugLog, $existingImages, $uploadedImages, $finalLectureImages);
                     }
                 } catch (Exception $e) {
-                    file_put_contents($debugLog, "기존 강의 이미지 파싱 오류: " . $e->getMessage() . "\n", FILE_APPEND);
-                    error_log("기존 강의 이미지 파싱 오류: " . $e->getMessage());
+                    file_put_contents($debugLog, "순서 정렬 이미지 파싱 오류: " . $e->getMessage() . "\n", FILE_APPEND);
+                    error_log("순서 정렬 이미지 파싱 오류: " . $e->getMessage());
+                    // Fall back to existing logic
+                    $this->processLegacyImageMerging($debugLog, $existingImages, $uploadedImages, $finalLectureImages);
                 }
             } else {
-                file_put_contents($debugLog, "기존 이미지 없음\n", FILE_APPEND);
+                // Use existing logic when ordered_lecture_images is not provided
+                file_put_contents($debugLog, "기존 이미지 병합 로직 사용\n", FILE_APPEND);
+                $this->processLegacyImageMerging($debugLog, $existingImages, $uploadedImages, $finalLectureImages);
             }
             
-            // 2. 새 이미지 추가
-            if (!empty($uploadedImages)) {
-                file_put_contents($debugLog, "새 이미지 추가 전 기존 이미지 수: " . count($finalLectureImages) . "\n", FILE_APPEND);
-                $finalLectureImages = array_merge($finalLectureImages, $uploadedImages);
-                file_put_contents($debugLog, "새 이미지 추가 후 총 이미지 수: " . count($finalLectureImages) . "\n", FILE_APPEND);
-                error_log("새 강의 이미지 추가: " . count($uploadedImages) . "개");
-            } else {
-                file_put_contents($debugLog, "새 이미지 없음\n", FILE_APPEND);
-            }
-            
-            // 3. 최종 이미지 데이터 저장
+            // 3. 최종 이미지 데이터 저장 전 file_path 검증
             if (!empty($finalLectureImages)) {
+                // Final validation: ensure all images have file_path
+                foreach ($finalLectureImages as &$finalImage) {
+                    if (!isset($finalImage['file_path']) && isset($finalImage['file_name'])) {
+                        $finalImage['file_path'] = '/assets/uploads/lectures/' . $finalImage['file_name'];
+                        file_put_contents($debugLog, "최종 검증: file_path 누락으로 생성됨: " . $finalImage['file_path'] . "\n", FILE_APPEND);
+                        error_log("최종 검증: file_path 누락으로 생성됨: " . $finalImage['file_path']);
+                    }
+                }
+                unset($finalImage); // Clean up reference
+                
                 $_POST['lecture_images_data'] = $finalLectureImages;
                 file_put_contents($debugLog, "최종 이미지 POST에 저장: " . json_encode($finalLectureImages) . "\n", FILE_APPEND);
                 error_log("최종 강의 이미지 POST에 추가됨: " . count($finalLectureImages) . "개 (기존:" . count($existingImages) . ", 새:" . count($uploadedImages) . ")");
+                
+                // Log file_path status for each final image
+                foreach ($finalLectureImages as $idx => $img) {
+                    file_put_contents($debugLog, "최종 이미지 {$idx}: file_name=" . ($img['file_name'] ?? 'MISSING') . ", file_path=" . ($img['file_path'] ?? 'MISSING') . "\n", FILE_APPEND);
+                }
             } else {
                 file_put_contents($debugLog, "최종 이미지 없음 - POST에 저장하지 않음\n", FILE_APPEND);
             }
@@ -801,9 +904,9 @@ class LectureController {
     }
     
     /**
-     * 관련 강의 추천
+     * 관련 강의 추천 (같은 기업의 강의만)
      */
-    private function getRelatedLectures($category, $excludeId, $limit = 3) {
+    private function getRelatedLectures($category, $excludeId, $userId, $limit = 3) {
         return $this->db->fetchAll("
             SELECT l.*, u.nickname as organizer_name
             FROM lectures l
@@ -811,12 +914,14 @@ class LectureController {
             WHERE l.status = 'published'
             AND l.category = :category
             AND l.id != :exclude_id
+            AND l.user_id = :user_id
             AND l.start_date >= CURDATE()
             ORDER BY l.start_date ASC
             LIMIT :limit
         ", [
             ':category' => $category,
             ':exclude_id' => $excludeId,
+            ':user_id' => $userId,
             ':limit' => $limit
         ]);
     }
@@ -1056,24 +1161,26 @@ class LectureController {
         }
         
         // 시간 유효성 검증 (임시저장이 아니고 시간이 모두 입력된 경우에만)
-        if (!$isDraft && !empty($data['start_time']) && !empty($data['end_time'])) {
+        if (!$isDraft && !empty($data['start_time']) && !empty($data['end_time']) && !empty($data['start_date']) && !empty($data['end_date'])) {
             // 디버깅을 위한 로그
-            error_log("시간 검증: start_time={$data['start_time']}, end_time={$data['end_time']}");
+            error_log("시간 검증: start_date={$data['start_date']}, end_date={$data['end_date']}, start_time={$data['start_time']}, end_time={$data['end_time']}");
             
-            // 같은 날짜를 기준으로 시간 비교
-            $startDateTime = DateTime::createFromFormat('H:i', $data['start_time']);
-            $endDateTime = DateTime::createFromFormat('H:i', $data['end_time']);
+            // 날짜와 시간을 함께 고려한 검증
+            $startFullDateTime = DateTime::createFromFormat('Y-m-d H:i', $data['start_date'] . ' ' . $data['start_time']);
+            $endFullDateTime = DateTime::createFromFormat('Y-m-d H:i', $data['end_date'] . ' ' . $data['end_time']);
             
-            if ($startDateTime && $endDateTime) {
-                error_log("시간 객체 생성 성공: start={$startDateTime->format('H:i')}, end={$endDateTime->format('H:i')}");
-                if ($startDateTime >= $endDateTime) {
-                    error_log("시간 검증 실패: 시작 시간이 종료 시간보다 늦음");
-                    $errors[] = '종료 시간은 시작 시간보다 늦어야 합니다.';
+            if ($startFullDateTime && $endFullDateTime) {
+                error_log("날짜시간 객체 생성 성공: start={$startFullDateTime->format('Y-m-d H:i')}, end={$endFullDateTime->format('Y-m-d H:i')}");
+                
+                // 종료일시가 시작일시보다 이전인 경우만 오류 처리
+                if ($startFullDateTime > $endFullDateTime) {
+                    error_log("시간 검증 실패: 시작 일시가 종료 일시보다 늦음");
+                    $errors[] = '종료 일시는 시작 일시보다 늦어야 합니다.';
                 } else {
                     error_log("시간 검증 성공");
                 }
             } else {
-                error_log("시간 객체 생성 실패");
+                error_log("날짜시간 객체 생성 실패");
             }
         } else if ($isDraft) {
             error_log("임시저장이므로 시간 검증 건너뜀");
@@ -1521,6 +1628,13 @@ class LectureController {
                 $originalName = $images['name'][$i];
                 $fileSize = $images['size'][$i];
                 
+                // UTF-8 인코딩 확인 및 정리
+                if (!mb_check_encoding($originalName, 'UTF-8')) {
+                    $originalName = mb_convert_encoding($originalName, 'UTF-8', 'auto');
+                }
+                
+                error_log("원본 파일명: " . $originalName . " (길이: " . strlen($originalName) . ", UTF-8 체크: " . (mb_check_encoding($originalName, 'UTF-8') ? 'OK' : 'FAIL') . ")");
+                
                 // 파일 확장자 검증
                 $allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                 $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
@@ -1534,18 +1648,31 @@ class LectureController {
                     continue; // 5MB 초과 파일은 건너뛰기
                 }
                 
-                // 안전한 파일명 생성
-                $safeName = time() . '_' . $i . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', $originalName);
+                // 안전한 파일명 생성 (한글 지원)
+                $fileExtension = pathinfo($originalName, PATHINFO_EXTENSION);
+                $baseFileName = pathinfo($originalName, PATHINFO_FILENAME);
+                
+                error_log("파일명 분해: 원본={$originalName}, 베이스={$baseFileName}, 확장자={$fileExtension}");
+                
+                // 한글과 영문을 모두 지원하는 안전한 파일명 생성
+                $sanitizedFileName = $this->sanitizeFileName($baseFileName);
+                $safeName = time() . '_' . $i . '_' . $sanitizedFileName . '.' . $fileExtension;
+                
+                error_log("최종 파일명: {$safeName}");
                 $filePath = $uploadDir . $safeName;
                 
                 if (move_uploaded_file($tmpName, $filePath)) {
-                    $uploadedImages[] = [
-                        'original_name' => $originalName,
+                    $imageData = [
+                        'original_name' => $safeName,  // 안전한 파일명 사용
                         'file_name' => $safeName,
                         'file_path' => $webPath . $safeName,
                         'file_size' => $fileSize,
                         'upload_time' => date('Y-m-d H:i:s')
                     ];
+                    $uploadedImages[] = $imageData;
+                    error_log("이미지 업로드 성공: " . $safeName . " -> file_path: " . $imageData['file_path']);
+                } else {
+                    error_log("이미지 업로드 실패: " . $originalName . " -> " . $filePath);
                 }
             }
         }
@@ -1614,8 +1741,10 @@ class LectureController {
                                 continue;
                             }
                             
-                            // 안전한 파일명 생성
-                            $safeName = 'instructor_' . $index . '_' . time() . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', $originalName);
+                            // 안전한 파일명 생성 (한글 지원)
+                            $fileExtension = pathinfo($originalName, PATHINFO_EXTENSION);
+                            $baseFileName = pathinfo($originalName, PATHINFO_FILENAME);
+                            $safeName = 'instructor_' . $index . '_' . time() . '_' . $this->sanitizeFileName($baseFileName) . '.' . $fileExtension;
                             $filePath = $uploadDir . $safeName;
                             
                             if (move_uploaded_file($tmpName, $filePath)) {
@@ -2016,6 +2145,31 @@ class LectureController {
     }
     
     /**
+     * 파일명 안전하게 처리 (ASCII 전용, 한글 문제 방지)
+     */
+    private function sanitizeFileName($filename) {
+        // 한글이나 특수문자가 있으면 무조건 유니크 파일명 생성
+        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $filename) || empty(trim($filename))) {
+            $uniqueName = 'file_' . uniqid();
+            error_log("파일명에 특수문자/한글 발견: " . $filename . " -> " . $uniqueName);
+            return $uniqueName;
+        }
+        
+        // ASCII 영숫자와 안전한 문자만 있는 경우 정리 후 반환
+        $sanitized = preg_replace('/[^a-zA-Z0-9._-]/', '', $filename);
+        $sanitized = preg_replace('/\s+/', '_', $sanitized);
+        $sanitized = trim($sanitized, '._-');
+        
+        // 빈 파일명 방지
+        if (empty($sanitized)) {
+            $sanitized = 'file_' . uniqid();
+        }
+        
+        error_log("안전한 파일명 생성: " . $filename . " -> " . $sanitized);
+        return $sanitized;
+    }
+
+    /**
      * 강의 이미지 조회
      */
     private function getLectureImages($lectureId) {
@@ -2036,13 +2190,34 @@ class LectureController {
                 return [];
             }
             
-            // 강의 이미지 데이터를 뷰에서 사용할 형태로 변환
+            // display_order가 있으면 그 순서대로 정렬
+            if (!empty($imagesData) && isset($imagesData[0]['display_order'])) {
+                usort($imagesData, function($a, $b) {
+                    $orderA = $a['display_order'] ?? 999;
+                    $orderB = $b['display_order'] ?? 999;
+                    return $orderA - $orderB;
+                });
+                error_log("이미지를 display_order로 정렬 완료: " . json_encode(array_column($imagesData, 'display_order')));
+            }
+            
+            // 강의 이미지 데이터를 뷰에서 사용할 형태로 변환 (모든 필드 보존)
             $formattedImages = array_map(function($image, $index) {
-                return [
-                    'id' => $index + 1,
-                    'url' => $image['file_path'] ?? '',
-                    'alt_text' => $image['original_name'] ?? '강의 이미지'
-                ];
+                // file_path가 없는 경우 file_name으로 경로 생성
+                $imagePath = '';
+                if (!empty($image['file_path'])) {
+                    $imagePath = $image['file_path'];
+                } elseif (!empty($image['file_name'])) {
+                    // file_name으로 강의 이미지 경로 생성
+                    $imagePath = '/assets/uploads/lectures/' . $image['file_name'];
+                }
+                
+                // 모든 원본 필드를 보존하면서 추가 필드 포함
+                $formattedImage = $image; // 원본 데이터 보존
+                $formattedImage['id'] = $index + 1;
+                $formattedImage['url'] = $imagePath;
+                $formattedImage['alt_text'] = $image['original_name'] ?? '강의 이미지';
+                
+                return $formattedImage;
             }, $imagesData, array_keys($imagesData));
             
             return $formattedImages;
@@ -2109,6 +2284,77 @@ class LectureController {
         } catch (Exception $e) {
             error_log("임시저장 강의 삭제 중 오류: " . $e->getMessage());
             return false;
+        }
+    }
+    
+    /**
+     * Process legacy image merging logic (existing behavior)
+     * Used as fallback when ordered_lecture_images is not provided
+     */
+    private function processLegacyImageMerging($debugLog, &$existingImages, $uploadedImages, &$finalLectureImages) {
+        // 1. 기존 이미지 먼저 추가
+        if (isset($_POST['existing_lecture_images']) && !empty($_POST['existing_lecture_images'])) {
+            file_put_contents($debugLog, "기존 이미지 JSON 길이: " . strlen($_POST['existing_lecture_images']) . "\n", FILE_APPEND);
+            try {
+                $existingImages = json_decode($_POST['existing_lecture_images'], true);
+                file_put_contents($debugLog, "JSON 디코드 결과: " . var_export($existingImages, true) . "\n", FILE_APPEND);
+                if (is_array($existingImages)) {
+                    // Ensure all existing images have file_path field
+                    foreach ($existingImages as &$existingImage) {
+                        if (!isset($existingImage['file_path']) && isset($existingImage['file_name'])) {
+                            $existingImage['file_path'] = '/assets/uploads/lectures/' . $existingImage['file_name'];
+                            file_put_contents($debugLog, "기존 이미지 file_path 누락으로 생성됨: " . $existingImage['file_path'] . "\n", FILE_APPEND);
+                        }
+                    }
+                    unset($existingImage); // Clean up reference
+                    
+                    $finalLectureImages = $existingImages;
+                    file_put_contents($debugLog, "기존 강의 이미지 병합: " . count($existingImages) . "개\n", FILE_APPEND);
+                    error_log("기존 강의 이미지 병합: " . count($existingImages) . "개");
+                } else {
+                    file_put_contents($debugLog, "경고: 기존 이미지가 배열이 아님\n", FILE_APPEND);
+                }
+            } catch (Exception $e) {
+                file_put_contents($debugLog, "기존 강의 이미지 파싱 오류: " . $e->getMessage() . "\n", FILE_APPEND);
+                error_log("기존 강의 이미지 파싱 오류: " . $e->getMessage());
+            }
+        } else {
+            file_put_contents($debugLog, "기존 이미지 없음\n", FILE_APPEND);
+        }
+        
+        // 2. 새 이미지 추가 (중복 제거)
+        if (!empty($uploadedImages)) {
+            file_put_contents($debugLog, "새 이미지 추가 전 기존 이미지 수: " . count($finalLectureImages) . "\n", FILE_APPEND);
+            
+            // 중복 이미지 제거 - 파일명 기준으로 중복 체크
+            $existingFileNames = [];
+            foreach ($finalLectureImages as $existingImage) {
+                if (isset($existingImage['file_name'])) {
+                    $existingFileNames[] = $existingImage['file_name'];
+                }
+            }
+            
+            // 새 이미지 중에서 중복되지 않는 것만 추가
+            foreach ($uploadedImages as $newImage) {
+                if (isset($newImage['file_name']) && !in_array($newImage['file_name'], $existingFileNames)) {
+                    // Ensure file_path is always set for new images
+                    if (!isset($newImage['file_path']) && isset($newImage['file_name'])) {
+                        $newImage['file_path'] = '/assets/uploads/lectures/' . $newImage['file_name'];
+                        file_put_contents($debugLog, "Legacy 처리: file_path 누락으로 생성됨: " . $newImage['file_path'] . "\n", FILE_APPEND);
+                    }
+                    
+                    $finalLectureImages[] = $newImage;
+                    $existingFileNames[] = $newImage['file_name']; // 추가한 파일명도 중복 체크 목록에 추가
+                    file_put_contents($debugLog, "새 이미지 추가: " . $newImage['file_name'] . " (file_path: " . ($newImage['file_path'] ?? 'MISSING') . ")\n", FILE_APPEND);
+                } else {
+                    file_put_contents($debugLog, "중복 이미지 제외: " . ($newImage['file_name'] ?? 'UNKNOWN') . "\n", FILE_APPEND);
+                }
+            }
+            
+            file_put_contents($debugLog, "중복 제거 후 총 이미지 수: " . count($finalLectureImages) . "\n", FILE_APPEND);
+            error_log("새 강의 이미지 추가 (중복 제거 후): " . count($finalLectureImages) . "개");
+        } else {
+            file_put_contents($debugLog, "새 이미지 없음\n", FILE_APPEND);
         }
     }
 }

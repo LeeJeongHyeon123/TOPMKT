@@ -105,10 +105,7 @@ class EventController extends LectureController {
                     AND start_date BETWEEN ? AND ?
                 ORDER BY start_date ASC, start_time ASC";
         
-        $stmt = $this->db->getConnection()->prepare($sql);
-        $stmt->execute([$startDate, $endDate]);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll($sql, [$startDate, $endDate]);
     }
     
     /**
@@ -178,10 +175,7 @@ class EventController extends LectureController {
                 LEFT JOIN users u ON l.user_id = u.id
                 WHERE l.id = ? AND l.content_type = 'event' AND l.status = 'published'";
         
-        $stmt = $this->db->getConnection()->prepare($sql);
-        $stmt->execute([$eventId]);
-        
-        $event = $stmt->fetch(PDO::FETCH_ASSOC);
+        $event = $this->db->fetch($sql, [$eventId]);
         
         if ($event) {
             // 행사 이미지 추가
@@ -385,12 +379,10 @@ class EventController extends LectureController {
                     'published', NOW()
                 )";
         
-        $stmt = $this->db->getConnection()->prepare($sql);
-        
         $params = array_merge($data, ['user_id' => $userId]);
-        $stmt->execute($params);
+        $this->db->execute($sql, $params);
         
-        return $this->db->getConnection()->lastInsertId();
+        return $this->db->lastInsertId();
     }
     
     /**
@@ -592,9 +584,7 @@ class EventController extends LectureController {
         
         try {
             $sql = "SELECT id, nickname, email, role FROM users WHERE id = ? AND status = 'ACTIVE'";
-            $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->execute([$userId]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            return $this->db->fetch($sql, [$userId]);
         } catch (Exception $e) {
             error_log("getCurrentUser 오류: " . $e->getMessage());
             return null;

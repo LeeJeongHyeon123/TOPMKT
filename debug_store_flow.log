@@ -1,0 +1,1399 @@
+=== store() 메서드 시작 - 2025-06-18 21:40:49 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750250031_0__________.jpg","file_path":"/assets/uploads/lectures/1750250031_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 21:33:51"},{"original_name":"메일택.png","file_name":"1750250031_1__________.png","file_path":"/assets/uploads/lectures/1750250031_1__________.png","file_size":19548,"upload_time":"2025-06-18 21:33:51"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpRt8pyO"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750250449_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750250449_0______________.png","file_size":247484,"upload_time":"2025-06-18 21:40:49"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750250031_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750250031_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 21:33:51',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750250031_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750250031_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 21:33:51',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750250031_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750250031_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 21:33:51"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750250031_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750250031_1__________.png","file_size":19548,"upload_time":"2025-06-18 21:33:51"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750250449_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750250449_0______________.png","file_size":247484,"upload_time":"2025-06-18 21:40:49"}]
+=== store() 메서드 시작 - 2025-06-18 21:42:42 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750250449_0______________.png","file_path":"/assets/uploads/lectures/1750250449_0______________.png","file_size":247484,"upload_time":"2025-06-18 21:40:49"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpL6LF5L","\/tmp\/php9bYOz5"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750250562_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750250562_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 21:42:42"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750250562_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750250562_1__________.png","file_size":19548,"upload_time":"2025-06-18 21:42:42"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750250449_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750250449_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 21:40:49',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750250449_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750250449_0______________.png","file_size":247484,"upload_time":"2025-06-18 21:40:49"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750250562_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750250562_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 21:42:42"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750250562_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750250562_1__________.png","file_size":19548,"upload_time":"2025-06-18 21:42:42"}]
+=== store() 메서드 시작 - 2025-06-18 22:06:19 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750251618_0__________.jpg","file_path":"/assets/uploads/lectures/1750251618_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:00:18"},{"original_name":"메일택.png","file_name":"1750251618_1__________.png","file_path":"/assets/uploads/lectures/1750251618_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:00:18"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpg1gBUa"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750251979_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750251979_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:06:19"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750251618_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750251618_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:00:18',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750251618_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750251618_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:00:18',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750251618_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750251618_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:00:18"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750251618_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750251618_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:00:18"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750251979_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750251979_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:06:19"}]
+=== store() 메서드 시작 - 2025-06-18 22:09:23 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750251979_0______________.png","file_path":"/assets/uploads/lectures/1750251979_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:06:19"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpHKEAiM","\/tmp\/php1coaCa"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252163_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252163_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:09:23"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252163_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252163_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:09:23"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750251979_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750251979_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:06:19',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750251979_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750251979_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:06:19"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252163_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252163_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:09:23"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252163_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252163_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:09:23"}]
+=== store() 메서드 시작 - 2025-06-18 22:11:20 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750252163_0__________.jpg","file_path":"/assets/uploads/lectures/1750252163_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:09:23"},{"original_name":"메일택.png","file_name":"1750252163_1__________.png","file_path":"/assets/uploads/lectures/1750252163_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:09:23"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpwfzkQ8"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252280_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252280_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:11:20"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750252163_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750252163_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:09:23',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750252163_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750252163_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:09:23',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252163_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252163_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:09:23"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252163_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252163_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:09:23"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252280_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252280_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:11:20"}]
+=== store() 메서드 시작 - 2025-06-18 22:16:50 ===
+isDraft: YES
+POST keys: csrf_token, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750252280_0______________.png","file_path":"/assets/uploads/lectures/1750252280_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:11:20"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpxKBls3","\/tmp\/php2JePIa"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252610_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252610_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:16:50"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252610_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252610_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:16:50"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750252280_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750252280_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:11:20',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252280_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252280_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:11:20"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252610_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252610_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:16:50"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252610_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252610_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:16:50"}]
+=== store() 메서드 시작 - 2025-06-18 22:18:58 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750252610_0__________.jpg","file_path":"/assets/uploads/lectures/1750252610_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:16:50"},{"original_name":"메일택.png","file_name":"1750252610_1__________.png","file_path":"/assets/uploads/lectures/1750252610_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:16:50"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpWfoDo0"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252738_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252738_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:18:58"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750252610_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750252610_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:16:50',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750252610_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750252610_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:16:50',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252610_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252610_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:16:50"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252610_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252610_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:16:50"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252738_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252738_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:18:58"}]
+=== store() 메서드 시작 - 2025-06-18 22:20:00 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750252738_0______________.png","file_path":"/assets/uploads/lectures/1750252738_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:18:58"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpOoyxXL","\/tmp\/phpf7gYpA"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252800_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252800_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:20:00"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252800_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252800_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:20:00"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750252738_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750252738_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:18:58',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252738_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252738_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:18:58"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252800_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252800_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:20:00"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252800_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252800_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:20:00"}]
+=== store() 메서드 시작 - 2025-06-18 22:22:25 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750252800_0__________.jpg","file_path":"/assets/uploads/lectures/1750252800_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:20:00"},{"original_name":"메일택.png","file_name":"1750252800_1__________.png","file_path":"/assets/uploads/lectures/1750252800_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:20:00"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpdifo3W"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252945_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252945_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:22:25"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750252800_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750252800_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:20:00',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750252800_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750252800_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:20:00',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750252800_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750252800_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:20:00"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750252800_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750252800_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:20:00"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252945_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252945_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:22:25"}]
+=== store() 메서드 시작 - 2025-06-18 22:31:49 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750252945_0______________.png","file_path":"/assets/uploads/lectures/1750252945_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:22:25"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpUlw2WI","\/tmp\/phpr653Tv"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750253509_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750253509_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:31:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750253509_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750253509_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:31:49"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750252945_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750252945_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:22:25',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750252945_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750252945_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:22:25"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750253509_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750253509_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:31:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750253509_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750253509_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:31:49"}]
+=== store() 메서드 시작 - 2025-06-18 22:37:18 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750253509_0__________.jpg","file_path":"/assets/uploads/lectures/1750253509_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:31:49"},{"original_name":"메일택.png","file_name":"1750253509_1__________.png","file_path":"/assets/uploads/lectures/1750253509_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:31:49"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpZ99RT3"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750253838_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750253838_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:37:18"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750253509_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750253509_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:31:49',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750253509_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750253509_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:31:49',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750253509_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750253509_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:31:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750253509_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750253509_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:31:49"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750253838_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750253838_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:37:18"}]
+=== store() 메서드 시작 - 2025-06-18 22:48:49 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750253838_0______________.png","file_path":"/assets/uploads/lectures/1750253838_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:37:18"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phplq7ylR","\/tmp\/phpul3wlk"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750254529_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750254529_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:48:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750254529_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750254529_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:48:49"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750253838_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750253838_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:37:18',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750253838_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750253838_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:37:18"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750254529_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750254529_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:48:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750254529_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750254529_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:48:49"}]
+=== store() 메서드 시작 - 2025-06-18 22:50:27 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750254529_0__________.jpg","file_path":"/assets/uploads/lectures/1750254529_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:48:49"},{"original_name":"메일택.png","file_name":"1750254529_1__________.png","file_path":"/assets/uploads/lectures/1750254529_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:48:49"}]
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png"],"type":["image\/png"],"tmp_name":["\/tmp\/phpPdkeuH"],"error":[0],"size":[247484]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750254529_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750254529_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:48:49',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750254529_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750254529_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:48:49',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 추가 전 기존 이미지 수: 2
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750254529_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750254529_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:48:49"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750254529_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750254529_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:48:49"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+=== store() 메서드 시작 - 2025-06-18 22:54:31 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750254627_0______________.png","file_path":"/assets/uploads/lectures/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpUxKjce","\/tmp\/phpHfeyi3"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750254871_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750254871_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:54:31"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750254871_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750254871_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:54:31"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750254627_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750254627_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:50:27',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750254871_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750254871_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:54:31"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750254871_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750254871_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:54:31"}]
+=== store() 메서드 시작 - 2025-06-18 22:56:51 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750254627_0______________.png","file_path":"/assets/uploads/lectures/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750254627_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750254627_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:50:27',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+=== store() 메서드 시작 - 2025-06-18 22:57:03 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 209 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750254627_0______________.png","file_path":"/assets/uploads/lectures/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/php4kvHHq","\/tmp\/php96AUdH"],"error":[0,0],"size":[494803,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+기존 이미지 JSON 길이: 209
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750254627_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750254627_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:50:27',
+  ),
+)
+기존 강의 이미지 병합: 1개
+새 이미지 추가 전 기존 이미지 수: 1
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-18 22:57:51 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 600 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750254627_0______________.png","file_path":"/assets/uploads/lectures/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"},{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 600
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750254627_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750254627_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-18 22:50:27',
+  ),
+  1 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  2 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 3개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750254627_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750254627_0______________.png","file_size":247484,"upload_time":"2025-06-18 22:50:27"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-18 23:08:56 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-18 23:19:22 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-18 23:20:41 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-19 00:04:19 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-19 00:12:43 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 392 chars
+existing_lecture_images 내용: [{"original_name":"고화질.jpg","file_name":"1750255023_0__________.jpg","file_path":"/assets/uploads/lectures/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"메일택.png","file_name":"1750255023_1__________.png","file_path":"/assets/uploads/lectures/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 392
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750255023_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750255023_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750255023_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750255023_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-18 22:57:03',
+  ),
+)
+기존 강의 이미지 병합: 2개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750255023_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750255023_0__________.jpg","file_size":494803,"upload_time":"2025-06-18 22:57:03"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750255023_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750255023_1__________.png","file_size":19548,"upload_time":"2025-06-18 22:57:03"}]
+=== store() 메서드 시작 - 2025-06-19 09:10:15 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png","\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg"],"type":["image\/png","image\/png","image\/jpeg"],"tmp_name":["\/tmp\/php6v1XM9","\/tmp\/phpn10k7C","\/tmp\/phpXXirVm"],"error":[0,0,0],"size":[247484,19548,93650]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+기존 이미지 없음
+새 이미지 추가 전 기존 이미지 수: 0
+새 이미지 추가 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+=== store() 메서드 시작 - 2025-06-19 09:16:22 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 635 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750291815_0______________.png","file_path":"/assets/uploads/lectures/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"메일택.png","file_name":"1750291815_1__________.png","file_path":"/assets/uploads/lectures/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"전자세금계산서.jpg","file_name":"1750291815_2______________________.jpg","file_path":"/assets/uploads/lectures/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 635
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750291815_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750291815_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  2 => 
+  array (
+    'original_name' => '전자세금계산서.jpg',
+    'file_name' => '1750291815_2______________________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750291815_2______________________.jpg',
+    'file_size' => 93650,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+)
+기존 강의 이미지 병합: 3개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+=== store() 메서드 시작 - 2025-06-19 09:35:13 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 635 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750291815_0______________.png","file_path":"/assets/uploads/lectures/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"메일택.png","file_name":"1750291815_1__________.png","file_path":"/assets/uploads/lectures/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"전자세금계산서.jpg","file_name":"1750291815_2______________________.jpg","file_path":"/assets/uploads/lectures/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 JSON 길이: 635
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750291815_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750291815_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  2 => 
+  array (
+    'original_name' => '전자세금계산서.jpg',
+    'file_name' => '1750291815_2______________________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750291815_2______________________.jpg',
+    'file_size' => 93650,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+)
+기존 강의 이미지 병합: 3개
+새 이미지 없음
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+=== store() 메서드 시작 - 2025-06-19 18:22:11 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 635 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750291815_0______________.png","file_path":"/assets/uploads/lectures/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"메일택.png","file_name":"1750291815_1__________.png","file_path":"/assets/uploads/lectures/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"전자세금계산서.jpg","file_name":"1750291815_2______________________.jpg","file_path":"/assets/uploads/lectures/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uc9c1\uc778_\uc708\uce74\ub4dc.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/php2VTiYe","\/tmp\/php4hWSDi"],"error":[0,0],"size":[494803,116711]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750324931_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750324931_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:11"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750324931_1_________________.png","file_path":"\/assets\/uploads\/lectures\/1750324931_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:11"}]
+기존 이미지 JSON 길이: 635
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750291815_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750291815_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  2 => 
+  array (
+    'original_name' => '전자세금계산서.jpg',
+    'file_name' => '1750291815_2______________________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750291815_2______________________.jpg',
+    'file_size' => 93650,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+)
+기존 강의 이미지 병합: 3개
+새 이미지 추가 전 기존 이미지 수: 3
+새 이미지 추가 후 총 이미지 수: 5
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750324931_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750324931_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:11"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750324931_1_________________.png","file_path":"\/assets\/uploads\/lectures\/1750324931_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:11"}]
+=== store() 메서드 시작 - 2025-06-19 18:22:21 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1048 chars
+existing_lecture_images 내용: [{"original_name":"로고 형태.png","file_name":"1750291815_0______________.png","file_path":"/assets/uploads/lectures/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"메일택.png","file_name":"1750291815_1__________.png","file_path":"/assets/uploads/lectures/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"전자세금계산서.jpg","file_name":"1750291815_2______________________.jpg","file_path":"/assets/uploads/lectures/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"},{"original_name":"고화질.jpg","file_name":"1750324931_0__________.jpg","file_path":"/assets/uploads/lectures/1750324931_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:11"},{"original_name":"직인_윈카드.png","file_name":"1750324931_1_________________.png","file_path":"/assets/uploads/lectures/1750324931_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:11"}]
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\uc9c1\uc778_\uc708\uce74\ub4dc.png"],"type":["image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpZ69YoE","\/tmp\/phpNoWhtG"],"error":[0,0],"size":[494803,116711]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750324941_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750324941_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:21"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750324941_1_________________.png","file_path":"\/assets\/uploads\/lectures\/1750324941_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:21"}]
+기존 이미지 JSON 길이: 1048
+JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '1750291815_0______________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_0______________.png',
+    'file_size' => 247484,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '1750291815_1__________.png',
+    'file_path' => '/assets/uploads/lectures/1750291815_1__________.png',
+    'file_size' => 19548,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  2 => 
+  array (
+    'original_name' => '전자세금계산서.jpg',
+    'file_name' => '1750291815_2______________________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750291815_2______________________.jpg',
+    'file_size' => 93650,
+    'upload_time' => '2025-06-19 09:10:15',
+  ),
+  3 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '1750324931_0__________.jpg',
+    'file_path' => '/assets/uploads/lectures/1750324931_0__________.jpg',
+    'file_size' => 494803,
+    'upload_time' => '2025-06-19 18:22:11',
+  ),
+  4 => 
+  array (
+    'original_name' => '직인_윈카드.png',
+    'file_name' => '1750324931_1_________________.png',
+    'file_path' => '/assets/uploads/lectures/1750324931_1_________________.png',
+    'file_size' => 116711,
+    'upload_time' => '2025-06-19 18:22:11',
+  ),
+)
+기존 강의 이미지 병합: 5개
+새 이미지 추가 전 기존 이미지 수: 5
+새 이미지 추가 후 총 이미지 수: 7
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750291815_0______________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_0______________.png","file_size":247484,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750291815_1__________.png","file_path":"\/assets\/uploads\/lectures\/1750291815_1__________.png","file_size":19548,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750291815_2______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750291815_2______________________.jpg","file_size":93650,"upload_time":"2025-06-19 09:10:15"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750324931_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750324931_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:11"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750324931_1_________________.png","file_path":"\/assets\/uploads\/lectures\/1750324931_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:11"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750324941_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750324941_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 18:22:21"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750324941_1_________________.png","file_path":"\/assets\/uploads\/lectures\/1750324941_1_________________.png","file_size":116711,"upload_time":"2025-06-19 18:22:21"}]
+=== store() 메서드 시작 - 2025-06-19 19:42:11 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png","\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","\uc9c1\uc778_\uc708\uce74\ub4dc.png"],"type":["image\/jpeg","image\/png","image\/png","image\/jpeg","image\/png"],"tmp_name":["\/tmp\/php8HsNDR","\/tmp\/phpjHiRT7","\/tmp\/phpasuX0A","\/tmp\/phpyghSJX","\/tmp\/phpA2fTle"],"error":[0,0,0,0,0],"size":[494803,247484,19548,93650,116711]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750329731_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329731_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750329731_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_1______________.png","file_size":247484,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750329731_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_2__________.png","file_size":19548,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750329731_3______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329731_3______________________.jpg","file_size":93650,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750329731_4_________________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_4_________________.png","file_size":116711,"upload_time":"2025-06-19 19:42:11"}]
+기존 이미지 없음
+새 이미지 추가 전 기존 이미지 수: 0
+새 이미지 추가: 1750329731_0__________.jpg
+새 이미지 추가: 1750329731_1______________.png
+새 이미지 추가: 1750329731_2__________.png
+새 이미지 추가: 1750329731_3______________________.jpg
+새 이미지 추가: 1750329731_4_________________.png
+중복 제거 후 총 이미지 수: 5
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750329731_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329731_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750329731_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_1______________.png","file_size":247484,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750329731_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_2__________.png","file_size":19548,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750329731_3______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329731_3______________________.jpg","file_size":93650,"upload_time":"2025-06-19 19:42:11"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750329731_4_________________.png","file_path":"\/assets\/uploads\/lectures\/1750329731_4_________________.png","file_size":116711,"upload_time":"2025-06-19 19:42:11"}]
+=== store() 메서드 시작 - 2025-06-19 19:45:08 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png","\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","\uc9c1\uc778_\uc708\uce74\ub4dc.png"],"type":["image\/jpeg","image\/png","image\/png","image\/jpeg","image\/png"],"tmp_name":["\/tmp\/phpc00A6s","\/tmp\/phpOlQiIX","\/tmp\/phpdukaqd","\/tmp\/phpA6LAAQ","\/tmp\/phpg36nJR"],"error":[0,0,0,0,0],"size":[494803,247484,19548,93650,116711]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750329908_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329908_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750329908_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_1______________.png","file_size":247484,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750329908_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_2__________.png","file_size":19548,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750329908_3______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329908_3______________________.jpg","file_size":93650,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750329908_4_________________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_4_________________.png","file_size":116711,"upload_time":"2025-06-19 19:45:08"}]
+기존 이미지 없음
+새 이미지 추가 전 기존 이미지 수: 0
+새 이미지 추가: 1750329908_0__________.jpg
+새 이미지 추가: 1750329908_1______________.png
+새 이미지 추가: 1750329908_2__________.png
+새 이미지 추가: 1750329908_3______________________.jpg
+새 이미지 추가: 1750329908_4_________________.png
+중복 제거 후 총 이미지 수: 5
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750329908_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329908_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750329908_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_1______________.png","file_size":247484,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750329908_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_2__________.png","file_size":19548,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uc804\uc790\uc138\uae08\uacc4\uc0b0\uc11c.jpg","file_name":"1750329908_3______________________.jpg","file_path":"\/assets\/uploads\/lectures\/1750329908_3______________________.jpg","file_size":93650,"upload_time":"2025-06-19 19:45:08"},{"original_name":"\uc9c1\uc778_\uc708\uce74\ub4dc.png","file_name":"1750329908_4_________________.png","file_path":"\/assets\/uploads\/lectures\/1750329908_4_________________.png","file_size":116711,"upload_time":"2025-06-19 19:45:08"}]
+=== store() 메서드 시작 - 2025-06-19 20:16:35 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpNEtAN6","\/tmp\/phpJqbnUw","\/tmp\/phpS43Eoe"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750331795_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750331795_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 20:16:35"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750331795_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750331795_1______________.png","file_size":247484,"upload_time":"2025-06-19 20:16:35"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750331795_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750331795_2__________.png","file_size":19548,"upload_time":"2025-06-19 20:16:35"}]
+기존 이미지 없음
+새 이미지 추가 전 기존 이미지 수: 0
+새 이미지 추가: 1750331795_0__________.jpg
+새 이미지 추가: 1750331795_1______________.png
+새 이미지 추가: 1750331795_2__________.png
+중복 제거 후 총 이미지 수: 3
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750331795_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750331795_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 20:16:35"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750331795_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750331795_1______________.png","file_size":247484,"upload_time":"2025-06-19 20:16:35"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750331795_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750331795_2__________.png","file_size":19548,"upload_time":"2025-06-19 20:16:35"}]
+=== store() 메서드 시작 - 2025-06-19 20:36:39 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpcJcIo2","\/tmp\/phprHvDZ8","\/tmp\/php1n9hxu"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750332999_0__________.jpg","file_path":"\/assets\/uploads\/lectures\/1750332999_0__________.jpg","file_size":494803,"upload_time":"2025-06-19 20:36:39"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750332999_1______________.png","file_path":"\/assets\/uploads\/lectures\/1750332999_1______________.png","file_size":247484,"upload_time":"2025-06-19 20:36:39"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750332999_2__________.png","file_path":"\/assets\/uploads\/lectures\/1750332999_2__________.png","file_size":19548,"upload_time":"2025-06-19 20:36:39"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 347
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '고화질.jpg',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '메일택.png',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '로고 형태.png',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 3,
+  ),
+)
+기존 이미지 순서 적용: 고화질.jpg (순서: 1)
+기존 이미지 순서 적용: 메일택.png (순서: 2)
+기존 이미지 순서 적용: 로고 형태.png (순서: 3)
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"\uace0\ud654\uc9c8.jpg","file_size":494803,"is_new":true,"display_order":1},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"\uba54\uc77c\ud0dd.png","file_size":19548,"is_new":true,"display_order":2},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"\ub85c\uace0 \ud615\ud0dc.png","file_size":247484,"is_new":true,"display_order":3}]
+=== store() 메서드 시작 - 2025-06-19 21:09:36 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpuq5lqu","\/tmp\/phpzq6Fsn","\/tmp\/phpnAIYTa"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750334976_0_file_6853fe00b1039.jpg","file_path":"\/assets\/uploads\/lectures\/1750334976_0_file_6853fe00b1039.jpg","file_size":494803,"upload_time":"2025-06-19 21:09:36"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750334976_1_file_6853fe00b1189.png","file_path":"\/assets\/uploads\/lectures\/1750334976_1_file_6853fe00b1189.png","file_size":247484,"upload_time":"2025-06-19 21:09:36"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750334976_2_file_6853fe00b1243.png","file_path":"\/assets\/uploads\/lectures\/1750334976_2_file_6853fe00b1243.png","file_size":19548,"upload_time":"2025-06-19 21:09:36"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 347
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '메일택.png',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '고화질.jpg',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '로고 형태.png',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 3,
+  ),
+)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/메일택.png
+기존 이미지 순서 적용: 메일택.png (순서: 1, file_path: /assets/uploads/lectures/메일택.png)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/고화질.jpg
+기존 이미지 순서 적용: 고화질.jpg (순서: 2, file_path: /assets/uploads/lectures/고화질.jpg)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/로고 형태.png
+기존 이미지 순서 적용: 로고 형태.png (순서: 3, file_path: /assets/uploads/lectures/로고 형태.png)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"\uba54\uc77c\ud0dd.png","file_size":19548,"is_new":true,"display_order":1,"file_path":"\/assets\/uploads\/lectures\/\uba54\uc77c\ud0dd.png"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"\uace0\ud654\uc9c8.jpg","file_size":494803,"is_new":true,"display_order":2,"file_path":"\/assets\/uploads\/lectures\/\uace0\ud654\uc9c8.jpg"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"\ub85c\uace0 \ud615\ud0dc.png","file_size":247484,"is_new":true,"display_order":3,"file_path":"\/assets\/uploads\/lectures\/\ub85c\uace0 \ud615\ud0dc.png"}]
+최종 이미지 0: file_name=메일택.png, file_path=/assets/uploads/lectures/메일택.png
+최종 이미지 1: file_name=고화질.jpg, file_path=/assets/uploads/lectures/고화질.jpg
+최종 이미지 2: file_name=로고 형태.png, file_path=/assets/uploads/lectures/로고 형태.png
+=== store() 메서드 시작 - 2025-06-19 21:14:11 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpZsWym9","\/tmp\/phpqw7ppz","\/tmp\/phpovZ04f"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"1750335251_0_file_6853ff13d258f.jpg","file_path":"\/assets\/uploads\/lectures\/1750335251_0_file_6853ff13d258f.jpg","file_size":494803,"upload_time":"2025-06-19 21:14:11"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"1750335251_1_file_6853ff13d2724.png","file_path":"\/assets\/uploads\/lectures\/1750335251_1_file_6853ff13d2724.png","file_size":247484,"upload_time":"2025-06-19 21:14:11"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"1750335251_2_file_6853ff13d27e9.png","file_path":"\/assets\/uploads\/lectures\/1750335251_2_file_6853ff13d27e9.png","file_size":19548,"upload_time":"2025-06-19 21:14:11"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 347
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '메일택.png',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '로고 형태.png',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '고화질.jpg',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+  ),
+)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/메일택.png
+기존 이미지 순서 적용: 메일택.png (순서: 1, file_path: /assets/uploads/lectures/메일택.png)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/로고 형태.png
+기존 이미지 순서 적용: 로고 형태.png (순서: 2, file_path: /assets/uploads/lectures/로고 형태.png)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/고화질.jpg
+기존 이미지 순서 적용: 고화질.jpg (순서: 3, file_path: /assets/uploads/lectures/고화질.jpg)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"\uba54\uc77c\ud0dd.png","file_size":19548,"is_new":true,"display_order":1,"file_path":"\/assets\/uploads\/lectures\/\uba54\uc77c\ud0dd.png"},{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"\ub85c\uace0 \ud615\ud0dc.png","file_size":247484,"is_new":true,"display_order":2,"file_path":"\/assets\/uploads\/lectures\/\ub85c\uace0 \ud615\ud0dc.png"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"\uace0\ud654\uc9c8.jpg","file_size":494803,"is_new":true,"display_order":3,"file_path":"\/assets\/uploads\/lectures\/\uace0\ud654\uc9c8.jpg"}]
+최종 이미지 0: file_name=메일택.png, file_path=/assets/uploads/lectures/메일택.png
+최종 이미지 1: file_name=로고 형태.png, file_path=/assets/uploads/lectures/로고 형태.png
+최종 이미지 2: file_name=고화질.jpg, file_path=/assets/uploads/lectures/고화질.jpg
+=== store() 메서드 시작 - 2025-06-19 21:30:57 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpRvEzbY","\/tmp\/phpHr0Vw4","\/tmp\/phpS4eHXz"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750336257_0_file_68540301523b7.jpg","file_name":"1750336257_0_file_68540301523b7.jpg","file_path":"\/assets\/uploads\/lectures\/1750336257_0_file_68540301523b7.jpg","file_size":494803,"upload_time":"2025-06-19 21:30:57"},{"original_name":"1750336257_1_file_6854030152568.png","file_name":"1750336257_1_file_6854030152568.png","file_path":"\/assets\/uploads\/lectures\/1750336257_1_file_6854030152568.png","file_size":247484,"upload_time":"2025-06-19 21:30:57"},{"original_name":"1750336257_2_file_685403015262c.png","file_name":"1750336257_2_file_685403015262c.png","file_path":"\/assets\/uploads\/lectures\/1750336257_2_file_685403015262c.png","file_size":19548,"upload_time":"2025-06-19 21:30:57"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 347
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => '로고 형태.png',
+    'file_name' => '로고 형태.png',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => '메일택.png',
+    'file_name' => '메일택.png',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => '고화질.jpg',
+    'file_name' => '고화질.jpg',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+  ),
+)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/로고 형태.png
+기존 이미지 순서 적용: 로고 형태.png (순서: 1, file_path: /assets/uploads/lectures/로고 형태.png)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/메일택.png
+기존 이미지 순서 적용: 메일택.png (순서: 2, file_path: /assets/uploads/lectures/메일택.png)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/고화질.jpg
+기존 이미지 순서 적용: 고화질.jpg (순서: 3, file_path: /assets/uploads/lectures/고화질.jpg)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"\ub85c\uace0 \ud615\ud0dc.png","file_name":"\ub85c\uace0 \ud615\ud0dc.png","file_size":247484,"is_new":true,"display_order":1,"file_path":"\/assets\/uploads\/lectures\/\ub85c\uace0 \ud615\ud0dc.png"},{"original_name":"\uba54\uc77c\ud0dd.png","file_name":"\uba54\uc77c\ud0dd.png","file_size":19548,"is_new":true,"display_order":2,"file_path":"\/assets\/uploads\/lectures\/\uba54\uc77c\ud0dd.png"},{"original_name":"\uace0\ud654\uc9c8.jpg","file_name":"\uace0\ud654\uc9c8.jpg","file_size":494803,"is_new":true,"display_order":3,"file_path":"\/assets\/uploads\/lectures\/\uace0\ud654\uc9c8.jpg"}]
+최종 이미지 0: file_name=로고 형태.png, file_path=/assets/uploads/lectures/로고 형태.png
+최종 이미지 1: file_name=메일택.png, file_path=/assets/uploads/lectures/메일택.png
+최종 이미지 2: file_name=고화질.jpg, file_path=/assets/uploads/lectures/고화질.jpg
+=== store() 메서드 시작 - 2025-06-19 21:37:32 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpAJ0FYR","\/tmp\/php1TZ3or","\/tmp\/phpYYDOET"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750336652_0_file_6854048ce37d3.jpg","file_name":"1750336652_0_file_6854048ce37d3.jpg","file_path":"\/assets\/uploads\/lectures\/1750336652_0_file_6854048ce37d3.jpg","file_size":494803,"upload_time":"2025-06-19 21:37:32"},{"original_name":"1750336652_1_file_6854048ce3964.png","file_name":"1750336652_1_file_6854048ce3964.png","file_path":"\/assets\/uploads\/lectures\/1750336652_1_file_6854048ce3964.png","file_size":247484,"upload_time":"2025-06-19 21:37:32"},{"original_name":"1750336652_2_file_6854048ce3a2c.png","file_name":"1750336652_2_file_6854048ce3a2c.png","file_path":"\/assets\/uploads\/lectures\/1750336652_2_file_6854048ce3a2c.png","file_size":19548,"upload_time":"2025-06-19 21:37:32"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750336653290_0',
+    'file_name' => 'temp_1750336653290_0',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750336653290_1',
+    'file_name' => 'temp_1750336653290_1',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750336653290_2',
+    'file_name' => 'temp_1750336653290_2',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+)
+temp_index 매칭 성공: 인덱스 0 -> 1750336652_0_file_6854048ce37d3.jpg
+새 이미지 순서 적용: 1750336652_0_file_6854048ce37d3.jpg (순서: 1, file_path: /assets/uploads/lectures/1750336652_0_file_6854048ce37d3.jpg)
+temp_index 매칭 성공: 인덱스 1 -> 1750336652_1_file_6854048ce3964.png
+새 이미지 순서 적용: 1750336652_1_file_6854048ce3964.png (순서: 2, file_path: /assets/uploads/lectures/1750336652_1_file_6854048ce3964.png)
+temp_index 매칭 성공: 인덱스 2 -> 1750336652_2_file_6854048ce3a2c.png
+새 이미지 순서 적용: 1750336652_2_file_6854048ce3a2c.png (순서: 3, file_path: /assets/uploads/lectures/1750336652_2_file_6854048ce3a2c.png)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750336652_0_file_6854048ce37d3.jpg","file_name":"1750336652_0_file_6854048ce37d3.jpg","file_path":"\/assets\/uploads\/lectures\/1750336652_0_file_6854048ce37d3.jpg","file_size":494803,"upload_time":"2025-06-19 21:37:32","display_order":1},{"original_name":"1750336652_1_file_6854048ce3964.png","file_name":"1750336652_1_file_6854048ce3964.png","file_path":"\/assets\/uploads\/lectures\/1750336652_1_file_6854048ce3964.png","file_size":247484,"upload_time":"2025-06-19 21:37:32","display_order":2},{"original_name":"1750336652_2_file_6854048ce3a2c.png","file_name":"1750336652_2_file_6854048ce3a2c.png","file_path":"\/assets\/uploads\/lectures\/1750336652_2_file_6854048ce3a2c.png","file_size":19548,"upload_time":"2025-06-19 21:37:32","display_order":3}]
+최종 이미지 0: file_name=1750336652_0_file_6854048ce37d3.jpg, file_path=/assets/uploads/lectures/1750336652_0_file_6854048ce37d3.jpg
+최종 이미지 1: file_name=1750336652_1_file_6854048ce3964.png, file_path=/assets/uploads/lectures/1750336652_1_file_6854048ce3964.png
+최종 이미지 2: file_name=1750336652_2_file_6854048ce3a2c.png, file_path=/assets/uploads/lectures/1750336652_2_file_6854048ce3a2c.png
+=== store() 메서드 시작 - 2025-06-19 21:41:10 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpdzt6lM","\/tmp\/phpcOz2hS","\/tmp\/phpHUkQcK"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750336870_0_file_6854056692578.jpg","file_name":"1750336870_0_file_6854056692578.jpg","file_path":"\/assets\/uploads\/lectures\/1750336870_0_file_6854056692578.jpg","file_size":494803,"upload_time":"2025-06-19 21:41:10"},{"original_name":"1750336870_1_file_68540566926d6.png","file_name":"1750336870_1_file_68540566926d6.png","file_path":"\/assets\/uploads\/lectures\/1750336870_1_file_68540566926d6.png","file_size":247484,"upload_time":"2025-06-19 21:41:10"},{"original_name":"1750336870_2_file_68540566927ce.png","file_name":"1750336870_2_file_68540566927ce.png","file_path":"\/assets\/uploads\/lectures\/1750336870_2_file_68540566927ce.png","file_size":19548,"upload_time":"2025-06-19 21:41:10"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750336870954_0',
+    'file_name' => 'temp_1750336870954_0',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750336870954_1',
+    'file_name' => 'temp_1750336870954_1',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750336870954_2',
+    'file_name' => 'temp_1750336870954_2',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+)
+temp_index 매칭 성공: 인덱스 0 -> 1750336870_0_file_6854056692578.jpg
+새 이미지 순서 적용: 1750336870_0_file_6854056692578.jpg (순서: 1, file_path: /assets/uploads/lectures/1750336870_0_file_6854056692578.jpg)
+temp_index 매칭 성공: 인덱스 1 -> 1750336870_1_file_68540566926d6.png
+새 이미지 순서 적용: 1750336870_1_file_68540566926d6.png (순서: 2, file_path: /assets/uploads/lectures/1750336870_1_file_68540566926d6.png)
+temp_index 매칭 성공: 인덱스 2 -> 1750336870_2_file_68540566927ce.png
+새 이미지 순서 적용: 1750336870_2_file_68540566927ce.png (순서: 3, file_path: /assets/uploads/lectures/1750336870_2_file_68540566927ce.png)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750336870_0_file_6854056692578.jpg","file_name":"1750336870_0_file_6854056692578.jpg","file_path":"\/assets\/uploads\/lectures\/1750336870_0_file_6854056692578.jpg","file_size":494803,"upload_time":"2025-06-19 21:41:10","display_order":1},{"original_name":"1750336870_1_file_68540566926d6.png","file_name":"1750336870_1_file_68540566926d6.png","file_path":"\/assets\/uploads\/lectures\/1750336870_1_file_68540566926d6.png","file_size":247484,"upload_time":"2025-06-19 21:41:10","display_order":2},{"original_name":"1750336870_2_file_68540566927ce.png","file_name":"1750336870_2_file_68540566927ce.png","file_path":"\/assets\/uploads\/lectures\/1750336870_2_file_68540566927ce.png","file_size":19548,"upload_time":"2025-06-19 21:41:10","display_order":3}]
+최종 이미지 0: file_name=1750336870_0_file_6854056692578.jpg, file_path=/assets/uploads/lectures/1750336870_0_file_6854056692578.jpg
+최종 이미지 1: file_name=1750336870_1_file_68540566926d6.png, file_path=/assets/uploads/lectures/1750336870_1_file_68540566926d6.png
+최종 이미지 2: file_name=1750336870_2_file_68540566927ce.png, file_path=/assets/uploads/lectures/1750336870_2_file_68540566927ce.png
+=== store() 메서드 시작 - 2025-06-19 22:43:23 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/php8X1hSx","\/tmp\/phpusyNp1","\/tmp\/phphUeWPP"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750340603_0_file_685413fba257c.jpg","file_name":"1750340603_0_file_685413fba257c.jpg","file_path":"\/assets\/uploads\/lectures\/1750340603_0_file_685413fba257c.jpg","file_size":494803,"upload_time":"2025-06-19 22:43:23"},{"original_name":"1750340603_1_file_685413fba26db.png","file_name":"1750340603_1_file_685413fba26db.png","file_path":"\/assets\/uploads\/lectures\/1750340603_1_file_685413fba26db.png","file_size":247484,"upload_time":"2025-06-19 22:43:23"},{"original_name":"1750340603_2_file_685413fba279d.png","file_name":"1750340603_2_file_685413fba279d.png","file_path":"\/assets\/uploads\/lectures\/1750340603_2_file_685413fba279d.png","file_size":19548,"upload_time":"2025-06-19 22:43:23"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750340604033_1',
+    'file_name' => 'temp_1750340604033_1',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750340604033_2',
+    'file_name' => 'temp_1750340604033_2',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750340604033_0',
+    'file_name' => 'temp_1750340604033_0',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 0,
+  ),
+)
+temp_index 매칭 성공: 인덱스 1 -> 1750340603_1_file_685413fba26db.png
+새 이미지 순서 적용: 1750340603_1_file_685413fba26db.png (순서: 1, file_path: /assets/uploads/lectures/1750340603_1_file_685413fba26db.png)
+temp_index 매칭 성공: 인덱스 2 -> 1750340603_2_file_685413fba279d.png
+새 이미지 순서 적용: 1750340603_2_file_685413fba279d.png (순서: 2, file_path: /assets/uploads/lectures/1750340603_2_file_685413fba279d.png)
+temp_index 매칭 성공: 인덱스 0 -> 1750340603_0_file_685413fba257c.jpg
+새 이미지 순서 적용: 1750340603_0_file_685413fba257c.jpg (순서: 3, file_path: /assets/uploads/lectures/1750340603_0_file_685413fba257c.jpg)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750340603_1_file_685413fba26db.png","file_name":"1750340603_1_file_685413fba26db.png","file_path":"\/assets\/uploads\/lectures\/1750340603_1_file_685413fba26db.png","file_size":247484,"upload_time":"2025-06-19 22:43:23","display_order":1},{"original_name":"1750340603_2_file_685413fba279d.png","file_name":"1750340603_2_file_685413fba279d.png","file_path":"\/assets\/uploads\/lectures\/1750340603_2_file_685413fba279d.png","file_size":19548,"upload_time":"2025-06-19 22:43:23","display_order":2},{"original_name":"1750340603_0_file_685413fba257c.jpg","file_name":"1750340603_0_file_685413fba257c.jpg","file_path":"\/assets\/uploads\/lectures\/1750340603_0_file_685413fba257c.jpg","file_size":494803,"upload_time":"2025-06-19 22:43:23","display_order":3}]
+최종 이미지 0: file_name=1750340603_1_file_685413fba26db.png, file_path=/assets/uploads/lectures/1750340603_1_file_685413fba26db.png
+최종 이미지 1: file_name=1750340603_2_file_685413fba279d.png, file_path=/assets/uploads/lectures/1750340603_2_file_685413fba279d.png
+최종 이미지 2: file_name=1750340603_0_file_685413fba257c.jpg, file_path=/assets/uploads/lectures/1750340603_0_file_685413fba257c.jpg
+=== store() 메서드 시작 - 2025-06-19 22:44:53 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpJsBAuk","\/tmp\/php0Pajud","\/tmp\/phpkdjHO5"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750340693_0_file_68541455cc3aa.jpg","file_name":"1750340693_0_file_68541455cc3aa.jpg","file_path":"\/assets\/uploads\/lectures\/1750340693_0_file_68541455cc3aa.jpg","file_size":494803,"upload_time":"2025-06-19 22:44:53"},{"original_name":"1750340693_1_file_68541455cc51c.png","file_name":"1750340693_1_file_68541455cc51c.png","file_path":"\/assets\/uploads\/lectures\/1750340693_1_file_68541455cc51c.png","file_size":247484,"upload_time":"2025-06-19 22:44:53"},{"original_name":"1750340693_2_file_68541455cc5e2.png","file_name":"1750340693_2_file_68541455cc5e2.png","file_path":"\/assets\/uploads\/lectures\/1750340693_2_file_68541455cc5e2.png","file_size":19548,"upload_time":"2025-06-19 22:44:53"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750340694219_1',
+    'file_name' => 'temp_1750340694219_1',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750340694219_2',
+    'file_name' => 'temp_1750340694219_2',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 2,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750340694219_0',
+    'file_name' => 'temp_1750340694219_0',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 0,
+  ),
+)
+temp_index 매칭 성공: 인덱스 1 -> 1750340693_1_file_68541455cc51c.png
+새 이미지 순서 적용: 1750340693_1_file_68541455cc51c.png (순서: 1, file_path: /assets/uploads/lectures/1750340693_1_file_68541455cc51c.png)
+temp_index 매칭 성공: 인덱스 2 -> 1750340693_2_file_68541455cc5e2.png
+새 이미지 순서 적용: 1750340693_2_file_68541455cc5e2.png (순서: 2, file_path: /assets/uploads/lectures/1750340693_2_file_68541455cc5e2.png)
+temp_index 매칭 성공: 인덱스 0 -> 1750340693_0_file_68541455cc3aa.jpg
+새 이미지 순서 적용: 1750340693_0_file_68541455cc3aa.jpg (순서: 3, file_path: /assets/uploads/lectures/1750340693_0_file_68541455cc3aa.jpg)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750340693_1_file_68541455cc51c.png","file_name":"1750340693_1_file_68541455cc51c.png","file_path":"\/assets\/uploads\/lectures\/1750340693_1_file_68541455cc51c.png","file_size":247484,"upload_time":"2025-06-19 22:44:53","display_order":1},{"original_name":"1750340693_2_file_68541455cc5e2.png","file_name":"1750340693_2_file_68541455cc5e2.png","file_path":"\/assets\/uploads\/lectures\/1750340693_2_file_68541455cc5e2.png","file_size":19548,"upload_time":"2025-06-19 22:44:53","display_order":2},{"original_name":"1750340693_0_file_68541455cc3aa.jpg","file_name":"1750340693_0_file_68541455cc3aa.jpg","file_path":"\/assets\/uploads\/lectures\/1750340693_0_file_68541455cc3aa.jpg","file_size":494803,"upload_time":"2025-06-19 22:44:53","display_order":3}]
+최종 이미지 0: file_name=1750340693_1_file_68541455cc51c.png, file_path=/assets/uploads/lectures/1750340693_1_file_68541455cc51c.png
+최종 이미지 1: file_name=1750340693_2_file_68541455cc5e2.png, file_path=/assets/uploads/lectures/1750340693_2_file_68541455cc5e2.png
+최종 이미지 2: file_name=1750340693_0_file_68541455cc3aa.jpg, file_path=/assets/uploads/lectures/1750340693_0_file_68541455cc3aa.jpg
+=== store() 메서드 시작 - 2025-06-19 22:59:47 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phplvnsXc","\/tmp\/phpvOixRG","\/tmp\/phpj7mN8N"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750341587_0_file_685417d3df746.jpg","file_name":"1750341587_0_file_685417d3df746.jpg","file_path":"\/assets\/uploads\/lectures\/1750341587_0_file_685417d3df746.jpg","file_size":494803,"upload_time":"2025-06-19 22:59:47"},{"original_name":"1750341587_1_file_685417d3df899.png","file_name":"1750341587_1_file_685417d3df899.png","file_path":"\/assets\/uploads\/lectures\/1750341587_1_file_685417d3df899.png","file_size":247484,"upload_time":"2025-06-19 22:59:47"},{"original_name":"1750341587_2_file_685417d3df95c.png","file_name":"1750341587_2_file_685417d3df95c.png","file_path":"\/assets\/uploads\/lectures\/1750341587_2_file_685417d3df95c.png","file_size":19548,"upload_time":"2025-06-19 22:59:47"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750341588290_1',
+    'file_name' => 'temp_1750341588290_1',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 1,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750341588290_0',
+    'file_name' => 'temp_1750341588290_0',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 0,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750341588290_2',
+    'file_name' => 'temp_1750341588290_2',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+)
+temp_index 매칭 성공: 인덱스 1 -> 1750341587_1_file_685417d3df899.png
+새 이미지 순서 적용: 1750341587_1_file_685417d3df899.png (순서: 1, file_path: /assets/uploads/lectures/1750341587_1_file_685417d3df899.png)
+temp_index 매칭 성공: 인덱스 0 -> 1750341587_0_file_685417d3df746.jpg
+새 이미지 순서 적용: 1750341587_0_file_685417d3df746.jpg (순서: 2, file_path: /assets/uploads/lectures/1750341587_0_file_685417d3df746.jpg)
+temp_index 매칭 성공: 인덱스 2 -> 1750341587_2_file_685417d3df95c.png
+새 이미지 순서 적용: 1750341587_2_file_685417d3df95c.png (순서: 3, file_path: /assets/uploads/lectures/1750341587_2_file_685417d3df95c.png)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750341587_1_file_685417d3df899.png","file_name":"1750341587_1_file_685417d3df899.png","file_path":"\/assets\/uploads\/lectures\/1750341587_1_file_685417d3df899.png","file_size":247484,"upload_time":"2025-06-19 22:59:47","display_order":1},{"original_name":"1750341587_0_file_685417d3df746.jpg","file_name":"1750341587_0_file_685417d3df746.jpg","file_path":"\/assets\/uploads\/lectures\/1750341587_0_file_685417d3df746.jpg","file_size":494803,"upload_time":"2025-06-19 22:59:47","display_order":2},{"original_name":"1750341587_2_file_685417d3df95c.png","file_name":"1750341587_2_file_685417d3df95c.png","file_path":"\/assets\/uploads\/lectures\/1750341587_2_file_685417d3df95c.png","file_size":19548,"upload_time":"2025-06-19 22:59:47","display_order":3}]
+최종 이미지 0: file_name=1750341587_1_file_685417d3df899.png, file_path=/assets/uploads/lectures/1750341587_1_file_685417d3df899.png
+최종 이미지 1: file_name=1750341587_0_file_685417d3df746.jpg, file_path=/assets/uploads/lectures/1750341587_0_file_685417d3df746.jpg
+최종 이미지 2: file_name=1750341587_2_file_685417d3df95c.png, file_path=/assets/uploads/lectures/1750341587_2_file_685417d3df95c.png
+=== store() 메서드 시작 - 2025-06-19 23:06:00 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, requirements, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["\uace0\ud654\uc9c8.jpg","\ub85c\uace0 \ud615\ud0dc.png","\uba54\uc77c\ud0dd.png"],"type":["image\/jpeg","image\/png","image\/png"],"tmp_name":["\/tmp\/phpraToc9","\/tmp\/phppV8dTZ","\/tmp\/php3FYeoN"],"error":[0,0,0],"size":[494803,247484,19548]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750341960_0_file_68541948cedb3.jpg","file_name":"1750341960_0_file_68541948cedb3.jpg","file_path":"\/assets\/uploads\/lectures\/1750341960_0_file_68541948cedb3.jpg","file_size":494803,"upload_time":"2025-06-19 23:06:00"},{"original_name":"1750341960_1_file_68541948cef15.png","file_name":"1750341960_1_file_68541948cef15.png","file_path":"\/assets\/uploads\/lectures\/1750341960_1_file_68541948cef15.png","file_size":247484,"upload_time":"2025-06-19 23:06:00"},{"original_name":"1750341960_2_file_68541948cefde.png","file_name":"1750341960_2_file_68541948cefde.png","file_path":"\/assets\/uploads\/lectures\/1750341960_2_file_68541948cefde.png","file_size":19548,"upload_time":"2025-06-19 23:06:00"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 426
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1750341961231_2',
+    'file_name' => 'temp_1750341961231_2',
+    'file_size' => 19548,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 2,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1750341961231_0',
+    'file_name' => 'temp_1750341961231_0',
+    'file_size' => 247484,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 0,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1750341961231_1',
+    'file_name' => 'temp_1750341961231_1',
+    'file_size' => 494803,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 1,
+  ),
+)
+파일 크기 매칭 성공: 크기 19548 -> 1750341960_2_file_68541948cefde.png
+새 이미지 순서 적용: 1750341960_2_file_68541948cefde.png (순서: 1, file_path: /assets/uploads/lectures/1750341960_2_file_68541948cefde.png)
+파일 크기 매칭 성공: 크기 247484 -> 1750341960_1_file_68541948cef15.png
+새 이미지 순서 적용: 1750341960_1_file_68541948cef15.png (순서: 2, file_path: /assets/uploads/lectures/1750341960_1_file_68541948cef15.png)
+파일 크기 매칭 성공: 크기 494803 -> 1750341960_0_file_68541948cedb3.jpg
+새 이미지 순서 적용: 1750341960_0_file_68541948cedb3.jpg (순서: 3, file_path: /assets/uploads/lectures/1750341960_0_file_68541948cedb3.jpg)
+display_order 재설정 완료: [1,2,3]
+순서 정렬된 최종 이미지: 3개
+최종 이미지 POST에 저장: [{"original_name":"1750341960_2_file_68541948cefde.png","file_name":"1750341960_2_file_68541948cefde.png","file_path":"\/assets\/uploads\/lectures\/1750341960_2_file_68541948cefde.png","file_size":19548,"upload_time":"2025-06-19 23:06:00","display_order":1},{"original_name":"1750341960_1_file_68541948cef15.png","file_name":"1750341960_1_file_68541948cef15.png","file_path":"\/assets\/uploads\/lectures\/1750341960_1_file_68541948cef15.png","file_size":247484,"upload_time":"2025-06-19 23:06:00","display_order":2},{"original_name":"1750341960_0_file_68541948cedb3.jpg","file_name":"1750341960_0_file_68541948cedb3.jpg","file_path":"\/assets\/uploads\/lectures\/1750341960_0_file_68541948cedb3.jpg","file_size":494803,"upload_time":"2025-06-19 23:06:00","display_order":3}]
+최종 이미지 0: file_name=1750341960_2_file_68541948cefde.png, file_path=/assets/uploads/lectures/1750341960_2_file_68541948cefde.png
+최종 이미지 1: file_name=1750341960_1_file_68541948cef15.png, file_path=/assets/uploads/lectures/1750341960_1_file_68541948cef15.png
+최종 이미지 2: file_name=1750341960_0_file_68541948cedb3.jpg, file_path=/assets/uploads/lectures/1750341960_0_file_68541948cedb3.jpg

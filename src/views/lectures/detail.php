@@ -248,6 +248,86 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     color: white;
     font-weight: 700;
     font-size: 1.5rem;
+    position: relative;
+}
+
+.instructor-avatar.placeholder::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(45deg, #48bb78, #38a169);
+    border-radius: 50%;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.instructor-avatar.placeholder::before {
+    content: '👨‍🏫';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 이미지 로딩 상태 표시 */
+.instructor-avatar.loading {
+    position: relative;
+    opacity: 0.7;
+}
+
+.instructor-avatar.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-top: 2px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 이미지 오류 상태 표시 */
+.instructor-avatar.error {
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+    position: relative;
+}
+
+.instructor-avatar.error::before {
+    content: '⚠️';
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 20px;
+    height: 20px;
+    background: #fed7d7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border: 2px solid white;
 }
 
 .instructor-content {
@@ -981,12 +1061,16 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             
             <div class="lecture-meta-basic">
                 <div class="meta-item">
-                    <span class="meta-icon">📅</span>
-                    <span><?= date('Y년 m월 d일', strtotime($lecture['start_date'])) ?></span>
+                    <span class="meta-icon">🟢</span>
+                    <span>
+                        시작 : <?= date('Y년 m월 d일 H:i', strtotime($lecture['start_date'] . ' ' . $lecture['start_time'])) ?>
+                    </span>
                 </div>
                 <div class="meta-item">
-                    <span class="meta-icon">🕒</span>
-                    <span><?= date('H:i', strtotime($lecture['start_time'])) ?> - <?= date('H:i', strtotime($lecture['end_time'])) ?></span>
+                    <span class="meta-icon">🔴</span>
+                    <span>
+                        종료 : <?= date('Y년 m월 d일 H:i', strtotime($lecture['end_date'] . ' ' . $lecture['end_time'])) ?>
+                    </span>
                 </div>
                 <div class="meta-item">
                     <span class="meta-icon">
@@ -1022,7 +1106,8 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             <!-- 강의 이미지 갤러리 -->
             <?php if (!empty($lecture['images'])): ?>
                 <div class="info-section">
-                    <h2 class="section-title">🖼️ 이미지</h2>
+                    <h2 class="section-title">🖼️ 이미지 (총 <?= count($lecture['images']) ?>개)</h2>
+                    
                     <div class="lecture-gallery">
                         <?php foreach ($lecture['images'] as $index => $image): ?>
                             <div class="gallery-item" onclick="openImageModal(<?= $index ?>)">
@@ -1046,7 +1131,37 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 </div>
             </div>
             
-
+            <!-- 유튜브 동영상 -->
+            <?php if (!empty($lecture['youtube_video'])): ?>
+                <div class="info-section">
+                    <h2 class="section-title">📹 동영상</h2>
+                    <div class="video-container">
+                        <?php
+                        $youtubeUrl = $lecture['youtube_video'];
+                        // 유튜브 URL을 embed 형태로 변환
+                        $embedUrl = '';
+                        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $youtubeUrl, $matches)) {
+                            $videoId = $matches[1];
+                            $embedUrl = "https://www.youtube.com/embed/{$videoId}";
+                        }
+                        ?>
+                        <?php if ($embedUrl): ?>
+                            <iframe 
+                                src="<?= htmlspecialchars($embedUrl) ?>" 
+                                width="100%" 
+                                height="400" 
+                                frameborder="0" 
+                                allowfullscreen
+                                style="border-radius: 8px;">
+                            </iframe>
+                        <?php else: ?>
+                            <div style="padding: 20px; background: #f8fafc; border-radius: 8px; text-align: center;">
+                                <p>📹 <a href="<?= htmlspecialchars($youtubeUrl) ?>" target="_blank" rel="noopener">유튜브에서 동영상 보기</a></p>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
 
             <!-- 강사 정보 -->
             <div class="info-section">
@@ -1058,49 +1173,126 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     $instructorInfos = !empty($lecture['instructor_info']) ? 
                         explode('|||', $lecture['instructor_info']) : [];
                     
-                    // 샘플 강사 이미지 (86번 강의용)
-                    $sampleInstructorImages = [
-                        '김마케팅' => '/assets/uploads/instructors/instructor-kim.jpg',
-                        '박소셜' => '/assets/uploads/instructors/instructor-park.jpg', 
-                        '이데이터' => '/assets/uploads/instructors/instructor-lee.jpg'
-                    ];
-                    
-                    // 기본 이미지 배열 (순서대로)
-                    $defaultImages = [
-                        '/assets/uploads/instructors/instructor-1.jpg',
-                        '/assets/uploads/instructors/instructor-2.jpg',
-                        '/assets/uploads/instructors/instructor-3.jpg'
-                    ];
-                    
-                    foreach ($instructorNames as $index => $instructorName): 
-                        $name = trim($instructorName);
-                        $info = isset($instructorInfos[$index]) ? trim($instructorInfos[$index]) : '';
-                        if (empty($info)) {
-                            $info = '전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.';
+                    // instructors_json 필드에서 실제 강사 이미지 정보 가져오기
+                    $instructorsData = [];
+                    if (!empty($lecture['instructors_json'])) {
+                        $instructorsData = json_decode($lecture['instructors_json'], true);
+                        if (!$instructorsData) {
+                            $instructorsData = [];
                         }
+                    }
+                    
+                    // 디버깅: 강사 정보 출력 (개발 중에만 사용)
+                    if (isset($_GET['debug'])) {
+                        echo "<!-- 디버깅 정보:\n";
+                        echo "강의 ID: " . $lecture['id'] . "\n";
+                        echo "instructor_name: " . htmlspecialchars($lecture['instructor_name']) . "\n";
+                        echo "instructor_info: " . htmlspecialchars($lecture['instructor_info']) . "\n";
+                        echo "instructors_json: " . htmlspecialchars($lecture['instructors_json']) . "\n";
+                        echo "강사 이름 배열: " . print_r($instructorNames, true) . "\n";
+                        echo "강사 정보 배열: " . print_r($instructorInfos, true) . "\n";
+                        echo "강사 JSON 데이터: " . print_r($instructorsData, true) . "\n";
                         
-                        // 86번 강의인 경우 샘플 이미지 사용
-                        $imagePath = null;
-                        if ($lecture['id'] == 86) {
-                            // 강사 이름으로 이미지 매칭
-                            if (isset($sampleInstructorImages[$name])) {
-                                $imagePath = $sampleInstructorImages[$name];
-                            } elseif (isset($defaultImages[$index])) {
-                                $imagePath = $defaultImages[$index];
+                        // 강사 이미지 파일 존재 여부 확인
+                        if (!empty($instructorsData) && is_array($instructorsData)) {
+                            echo "강사 이미지 파일 존재 여부:\n";
+                            foreach ($instructorsData as $index => $instructor) {
+                                if (!empty($instructor['image'])) {
+                                    $imagePath = $_SERVER['DOCUMENT_ROOT'] . $instructor['image'];
+                                    $exists = file_exists($imagePath);
+                                    echo "  강사 {$index}: " . $instructor['image'] . " => " . ($exists ? 'EXISTS' : 'NOT FOUND') . "\n";
+                                    if ($exists) {
+                                        echo "    파일 크기: " . filesize($imagePath) . " bytes\n";
+                                    } else {
+                                        echo "    전체 경로: " . $imagePath . "\n";
+                                    }
+                                } else {
+                                    echo "  강사 {$index}: 이미지 경로 없음\n";
+                                }
                             }
                         }
+                        echo "-->\n";
+                    }
+                    
+                    // instructors_json 데이터가 있으면 우선 사용, 없으면 기존 필드 사용
+                    $finalInstructors = [];
+                    
+                    if (!empty($instructorsData) && is_array($instructorsData)) {
+                        // instructors_json에서 강사 정보 사용
+                        foreach ($instructorsData as $index => $instructor) {
+                            $finalInstructors[] = [
+                                'name' => $instructor['name'] ?? '',
+                                'info' => $instructor['info'] ?? '전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.',
+                                'title' => $instructor['title'] ?? '강사',
+                                'image' => $instructor['image'] ?? null
+                            ];
+                        }
+                    } else {
+                        // 기존 필드에서 강사 정보 사용
+                        foreach ($instructorNames as $index => $instructorName) {
+                            $name = trim($instructorName);
+                            $info = isset($instructorInfos[$index]) ? trim($instructorInfos[$index]) : '';
+                            if (empty($info)) {
+                                $info = '전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.';
+                            }
+                            
+                            $finalInstructors[] = [
+                                'name' => $name,
+                                'info' => $info,
+                                'title' => '강사',
+                                'image' => null
+                            ];
+                        }
+                    }
+                    
+                    foreach ($finalInstructors as $index => $instructor): 
+                        $name = $instructor['name'];
+                        $info = $instructor['info'];
+                        $title = $instructor['title'];
+                        $imagePath = $instructor['image'];
                     ?>
                         <div class="instructor-card">
                             <!-- 강사 아바타 -->
-                            <?php if ($imagePath): ?>
+                            <?php 
+                            // 기본 강사 이미지 경로들
+                            $defaultInstructorImages = [
+                                '/assets/uploads/instructors/instructor-1.jpg',
+                                '/assets/uploads/instructors/instructor-2.jpg', 
+                                '/assets/uploads/instructors/instructor-3.jpg',
+                                '/assets/uploads/instructors/instructor-kim.jpg',
+                                '/assets/uploads/instructors/instructor-lee.jpg',
+                                '/assets/uploads/instructors/instructor-park.jpg'
+                            ];
+                            
+                            // 강사 이미지가 없거나 파일이 존재하지 않는 경우 기본 이미지 사용
+                            if (!$imagePath || !file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)) {
+                                // 강사 이름 기반으로 기본 이미지 선택
+                                $nameHash = crc32($name);
+                                $selectedDefaultImage = $defaultInstructorImages[$nameHash % count($defaultInstructorImages)];
+                                
+                                // 기본 이미지 파일이 실제로 존재하는지 확인
+                                if (file_exists($_SERVER['DOCUMENT_ROOT'] . $selectedDefaultImage)) {
+                                    $imagePath = $selectedDefaultImage;
+                                }
+                            }
+                            ?>
+                            
+                            <?php if ($imagePath && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagePath)): ?>
                                 <img src="<?= htmlspecialchars($imagePath) ?>" 
                                      alt="<?= htmlspecialchars($name) ?> 강사님" 
                                      class="instructor-avatar clickable-image"
                                      loading="lazy"
                                      decoding="async"
-                                     onclick="openInstructorImageModal('<?= htmlspecialchars($imagePath) ?>', '<?= htmlspecialchars($name) ?> 강사님')">
+                                     onerror="console.error('강사 이미지 로딩 실패:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                     onclick="openInstructorImageModal('<?= htmlspecialchars($imagePath) ?>', '<?= htmlspecialchars($name) ?> 강사님')"
+                                     title="<?= htmlspecialchars($name) ?> 강사님 (클릭하면 크게 볼 수 있습니다)">
+                                <!-- 이미지 로딩 실패 시 대체 표시 -->
+                                <div class="instructor-avatar placeholder" style="display: none;" title="<?= htmlspecialchars($name) ?> 강사님">
+                                    <?= mb_substr($name, 0, 1) ?>
+                                </div>
                             <?php else: ?>
-                                <div class="instructor-avatar placeholder">
+                                <!-- 기본 플레이스홀더 -->
+                                <div class="instructor-avatar placeholder" title="<?= htmlspecialchars($name) ?> 강사님">
                                     <?= mb_substr($name, 0, 1) ?>
                                 </div>
                             <?php endif; ?>
@@ -1109,48 +1301,25 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                             <div class="instructor-content">
                                 <div class="instructor-header">
                                     <div class="instructor-name"><?= htmlspecialchars($name) ?></div>
-                                    <?php if (count($instructorNames) > 1): ?>
-                                        <span class="instructor-badge">강사</span>
+                                    <?php if (count($finalInstructors) > 1): ?>
+                                        <span class="instructor-badge"><?= htmlspecialchars($title) ?></span>
                                     <?php endif; ?>
                                 </div>
                                 
                                 <div class="instructor-title">
-                                    <?= [
+                                    <?= htmlspecialchars($title ?: ([
                                         'seminar' => '세미나 전문가',
                                         'workshop' => '워크샵 진행자',
                                         'conference' => '컨퍼런스 연사',
                                         'webinar' => '웨비나 호스트',
                                         'training' => '교육 전문가'
-                                    ][$lecture['category']] ?? '마케팅 전문가' ?>
+                                    ][$lecture['category']] ?? '마케팅 전문가')) ?>
                                 </div>
                                 
                                 <div class="instructor-details">
                                     <?= nl2br(htmlspecialchars($info)) ?>
                                 </div>
                                 
-                                <!-- 각 강사별 맞춤형 경력 정보 추가 -->
-                                <?php if ($lecture['id'] == 86): // 86번 강의 전용 강사별 경력 ?>
-                                    <div class="instructor-experience">
-                                        <?php if ($name === '김마케팅'): ?>
-                                            <strong>💼 주요 경력:</strong> 삼성전자, LG전자 등 대기업 디지털 마케팅 컨설팅 | 
-                                            <strong>🏆 성과:</strong> 고객사 매출 평균 300% 증가 달성 | 
-                                            <strong>🎓 교육:</strong> 마케팅 전문가 양성 500회 이상 강의
-                                        <?php elseif ($name === '박소셜'): ?>
-                                            <strong>💼 주요 경력:</strong> 네이버, 카카오 협력 SNS 마케팅 전문가 | 
-                                            <strong>🏆 성과:</strong> 바이럴 캠페인 누적 조회수 1억뷰 달성 | 
-                                            <strong>🎓 전문성:</strong> 인플루언서 마케팅 및 브랜드 스토리텔링 최고 전문가
-                                        <?php elseif ($name === '이데이터'): ?>
-                                            <strong>💼 주요 경력:</strong> 구글 코리아, 네이버 데이터 분석팀 출신 | 
-                                            <strong>🏆 성과:</strong> AI 기반 개인화 마케팅 도구 개발 및 특허 보유 | 
-                                            <strong>🎓 전문성:</strong> 머신러닝과 마케팅 융합 분야 선도자
-                                        <?php endif; ?>
-                                    </div>
-                                <?php elseif ($index === 0): // 다른 강의의 첫 번째 강사 ?>
-                                    <div class="instructor-experience">
-                                        <strong>💼 주요 경력:</strong> 10년 이상의 마케팅 실무 경험 | 
-                                        <strong>🎓 교육 경험:</strong> 500회 이상 강의 진행
-                                    </div>
-                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -1185,8 +1354,18 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                             <?php 
                             $startDateTime = strtotime($lecture['start_date'] . ' ' . $lecture['start_time']);
                             $endDateTime = strtotime($lecture['end_date'] . ' ' . $lecture['end_time']);
-                            $duration = ($endDateTime - $startDateTime) / 3600; // 시간 단위
-                            echo $duration . '시간';
+                            $durationMinutes = ($endDateTime - $startDateTime) / 60; // 분 단위
+                            
+                            $hours = floor($durationMinutes / 60);
+                            $minutes = $durationMinutes % 60;
+                            
+                            if ($hours > 0 && $minutes > 0) {
+                                echo $hours . '시간 ' . $minutes . '분';
+                            } elseif ($hours > 0) {
+                                echo $hours . '시간';
+                            } else {
+                                echo $minutes . '분';
+                            }
                             ?>
                         </div>
                     </div>
@@ -1277,8 +1456,8 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                         mapContainer.innerHTML = 
                                             '<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: #f8fafc; color: #4a5568; border-radius: 8px; border: 1px solid #e2e8f0;">' +
                                             '<div style="font-size: 32px; margin-bottom: 15px; color: #667eea;">🏢</div>' +
-                                            '<div style="font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #2d3748;"><?= addslashes($venueName) ?></div>' +
-                                            '<div style="font-size: 13px; margin-bottom: 20px; text-align: center; padding: 0 20px; color: #4a5568;"><?= addslashes($mapAddress) ?></div>' +
+                                            '<div style="font-weight: bold; margin-bottom: 8px; font-size: 16px; color: #2d3748;">' + <?= json_encode($venueName) ?> + '</div>' +
+                                            '<div style="font-size: 13px; margin-bottom: 20px; text-align: center; padding: 0 20px; color: #4a5568;">' + <?= json_encode($mapAddress) ?> + '</div>' +
                                             '<a href="https://map.naver.com/v5/search/<?= urlencode($mapAddress) ?>" target="_blank" ' +
                                             'style="background: #667eea; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">' +
                                             '📍 네이버 지도에서 보기</a>' +
@@ -1324,7 +1503,7 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                         var marker = new naver.maps.Marker({
                                             position: center,
                                             map: map,
-                                            title: '<?= addslashes($venueName) ?>',
+                                            title: <?= json_encode($venueName) ?>,
                                             icon: {
                                                 content: '<div style="width: 20px; height: 20px; background: #ff0000; border: 2px solid white; border-radius: 50%; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>',
                                                 anchor: new naver.maps.Point(10, 10)
@@ -1344,10 +1523,10 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                                 'border: 1px solid #e2e8f0;' +
                                             '">' +
                                                 '<div style="font-weight: bold; margin-bottom: 6px; font-size: 15px; color: #1a202c;">' +
-                                                '🏢 <?= addslashes($venueName) ?>' +
+                                                '🏢 ' + <?= json_encode($venueName) ?> +
                                                 '</div>' +
                                                 '<div style="font-size: 12px; color: #4a5568; line-height: 1.4;">' +
-                                                '📍 <?= addslashes($mapAddress) ?>' +
+                                                '📍 ' + <?= json_encode($mapAddress) ?> +
                                                 '</div>' +
                                             '</div>',
                                             maxWidth: 260,
@@ -1653,6 +1832,60 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     
+    // 강사 이미지 로딩 개선
+    initializeInstructorImages();
+    
+    // 강사 이미지 로딩 함수
+    function initializeInstructorImages() {
+        const instructorImages = document.querySelectorAll('.instructor-avatar img');
+        
+        instructorImages.forEach((img, index) => {
+            // 로딩 상태 표시
+            img.parentElement.classList.add('loading');
+            
+            img.addEventListener('load', function() {
+                console.log(`✅ 강사 이미지 ${index + 1} 로딩 성공:`, this.src);
+                this.parentElement.classList.remove('loading');
+                this.style.opacity = '1';
+            });
+            
+            img.addEventListener('error', function() {
+                console.warn(`❌ 강사 이미지 ${index + 1} 로딩 실패:`, this.src);
+                this.parentElement.classList.remove('loading');
+                this.parentElement.classList.add('error');
+                
+                // 이미지 숨기고 placeholder 표시
+                this.style.display = 'none';
+                const placeholder = this.nextElementSibling;
+                if (placeholder && placeholder.classList.contains('placeholder')) {
+                    placeholder.style.display = 'flex';
+                    placeholder.classList.add('error');
+                }
+            });
+            
+            // 이미지가 이미 로드된 경우 (캐시된 경우)
+            if (img.complete && img.naturalHeight !== 0) {
+                img.parentElement.classList.remove('loading');
+                img.style.opacity = '1';
+                console.log(`✅ 강사 이미지 ${index + 1} 캐시에서 로드됨:`, img.src);
+            }
+        });
+        
+        // placeholder 이미지들에 호버 효과 추가
+        const placeholders = document.querySelectorAll('.instructor-avatar.placeholder');
+        placeholders.forEach(placeholder => {
+            placeholder.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.3)';
+            });
+            
+            placeholder.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 4px 8px rgba(102, 126, 234, 0.2)';
+            });
+        });
+    }
+    
     // 신청 버튼 클릭 이벤트
     const registerBtn = document.querySelector('.btn-register[href*="register"]');
     if (registerBtn) {
@@ -1723,25 +1956,36 @@ let currentGalleryType = 'lecture'; // 'lecture' 또는 'instructor'
 
 // 강의 이미지 데이터 초기화
 lectureImages = [];
+
 <?php if (!empty($lecture['images']) && is_array($lecture['images'])): ?>
     <?php foreach ($lecture['images'] as $index => $image): ?>
         lectureImages.push({
             url: "<?= addslashes($image['url'] ?? '') ?>",
-            alt: "<?= addslashes($image['alt'] ?? '강의 이미지') ?>"
+            alt: "<?= addslashes($image['alt_text'] ?? '강의 이미지') ?>"
         });
     <?php endforeach; ?>
 <?php endif; ?>
 
-// 강사 이미지 데이터 초기화
+// 강사 이미지 데이터 초기화 (instructors_json에서 추출)
 instructorImages = [];
-<?php if (!empty($instructorImages) && is_array($instructorImages)): ?>
-    <?php foreach ($instructorImages as $index => $image): ?>
-        instructorImages.push({
-            url: "<?= addslashes($image['image_path'] ?? '') ?>",
-            alt: "<?= addslashes($image['alt_text'] ?? '강사 이미지') ?>"
-        });
-    <?php endforeach; ?>
-<?php endif; ?>
+<?php 
+// instructors_json에서 강사 이미지 추출
+if (!empty($lecture['instructors_json'])) {
+    $instructorsData = json_decode($lecture['instructors_json'], true);
+    if (is_array($instructorsData)) {
+        foreach ($instructorsData as $index => $instructor) {
+            if (!empty($instructor['image'])) {
+?>
+                instructorImages.push({
+                    url: "<?= addslashes($instructor['image']) ?>",
+                    alt: "<?= addslashes(($instructor['name'] ?? '강사') . ' 이미지') ?>"
+                });
+<?php 
+            }
+        }
+    }
+}
+?>
 
 /**
  * 이미지 모달 열기 (강의 이미지용)
@@ -1885,9 +2129,29 @@ function startChatWithAuthor(authorId, authorName) {
 
 function shareContent() {
     try {
-        const lectureTitle = "<?= addslashes(htmlspecialchars($lecture['title'])) ?>";
+        const lectureTitle = <?= json_encode($lecture['title']) ?>;
         const lectureUrl = window.location.href;
-        const lectureDescription = "<?= addslashes(htmlspecialchars(substr(strip_tags($lecture['description'] ?? ''), 0, 100))) ?>...";
+        const lectureDescription = <?php
+            $description = '';
+            if (isset($lecture['description']) && trim($lecture['description']) !== '') {
+                $description = substr(strip_tags($lecture['description']), 0, 100) . '...';
+            } else {
+                $description = (isset($lecture['title']) ? $lecture['title'] . ' 강의에 참여해보세요!' : '탑마케팅 강의에 참여해보세요!');
+            }
+            
+            // UTF-8 검증 및 정리
+            if (!mb_check_encoding($description, 'UTF-8')) {
+                $description = mb_convert_encoding($description, 'UTF-8', 'auto');
+            }
+            
+            $jsonResult = json_encode($description, JSON_UNESCAPED_UNICODE);
+            if ($jsonResult === false) {
+                // JSON 인코딩 실패 시 안전한 기본값 사용
+                echo '"강의에 참여해보세요!"';
+            } else {
+                echo $jsonResult;
+            }
+        ?>;
         
         // Web Share API 지원 확인
         if (navigator.share) {

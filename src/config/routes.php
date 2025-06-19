@@ -89,6 +89,7 @@ class Router {
             'POST:/lectures/{id}/update' => ['LectureController', 'update'],
             'POST:/lectures/{id}/delete' => ['LectureController', 'delete'],
             'POST:/lectures/{id}/register' => ['LectureController', 'register'],
+            'POST:/lectures/update-images' => ['LectureController', 'updateImages'],
             'GET:/lectures/{id}/ical' => ['LectureController', 'generateICal'],
             
             // 행사 일정 라우트
@@ -131,6 +132,9 @@ class Router {
             
             // Tvelia 여행사 웹사이트 라우트
             'GET:/tvelia-travel' => ['TveliaController', 'landing'],
+            
+            // 테스트 라우트
+            'GET:/test1' => ['TestController', 'test1'],
         ];
     }
     
@@ -204,11 +208,20 @@ class Router {
         list($controllerName, $action) = $route;
         $controllerPath = SRC_PATH . '/controllers/' . $controllerName . '.php';
         
+        // 라우트 실행 로깅
+        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "=== ROUTE EXECUTION ===\n", FILE_APPEND);
+        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller: $controllerName\n", FILE_APPEND);
+        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Action: $action\n", FILE_APPEND);
+        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Path: $controllerPath\n", FILE_APPEND);
+        
         if (file_exists($controllerPath)) {
+            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller file exists\n", FILE_APPEND);
             require_once $controllerPath;
             if (class_exists($controllerName)) {
+                file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller class exists\n", FILE_APPEND);
                 $controller = new $controllerName();
                 if (method_exists($controller, $action)) {
+                    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Method exists, calling $action\n", FILE_APPEND);
                     // 동적 라우트에서 파라미터 추출
                     $params = $this->extractRouteParams();
                     if (!empty($params)) {
@@ -218,12 +231,15 @@ class Router {
                     }
                     return;
                 } else {
+                    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Method $action not found in $controllerName\n", FILE_APPEND);
                     error_log("Method $action not found in $controllerName");
                 }
             } else {
+                file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller class $controllerName not found\n", FILE_APPEND);
                 error_log("Controller class $controllerName not found");
             }
         } else {
+            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller file not found: $controllerPath\n", FILE_APPEND);
             error_log("Controller file not found: $controllerPath");
         }
         

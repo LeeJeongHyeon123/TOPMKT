@@ -12,7 +12,7 @@ class Comment {
      * 생성자
      */
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
     }
     
     /**
@@ -26,22 +26,16 @@ class Comment {
     public function getByPostId($postId, $page = 1, $limit = 20) {
         $offset = ($page - 1) * $limit;
         
-        $stmt = $this->db->prepare("
+        $comments = $this->db->fetchAll("
             SELECT c.*, 
                    u.nickname as author_name, 
                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
             FROM comments c
             JOIN users u ON c.user_id = u.id
-            WHERE c.post_id = :post_id AND c.status = 'active'
+            WHERE c.post_id = ? AND c.status = 'active'
             ORDER BY c.created_at DESC
-            LIMIT :limit OFFSET :offset
-        ");
-        
-        $stmt->bindParam(':post_id', $postId, \PDO::PARAM_INT);
-        $stmt->bindParam(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-        $comments = $stmt->fetchAll();
+            LIMIT ? OFFSET ?
+        ", [$postId, $limit, $offset]);
         
         // 댓글 내용 정규화
         foreach ($comments as &$comment) {
@@ -59,18 +53,17 @@ class Comment {
      * @return array 댓글 목록
      */
     public function getAllByPostId($postId) {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT c.*, 
                    u.nickname as author_name, 
                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
             FROM comments c
             JOIN users u ON c.user_id = u.id
-            WHERE c.post_id = :post_id AND c.status = 'active'
+            WHERE c.post_id = ? AND c.status = 'active'
             ORDER BY c.created_at DESC
-        ");
+        ";
         
-        $stmt->execute(['post_id' => $postId]);
-        $comments = $stmt->fetchAll();
+        $comments = $this->db->fetchAll($sql, [$postId]);
         
         // 댓글 내용 정규화
         foreach ($comments as &$comment) {
@@ -108,16 +101,16 @@ class Comment {
      * @return int 생성된 댓글 ID
      */
     public function create($data) {
-        $stmt = $this->db->prepare("
+        $sql = "
             INSERT INTO comments (post_id, user_id, parent_id, content, status, created_at)
-            VALUES (:post_id, :user_id, :parent_id, :content, 'active', NOW())
-        ");
+            VALUES (?, ?, ?, ?, 'active', NOW())
+        ";
         
-        $stmt->execute([
-            'post_id' => $data['post_id'],
-            'user_id' => $data['user_id'],
-            'parent_id' => $data['parent_id'] ?? null,
-            'content' => $data['content']
+        $this->db->execute($sql, [
+            $data['post_id'],
+            $data['user_id'],
+            $data['parent_id'] ?? null,
+            $data['content']
         ]);
         
         return $this->db->lastInsertId();
@@ -131,16 +124,16 @@ class Comment {
      * @return bool 성공 여부
      */
     public function update($id, $data) {
-        $stmt = $this->db->prepare("
+        $sql = "
             UPDATE comments 
-            SET content = :content, updated_at = NOW()
-            WHERE id = :id AND status = 'active'
-        ");
+            SET content = ?, updated_at = NOW()
+            WHERE id = ? AND status = 'active'
+        ";
         
-        return $stmt->execute([
-            'id' => $id,
-            'content' => $data['content']
-        ]);
+        return $this->db->execute($sql, [
+            $data['content'],
+            $id
+        ]) > 0;
     }
     
     /**
@@ -150,12 +143,12 @@ class Comment {
      * @return bool 성공 여부
      */
     public function delete($id) {
-        $stmt = $this->db->prepare("
+        $sql = "
             UPDATE comments 
             SET status = 'deleted', updated_at = NOW()
-            WHERE id = :id
-        ");
-        return $stmt->execute(['id' => $id]);
+            WHERE id = ?
+        ";
+        return $this->db->execute($sql, [$id]) > 0;
     }
     
     /**
@@ -165,8 +158,8 @@ class Comment {
      * @return bool 성공 여부
      */
     public function hardDelete($id) {
-        $stmt = $this->db->prepare("DELETE FROM comments WHERE id = :id");
-        return $stmt->execute(['id' => $id]);
+        $sql = "DELETE FROM comments WHERE id = ?";
+        return $this->db->execute($sql, [$id]) > 0;
     }
     
     /**
@@ -176,13 +169,13 @@ class Comment {
      * @return int 댓글 수
      */
     public function getCountByPostId($postId) {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM comments
-            WHERE post_id = :post_id AND status = 'active'
-        ");
+        $sql = "
+            SELECT COUNT(*) as count FROM comments
+            WHERE post_id = ? AND status = 'active'
+        ";
         
-        $stmt->execute(['post_id' => $postId]);
-        return $stmt->fetchColumn();
+        $result = $this->db->fetch($sql, [$postId]);
+        return $result ? array_values($result)[0] : 0;
     }
     
     /**
@@ -192,16 +185,15 @@ class Comment {
      * @return array 대댓글 목록
      */
     public function getReplies($parentId) {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT c.*, u.nickname as author_name
             FROM comments c
             JOIN users u ON c.user_id = u.id
-            WHERE c.parent_id = :parent_id AND c.status = 'active'
+            WHERE c.parent_id = ? AND c.status = 'active'
             ORDER BY c.created_at ASC
-        ");
+        ";
         
-        $stmt->execute(['parent_id' => $parentId]);
-        $replies = $stmt->fetchAll();
+        $replies = $this->db->fetchAll($sql, [$parentId]);
         
         // 댓글 내용 정규화
         foreach ($replies as &$reply) {
@@ -218,15 +210,14 @@ class Comment {
      * @return array|false 댓글 정보 또는 false
      */
     public function getById($id) {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT c.*, u.nickname as author_name
             FROM comments c
             JOIN users u ON c.user_id = u.id
-            WHERE c.id = :id AND c.status = 'active'
-        ");
+            WHERE c.id = ? AND c.status = 'active'
+        ";
         
-        $stmt->execute(['id' => $id]);
-        $comment = $stmt->fetch(PDO::FETCH_ASSOC);
+        $comment = $this->db->fetch($sql, [$id]);
         
         if ($comment) {
             $comment['content'] = $this->normalizeContent($comment['content']);
@@ -243,13 +234,13 @@ class Comment {
      * @return bool
      */
     public function isOwner($commentId, $userId) {
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM comments
-            WHERE id = :id AND user_id = :user_id AND status = 'active'
-        ");
+        $sql = "
+            SELECT COUNT(*) as count FROM comments
+            WHERE id = ? AND user_id = ? AND status = 'active'
+        ";
         
-        $stmt->execute(['id' => $commentId, 'user_id' => $userId]);
-        return $stmt->fetchColumn() > 0;
+        $result = $this->db->fetch($sql, [$commentId, $userId]);
+        return $result && array_values($result)[0] > 0;
     }
     
     /**

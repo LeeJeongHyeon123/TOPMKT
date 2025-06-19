@@ -159,14 +159,12 @@ class AuthMiddleware {
             require_once SRC_PATH . '/config/database.php';
             $db = Database::getInstance();
             
-            $stmt = $db->prepare("
+            $user = $db->fetch("
                 SELECT id, nickname, phone, email, role, status, 
                        profile_image_thumb, created_at, updated_at
                 FROM users 
-                WHERE id = :user_id AND status = 'active'
-            ");
-            $stmt->execute([':user_id' => $userId]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                WHERE id = ? AND status = 'active'
+            ", [$userId]);
             
             if ($user) {
                 // 세션에 저장하여 다음 요청에서 재사용
@@ -202,13 +200,11 @@ class AuthMiddleware {
             require_once SRC_PATH . '/config/database.php';
             $db = Database::getInstance();
             
-            $stmt = $db->prepare("
+            $result = $db->fetch("
                 SELECT profile_image_thumb 
                 FROM users 
-                WHERE id = :user_id AND status = 'active'
-            ");
-            $stmt->execute([':user_id' => $currentUserId]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                WHERE id = ? AND status = 'active'
+            ", [$currentUserId]);
             
             $profileImage = $result ? $result['profile_image_thumb'] : null;
             

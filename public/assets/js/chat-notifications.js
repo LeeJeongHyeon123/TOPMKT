@@ -17,28 +17,23 @@ const ChatNotifications = {
  * 채팅 알림 시스템 초기화
  */
 function initializeChatNotifications() {
-    console.log('🔔 채팅 알림 시스템 초기화 시작...');
     
     // 채팅 페이지에서는 실행하지 않음 (중복 방지)
     if (window.location.pathname === '/chat') {
-        console.log('🔔 채팅 페이지에서는 알림 시스템을 실행하지 않습니다.');
         return;
     }
     
     // 로그인한 사용자만 알림 활성화
     const userElement = document.querySelector('meta[name="user-id"]');
     if (!userElement) {
-        console.log('🔔 사용자 ID 메타 태그를 찾을 수 없습니다.');
         return;
     }
     
     ChatNotifications.currentUserId = userElement.getAttribute('content');
     if (!ChatNotifications.currentUserId) {
-        console.log('🔔 사용자 ID가 비어있습니다.');
         return;
     }
     
-    console.log('🔔 현재 사용자 ID:', ChatNotifications.currentUserId);
     
     // Firebase 초기화
     initializeFirebase();
@@ -48,7 +43,6 @@ function initializeChatNotifications() {
  * Firebase 초기화
  */
 function initializeFirebase() {
-    console.log('🔔 Firebase 초기화 시작...');
     
     // Firebase 설정 가져오기
     fetch('/chat/firebase-token', {
@@ -58,24 +52,19 @@ function initializeFirebase() {
         }
     })
         .then(response => {
-            console.log('🔔 Firebase 설정 응답:', response);
             return response.json();
         })
         .then(data => {
-            console.log('🔔 Firebase 설정 데이터:', data);
             
             if (data.success && data.firebase_config) {
                 // Firebase 초기화 - 기존 앱이 있으면 재사용
                 if (!firebase.apps.length) {
                     ChatNotifications.firebaseApp = firebase.initializeApp(data.firebase_config);
-                    console.log('🔔 새 Firebase 앱 초기화됨');
                 } else {
                     ChatNotifications.firebaseApp = firebase.apps[0];
-                    console.log('🔔 기존 Firebase 앱 재사용');
                 }
                 ChatNotifications.database = firebase.database();
                 
-                console.log('🔔 Firebase 데이터베이스 연결됨');
                 
                 // 초기 배지 상태 설정 (배지 없음)
                 ChatNotifications.unreadCount = 0;
@@ -83,11 +72,9 @@ function initializeFirebase() {
                 // 알림 리스너 설정
                 setupNotificationListeners();
             } else {
-                console.error('🔔 Firebase 설정이 없습니다.');
             }
         })
         .catch(error => {
-            console.error('🔔 Firebase 설정 로드 실패:', error);
         });
 }
 
@@ -95,25 +82,18 @@ function initializeFirebase() {
  * 알림 리스너 설정
  */
 function setupNotificationListeners() {
-    console.log('🔔 알림 리스너 설정 시작...');
     
     if (!ChatNotifications.database || !ChatNotifications.currentUserId) {
-        console.error('🔔 Database 또는 사용자 ID가 없습니다:', {
-            database: !!ChatNotifications.database,
-            currentUserId: ChatNotifications.currentUserId
-        });
         return;
     }
     
     // 사용자의 채팅방 목록 모니터링
     const userRoomsRef = ChatNotifications.database.ref(`userRooms/${ChatNotifications.currentUserId}`);
-    console.log('🔔 사용자 채팅방 경로:', `userRooms/${ChatNotifications.currentUserId}`);
     
     userRoomsRef.on('child_added', (snapshot) => {
         const roomId = snapshot.key;
         const roomData = snapshot.val();
         
-        console.log(`🔔 채팅방 추가 감지: ${roomId}`, roomData);
         
         // 각 채팅방의 마지막 메시지 모니터링
         setupRoomMessageListener(roomId, roomData.lastRead || 0);
@@ -132,7 +112,6 @@ function setupNotificationListeners() {
     
     userRoomsRef.on('child_removed', (snapshot) => {
         const roomId = snapshot.key;
-        console.log(`🔔 채팅방 제거 감지: ${roomId}`);
         
         // 해당 채팅방 리스너 제거
         removeRoomMessageListener(roomId);
@@ -149,7 +128,6 @@ function setupNotificationListeners() {
  * 개별 채팅방 메시지 리스너 설정
  */
 function setupRoomMessageListener(roomId, lastReadTime) {
-    console.log(`🔔 채팅방 메시지 리스너 설정: ${roomId}, 마지막 읽은 시간: ${lastReadTime}`);
     
     if (!ChatNotifications.database || !roomId) {
         return;
@@ -160,7 +138,6 @@ function setupRoomMessageListener(roomId, lastReadTime) {
     
     const messageListener = roomRef.on('value', (snapshot) => {
         const roomData = snapshot.val();
-        console.log(`🔔 채팅방 ${roomId} 데이터 변경 감지:`, roomData);
         
         if (!roomData) return;
         
@@ -168,26 +145,11 @@ function setupRoomMessageListener(roomId, lastReadTime) {
         const lastSenderId = roomData.lastSenderId;
         const lastMessage = roomData.lastMessage;
         
-        console.log(`🔔 메시지 정보:`, {
-            lastMessageTime,
-            lastSenderId,
-            lastMessage,
-            lastReadTime,
-            currentUserId: ChatNotifications.currentUserId
-        });
-        
         // 새로운 메시지가 있고, 내가 보낸 메시지가 아닌 경우
         if (lastMessageTime && 
             lastMessageTime > lastReadTime && 
             lastSenderId && 
             lastSenderId != ChatNotifications.currentUserId) {
-            
-            console.log(`🔔 새 메시지 알림: ${roomId}`, {
-                lastMessageTime,
-                lastReadTime,
-                lastSenderId,
-                currentUserId: ChatNotifications.currentUserId
-            });
             
             // 상대방 정보 가져오기
             getRoomPartnerInfo(roomId, roomData)
@@ -196,7 +158,6 @@ function setupRoomMessageListener(roomId, lastReadTime) {
                     updateUnreadCount();
                 })
                 .catch(error => {
-                    console.error('상대방 정보 가져오기 실패:', error);
                     showChatNotification('알 수 없음', lastMessage, roomId);
                     updateUnreadCount();
                 });
@@ -218,7 +179,6 @@ function removeRoomMessageListener(roomId) {
         const { ref, listener } = ChatNotifications.roomMessageListeners[roomId];
         ref.off('value', listener);
         delete ChatNotifications.roomMessageListeners[roomId];
-        console.log(`🔔 채팅방 리스너 제거: ${roomId}`);
     }
 }
 
@@ -254,7 +214,6 @@ async function getRoomPartnerInfo(roomId, roomData) {
             userId: partnerId
         };
     } catch (error) {
-        console.error('사용자 정보 조회 실패:', error);
         return { name: '알 수 없음', userId: partnerId };
     }
 }
@@ -306,7 +265,6 @@ function showChatNotification(senderName, message, roomId) {
         }
     }, 5000);
     
-    console.log(`🔔 알림 표시: ${senderName} - ${cleanMessage}`);
 }
 
 /**
@@ -340,7 +298,6 @@ function updateUnreadCount() {
 function resetUnreadCount() {
     ChatNotifications.unreadCount = 0;
     updateBadgeDisplay();
-    console.log('🔔 읽지 않은 메시지 수 초기화됨');
 }
 
 /**
@@ -397,7 +354,6 @@ function updateBadgeDisplay() {
         }
     }
     
-    console.log(`🔔 읽지 않은 메시지 수: ${ChatNotifications.unreadCount}, 배지 표시: ${shouldShow}`);
 }
 
 /**
@@ -421,13 +377,11 @@ function calculateInitialUnreadCount() {
         return;
     }
     
-    console.log('🔔 초기 읽지 않은 메시지 수 계산 중...');
     
     const userRoomsRef = ChatNotifications.database.ref(`userRooms/${ChatNotifications.currentUserId}`);
     userRoomsRef.once('value', (snapshot) => {
         const userRooms = snapshot.val();
         if (!userRooms) {
-            console.log('🔔 사용자 채팅방이 없습니다.');
             ChatNotifications.unreadCount = 0;
             updateBadgeDisplay();
             return;
@@ -440,7 +394,6 @@ function calculateInitialUnreadCount() {
         if (roomIds.length === 0) {
             ChatNotifications.unreadCount = 0;
             updateBadgeDisplay();
-            console.log('🔔 채팅방이 없어서 읽지 않은 메시지 수는 0입니다.');
             return;
         }
         
@@ -464,7 +417,6 @@ function calculateInitialUnreadCount() {
                     // 모든 채팅방 처리 완료
                     ChatNotifications.unreadCount = totalUnread;
                     updateBadgeDisplay();
-                    console.log(`🔔 초기 읽지 않은 메시지 수: ${totalUnread}`);
                 }
             });
         });
@@ -487,7 +439,6 @@ function cleanupChatNotifications() {
     ChatNotifications.userRoomsListeners = [];
     ChatNotifications.roomMessageListeners = {};
     
-    console.log('🔔 채팅 알림 시스템 정리 완료');
 }
 
 // 페이지 로드 시 초기화

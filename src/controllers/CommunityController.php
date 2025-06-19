@@ -39,15 +39,13 @@ class CommunityController {
             error_log('✅ 데이터베이스 연결 확인');
             
             // 테이블 존재 확인
-            $stmt = $this->db->prepare("SHOW TABLES LIKE 'posts'");
-            $stmt->execute();
-            if (!$stmt->fetch()) {
+            $postsTable = $this->db->fetch("SHOW TABLES LIKE 'posts'");
+            if (!$postsTable) {
                 throw new Exception('posts 테이블이 존재하지 않습니다');
             }
             
-            $stmt = $this->db->prepare("SHOW TABLES LIKE 'users'");
-            $stmt->execute();
-            if (!$stmt->fetch()) {
+            $usersTable = $this->db->fetch("SHOW TABLES LIKE 'users'");
+            if (!$usersTable) {
                 throw new Exception('users 테이블이 존재하지 않습니다');
             }
             error_log('✅ 필수 테이블 존재 확인');
@@ -247,9 +245,8 @@ class CommunityController {
             $isLiked = false;
             if ($currentUserId) {
                 try {
-                    $likeStmt = $this->db->prepare("SELECT id FROM post_likes WHERE post_id = :post_id AND user_id = :user_id");
-                    $likeStmt->execute(['post_id' => $postId, 'user_id' => $currentUserId]);
-                    $isLiked = (bool)$likeStmt->fetch();
+                    $likeResult = $this->db->fetch("SELECT id FROM post_likes WHERE post_id = ? AND user_id = ?", [$postId, $currentUserId]);
+                    $isLiked = (bool)$likeResult;
                 } catch (Exception $e) {
                     // post_likes 테이블이 없는 경우 기본값 사용
                     error_log('post_likes 테이블 접근 실패: ' . $e->getMessage());

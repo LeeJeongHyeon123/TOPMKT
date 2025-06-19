@@ -1,0 +1,504 @@
+=== 강사 데이터 검증 시작 (2025-06-18 20:49:08) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750247348__________.webp"},{"name":"asdasdss","title":"adadsdsa","info":"sdsadsadsadsadadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247348__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247348__________.webp"}
+강사 1 최종 데이터: {"name":"asdasdss","info":"sdsadsadsadsadadsadsa","title":"adadsdsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247348__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 20:49:19) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-18 20:52:22) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750247542__________.webp"},{"name":"asdasds","title":"aadsadsad","info":"sadsadsadsadsads","image":"\/assets\/uploads\/instructors\/instructor_1_1750247542__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247542__________.webp"}
+강사 1 최종 데이터: {"name":"asdasds","info":"sadsadsadsadsads","title":"aadsadsad","image":"\/assets\/uploads\/instructors\/instructor_1_1750247542__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 20:52:28) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247542__________.webp\"},{\"name\":\"asdasds\",\"info\":\"sadsadsadsadsads\",\"title\":\"aadsadsad\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247542__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247542__________.webp"},{"name":"asdasds","info":"sadsadsadsadsads","title":"aadsadsad","image":"\/assets\/uploads\/instructors\/instructor_1_1750247542__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+=== 강사 데이터 검증 시작 (2025-06-18 20:53:02) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:01:26) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:01:41) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:01:53) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:03:42) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:13:29) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:15:36) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:18:36) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:18:53) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:20:51) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:21:54) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:23:43) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:25:35) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:26:53) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:28:43) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:30:56) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:33:51) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:40:49) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:42:42) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:44:03) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:57:03) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 21:58:08) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:00:18) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:06:19) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:09:23) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:11:20) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:16:50) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:18:58) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:20:00) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:22:25) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:31:49) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:37:18) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:48:49) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:50:27) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:54:31) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:56:51) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:57:03) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"asdasdsa\",\"info\":\"sadasdasdasd\",\"title\":\"dsadsadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750247548__________.webp\"},{\"name\":\"asdsadsadsa\",\"info\":\"asdaasddasdsdsadasdsa\",\"title\":\"dassadsadsa\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750247582__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"},{"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}]
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750247548__________.webp"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa","image":"\/assets\/uploads\/instructors\/instructor_1_1750247582__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-18 22:57:51) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-18 23:08:56) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-18 23:19:22) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-18 23:20:41) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-19 00:04:19) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-19 00:12:43) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"sadasdasdasd"},{"name":"asdsadsadsa","title":"dassadsadsa","info":"asdaasddasdsdsadasdsa"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadasdasdasd","title":"dsadsadsadsa"}
+강사 1 최종 데이터: {"name":"asdsadsadsa","info":"asdaasddasdsdsadasdsa","title":"dassadsadsa"}
+=== 강사 데이터 검증 시작 (2025-06-19 09:10:15) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: null
+기존 강사 데이터 없음
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 09:16:22) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"\uc774\uc815\ud604\",\"info\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\\r\\n\\r\\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\",\"title\":\"\uac15\uc0ac\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750291815__________.webp\"},{\"name\":\"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\",\"info\":\"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\",\"title\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750291815__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}]
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 09:35:13) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"\uc774\uc815\ud604\",\"info\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\\r\\n\\r\\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\",\"title\":\"\uac15\uc0ac\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750291815__________.webp\"},{\"name\":\"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\",\"info\":\"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\",\"title\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750291815__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}]
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 18:22:11) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: {"instructors_json":"[{\"name\":\"\uc774\uc815\ud604\",\"info\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\\r\\n\\r\\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\",\"title\":\"\uac15\uc0ac\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_0_1750291815__________.webp\"},{\"name\":\"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\",\"info\":\"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\",\"title\":\"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\",\"image\":\"\\\/assets\\\/uploads\\\/instructors\\\/instructor_1_1750291815__________2.jpg\"}]"}
+기존 강사 데이터 파싱됨: [{"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}]
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750291815__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750291815__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 18:22:21) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\r\n\r\n\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\uac15\uc0ac"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141","info":"\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141"}
+=== 강사 데이터 검증 시작 (2025-06-19 19:42:11) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3141","title":"\u3141\u3134\u3147\u3141\u3147\u3134","info":"\u3141\u3134\u3147\u3134\u3147\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147","image":"\/assets\/uploads\/instructors\/instructor_0_1750329731__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3141\u3134\u3141\u3134\u3134\u3141\u3147\u3141\u3134\u3134","title":"\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\r\n\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3147","image":"\/assets\/uploads\/instructors\/instructor_1_1750329731__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3141","info":"\u3141\u3134\u3147\u3134\u3147\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147","title":"\u3141\u3134\u3147\u3141\u3147\u3134","image":"\/assets\/uploads\/instructors\/instructor_0_1750329731__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3141\u3134\u3141\u3134\u3134\u3141\u3147\u3141\u3134\u3134","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\r\n\u3141\u3134\u3147\u3141\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3147","title":"\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750329731__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 19:45:08) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3141\u3134","title":"\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750329908__________.webp"},{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","title":"\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750329908__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3141\u3134","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","title":"\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750329908__________.webp"}
+강사 1 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141","title":"\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_1_1750329908__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 20:16:35) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3147\u3141\u3134","title":"\u3141\u3134\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750331795__________.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3147\u3141\u3134","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141","title":"\u3141\u3134\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750331795__________.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 20:36:39) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\uc774\uc815\ud604","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750332999__________2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\uc774\uc815\ud604","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750332999__________2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 21:09:36) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3147","title":"\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750334976_file_6853fe00b12db.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3141\u3134\u3147\u3147","info":"\u3147\u3134\u3141\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141","title":"\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3147\u3134\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750334976_file_6853fe00b12db.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 21:14:11) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"dsadsadsadsa","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147","image":"\/assets\/uploads\/instructors\/instructor_0_1750335251_file_6853ff13d2881.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147","title":"dsadsadsadsa","image":"\/assets\/uploads\/instructors\/instructor_0_1750335251_file_6853ff13d2881.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 21:30:57) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"\uac15\uc0ac","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3141\u3134\u3147\u3141\u3134\r\n\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3134\u3141\u3147\u3141","image":"\/assets\/uploads\/instructors\/instructor_0_1750336257_file_68540301526c2.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"\u3141\u3134\u3147\u3134\u3141\u3147\u3134\u3141\u3141\u3134\u3147\u3141\u3134\r\n\u3134\u3141\u3147\u3134\u3141\u3147\u3134\u3141\u3147\u3141\u3134\u3134\u3141\u3147\u3141","title":"\uac15\uc0ac","image":"\/assets\/uploads\/instructors\/instructor_0_1750336257_file_68540301526c2.jpg"}
+=== 강사 데이터 검증 시작 (2025-06-19 21:37:32) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdsada","title":"dasdsadsad","info":"sasadsadsadasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750336652_file_6854048ce3ac4.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdsada","info":"sasadsadsadasdasd","title":"dasdsadsad","image":"\/assets\/uploads\/instructors\/instructor_0_1750336652_file_6854048ce3ac4.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 21:41:10) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsa","title":"asdsadad","info":"sadadassda","image":"\/assets\/uploads\/instructors\/instructor_0_1750336870_file_6854056692868.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsa","info":"sadadassda","title":"asdsadad","image":"\/assets\/uploads\/instructors\/instructor_0_1750336870_file_6854056692868.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 22:43:23) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","title":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","info":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","image":"\/assets\/uploads\/instructors\/instructor_0_1750340603_file_685413fba2834.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","info":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","title":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","image":"\/assets\/uploads\/instructors\/instructor_0_1750340603_file_685413fba2834.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 22:44:53) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","title":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","info":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","image":"\/assets\/uploads\/instructors\/instructor_0_1750340693_file_68541455cc67a.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","info":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","title":"\u3141\u3134\u3147\u3141\u3134\u3147\u3134\u3141\u3134\u3141\u3147\u3134\u3141\u3147\u3134","image":"\/assets\/uploads\/instructors\/instructor_0_1750340693_file_68541455cc67a.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 22:59:47) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdasdsadasdasdada","title":"asdasdsadasdasdada","info":"asdasdsadasdasdada","image":"\/assets\/uploads\/instructors\/instructor_0_1750341587_file_685417d3dfa27.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdasdsadasdasdada","info":"asdasdsadasdasdada","title":"asdasdsadasdasdada","image":"\/assets\/uploads\/instructors\/instructor_0_1750341587_file_685417d3dfa27.webp"}
+=== 강사 데이터 검증 시작 (2025-06-19 23:06:00) ===
+isDraft: false
+전달받은 강사 데이터: [{"name":"asdadsdasdsadasdasd","title":"asdadsdasdsadasdasd","info":"asdadsdasdsadasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750341960_file_68541948cf09f.webp"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+강사 0 최종 데이터: {"name":"asdadsdasdsadasdasd","info":"asdadsdasdsadasdasd","title":"asdadsdasdsadasdasd","image":"\/assets\/uploads\/instructors\/instructor_0_1750341960_file_68541948cf09f.webp"}

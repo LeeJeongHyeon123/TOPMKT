@@ -27,18 +27,18 @@ class User {
                 phone_verified, marketing_agreed,
                 status, created_at
             ) VALUES (
-                :phone, :nickname, :email, :password_hash,
-                :phone_verified, :marketing_agreed,
+                ?, ?, ?, ?,
+                ?, ?,
                 'active', NOW()
             )";
             
             $params = [
-                ':phone' => $userData['phone'],
-                ':nickname' => $userData['nickname'],
-                ':email' => $userData['email'],
-                ':password_hash' => password_hash($userData['password'], PASSWORD_DEFAULT),
-                ':phone_verified' => 1,  // DB 스키마에 맞게 숫자로 변경
-                ':marketing_agreed' => $userData['marketing_agreed'] ? 1 : 0
+                $userData['phone'],
+                $userData['nickname'],
+                $userData['email'],
+                password_hash($userData['password'], PASSWORD_DEFAULT),
+                1,  // DB 스키마에 맞게 숫자로 변경
+                $userData['marketing_agreed'] ? 1 : 0
             ];
             
             $this->db->execute($sql, $params);
@@ -61,32 +61,32 @@ class User {
      * 휴대폰 번호로 사용자 조회
      */
     public function findByPhone($phone) {
-        $sql = "SELECT * FROM users WHERE phone = :phone AND status != 'deleted'";
-        return $this->db->fetch($sql, [':phone' => $phone]);
+        $sql = "SELECT * FROM users WHERE phone = ? AND status != 'deleted'";
+        return $this->db->fetch($sql, [$phone]);
     }
     
     /**
      * 이메일로 사용자 조회
      */
     public function findByEmail($email) {
-        $sql = "SELECT * FROM users WHERE email = :email AND status != 'deleted'";
-        return $this->db->fetch($sql, [':email' => $email]);
+        $sql = "SELECT * FROM users WHERE email = ? AND status != 'deleted'";
+        return $this->db->fetch($sql, [$email]);
     }
     
     /**
      * 닉네임으로 사용자 조회
      */
     public function findByNickname($nickname) {
-        $sql = "SELECT * FROM users WHERE nickname = :nickname AND status != 'deleted'";
-        return $this->db->fetch($sql, [':nickname' => $nickname]);
+        $sql = "SELECT * FROM users WHERE nickname = ? AND status != 'deleted'";
+        return $this->db->fetch($sql, [$nickname]);
     }
     
     /**
      * ID로 사용자 조회
      */
     public function findById($id) {
-        $sql = "SELECT * FROM users WHERE id = :id AND status != 'deleted'";
-        return $this->db->fetch($sql, [':id' => $id]);
+        $sql = "SELECT * FROM users WHERE id = ? AND status != 'deleted'";
+        return $this->db->fetch($sql, [$id]);
     }
     
     /**
@@ -125,10 +125,10 @@ class User {
                 last_login = NOW(),
                 login_attempts = 0,
                 locked_until = NULL
-                WHERE id = :id";
+                WHERE id = ?";
         
         $params = [
-            ':id' => $userId
+            $userId
         ];
         
         $this->db->execute($sql, $params);
@@ -138,15 +138,15 @@ class User {
      * 로그인 실패 횟수 증가
      */
     private function incrementFailedLoginAttempts($userId) {
-        $sql = "UPDATE users SET login_attempts = login_attempts + 1 WHERE id = :id";
-        $this->db->execute($sql, [':id' => $userId]);
+        $sql = "UPDATE users SET login_attempts = login_attempts + 1 WHERE id = ?";
+        $this->db->execute($sql, [$userId]);
         
         // 5회 실패 시 30분 계정 잠금
         $user = $this->findById($userId);
         if ($user['login_attempts'] >= 4) { // 0부터 시작하므로 4가 5번째
             $lockUntil = date('Y-m-d H:i:s', time() + 1800); // 30분 후
-            $sql = "UPDATE users SET locked_until = :lock_until WHERE id = :id";
-            $this->db->execute($sql, [':lock_until' => $lockUntil, ':id' => $userId]);
+            $sql = "UPDATE users SET locked_until = ? WHERE id = ?";
+            $this->db->execute($sql, [$lockUntil, $userId]);
             
             $this->logUserActivity($userId, 'ACCOUNT_LOCKED', '계정 잠금 (로그인 5회 실패)');
         }
@@ -181,13 +181,13 @@ class User {
      */
     public function changePassword($userId, $newPassword) {
         $sql = "UPDATE users SET 
-                password_hash = :password_hash,
+                password_hash = ?,
                 updated_at = NOW()
-                WHERE id = :id";
+                WHERE id = ?";
         
         $params = [
-            ':id' => $userId,
-            ':password_hash' => password_hash($newPassword, PASSWORD_DEFAULT)
+            password_hash($newPassword, PASSWORD_DEFAULT),
+            $userId
         ];
         
         $result = $this->db->execute($sql, $params);
@@ -204,7 +204,7 @@ class User {
      */
     public function updateProfile($userId, $profileData) {
         $fields = [];
-        $params = [':id' => $userId];
+        $params = [$userId];
         
         $allowedFields = [
             'nickname', 'email', 'bio', 'birth_date', 'gender', 
@@ -228,7 +228,7 @@ class User {
             return false;
         }
         
-        $sql = "UPDATE users SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = :id";
+        $sql = "UPDATE users SET " . implode(', ', $fields) . ", updated_at = NOW() WHERE id = ?";
         
         $result = $this->db->execute($sql, $params);
         
@@ -297,12 +297,7 @@ class User {
                 ORDER BY created_at DESC 
                 LIMIT :limit";
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll($sql, [$userId, $limit]);
     }
     
     /**
@@ -316,12 +311,7 @@ class User {
                 ORDER BY c.created_at DESC 
                 LIMIT :limit";
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll($sql, [$userId, $limit]);
     }
     
     /**
@@ -382,16 +372,16 @@ class User {
                            social_links, profile_image_original, profile_image_profile, 
                            profile_image_thumb, role, created_at, last_login
                     FROM users 
-                    WHERE id = :identifier AND status = 'active'";
+                    WHERE id = ? AND status = 'active'";
         } else {
             $sql = "SELECT id, nickname, email, bio, birth_date, gender, website_url, 
                            social_links, profile_image_original, profile_image_profile, 
                            profile_image_thumb, role, created_at, last_login
                     FROM users 
-                    WHERE nickname = :identifier AND status = 'active'";
+                    WHERE nickname = ? AND status = 'active'";
         }
         
-        $user = $this->db->fetch($sql, [':identifier' => $identifier]);
+        $user = $this->db->fetch($sql, [$identifier]);
         
         if ($user && $user['social_links']) {
             $user['social_links'] = json_decode($user['social_links'], true);
@@ -533,9 +523,9 @@ class User {
                     profile_image_profile,
                     profile_image_thumb
                 FROM users 
-                WHERE id = :id AND status != 'deleted'";
+                WHERE id = ? AND status != 'deleted'";
         
-        return $this->db->fetch($sql, [':id' => $userId]);
+        return $this->db->fetch($sql, [$userId]);
     }
     
     /**
@@ -545,9 +535,7 @@ class User {
         try {
             // 정확한 닉네임 일치 검색
             $sql = "SELECT id, nickname, email, bio, profile_image_thumb as profile_image, created_at FROM users WHERE nickname = ? LIMIT 20";
-            $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->execute([$query]);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $this->db->fetchAll($sql, [$query]);
             
             error_log("사용자 검색 쿼리: " . $query);
             error_log("사용자 검색 결과 수: " . count($result));

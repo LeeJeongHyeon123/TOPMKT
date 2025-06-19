@@ -38,8 +38,7 @@ class Corporate {
                 is_overseas, status, created_at
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())";
             
-            $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([
+            $result = $this->db->execute($sql, [
                 $userId,
                 $companyData['company_name'],
                 $companyData['business_number'],
@@ -91,8 +90,7 @@ class Corporate {
                 updated_at = NOW()
                 WHERE user_id = ?";
             
-            $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([
+            $result = $this->db->execute($sql, [
                 $data['company_name'],
                 $data['representative_name'],
                 $data['representative_phone'],
@@ -154,8 +152,7 @@ class Corporate {
                 updated_at = NOW()
                 WHERE user_id = ?";
             
-            $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([
+            $result = $this->db->execute($sql, [
                 $companyData['company_name'],
                 $companyData['business_number'],
                 $companyData['representative_name'],
@@ -196,9 +193,7 @@ class Corporate {
                 LEFT JOIN users admin ON cp.processed_by = admin.id
                 WHERE cp.user_id = ?";
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $this->db->fetch($sql, [$userId]);
     }
     
     /**
@@ -221,9 +216,8 @@ class Corporate {
      */
     public function hasCorpPermission($userId) {
         $sql = "SELECT corp_status FROM users WHERE id = ? AND corp_status = 'approved'";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userId]);
-        return $stmt->fetch() !== false;
+        $result = $this->db->fetch($sql, [$userId]);
+        return $result !== false;
     }
     
     /**
@@ -238,9 +232,8 @@ class Corporate {
             $params[] = $excludeUserId;
         }
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetch() !== false;
+        $result = $this->db->fetch($sql, $params);
+        return $result !== false;
     }
     
     /**
@@ -254,8 +247,7 @@ class Corporate {
                 corp_approved_at = {$approvedAt}
                 WHERE id = ?";
         
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$status, $userId]);
+        return $this->db->execute($sql, [$status, $userId]) > 0;
     }
     
     /**
@@ -266,8 +258,7 @@ class Corporate {
             user_id, action_type, old_data, new_data, admin_notes, created_by, created_at
         ) VALUES (?, ?, ?, ?, ?, ?, NOW())";
         
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
+        return $this->db->execute($sql, [
             $userId,
             $actionType,
             $oldData ? json_encode($oldData, JSON_UNESCAPED_UNICODE) : null,
@@ -292,8 +283,7 @@ class Corporate {
                 processed_at = NOW()
                 WHERE user_id = ?";
             
-            $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([$adminNotes, $adminId, $userId]);
+            $result = $this->db->execute($sql, [$adminNotes, $adminId, $userId]);
             
             if (!$result) {
                 throw new Exception('승인 처리에 실패했습니다.');
@@ -330,8 +320,7 @@ class Corporate {
                 processed_at = NOW()
                 WHERE user_id = ?";
             
-            $stmt = $this->db->prepare($sql);
-            $result = $stmt->execute([$adminNotes, $adminId, $userId]);
+            $result = $this->db->execute($sql, [$adminNotes, $adminId, $userId]);
             
             if (!$result) {
                 throw new Exception('거절 처리에 실패했습니다.');
@@ -357,8 +346,7 @@ class Corporate {
      */
     private function updateUserRole($userId, $role) {
         $sql = "UPDATE users SET role = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$role, $userId]);
+        return $this->db->execute($sql, [$role, $userId]) > 0;
     }
     
     /**
@@ -379,9 +367,7 @@ class Corporate {
         $params[] = $limit;
         $params[] = $offset;
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll($sql, $params);
     }
     
     /**
@@ -395,8 +381,6 @@ class Corporate {
                 ORDER BY h.created_at DESC
                 LIMIT ?";
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$userId, $limit]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll($sql, [$userId, $limit]);
     }
 }

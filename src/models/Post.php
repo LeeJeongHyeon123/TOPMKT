@@ -61,16 +61,14 @@ class Post {
             // 먼저 해당 페이지의 시작 시간을 찾음
             $skipCount = ($page - 1) * $pageSize;
             
-            $timeStmt = $this->db->prepare("
+            $timeResult = $this->db->fetch("
                 SELECT created_at 
                 FROM posts 
                 WHERE status = 'published'
                 ORDER BY created_at DESC 
-                LIMIT 1 OFFSET :skip_count
-            ");
-            $timeStmt->bindValue(':skip_count', $skipCount, \PDO::PARAM_INT);
-            $timeStmt->execute();
-            $startTime = $timeStmt->fetchColumn();
+                LIMIT 1 OFFSET ?
+            ", [$skipCount]);
+            $startTime = $timeResult ? $timeResult['created_at'] : null;
             
             if (!$startTime) {
                 return []; // 해당 페이지에 데이터 없음
@@ -105,16 +103,10 @@ class Post {
             
             $sql .= " ORDER BY p.created_at DESC LIMIT :limit";
             
-            $stmt = $this->db->prepare($sql);
+            $executeParams = array_values($params);
+            $executeParams[] = $pageSize;
             
-            foreach ($params as $key => $value) {
-                $stmt->bindValue($key, $value);
-            }
-            
-            $stmt->bindValue(':limit', $pageSize, \PDO::PARAM_INT);
-            $stmt->execute();
-            
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $this->db->fetchAll($sql, $executeParams);
         }, $page > 1000 ? 1800 : 300); // 큰 페이지는 30분, 작은 페이지는 5분 캐시
     }
     
@@ -189,16 +181,13 @@ class Post {
             ";
             
             WebLogger::log("🔍 [SEARCH] 쿼리 파라미터 바인딩 시작");
-            $stmt = $this->db->prepare($sql);
-            
             // 관련도 점수용 파라미터 + 검색 조건 파라미터 + LIMIT/OFFSET
             $executeParams = ["%$search%", "%$search%"]; // 관련도 점수용
             $executeParams = array_merge($executeParams, $params); // 검색 조건
             $executeParams[] = $pageSize;
             $executeParams[] = $offset;
             
-            $stmt->execute($executeParams);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $this->db->fetchAll($sql, $executeParams);
             
             $step1Time = (microtime(true) - $step1Start) * 1000;
             WebLogger::log("🔍 [SEARCH] 필터 쿼리 완료: " . count($result) . "개 결과, " . round($step1Time, 2) . "ms");
@@ -291,21 +280,19 @@ class Post {
                     ) u ON p.user_id = u.id
                     WHERE $whereCondition
                 ";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute($params);
-                $count = $stmt->fetchColumn();
+                $result = $this->db->fetch($sql, $params);
+                $count = $result ? array_values($result)[0] : 0;
                 
                 $countTime = (microtime(true) - $countStartTime) * 1000;
                 WebLogger::log("📊 [COUNT] 검색 카운트 완료: {$count}개, " . round($countTime, 2) . "ms");
                 return $count;
             } else {
                 // 일반 카운트 (인덱스 활용)
-                $sql = "SELECT COUNT(*) FROM posts 
+                $sql = "SELECT COUNT(*) as count FROM posts 
                         FORCE INDEX (idx_posts_list_performance) 
                         WHERE status = 'published'";
-                $stmt = $this->db->prepare($sql);
-                $stmt->execute();
-                return $stmt->fetchColumn();
+                $result = $this->db->fetch($sql);
+                return $result ? $result['count'] : 0;
             }
         }, 600); // 10분 캐시
     }
@@ -317,17 +304,16 @@ class Post {
      * @return array|false 게시글 정보 또는 false
      */
     public function getById($id) {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT p.*, 
                    u.nickname as author_name,
                    COALESCE(u.profile_image_thumb, u.profile_image_profile, '/assets/images/default-avatar.png') as profile_image
             FROM posts p
             JOIN users u ON p.user_id = u.id
-            WHERE p.id = :id
-        ");
+            WHERE p.id = ?
+        ";
         
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $this->db->fetch($sql, [$id]);
     }
     
     /**
@@ -338,16 +324,16 @@ class Post {
      */
     public function create($data) {
         // image_path 컬럼 포함하여 INSERT
-        $stmt = $this->db->prepare("
+        $sql = "
             INSERT INTO posts (user_id, title, content, image_path, created_at, updated_at)
-            VALUES (:user_id, :title, :content, :image_path, NOW(), NOW())
-        ");
+            VALUES (?, ?, ?, ?, NOW(), NOW())
+        ";
         
-        $stmt->execute([
-            'user_id' => $data['user_id'],
-            'title' => $data['title'],
-            'content' => $data['content'],
-            'image_path' => $data['image_path'] ?? null
+        $this->db->execute($sql, [
+            $data['user_id'],
+            $data['title'],
+            $data['content'],
+            $data['image_path'] ?? null
         ]);
         
         // 새 게시글 추가 시 관련 캐시 무효화
@@ -364,17 +350,17 @@ class Post {
      * @return bool 성공 여부
      */
     public function update($id, $data) {
-        $stmt = $this->db->prepare("
+        $sql = "
             UPDATE posts 
-            SET title = :title, content = :content, image_path = :image_path, updated_at = NOW()
-            WHERE id = :id
-        ");
+            SET title = ?, content = ?, image_path = ?, updated_at = NOW()
+            WHERE id = ?
+        ";
         
-        $result = $stmt->execute([
-            'id' => $id,
-            'title' => $data['title'],
-            'content' => $data['content'],
-            'image_path' => $data['image_path'] ?? null
+        $result = $this->db->execute($sql, [
+            $data['title'],
+            $data['content'],
+            $data['image_path'] ?? null,
+            $id
         ]);
         
         // 게시글 수정 시 관련 캐시 무효화
@@ -382,7 +368,7 @@ class Post {
             $this->clearListCaches();
         }
         
-        return $result;
+        return $result > 0;
     }
     
     /**
@@ -392,15 +378,15 @@ class Post {
      * @return bool 성공 여부
      */
     public function delete($id) {
-        $stmt = $this->db->prepare("DELETE FROM posts WHERE id = :id");
-        $result = $stmt->execute(['id' => $id]);
+        $sql = "DELETE FROM posts WHERE id = ?";
+        $result = $this->db->execute($sql, [$id]);
         
         // 게시글 삭제 시 관련 캐시 무효화
         if ($result) {
             $this->clearListCaches();
         }
         
-        return $result;
+        return $result > 0;
     }
     
     /**
@@ -429,17 +415,13 @@ class Post {
      * @return array 게시글 목록
      */
     public function getByUserId($userId, $limit = 5) {
-        $stmt = $this->db->prepare("
+        $sql = "
             SELECT * FROM posts
-            WHERE user_id = :user_id
+            WHERE user_id = ?
             ORDER BY created_at DESC
-            LIMIT :limit
-        ");
+            LIMIT ?
+        ";
         
-        $stmt->bindValue(':user_id', $userId);
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        
-        return $stmt->fetchAll();
+        return $this->db->fetchAll($sql, [$userId, $limit]);
     }
 } 

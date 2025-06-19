@@ -32,7 +32,6 @@ class TopMarketingLoader {
     }
     
     init() {
-        console.log('🚀 TopMarketingLoader 초기화');
         this.createLoadingHTML();
         this.bindEvents();
     }
@@ -103,13 +102,11 @@ class TopMarketingLoader {
     }
     
     startPageLoading() {
-        console.log('🚀 페이지 로딩 시작');
         this.show();
         this.setMessage('페이지를 불러오는 중...');
     }
     
     endPageLoading() {
-        console.log('🚀 페이지 로드 완료');
         this.hide();
     }
     
@@ -137,7 +134,6 @@ class TopMarketingLoader {
     }
     
     show() {
-        console.log('🚀 로딩 화면 표시');
         this.isLoading = true;
         this.loadingStartTime = Date.now();
         
@@ -168,7 +164,6 @@ class TopMarketingLoader {
     }
     
     hide() {
-        console.log('🚀 로딩 화면 숨김');
         
         // 최소 로딩 시간 체크
         const elapsedTime = Date.now() - this.loadingStartTime;
@@ -211,7 +206,6 @@ class TopMarketingLoader {
             this.progressBar.style.width = this.progress + '%';
         }
         
-        console.log(`🚀 로딩 진행률: ${this.progress}%`);
     }
     
     startMessageRotation() {
@@ -303,13 +297,11 @@ let topMarketingLoader;
 
 // 페이지 로드 시작 시 즉시 로딩 표시를 위해 스크립트 실행 즉시 초기화
 (function() {
-    console.log('🚀 로딩 시스템 즉시 초기화');
     topMarketingLoader = new TopMarketingLoader();
 })();
 
 // DOM 로드 완료 시 추가 설정
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM 로드 완료 - 이벤트 리스너 설정');
     
     // 모든 링크에 클릭 이벤트 추가
     document.addEventListener('click', function(e) {
@@ -320,7 +312,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const linkDomain = new URL(link.href).hostname;
             
             if (currentDomain === linkDomain) {
-                console.log('🚀 페이지 전환 감지:', link.href);
                 topMarketingLoader.show();
                 topMarketingLoader.setMessage('페이지를 이동하는 중...');
             }
@@ -330,7 +321,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 폼 제출 시에도 로딩 표시
     document.addEventListener('submit', function(e) {
         if (!e.defaultPrevented) {
-            console.log('🚀 폼 제출 감지');
             topMarketingLoader.show();
             topMarketingLoader.setMessage('처리 중...');
         }
@@ -339,12 +329,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 페이지 로드 이벤트 처리
 window.addEventListener('load', function() {
-    console.log('🚀 페이지 로드 완료');
 });
 
 // 브라우저 히스토리 변경 감지 (뒤로가기, 앞으로가기)
 window.addEventListener('beforeunload', function(e) {
-    console.log('🚀 페이지 언로드 감지');
     if (topMarketingLoader) {
         topMarketingLoader.show();
         topMarketingLoader.setMessage('페이지를 이동하는 중...');
@@ -354,7 +342,6 @@ window.addEventListener('beforeunload', function(e) {
 // pageshow 이벤트로 캐시된 페이지 로드 감지
 window.addEventListener('pageshow', function(e) {
     if (e.persisted) {
-        console.log('🚀 캐시된 페이지 로드 감지');
         if (topMarketingLoader) {
             topMarketingLoader.hide();
         }
@@ -398,12 +385,10 @@ window.TopMarketingLoading = {
 // AJAX 요청 인터셉터 (jQuery가 있는 경우)
 if (typeof $ !== 'undefined') {
     $(document).ajaxStart(function() {
-        console.log('🚀 AJAX 요청 시작 - 로딩 표시');
         window.TopMarketingLoading.show();
     });
     
     $(document).ajaxStop(function() {
-        console.log('🚀 AJAX 요청 완료 - 로딩 숨김');
         setTimeout(() => {
             window.TopMarketingLoading.hide();
         }, 500);
@@ -419,7 +404,6 @@ if (window.fetch) {
     window.fetch = function(...args) {
         activeRequests++;
         if (activeRequests === 1) {
-            console.log('🚀 Fetch 요청 시작 - 로딩 표시');
             window.TopMarketingLoading.show();
         }
         
@@ -427,7 +411,6 @@ if (window.fetch) {
             .finally(() => {
                 activeRequests--;
                 if (activeRequests === 0) {
-                    console.log('🚀 Fetch 요청 완료 - 로딩 숨김');
                     setTimeout(() => {
                         window.TopMarketingLoading.hide();
                     }, 500);
@@ -436,4 +419,3 @@ if (window.fetch) {
     };
 }
 
-console.log('🚀 TopMarketing 로딩 시스템 스크립트 로드 완료');

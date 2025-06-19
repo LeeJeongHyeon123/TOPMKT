@@ -54,15 +54,14 @@ class PerformanceDebugger {
     }
     
     /**
-     * 쿼리 실행 및 성능 측정
+     * 쿼리 실행 및 성능 측정 (Database 클래스 사용)
      */
-    public static function executeQuery($pdo, $sql, $params = []) {
+    public static function executeQuery($db, $sql, $params = []) {
         $startTime = microtime(true);
         $startMemory = memory_get_usage(true);
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        // Database 클래스의 fetchAll 메서드 사용
+        $result = $db->fetchAll($sql, $params);
         
         $executionTime = microtime(true) - $startTime;
         $memoryUsed = memory_get_usage(true) - $startMemory;
@@ -121,14 +120,12 @@ class PerformanceDebugger {
     }
     
     /**
-     * DB 인덱스 상태 확인
+     * DB 인덱스 상태 확인 (Database 클래스 사용)
      */
-    public static function checkIndexUsage($pdo, $sql, $params = []) {
+    public static function checkIndexUsage($db, $sql, $params = []) {
         // EXPLAIN 쿼리 실행
         $explainSql = "EXPLAIN " . $sql;
-        $stmt = $pdo->prepare($explainSql);
-        $stmt->execute($params);
-        $explainResult = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $explainResult = $db->fetchAll($explainSql, $params);
         
         // 인덱스 사용 분석
         $indexAnalysis = [];
@@ -148,9 +145,9 @@ class PerformanceDebugger {
     }
     
     /**
-     * FULLTEXT 인덱스 상태 확인
+     * FULLTEXT 인덱스 상태 확인 (Database 클래스 사용)
      */
-    public static function checkFulltextIndex($pdo, $tableName = 'posts') {
+    public static function checkFulltextIndex($db, $tableName = 'posts') {
         $sql = "
             SELECT 
                 INDEX_NAME,
@@ -164,9 +161,7 @@ class PerformanceDebugger {
             ORDER BY INDEX_NAME, SEQ_IN_INDEX
         ";
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([$tableName]);
-        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $db->fetchAll($sql, [$tableName]);
         
         error_log("📋 FULLTEXT 인덱스 상태: " . json_encode($result, JSON_UNESCAPED_UNICODE));
         
@@ -174,9 +169,9 @@ class PerformanceDebugger {
     }
     
     /**
-     * 테이블 통계 정보 확인
+     * 테이블 통계 정보 확인 (Database 클래스 사용)
      */
-    public static function checkTableStats($pdo, $tableName = 'posts') {
+    public static function checkTableStats($db, $tableName = 'posts') {
         $sql = "
             SELECT 
                 COUNT(*) as total_rows,
@@ -186,9 +181,7 @@ class PerformanceDebugger {
             FROM $tableName
         ";
         
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $db->fetch($sql);
         
         error_log("📈 테이블 통계 ($tableName): " . json_encode($result, JSON_UNESCAPED_UNICODE));
         

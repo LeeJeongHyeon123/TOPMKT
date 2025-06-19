@@ -221,10 +221,6 @@ class MediaController {
     private function logUpload($filename, $fileSize, $userId) {
         try {
             $db = Database::getInstance();
-            $stmt = $db->prepare("
-                INSERT INTO user_logs (user_id, action, description, ip_address, user_agent, extra_data, created_at) 
-                VALUES (?, 'IMAGE_UPLOAD', ?, ?, ?, ?, NOW())
-            ");
             
             $description = "이미지 업로드: {$filename}";
             $ipAddress = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -235,7 +231,10 @@ class MediaController {
                 'upload_type' => 'rich_text_editor'
             ]);
             
-            $stmt->execute([$userId, $description, $ipAddress, $userAgent, $extraData]);
+            $db->execute("
+                INSERT INTO user_logs (user_id, action, description, ip_address, user_agent, extra_data, created_at) 
+                VALUES (?, 'IMAGE_UPLOAD', ?, ?, ?, ?, NOW())
+            ", [$userId, $description, $ipAddress, $userAgent, $extraData]);
         } catch (Exception $e) {
             error_log('업로드 로깅 오류: ' . $e->getMessage());
             // 로깅 실패해도 업로드는 성공으로 처리
