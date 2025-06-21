@@ -1,6 +1,6 @@
 <?php
 /**
- * 강의 등록 페이지
+ * 강의 등록/수정 페이지 (통합)
  */
 
 // 로그인 상태 확인
@@ -16,6 +16,17 @@ if (!$permission['hasPermission']) {
     $_SESSION['error_message'] = $permission['message'];
     header('Location: /corp/info');
     exit;
+}
+
+// 수정 모드 확인 (URL에서 ID 파라미터가 있으면 수정 모드)
+$isEditMode = false;
+$lecture = null;
+$lectureId = null;
+
+if (isset($data['lecture']) && !empty($data['lecture'])) {
+    $isEditMode = true;
+    $lecture = $data['lecture'];
+    $lectureId = $lecture['id'];
 }
 
 // CSRF 토큰 생성
@@ -846,13 +857,17 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 <div class="lecture-create-container">
     <!-- 헤더 섹션 -->
     <div class="create-header">
-        <h1>➕ 강의 등록</h1>
-        <p>새로운 강의나 세미나를 등록하여 많은 분들과 지식을 공유하세요</p>
+        <h1><?= $isEditMode ? '✏️ 강의 수정' : '➕ 강의 등록' ?></h1>
+        <p><?= $isEditMode ? '강의 정보를 수정하여 더 나은 내용을 제공하세요' : '새로운 강의나 세미나를 등록하여 많은 분들과 지식을 공유하세요' ?></p>
     </div>
     
-    <!-- 등록 폼 -->
-    <form id="lectureForm" class="create-form" method="POST" action="/lectures/store">
+    <!-- 등록/수정 폼 -->
+    <form id="lectureForm" class="create-form" method="POST" action="<?= $isEditMode ? "/lectures/{$lectureId}/update" : '/lectures/store' ?>">
         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+        <?php if ($isEditMode): ?>
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="lecture_id" value="<?= $lectureId ?>">
+        <?php endif; ?>
         <input type="hidden" id="existing_lecture_images_hidden" name="existing_lecture_images_hidden" value="">
         
         <!-- 기본 정보 -->
@@ -862,6 +877,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group full-width">
                     <label for="title" class="form-label required">강의 제목</label>
                     <input type="text" id="title" name="title" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['title'] ?? '') : '' ?>"
                            placeholder="예: 디지털 마케팅 전략 완벽 가이드" required>
                     <div class="form-help">참가자들이 쉽게 이해할 수 있는 명확한 제목을 입력하세요</div>
                     <div class="form-error" id="title-error"></div>
@@ -876,7 +892,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group full-width">
                     <label for="description" class="form-label required">강의 설명</label>
                     <textarea id="description" name="description" class="form-textarea" 
-                              placeholder="강의 내용, 목표, 대상자 등을 자세히 설명해주세요" required></textarea>
+                              placeholder="강의 내용, 목표, 대상자 등을 자세히 설명해주세요" required><?= $isEditMode ? htmlspecialchars($lecture['description'] ?? '') : '' ?></textarea>
                     <div class="form-help">참가자들이 강의 내용을 충분히 이해할 수 있도록 상세히 작성해주세요</div>
                     <div class="form-error" id="description-error"></div>
                 </div>
@@ -915,6 +931,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                         <div class="form-group">
                             <label for="instructor_name_0" class="form-label required">강사명</label>
                             <input type="text" id="instructor_name_0" name="instructors[0][name]" class="form-input" 
+                                   value="<?= $isEditMode ? htmlspecialchars($lecture['instructors'][0]['name'] ?? '') : '' ?>"
                                    placeholder="예: 김마케팅" required>
                             <div class="form-error" id="instructor_name_0-error"></div>
                         </div>
@@ -922,13 +939,14 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                         <div class="form-group">
                             <label for="instructor_title_0" class="form-label">직책/전문분야</label>
                             <input type="text" id="instructor_title_0" name="instructors[0][title]" class="form-input" 
+                                   value="<?= $isEditMode ? htmlspecialchars($lecture['instructors'][0]['title'] ?? '') : '' ?>"
                                    placeholder="예: 디지털 마케팅 전문가">
                         </div>
                         
                         <div class="form-group full-width">
                             <label for="instructor_info_0" class="form-label">강사 소개</label>
                             <textarea id="instructor_info_0" name="instructors[0][info]" class="form-textarea" 
-                                      placeholder="강사의 경력, 전문분야, 주요 실적 등을 소개해주세요"></textarea>
+                                      placeholder="강사의 경력, 전문분야, 주요 실적 등을 소개해주세요"><?= $isEditMode ? htmlspecialchars($lecture['instructors'][0]['info'] ?? '') : '' ?></textarea>
                             <div class="form-help">강사의 전문성을 어필할 수 있는 내용을 작성해주세요</div>
                         </div>
                     </div>
@@ -950,38 +968,43 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group full-width">
                     <label for="timezone" class="form-label">시간대</label>
                     <select id="timezone" name="timezone" class="form-select">
-                        <option value="Asia/Seoul" selected>한국 표준시 (KST)</option>
-                        <option value="Asia/Tokyo">일본 표준시 (JST)</option>
-                        <option value="Asia/Shanghai">중국 표준시 (CST)</option>
-                        <option value="America/New_York">동부 표준시 (EST)</option>
-                        <option value="America/Los_Angeles">태평양 표준시 (PST)</option>
-                        <option value="Europe/London">그리니치 표준시 (GMT)</option>
-                        <option value="UTC">협정 세계시 (UTC)</option>
+                        <?php $selectedTimezone = $isEditMode ? ($lecture['timezone'] ?? 'Asia/Seoul') : 'Asia/Seoul'; ?>
+                        <option value="Asia/Seoul" <?= $selectedTimezone === 'Asia/Seoul' ? 'selected' : '' ?>>한국 표준시 (KST)</option>
+                        <option value="Asia/Tokyo" <?= $selectedTimezone === 'Asia/Tokyo' ? 'selected' : '' ?>>일본 표준시 (JST)</option>
+                        <option value="Asia/Shanghai" <?= $selectedTimezone === 'Asia/Shanghai' ? 'selected' : '' ?>>중국 표준시 (CST)</option>
+                        <option value="America/New_York" <?= $selectedTimezone === 'America/New_York' ? 'selected' : '' ?>>동부 표준시 (EST)</option>
+                        <option value="America/Los_Angeles" <?= $selectedTimezone === 'America/Los_Angeles' ? 'selected' : '' ?>>태평양 표준시 (PST)</option>
+                        <option value="Europe/London" <?= $selectedTimezone === 'Europe/London' ? 'selected' : '' ?>>그리니치 표준시 (GMT)</option>
+                        <option value="UTC" <?= $selectedTimezone === 'UTC' ? 'selected' : '' ?>>협정 세계시 (UTC)</option>
                     </select>
                     <div class="form-help">강의가 진행되는 시간대를 선택하세요</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="start_date" class="form-label required">시작 날짜</label>
-                    <input type="date" id="start_date" name="start_date" class="form-input" required>
+                    <input type="date" id="start_date" name="start_date" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['start_date'] ?? '') : '' ?>" required>
                     <div class="form-error" id="start_date-error"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="end_date" class="form-label required">종료 날짜</label>
-                    <input type="date" id="end_date" name="end_date" class="form-input" required>
+                    <input type="date" id="end_date" name="end_date" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['end_date'] ?? '') : '' ?>" required>
                     <div class="form-error" id="end_date-error"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="start_time" class="form-label required">시작 시간</label>
-                    <input type="time" id="start_time" name="start_time" class="form-input" required>
+                    <input type="time" id="start_time" name="start_time" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['start_time'] ?? '') : '' ?>" required>
                     <div class="form-error" id="start_time-error"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="end_time" class="form-label required">종료 시간</label>
-                    <input type="time" id="end_time" name="end_time" class="form-input" required>
+                    <input type="time" id="end_time" name="end_time" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['end_time'] ?? '') : '' ?>" required>
                     <div class="form-error" id="end_time-error"></div>
                 </div>
                 
@@ -1002,11 +1025,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="radio-group">
                     <label class="radio-item">
                         <input type="radio" name="location_type" value="offline" 
-                               <?= $defaultData['location_type'] === 'offline' ? 'checked' : '' ?> required>
+                               <?= ($isEditMode ? ($lecture['location_type'] ?? '') : ($defaultData['location_type'] ?? '')) === 'offline' ? 'checked' : '' ?> required>
                         <span>📍 오프라인</span>
                     </label>
                     <label class="radio-item">
-                        <input type="radio" name="location_type" value="online" required>
+                        <input type="radio" name="location_type" value="online" 
+                               <?= ($isEditMode ? ($lecture['location_type'] ?? '') : ($defaultData['location_type'] ?? '')) === 'online' ? 'checked' : '' ?> required>
                         <span>💻 온라인</span>
                     </label>
                 </div>
@@ -1018,12 +1042,14 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                     <div class="form-group">
                         <label for="venue_name" class="form-label">장소명</label>
                         <input type="text" id="venue_name" name="venue_name" class="form-input" 
+                               value="<?= $isEditMode ? htmlspecialchars($lecture['venue_name'] ?? '') : '' ?>"
                                placeholder="예: 강남구 세미나실">
                     </div>
                     <div class="form-group full-width">
                         <label for="venue_address" class="form-label">장소 주소</label>
                         <div style="display: flex; gap: 10px; align-items: flex-start;">
                             <input type="text" id="venue_address" name="venue_address" class="form-input" 
+                                   value="<?= $isEditMode ? htmlspecialchars($lecture['venue_address'] ?? '') : '' ?>"
                                    placeholder="주소 검색 버튼을 클릭하여 정확한 주소를 입력해주세요" readonly
                                    style="flex: 1;">
                             <button type="button" id="address_search_btn" class="btn btn-secondary"
@@ -1033,8 +1059,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                         </div>
                         <div class="form-help">주소 검색을 통해 정확한 주소를 입력하면 지도에 정확한 위치가 표시됩니다</div>
                         <!-- 위도, 경도 저장을 위한 숨김 필드 -->
-                        <input type="hidden" id="venue_latitude" name="venue_latitude" value="">
-                        <input type="hidden" id="venue_longitude" name="venue_longitude" value="">
+                        <input type="hidden" id="venue_latitude" name="venue_latitude" 
+                               value="<?= $isEditMode ? htmlspecialchars($lecture['venue_latitude'] ?? '') : '' ?>">
+                        <input type="hidden" id="venue_longitude" name="venue_longitude" 
+                               value="<?= $isEditMode ? htmlspecialchars($lecture['venue_longitude'] ?? '') : '' ?>">
                     </div>
                 </div>
             </div>
@@ -1044,6 +1072,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group">
                     <label for="online_link" class="form-label">온라인 링크</label>
                     <input type="url" id="online_link" name="online_link" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['online_link'] ?? '') : '' ?>"
                            placeholder="Zoom, 유튜브 등의 링크를 입력해주세요">
                     <div class="form-help">참가자들이 접속할 수 있는 링크를 입력하세요</div>
                 </div>
@@ -1057,22 +1086,25 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group">
                     <label for="max_participants" class="form-label">최대 참가자 수</label>
                     <input type="number" id="max_participants" name="max_participants" 
-                           class="form-input" min="1" placeholder="무제한인 경우 비워두세요">
+                           class="form-input" min="1" value="<?= $isEditMode ? htmlspecialchars($lecture['max_participants'] ?? '') : '' ?>"
+                           placeholder="무제한인 경우 비워두세요">
                     <div class="form-help">참가자 수 제한이 없으면 비워두세요</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="registration_fee" class="form-label">참가비 (원)</label>
                     <input type="text" id="registration_fee_display" 
-                           class="form-input" placeholder="0" style="text-align: right;">
-                    <input type="hidden" id="registration_fee" name="registration_fee" value="0">
+                           class="form-input" value="<?= $isEditMode ? number_format($lecture['registration_fee'] ?? 0) : '0' ?>"
+                           placeholder="0" style="text-align: right;">
+                    <input type="hidden" id="registration_fee" name="registration_fee" 
+                           value="<?= $isEditMode ? ($lecture['registration_fee'] ?? 0) : 0 ?>">
                     <div class="form-help">무료인 경우 0을 입력하세요 (천 단위 콤마 자동 추가)</div>
                 </div>
                 
                 <div class="form-group">
                     <label for="registration_deadline" class="form-label">등록 마감일시</label>
                     <input type="datetime-local" id="registration_deadline" name="registration_deadline" 
-                           class="form-input">
+                           class="form-input" value="<?= $isEditMode ? htmlspecialchars($lecture['registration_deadline'] ?? '') : '' ?>">
                     <div class="form-help">마감일이 없으면 비워두세요 (과거 날짜는 선택할 수 없습니다)</div>
                 </div>
             </div>
@@ -1108,6 +1140,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                 <div class="form-group full-width">
                     <label for="youtube_video" class="form-label">YouTube 동영상 URL</label>
                     <input type="url" id="youtube_video" name="youtube_video" class="form-input" 
+                           value="<?= $isEditMode ? htmlspecialchars($lecture['youtube_video'] ?? '') : '' ?>"
                            placeholder="https://www.youtube.com/watch?v=...">
                     <div class="form-help">강의 소개 영상이나 관련 동영상 링크가 있으면 입력해주세요</div>
                     <div class="form-error" id="youtube_video-error"></div>
@@ -1120,23 +1153,35 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             <h2 class="section-title">📝 추가 정보</h2>
             <div class="form-grid">
                 <div class="form-group full-width">
-                    <label for="requirements" class="form-label">참가 요구사항</label>
-                    <textarea id="requirements" name="requirements" class="form-textarea" 
-                              placeholder="필요한 사전 지식, 준비물 등을 안내해주세요"></textarea>
+                    <label for="prerequisites" class="form-label">참가 조건</label>
+                    <textarea id="prerequisites" name="prerequisites" class="form-textarea" 
+                              placeholder="참가자가 사전에 알아야 할 내용이나 준비사항"><?= $isEditMode ? htmlspecialchars($lecture['prerequisites'] ?? '') : '' ?></textarea>
                 </div>
                 
                 <div class="form-group full-width">
-                    <label for="benefits" class="form-label">혜택</label>
+                    <label for="what_to_bring" class="form-label">준비물</label>
+                    <textarea id="what_to_bring" name="what_to_bring" class="form-textarea" 
+                              placeholder="참가자가 지참해야 할 물품"><?= $isEditMode ? htmlspecialchars($lecture['what_to_bring'] ?? '') : '' ?></textarea>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="additional_info" class="form-label">기타 안내사항</label>
+                    <textarea id="additional_info" name="additional_info" class="form-textarea" 
+                              placeholder="기타 중요한 안내사항"><?= $isEditMode ? htmlspecialchars($lecture['additional_info'] ?? '') : '' ?></textarea>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="benefits" class="form-label">참가자 혜택</label>
                     <textarea id="benefits" name="benefits" class="form-textarea" 
-                              placeholder="수료증, 자료 제공, 네트워킹 기회 등의 혜택을 안내해주세요"></textarea>
+                              placeholder="참가자가 얻을 수 있는 혜택이나 성과를 설명해주세요"><?= $isEditMode ? htmlspecialchars($lecture['benefits'] ?? '') : '' ?></textarea>
                 </div>
             </div>
         </div>
         
         <!-- 폼 액션 -->
         <div class="form-actions">
-            <a href="/lectures" class="btn btn-secondary">
-                ← 목록으로
+            <a href="<?= $isEditMode ? "/lectures/{$lectureId}" : '/lectures' ?>" class="btn btn-secondary">
+                <?= $isEditMode ? '← 강의로 돌아가기' : '← 목록으로' ?>
             </a>
             
             <div style="display: flex; gap: 15px;">
@@ -1144,7 +1189,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
                     💾 임시저장
                 </button>
                 <button type="submit" name="status" value="published" class="btn btn-primary">
-                    🚀 등록하기
+                    <?= $isEditMode ? '✏️ 수정완료' : '🚀 등록하기' ?>
                 </button>
             </div>
         </div>
@@ -1160,6 +1205,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 let currentImageData = [];
 let lectureImages = [];
 const maxLectureImages = 8;
+const isEditMode = <?= $isEditMode ? 'true' : 'false' ?>; // PHP에서 전달된 편집 모드 상태
 
 // 기존 이미지 삭제 함수 (전역 함수로 먼저 정의)
 function removeExistingImage(imageIndex, imageElement) {
@@ -1170,7 +1216,7 @@ function removeExistingImage(imageIndex, imageElement) {
     if (Array.isArray(currentImageData)) {
         // 해당 인덱스의 이미지 제거
         currentImageData.splice(imageIndex, 1);
-        console.log('이미지 삭제 후 currentImageData:', currentImageData);
+        // console.log('이미지 삭제 후 currentImageData:', currentImageData);
         
         // 서버에 업데이트된 이미지 목록 전송
         updateImageListOnServer(currentImageData);
@@ -1253,7 +1299,7 @@ function updateImageUploadPlaceholder() {
 
 // 강의 이미지 화면 업데이트 함수 (전역 함수로 먼저 정의)
 function updateLectureImagesDisplay(updatedImages) {
-    console.log('updateLectureImagesDisplay 호출됨, 이미지 개수:', updatedImages.length);
+    // console.log('updateLectureImagesDisplay 호출됨, 이미지 개수:', updatedImages.length);
     
     const imagePreviewContainer = document.getElementById('lectureImagePreview');
     if (!imagePreviewContainer) {
@@ -1293,20 +1339,20 @@ function updateLectureImagesDisplay(updatedImages) {
     // 업로드 플레이스홀더 업데이트
     updateImageUploadPlaceholder();
     
-    console.log('화면 업데이트 완료:', updatedImages.length + '개 이미지 표시됨');
+    // console.log('화면 업데이트 완료:', updatedImages.length + '개 이미지 표시됨');
 }
 
 // 강사 이미지 처리 함수들 (전역 함수로 먼저 정의)
 function handleInstructorImage(index, input) {
-    console.log(`handleInstructorImage 호출: index=${index}, input=`, input);
+    // console.log(`handleInstructorImage 호출: index=${index}, input=`, input);
     
     const file = input.files[0];
     if (!file) {
-        console.log('파일이 선택되지 않음');
+        // console.log('파일이 선택되지 않음');
         return;
     }
     
-    console.log('선택된 파일:', file.name, file.type, file.size);
+    // console.log('선택된 파일:', file.name, file.type, file.size);
     
     // 파일 유효성 검사
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
@@ -1326,10 +1372,10 @@ function handleInstructorImage(index, input) {
     // 미리보기 표시
     const reader = new FileReader();
     reader.onload = function(e) {
-        console.log(`FileReader onload 시작: index=${index}`);
+        // console.log(`FileReader onload 시작: index=${index}`);
         
         const fileInput = document.querySelector(`#instructor_image_${index}`);
-        console.log(`찾은 파일 입력 요소:`, fileInput);
+        // console.log(`찾은 파일 입력 요소:`, fileInput);
         if (!fileInput) {
             console.error(`강사 이미지 입력 요소를 찾을 수 없습니다: #instructor_image_${index}`);
             return;
@@ -1338,8 +1384,8 @@ function handleInstructorImage(index, input) {
         // input 요소의 형제 요소인 instructor-image-container 찾기
         const uploadDiv = fileInput.closest('.instructor-image-upload');
         const container = uploadDiv ? uploadDiv.querySelector('.instructor-image-container') : null;
-        console.log(`찾은 업로드 div:`, uploadDiv);
-        console.log(`찾은 컨테이너:`, container);
+        // console.log(`찾은 업로드 div:`, uploadDiv);
+        // console.log(`찾은 컨테이너:`, container);
         if (!container) {
             console.error('이미지 컨테이너를 찾을 수 없습니다');
             return;
@@ -1368,14 +1414,14 @@ function handleInstructorImage(index, input) {
         container.appendChild(img);
         container.appendChild(removeBtn);
         
-        console.log(`이미지 미리보기 설정 완료: index=${index}`);
+        // console.log(`이미지 미리보기 설정 완료: index=${index}`);
     };
     
     reader.readAsDataURL(file);
 }
 
 function removeInstructorImage(index) {
-    console.log(`removeInstructorImage 호출: index=${index}`);
+    // console.log(`removeInstructorImage 호출: index=${index}`);
     
     const fileInput = document.querySelector(`#instructor_image_${index}`);
     const uploadDiv = fileInput ? fileInput.closest('.instructor-image-upload') : null;
@@ -1401,7 +1447,7 @@ function removeInstructorImage(index) {
             fileInput.click();
         };
         
-        console.log(`강사 이미지 제거 완료: index=${index}`);
+        // console.log(`강사 이미지 제거 완료: index=${index}`);
     }
 }
 
@@ -1588,7 +1634,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const endTime = document.getElementById('end_time').value;
         const durationText = document.getElementById('duration-text');
         
-        console.log('calculateDuration 호출됨:', { startDate, endDate, startTime, endTime });
+        // console.log('calculateDuration 호출됨:', { startDate, endDate, startTime, endTime });
         
         if (!durationText) {
             console.error('duration-text 요소를 찾을 수 없습니다');
@@ -1600,7 +1646,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const start = new Date(`${startDate}T${startTime}`);
             const end = new Date(`${endDate}T${endTime}`);
             
-            console.log('날짜/시간 계산:', { start, end });
+            // console.log('날짜/시간 계산:', { start, end });
             
             if (end > start) {
                 const diffMs = end - start;
@@ -1624,15 +1670,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const finalDuration = durationStr || '0분';
                 durationText.textContent = finalDuration;
                 durationText.style.color = '#0369a1';
-                console.log('소요시간 계산 완료:', finalDuration);
+                // console.log('소요시간 계산 완료:', finalDuration);
             } else if (end.getTime() === start.getTime()) {
                 durationText.textContent = '시작과 종료가 같습니다';
                 durationText.style.color = '#f59e0b';
-                console.log('시간 동일: 시작과 종료가 같음');
+                // console.log('시간 동일: 시작과 종료가 같음');
             } else {
                 durationText.textContent = '종료 날짜/시간이 시작 날짜/시간보다 늦어야 합니다';
                 durationText.style.color = '#dc2626';
-                console.log('시간 오류: 종료가 시작보다 빠름');
+                // console.log('시간 오류: 종료가 시작보다 빠름');
             }
         } else {
             const missingFields = [];
@@ -1643,7 +1689,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             durationText.textContent = `${missingFields.join(', ')}을(를) 입력하세요`;
             durationText.style.color = '#64748b';
-            console.log('입력 대기 중:', missingFields);
+            // console.log('입력 대기 중:', missingFields);
         }
     }
     
@@ -1654,7 +1700,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const endTimeElement = document.getElementById('end_time');
     
     if (startDateElement && endDateElement && startTimeElement && endTimeElement) {
-        console.log('소요시간 계산 이벤트 리스너 등록 중...');
+        // console.log('소요시간 계산 이벤트 리스너 등록 중...');
         
         // 날짜 변경 이벤트
         startDateElement.addEventListener('change', calculateDuration);
@@ -1668,7 +1714,7 @@ document.addEventListener('DOMContentLoaded', function() {
         endTimeElement.addEventListener('change', calculateDuration);
         endTimeElement.addEventListener('input', calculateDuration);
         
-        console.log('소요시간 계산 이벤트 리스너 등록 완료');
+        // console.log('소요시간 계산 이벤트 리스너 등록 완료');
     } else {
         console.error('날짜/시간 입력 요소를 찾을 수 없습니다:', { 
             startDateElement, endDateElement, startTimeElement, endTimeElement 
@@ -1676,7 +1722,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 페이지 로딩 시 기존 값이 있다면 한 번 계산
-    console.log('초기 소요시간 계산 실행...');
+    // console.log('초기 소요시간 계산 실행...');
     calculateDuration();
     
     // 강의 이미지 업로드 관리 (변수들은 이미 전역에서 선언됨)
@@ -1890,7 +1936,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 드래그&드롭 시에는 lectureImages 배열과 dataset.fileIndex를 변경하지 않음
         // DOM 순서만 변경하고, 원본 파일과의 연결은 유지
         // 나중에 form 제출 시 DOM 순서(display_order)와 원본 인덱스(temp_index)를 함께 전송
-        console.log('드래그&드롭: DOM 순서만 변경, 파일 배열과 인덱스는 원본 유지');
+        // console.log('드래그&드롭: DOM 순서만 변경, 파일 배열과 인덱스는 원본 유지');
         
         // 순서 번호 업데이트
         updateImageOrderNumbers();
@@ -1904,13 +1950,13 @@ document.addEventListener('DOMContentLoaded', function() {
             imageName: item.querySelector('.image-info div')?.textContent
         }));
         
-        console.log('=== 드래그&드롭 완료 후 DOM 순서 ===');
-        console.log('이미지 순서 변경 완료:', {
-            draggedIndex,
-            targetIndex,
-            finalDomOrder: finalOrder
-        });
-        console.log('현재 DOM 순서:', finalOrder);
+        // console.log('=== 드래그&드롭 완료 후 DOM 순서 ===');
+        // console.log('이미지 순서 변경 완료:', {
+        //     draggedIndex,
+        //     targetIndex,
+        //     finalDomOrder: finalOrder
+        // });
+        // console.log('현재 DOM 순서:', finalOrder);
     }
     
     function updateImageOrderNumbers() {
@@ -1926,7 +1972,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateFileIndexes() {
         // 드래그&드롭 후에는 dataset.fileIndex를 변경하지 않음
         // 원본 파일과의 연결을 유지하기 위해 이 함수는 드래그&드롭에서 호출되지 않음
-        console.log('updateFileIndexes: 드래그&드롭에서는 호출되지 않아야 함');
+        // console.log('updateFileIndexes: 드래그&드롭에서는 호출되지 않아야 함');
     }
     
     function updateSortableContainerState() {
@@ -2266,7 +2312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         
         // 드래그&드롭으로 변경된 이미지 순서를 수집하여 FormData에 추가
-        console.log('=== 폼 제출 시 이미지 순서 수집 ===');
+        // console.log('=== 폼 제출 시 이미지 순서 수집 ===');
         
         // 현재 화면에 표시된 이미지 순서대로 데이터 수집
         const imagePreviewContainer = document.getElementById('lectureImagePreview');
@@ -2274,19 +2320,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (imagePreviewContainer) {
             const imageItems = imagePreviewContainer.querySelectorAll('.lecture-image-item');
-            console.log('화면에 표시된 이미지 개수:', imageItems.length);
+            // console.log('화면에 표시된 이미지 개수:', imageItems.length);
             
-            console.log('=== 드래그&드롭 순서 디버깅 시작 ===');
-            console.log('DOM에서 발견된 이미지 순서:', Array.from(imageItems).map((item, idx) => ({
-                domIndex: idx + 1,
-                classList: item.className,
-                fileIndex: item.dataset.fileIndex,
-                orderNumber: item.querySelector('.image-order')?.textContent
-            })));
+            // console.log('=== 드래그&드롭 순서 디버깅 시작 ===');
+            // console.log('DOM에서 발견된 이미지 순서:', Array.from(imageItems).map((item, idx) => ({
+            //     domIndex: idx + 1,
+            //     classList: item.className,
+            //     fileIndex: item.dataset.fileIndex,
+            //     orderNumber: item.querySelector('.image-order')?.textContent
+            // })));
             
             imageItems.forEach((item, index) => {
                 const actualOrder = index + 1; // DOM에서의 실제 순서
-                console.log(`처리 중: DOM 순서 ${actualOrder}, 클래스: ${item.className}`);
+                // console.log(`처리 중: DOM 순서 ${actualOrder}, 클래스: ${item.className}`);
                 
                 if (item.classList.contains('existing-image')) {
                     // 기존 이미지 (임시저장된 이미지)
@@ -2301,12 +2347,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             display_order: actualOrder
                         };
                         orderedImageData.push(imageData);
-                        console.log(`기존 이미지 DOM 순서 ${actualOrder}:`, imageData);
+                        // console.log(`기존 이미지 DOM 순서 ${actualOrder}:`, imageData);
                     }
                 } else if (item.classList.contains('new-image')) {
                     // 새로 업로드된 이미지 - 안전한 식별자 사용
                     const fileIndex = parseInt(item.dataset.fileIndex);
-                    console.log(`새 이미지: DOM 순서 ${actualOrder}, fileIndex ${fileIndex}`);
+                    // console.log(`새 이미지: DOM 순서 ${actualOrder}, fileIndex ${fileIndex}`);
                     
                     if (fileIndex >= 0 && fileIndex < lectureImages.length) {
                         const file = lectureImages[fileIndex];
@@ -2319,28 +2365,28 @@ document.addEventListener('DOMContentLoaded', function() {
                             temp_index: fileIndex  // 서버에서 매칭용
                         };
                         orderedImageData.push(imageData);
-                        console.log(`새 이미지 DOM 순서 ${actualOrder}:`, imageData);
+                        // console.log(`새 이미지 DOM 순서 ${actualOrder}:`, imageData);
                     }
                 }
             });
-            console.log('=== 최종 정렬된 이미지 데이터 ===');
-            console.log('orderedImageData:', orderedImageData);
+            // console.log('=== 최종 정렬된 이미지 데이터 ===');
+            // console.log('orderedImageData:', orderedImageData);
         }
         
         // 드래그&드롭으로 정렬된 이미지 순서를 서버로 전달
         if (orderedImageData.length > 0) {
             formData.append('ordered_lecture_images', JSON.stringify(orderedImageData));
-            console.log('정렬된 이미지 데이터 전송:', orderedImageData);
+            // console.log('정렬된 이미지 데이터 전송:', orderedImageData);
         }
         
         // 기존 로직도 유지 (호환성을 위해)
-        console.log('=== 기존 이미지 데이터 호환성 처리 ===');
-        console.log('currentImageData 타입:', typeof currentImageData);
-        console.log('currentImageData 값:', currentImageData);
+        // console.log('=== 기존 이미지 데이터 호환성 처리 ===');
+        // console.log('currentImageData 타입:', typeof currentImageData);
+        // console.log('currentImageData 값:', currentImageData);
         
         if (typeof currentImageData !== 'undefined' && Array.isArray(currentImageData) && currentImageData.length > 0) {
             formData.append('existing_lecture_images', JSON.stringify(currentImageData));
-            console.log('기존 강의 이미지 정보 추가:', currentImageData);
+            // console.log('기존 강의 이미지 정보 추가:', currentImageData);
         } else {
             // 히든 필드에서 데이터 가져오기 (만약 currentImageData가 비어있다면)
             const hiddenField = document.querySelector('#existing_lecture_images_hidden');
@@ -2349,16 +2395,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     const hiddenData = JSON.parse(hiddenField.value);
                     if (hiddenData && hiddenData.length > 0) {
                         formData.append('existing_lecture_images', hiddenField.value);
-                        console.log('히든 필드에서 기존 강의 이미지 정보 추가:', hiddenData);
+                        // console.log('히든 필드에서 기존 강의 이미지 정보 추가:', hiddenData);
                     } else {
-                        console.log('기존 강의 이미지 정보가 없거나 비어있음');
+                        // console.log('기존 강의 이미지 정보가 없거나 비어있음');
                     }
                 } catch (e) {
-                    console.log('히든 필드 데이터 파싱 오류:', e);
-                    console.log('기존 강의 이미지 정보가 없거나 비어있음');
+                    // console.log('히든 필드 데이터 파싱 오류:', e);
+                    // console.log('기존 강의 이미지 정보가 없거나 비어있음');
                 }
             } else {
-                console.log('기존 강의 이미지 정보가 없거나 비어있음');
+                // console.log('기존 강의 이미지 정보가 없거나 비어있음');
             }
         }
         
@@ -2368,18 +2414,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 상세 디버깅: 폼 데이터 로깅
-        console.log('=== 폼 제출 데이터 상세 분석 ===');
-        console.log('클릭된 버튼:', clickedButton ? clickedButton.name + '=' + clickedButton.value : 'NONE');
-        console.log('핵심 필드 값 확인:');
-        console.log('- registration_deadline:', formData.get('registration_deadline') || 'EMPTY');
-        console.log('- youtube_video:', formData.get('youtube_video') || 'EMPTY');
-        console.log('- status:', formData.get('status') || 'EMPTY');
-        console.log('- title:', formData.get('title') || 'EMPTY');
+        // console.log('=== 폼 제출 데이터 상세 분석 ===');
+        // console.log('클릭된 버튼:', clickedButton ? clickedButton.name + '=' + clickedButton.value : 'NONE');
+        // console.log('핵심 필드 값 확인:');
+        // console.log('- registration_deadline:', formData.get('registration_deadline') || 'EMPTY');
+        // console.log('- youtube_video:', formData.get('youtube_video') || 'EMPTY');
+        // console.log('- status:', formData.get('status') || 'EMPTY');
+        // console.log('- title:', formData.get('title') || 'EMPTY');
         
         // 모든 폼 데이터 출력
-        console.log('전체 FormData 내용:');
+        // console.log('전체 FormData 내용:');
         for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+            // console.log(`${key}: ${value}`);
         }
         
         // AJAX 제출
@@ -2419,79 +2465,88 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (data.isDraft) {
                     // 임시저장인 경우 현재 페이지에 머물기
-                    console.log('임시저장 완료, 강의 ID:', data.lectureId);
+                    // console.log('임시저장 완료, 강의 ID:', data.lectureId);
                     
                     // 임시저장 후 최신 이미지 데이터로 업데이트
-                    console.log('=== 임시저장 응답 처리 시작 ===');
-                    console.log('data.debug 존재:', !!data.debug);
-                    console.log('data.debug.update_binding 존재:', !!(data.debug && data.debug.update_binding));
-                    console.log('data.debug.update_binding.params 존재:', !!(data.debug && data.debug.update_binding && data.debug.update_binding.params));
+                    // console.log('=== 임시저장 응답 처리 시작 ===');
+                    // console.log('data.debug 존재:', !!data.debug);
+                    // console.log('data.debug.update_binding 존재:', !!(data.debug && data.debug.update_binding));
+                    // console.log('data.debug.update_binding.params 존재:', !!(data.debug && data.debug.update_binding && data.debug.update_binding.params));
                     
                     if (data.debug && data.debug.update_binding && data.debug.update_binding.params) {
                         const updatedImages = data.debug.update_binding.params;
-                        console.log('서버에서 받은 업데이트된 이미지 데이터:', updatedImages);
-                        console.log('업데이트된 이미지 개수:', updatedImages.length);
-                        console.log('각 이미지 상세 정보:');
+                        // console.log('서버에서 받은 업데이트된 이미지 데이터:', updatedImages);
+                        // console.log('업데이트된 이미지 개수:', updatedImages.length);
+                        // console.log('각 이미지 상세 정보:');
                         updatedImages.forEach((img, idx) => {
-                            console.log(`이미지 ${idx}:`, img.original_name, img.file_path);
+                            // console.log(`이미지 ${idx}:`, img.original_name, img.file_path);
                         });
                         
                         // 전역 변수 업데이트
                         const previousCount = currentImageData ? currentImageData.length : 0;
                         currentImageData = [...updatedImages];
-                        console.log(`currentImageData 업데이트: ${previousCount}개 -> ${currentImageData.length}개`);
+                        // console.log(`currentImageData 업데이트: ${previousCount}개 -> ${currentImageData.length}개`);
                         
                         // 히든 필드도 즉시 업데이트하여 다음 제출 시 올바른 데이터가 전송되도록 함
                         const hiddenField = document.querySelector('#existing_lecture_images_hidden');
                         if (hiddenField) {
                             hiddenField.value = JSON.stringify(currentImageData);
-                            console.log('히든 필드 업데이트 완료:', currentImageData.length + '개 이미지');
+                            // console.log('히든 필드 업데이트 완료:', currentImageData.length + '개 이미지');
                         } else {
                             console.warn('히든 필드를 찾을 수 없음');
                         }
                         
                         // 화면과 데이터 동기화 확인 후 필요시 화면 업데이트
                         let currentScreenImages = document.querySelectorAll('.lecture-image-preview');
-                        console.log('화면 업데이트 전 - 화면에 보이는 이미지 개수:', currentScreenImages.length);
-                        console.log('currentImageData 이미지 개수:', currentImageData.length);
+                        // console.log('화면 업데이트 전 - 화면에 보이는 이미지 개수:', currentScreenImages.length);
+                        // console.log('currentImageData 이미지 개수:', currentImageData.length);
                         
                         if (currentScreenImages.length !== updatedImages.length) {
-                            console.log('화면과 데이터가 불일치하므로 화면을 강제 업데이트합니다.');
+                            // console.log('화면과 데이터가 불일치하므로 화면을 강제 업데이트합니다.');
                             // 강의 이미지 화면 업데이트
                             updateLectureImagesDisplay(updatedImages);
                             
                             // 화면 업데이트 후 다시 확인
                             currentScreenImages = document.querySelectorAll('.lecture-image-preview');
-                            console.log('화면 업데이트 후 - 화면에 보이는 이미지 개수:', currentScreenImages.length);
+                            // console.log('화면 업데이트 후 - 화면에 보이는 이미지 개수:', currentScreenImages.length);
                         } else {
-                            console.log('화면과 데이터가 일치하므로 화면 업데이트를 건너뜁니다.');
+                            // console.log('화면과 데이터가 일치하므로 화면 업데이트를 건너뜁니다.');
                         }
                         
-                        console.log('이미지 데이터 업데이트 완료:', currentImageData);
+                        // console.log('이미지 데이터 업데이트 완료:', currentImageData);
                         
                         // 최종 동기화 상태 확인
                         if (currentScreenImages.length !== currentImageData.length) {
                             console.error('⚠️ 최종 확인: 화면과 데이터가 불일치! 화면:', currentScreenImages.length, 'vs 데이터:', currentImageData.length);
                         } else {
-                            console.log('✅ 최종 확인: 화면과 데이터가 일치');
+                            // console.log('✅ 최종 확인: 화면과 데이터가 일치');
                         }
                     } else {
-                        console.log('⚠️ 서버 응답에 이미지 데이터가 없음');
-                        console.log('data.debug:', data.debug);
+                        // console.log('⚠️ 서버 응답에 이미지 데이터가 없음');
+                        // console.log('data.debug:', data.debug);
                     }
                     
                     // 디버깅 정보 출력
                     if (data.debug) {
-                        console.log('=== 서버 디버그 정보 ===');
-                        console.log('POST registration_deadline:', data.debug.post_registration_deadline);
-                        console.log('POST youtube_video:', data.debug.post_youtube_video);
-                        console.log('검증된 registration_deadline:', data.debug.validated_registration_deadline);
-                        console.log('검증된 youtube_video:', data.debug.validated_youtube_video);
+                        // console.log('=== 서버 디버그 정보 ===');
+                        // console.log('POST registration_deadline:', data.debug.post_registration_deadline);
+                        // console.log('POST youtube_video:', data.debug.post_youtube_video);
+                        // console.log('검증된 registration_deadline:', data.debug.validated_registration_deadline);
+                        // console.log('검증된 youtube_video:', data.debug.validated_youtube_video);
                     }
                 } else {
                     // 정식 등록인 경우 리다이렉트
                     setTimeout(() => {
-                        window.location.href = data.redirectUrl || '/lectures';
+                        if (isEditMode && data.lectureId) {
+                            // 수정 모드인 경우 강의 상세 페이지의 수정 모드로 리다이렉트
+                            window.location.href = `/lectures/${data.lectureId}/edit`;
+                        } else if (data.lectureId) {
+                            // 새 강의 등록인 경우 강의 상세 페이지의 수정 모드로 리다이렉트
+                            window.location.href = `/lectures/${data.lectureId}/edit`;
+                        } else {
+                            // 기본 리다이렉트
+                            window.location.href = data.redirectUrl || '/lectures';
+                        }
                     }, 1500);
                 }
             } else {
@@ -2634,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 강사 이미지 로딩 함수 (전역 함수로 정의)
     window.loadInstructorImage = function(index, imagePath) {
-        console.log(`강사 ${index} 이미지 로딩 시도:`, imagePath);
+        // console.log(`강사 ${index} 이미지 로딩 시도:`, imagePath);
         
         const fileInput = document.querySelector(`#instructor_image_${index}`);
         if (!fileInput) {
@@ -2673,7 +2728,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(img);
         container.classList.add('has-image');
         
-        console.log(`강사 ${index} 이미지 로딩 완료:`, imagePath);
+        // console.log(`강사 ${index} 이미지 로딩 완료:`, imagePath);
     };
     
     // 에러 메시지 표시
@@ -2720,7 +2775,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
                 // 여기에 자동 저장 로직 추가 가능
-                console.log('자동 저장 가능한 상태');
+                // console.log('자동 저장 가능한 상태');
             }, 30000); // 30초 후 자동 저장
         });
     });
@@ -2753,6 +2808,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function loadDraftData() {
         const draftData = <?php echo json_encode($draftLecture, JSON_UNESCAPED_UNICODE); ?>;
+        
+        // console.log('=== 임시저장 데이터 확인 ===');
+        // console.log('전체 draftData:', draftData);
+        // console.log('prerequisites:', draftData ? draftData.prerequisites : 'NO DATA');
+        // console.log('what_to_bring:', draftData ? draftData.what_to_bring : 'NO DATA');
+        // console.log('additional_info:', draftData ? draftData.additional_info : 'NO DATA');
+        // console.log('benefits:', draftData ? draftData.benefits : 'NO DATA');
         
         if (!draftData) return; // draftData가 null이면 함수 종료
         
@@ -2833,9 +2895,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (registrationFeeEl) registrationFeeEl.value = draftData.registration_fee;
             if (registrationFeeDisplayEl) registrationFeeDisplayEl.value = numberWithCommas(draftData.registration_fee);
         }
-        if (draftData.requirements) {
-            const requirementsEl = document.getElementById('requirements');
-            if (requirementsEl) requirementsEl.value = draftData.requirements;
+        if (draftData.prerequisites) {
+            const prerequisitesEl = document.getElementById('prerequisites');
+            if (prerequisitesEl) prerequisitesEl.value = draftData.prerequisites;
+        }
+        if (draftData.what_to_bring) {
+            const whatToBringEl = document.getElementById('what_to_bring');
+            if (whatToBringEl) whatToBringEl.value = draftData.what_to_bring;
+        }
+        if (draftData.additional_info) {
+            const additionalInfoEl = document.getElementById('additional_info');
+            if (additionalInfoEl) additionalInfoEl.value = draftData.additional_info;
         }
         if (draftData.benefits) {
             const benefitsEl = document.getElementById('benefits');
@@ -2847,27 +2917,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 등록 마감일시 채우기
-        console.log('등록 마감일시 데이터:', draftData.registration_deadline);
+        // console.log('등록 마감일시 데이터:', draftData.registration_deadline);
         if (draftData.registration_deadline) {
             const regDeadlineEl = document.getElementById('registration_deadline');
-            console.log('등록 마감일시 엘리먼트:', regDeadlineEl);
+            // console.log('등록 마감일시 엘리먼트:', regDeadlineEl);
             if (regDeadlineEl) {
                 // MySQL datetime을 datetime-local 형식으로 변환
                 const date = new Date(draftData.registration_deadline);
                 const localDateTime = date.toISOString().slice(0, 16);
-                console.log('변환된 날짜:', localDateTime);
+                // console.log('변환된 날짜:', localDateTime);
                 regDeadlineEl.value = localDateTime;
             }
         } else {
-            console.log('등록 마감일시 데이터 없음');
+            // console.log('등록 마감일시 데이터 없음');
         }
         
         // 강사 정보 채우기
-        console.log('강사 데이터:', draftData.instructors);
+        // console.log('강사 데이터:', draftData.instructors);
         if (draftData.instructors && draftData.instructors.length > 0) {
             // 기존 강사 필드 초기화하지 않고 데이터만 채우기
             const instructorContainer = document.getElementById('instructors-container');
-            console.log('강사 컨테이너:', instructorContainer);
+            // console.log('강사 컨테이너:', instructorContainer);
             if (instructorContainer) {
                 // 임시저장된 강사 데이터로 필드 채우기
                 draftData.instructors.forEach((instructor, index) => {
@@ -2927,7 +2997,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (Array.isArray(imageData) && imageData.length > 0) {
                     // 전역 변수에 현재 이미지 데이터 저장
                     currentImageData = [...imageData];
-                    console.log('현재 이미지 데이터 초기화:', currentImageData);
+                    // console.log('현재 이미지 데이터 초기화:', currentImageData);
                     
                     const imagePreviewContainer = document.getElementById('lectureImagePreview');
                     if (imagePreviewContainer) {
@@ -2971,7 +3041,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             } catch (e) {
-                console.log('이미지 데이터 파싱 오류:', e);
+                // console.log('이미지 데이터 파싱 오류:', e);
             }
         }
         
@@ -2985,12 +3055,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 이미지 미리보기 화면 업데이트 함수
     function updateImagePreviewDisplay(imageData) {
-        console.log('=== updateImagePreviewDisplay 함수 시작 ===');
-        console.log('전달받은 imageData:', imageData);
-        console.log('전달받은 이미지 개수:', imageData ? imageData.length : 0);
+        // console.log('=== updateImagePreviewDisplay 함수 시작 ===');
+        // console.log('전달받은 imageData:', imageData);
+        // console.log('전달받은 이미지 개수:', imageData ? imageData.length : 0);
         
         const imagePreviewContainer = document.getElementById('lectureImagePreview');
-        console.log('imagePreviewContainer 찾기:', imagePreviewContainer ? 'SUCCESS' : 'FAILED');
+        // console.log('imagePreviewContainer 찾기:', imagePreviewContainer ? 'SUCCESS' : 'FAILED');
         if (!imagePreviewContainer) {
             console.error('lectureImagePreview 컨테이너를 찾을 수 없습니다');
             return;
@@ -2998,13 +3068,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 기존 이미지만 제거 (새로 업로드된 이미지는 유지)
         const existingImages = imagePreviewContainer.querySelectorAll('.existing-image');
-        console.log('제거할 기존 이미지 개수:', existingImages.length);
+        // console.log('제거할 기존 이미지 개수:', existingImages.length);
         existingImages.forEach(img => img.remove());
-        console.log('기존 이미지 제거 완료');
+        // console.log('기존 이미지 제거 완료');
         
         // 업데이트된 이미지 데이터로 다시 생성
         if (Array.isArray(imageData) && imageData.length > 0) {
-            console.log('새 이미지 생성 시작, 개수:', imageData.length);
+            // console.log('새 이미지 생성 시작, 개수:', imageData.length);
             imageData.forEach((image, index) => {
                 const imageItem = document.createElement('div');
                 imageItem.className = 'lecture-image-item existing-image';
@@ -3061,8 +3131,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .then(response => {
-            console.log('Response status:', response.status);
-            console.log('Response headers:', [...response.headers.entries()]);
+            // console.log('Response status:', response.status);
+            // console.log('Response headers:', [...response.headers.entries()]);
             
             // 응답이 JSON인지 확인
             const contentType = response.headers.get('content-type');
@@ -3150,17 +3220,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     // 카카오 좌표 API를 사용하여 위도, 경도 가져오기
                     getCoordinates(addr);
                     
-                    console.log('주소 검색 완료:', {
-                        address: addr,
-                        zonecode: data.zonecode
-                    });
+                    // console.log('주소 검색 완료:', {
+                    //     address: addr,
+                    //     zonecode: data.zonecode
+                    // });
                 },
                 onresize : function(size) {
                     // 팝업 크기 변경 시 실행할 코드
                 },
                 onclose : function(state) {
                     // 팝업 닫기 시 실행할 코드 (state는 닫기 방법)
-                    console.log('주소 검색 팝업 닫힘:', state);
+                    // console.log('주소 검색 팝업 닫힘:', state);
                 }
             }).open();
         }
@@ -3184,7 +3254,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // 새로운 이벤트 핸들러 정의 (클릭만 사용)
             addressField._clickHandler = function() {
-                console.log('주소 입력 박스 클릭됨');
+                // console.log('주소 입력 박스 클릭됨');
                 openAddressSearch();
             };
             
@@ -3193,19 +3263,115 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 좌표 정보는 나중에 구현 (현재는 주소만 저장)
+    // 네이버 Maps API를 통한 정확한 좌표 설정 (클라이언트 사이드)
     function getCoordinates(address) {
-        console.log('주소 저장됨:', address);
-        console.log('좌표 기능은 API 키 설정 후 활성화 예정');
+        // console.log('주소 저장됨:', address);
         
-        // 좌표 필드는 비워둠 (나중에 관리자가 별도로 입력하거나 API 키 설정 후 자동 처리)
-        document.getElementById('venue_latitude').value = '';
-        document.getElementById('venue_longitude').value = '';
+        if (!address) {
+            document.getElementById('venue_latitude').value = '';
+            document.getElementById('venue_longitude').value = '';
+            return;
+        }
+        
+        // 네이버 Maps API가 로드되어 있는지 확인
+        if (typeof naver !== 'undefined' && naver.maps && naver.maps.Service) {
+            // 네이버 Maps Geocoding 서비스 사용
+            naver.maps.Service.geocode({
+                query: address
+            }, function(status, response) {
+                if (status === naver.maps.Service.Status.OK) {
+                    const result = response.v2.addresses[0];
+                    if (result) {
+                        const lat = parseFloat(result.y);
+                        const lng = parseFloat(result.x);
+                        
+                        document.getElementById('venue_latitude').value = lat;
+                        document.getElementById('venue_longitude').value = lng;
+                        
+                        // 성공 시각적 피드백
+                        const addressField = document.getElementById('venue_address');
+                        addressField.style.backgroundColor = '#f0fdf4';
+                        addressField.style.borderColor = '#22c55e';
+                        
+                        console.log('정확한 좌표 설정 완료:', {
+                            address: address,
+                            latitude: lat,
+                            longitude: lng
+                        });
+                        return;
+                    }
+                }
+                
+                // API 실패 시 지역 기반 근사 좌표 사용
+                console.warn('네이버 Geocoding 실패, 지역 기반 좌표 사용');
+                setRegionBasedCoordinates(address);
+            });
+        } else {
+            // 네이버 Maps API가 로드되지 않은 경우 지역 기반 근사 좌표 사용
+            console.warn('네이버 Maps API 미로드, 지역 기반 좌표 사용');
+            setRegionBasedCoordinates(address);
+        }
         
         // 주소 입력 완료를 시각적으로 표시
         const addressField = document.getElementById('venue_address');
         addressField.style.backgroundColor = '#f0f9ff';
         addressField.style.borderColor = '#0ea5e9';
+    }
+    
+    // 지역 기반 근사 좌표 설정 함수
+    function setRegionBasedCoordinates(address) {
+        const regionCoordinates = {
+            // 서울 지역
+            '서울': { lat: 37.5665, lng: 126.9780 },
+            '강남': { lat: 37.4979, lng: 127.0276 },
+            '강북': { lat: 37.6390, lng: 127.0258 },
+            '강동': { lat: 37.5301, lng: 127.1238 },
+            '강서': { lat: 37.5509, lng: 126.8495 },
+            '홍대': { lat: 37.5563, lng: 126.9236 },
+            '가산': { lat: 37.4816, lng: 126.8819 },
+            '여의도': { lat: 37.5219, lng: 126.9245 },
+            '잠실': { lat: 37.5133, lng: 127.1028 },
+            
+            // 광역시/도청 소재지
+            '부산': { lat: 35.1796, lng: 129.0756 },
+            '대구': { lat: 35.8714, lng: 128.6014 },
+            '인천': { lat: 37.4563, lng: 126.7052 },
+            '광주': { lat: 35.1595, lng: 126.8526 },
+            '대전': { lat: 36.3504, lng: 127.3845 },
+            '울산': { lat: 35.5384, lng: 129.3114 },
+            '세종': { lat: 36.4800, lng: 127.2890 },
+            
+            // 주요 도시
+            '청주': { lat: 36.6424, lng: 127.4890 },
+            '서원구': { lat: 36.637, lng: 127.491 },  // 청주 서원구
+            '전주': { lat: 35.8242, lng: 127.1479 },
+            '창원': { lat: 35.2281, lng: 128.6811 },
+            '천안': { lat: 36.8151, lng: 127.1139 },
+            '안양': { lat: 37.3943, lng: 126.9568 },
+            '안산': { lat: 37.3236, lng: 126.8219 },
+            '용인': { lat: 37.2411, lng: 127.1776 },
+            '성남': { lat: 37.4449, lng: 127.1388 },
+            '수원': { lat: 37.2636, lng: 127.0286 }
+        };
+        
+        let foundCoords = null;
+        for (const [region, coords] of Object.entries(regionCoordinates)) {
+            if (address.includes(region)) {
+                foundCoords = coords;
+                break;
+            }
+        }
+        
+        if (foundCoords) {
+            document.getElementById('venue_latitude').value = foundCoords.lat;
+            document.getElementById('venue_longitude').value = foundCoords.lng;
+            // console.log('지역 기반 근사 좌표 사용:', foundCoords, 'for address:', address);
+        } else {
+            // 기본 서울 좌표 사용
+            document.getElementById('venue_latitude').value = '37.5665';
+            document.getElementById('venue_longitude').value = '126.9780';
+            // console.log('기본 서울 좌표 사용 for address:', address);
+        }
     }
     
     // 등록 마감일시 검증 설정
@@ -3273,12 +3439,15 @@ document.addEventListener('DOMContentLoaded', function() {
 document.head.appendChild(Object.assign(document.createElement('script'), {
     src: '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js',
     onload: function() {
-        console.log('카카오 주소 검색 API 로드 완료');
+        // console.log('카카오 주소 검색 API 로드 완료');
     },
     onerror: function() {
         console.error('카카오 주소 검색 API 로드 실패');
     }
 }));
 
-// 카카오 지도 JavaScript API는 더 이상 필요하지 않음 (REST API 사용)
+// 네이버 Maps API 로드 (Geocoding 기능을 위해)
 </script>
+
+<!-- 네이버 Maps API 스크립트 추가 -->
+<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?= NAVER_MAPS_CLIENT_ID ?>&submodules=geocoder"></script>

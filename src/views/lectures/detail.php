@@ -1404,25 +1404,39 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                                 $mapAddress = !empty($lecture['venue_address']) ? $lecture['venue_address'] : '';
                                 $naverClientId = defined('NAVER_MAPS_CLIENT_ID') ? NAVER_MAPS_CLIENT_ID : 'c5yj6m062z';
                                 
-                                // 장소별 기본 좌표 (주요 지역)
-                                $defaultCoords = [
-                                    'lat' => 37.5665,  // 서울시청 기본
-                                    'lng' => 126.9780
-                                ];
-                                
-                                // 반도 아이비밸리 정확 좌표 사용 (실제 측정 좌표)
-                                if (strpos($mapAddress, '반도 아이비밸리') !== false || strpos($mapAddress, '가산디지털1로 204') !== false) {
-                                    $defaultCoords['lat'] = 37.4835033620443;
-                                    $defaultCoords['lng'] = 126.881038151818;
-                                } elseif (strpos($mapAddress, '가산') !== false || strpos($mapAddress, '금천구') !== false) {
-                                    $defaultCoords['lat'] = 37.4816;
-                                    $defaultCoords['lng'] = 126.8819;
-                                } elseif (strpos($mapAddress, '강남') !== false) {
-                                    $defaultCoords['lat'] = 37.4979;
-                                    $defaultCoords['lng'] = 127.0276;
-                                } elseif (strpos($mapAddress, '홍대') !== false || strpos($mapAddress, '마포') !== false) {
-                                    $defaultCoords['lat'] = 37.5563;
-                                    $defaultCoords['lng'] = 126.9236;
+                                // 실제 저장된 좌표 사용 (우선순위 1)
+                                if (!empty($lecture['venue_latitude']) && !empty($lecture['venue_longitude'])) {
+                                    $defaultCoords = [
+                                        'lat' => floatval($lecture['venue_latitude']),
+                                        'lng' => floatval($lecture['venue_longitude'])
+                                    ];
+                                } else {
+                                    // 좌표가 없는 경우 지역 기반 근사 좌표 사용 (fallback)
+                                    $defaultCoords = [
+                                        'lat' => 37.5665,  // 서울시청 기본
+                                        'lng' => 126.9780
+                                    ];
+                                    
+                                    // 반도 아이비밸리 정확 좌표 사용 (실제 측정 좌표)
+                                    if (strpos($mapAddress, '반도 아이비밸리') !== false || strpos($mapAddress, '가산디지털1로 204') !== false) {
+                                        $defaultCoords['lat'] = 37.4835033620443;
+                                        $defaultCoords['lng'] = 126.881038151818;
+                                    } elseif (strpos($mapAddress, '가산') !== false || strpos($mapAddress, '금천구') !== false) {
+                                        $defaultCoords['lat'] = 37.4816;
+                                        $defaultCoords['lng'] = 126.8819;
+                                    } elseif (strpos($mapAddress, '강남') !== false) {
+                                        $defaultCoords['lat'] = 37.4979;
+                                        $defaultCoords['lng'] = 127.0276;
+                                    } elseif (strpos($mapAddress, '홍대') !== false || strpos($mapAddress, '마포') !== false) {
+                                        $defaultCoords['lat'] = 37.5563;
+                                        $defaultCoords['lng'] = 126.9236;
+                                    } elseif (strpos($mapAddress, '송파') !== false || strpos($mapAddress, '올림픽로') !== false) {
+                                        $defaultCoords['lat'] = 37.5126;
+                                        $defaultCoords['lng'] = 127.1026;
+                                    } elseif (strpos($mapAddress, '청주') !== false) {
+                                        $defaultCoords['lat'] = 36.6424;
+                                        $defaultCoords['lng'] = 127.4890;
+                                    }
                                 }
                                 ?>
                                 
@@ -1629,6 +1643,36 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <h2 class="section-title">🎁 혜택</h2>
                     <div class="description-content">
                         <?= nl2br(htmlspecialchars($lecture['benefits'])) ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <!-- 참가 조건 -->
+            <?php if (!empty($lecture['prerequisites'])): ?>
+                <div class="info-section">
+                    <h2 class="section-title">📋 참가 조건</h2>
+                    <div class="description-content">
+                        <?= nl2br(htmlspecialchars($lecture['prerequisites'])) ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <!-- 준비물 -->
+            <?php if (!empty($lecture['what_to_bring'])): ?>
+                <div class="info-section">
+                    <h2 class="section-title">🎒 준비물</h2>
+                    <div class="description-content">
+                        <?= nl2br(htmlspecialchars($lecture['what_to_bring'])) ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <!-- 기타 안내사항 -->
+            <?php if (!empty($lecture['additional_info'])): ?>
+                <div class="info-section">
+                    <h2 class="section-title">📝 기타 안내사항</h2>
+                    <div class="description-content">
+                        <?= nl2br(htmlspecialchars($lecture['additional_info'])) ?>
                     </div>
                 </div>
             <?php endif; ?>

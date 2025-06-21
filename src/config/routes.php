@@ -80,6 +80,8 @@ class Router {
             // 사용자 프로필 이미지 API
             'GET:/api/users/{id}/profile-image' => ['UserController', 'getProfileImage'],
             
+            // Geocoding API (제거됨 - 클라이언트 사이드로 변경)
+            
             // 강의 일정 라우트
             'GET:/lectures' => ['LectureController', 'index'],
             'GET:/lectures/{id}' => ['LectureController', 'show'],

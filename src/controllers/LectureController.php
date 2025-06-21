@@ -493,6 +493,14 @@ class LectureController {
             error_log("- isDraft: " . ($isDraft ? 'TRUE' : 'FALSE'));
             error_log("- status: " . (isset($_POST['status']) ? $_POST['status'] : 'MISSING'));
             
+            // 강사 이미지 정보가 POST 데이터에 반영되었는지 확인
+            if (!empty($instructorImages)) {
+                error_log("검증 전 강사 이미지 데이터 확인:");
+                foreach ($_POST['instructors'] as $idx => $inst) {
+                    error_log("강사 {$idx} 이미지: " . ($inst['image'] ?? 'NONE'));
+                }
+            }
+            
             $validationResult = $this->validateLectureData($_POST, $isDraft);
             
             error_log("=== 검증 결과 ===");
@@ -1371,14 +1379,14 @@ class LectureController {
                     start_date, end_date, start_time, end_time, timezone,
                     location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link,
                     max_participants, registration_fee, registration_deadline, category, content_type, 
-                    instructors_json, lecture_images, requirements, benefits, youtube_video,
+                    instructors_json, lecture_images, requirements, prerequisites, what_to_bring, additional_info, benefits, youtube_video,
                     status, created_at
                 ) VALUES (
                     :user_id, :title, :description, :instructor_name, :instructor_info,
                     :start_date, :end_date, :start_time, :end_time, :timezone,
                     :location_type, :venue_name, :venue_address, :venue_latitude, :venue_longitude, :online_link,
                     :max_participants, :registration_fee, :registration_deadline, :category, :content_type,
-                    :instructors_json, :lecture_images, :requirements, :benefits, :youtube_video,
+                    :instructors_json, :lecture_images, :requirements, :prerequisites, :what_to_bring, :additional_info, :benefits, :youtube_video,
                     :status, NOW()
                 )
             ";
@@ -1408,6 +1416,9 @@ class LectureController {
                 ':instructors_json' => $data['instructors_json'] ?? null,
                 ':lecture_images' => $data['lecture_images'] ?? null,
                 ':requirements' => $data['requirements'] ?? null,
+                ':prerequisites' => $data['prerequisites'] ?? null,
+                ':what_to_bring' => $data['what_to_bring'] ?? null,
+                ':additional_info' => $data['additional_info'] ?? null,
                 ':benefits' => $data['benefits'] ?? null,
                 ':youtube_video' => $data['youtube_video'] ?? null,
                 ':status' => $data['status'] ?? 'draft'
@@ -1477,6 +1488,9 @@ class LectureController {
                     instructors_json = :instructors_json,
                     lecture_images = :lecture_images,
                     requirements = :requirements,
+                    prerequisites = :prerequisites,
+                    what_to_bring = :what_to_bring,
+                    additional_info = :additional_info,
                     benefits = :benefits,
                     youtube_video = :youtube_video,
                     status = :status,
@@ -1508,6 +1522,9 @@ class LectureController {
                 ':instructors_json' => $data['instructors_json'] ?? null,
                 ':lecture_images' => $data['lecture_images'] ?? null,
                 ':requirements' => $data['requirements'] ?? null,
+                ':prerequisites' => $data['prerequisites'] ?? null,
+                ':what_to_bring' => $data['what_to_bring'] ?? null,
+                ':additional_info' => $data['additional_info'] ?? null,
                 ':benefits' => $data['benefits'] ?? null,
                 ':youtube_video' => $data['youtube_video'] ?? null,
                 ':status' => $data['status'] ?? 'draft',
@@ -2355,6 +2372,387 @@ class LectureController {
             error_log("새 강의 이미지 추가 (중복 제거 후): " . count($finalLectureImages) . "개");
         } else {
             file_put_contents($debugLog, "새 이미지 없음\n", FILE_APPEND);
+        }
+    }
+    
+    /**
+     * 강의 수정 폼 페이지
+     */
+    public function edit($id) {
+        try {
+            $lectureId = intval($id);
+            
+            // 로그인 확인
+            if (!isset($_SESSION['user_id'])) {
+                header('Location: /auth/login?redirect=' . urlencode("/lectures/{$lectureId}/edit"));
+                exit;
+            }
+            
+            $currentUserId = $_SESSION['user_id'];
+            
+            // 강의 정보 조회
+            $lecture = $this->getLectureById($lectureId, false);
+            
+            if (!$lecture) {
+                $_SESSION['error_message'] = '존재하지 않는 강의입니다.';
+                header('Location: /lectures');
+                exit;
+            }
+            
+            // 수정 권한 확인 (작성자 본인 또는 관리자)
+            if (!$this->canEditLecture($lecture)) {
+                $_SESSION['error_message'] = '이 강의를 수정할 권한이 없습니다.';
+                header('Location: /lectures/' . $lectureId);
+                exit;
+            }
+            
+            // 기업회원 권한 확인
+            require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+            $permission = CorporateMiddleware::checkLectureEventPermission();
+            
+            if (!$permission['hasPermission']) {
+                $_SESSION['error_message'] = $permission['message'];
+                header('Location: /corp/info');
+                exit;
+            }
+            
+            // 강의 이미지 조회
+            $lectureImages = $this->getLectureImages($lectureId);
+            $lecture['images'] = $lectureImages;
+            
+            // 강사 정보 처리 (instructors_json 필드에서 가져옴)
+            if (!empty($lecture['instructors_json'])) {
+                if (is_string($lecture['instructors_json'])) {
+                    $lecture['instructors'] = json_decode($lecture['instructors_json'], true) ?: [];
+                } else {
+                    $lecture['instructors'] = $lecture['instructors_json'];
+                }
+                
+                // 강사 이미지 URL 처리
+                foreach ($lecture['instructors'] as &$instructor) {
+                    if (!empty($instructor['image']) && !isset($instructor['image_url'])) {
+                        // image 필드를 image_url로 매핑
+                        $instructor['image_url'] = $instructor['image'];
+                    }
+                }
+                unset($instructor);
+            } else {
+                // 레거시 데이터 지원 (instructor_name, instructor_info 필드)
+                if (!empty($lecture['instructor_name'])) {
+                    $lecture['instructors'] = [[
+                        'name' => $lecture['instructor_name'],
+                        'info' => $lecture['instructor_info'] ?? '',
+                        'title' => '',
+                        'image_url' => !empty($lecture['instructor_image']) ? $lecture['instructor_image'] : ''
+                    ]];
+                } else {
+                    $lecture['instructors'] = [];
+                }
+            }
+            
+            // 카테고리 목록 조회
+            $categories = $this->getCategories();
+            
+            // CSRF 토큰 생성
+            if (!isset($_SESSION['csrf_token'])) {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
+            
+            $viewData = [
+                'lecture' => $lecture,
+                'categories' => $categories,
+                'isEdit' => true
+            ];
+            
+            $headerData = [
+                'title' => '강의 수정 - ' . htmlspecialchars($lecture['title']),
+                'description' => '강의 정보를 수정합니다',
+                'pageSection' => 'lectures'
+            ];
+            
+            $this->renderView('lectures/create', $viewData, $headerData);
+            
+        } catch (Exception $e) {
+            error_log("강의 수정 페이지 오류: " . $e->getMessage());
+            $_SESSION['error_message'] = '강의 수정 페이지를 불러오는 중 오류가 발생했습니다.';
+            header('Location: /lectures');
+            exit;
+        }
+    }
+    
+    /**
+     * 강의 정보 업데이트 처리
+     */
+    public function update($id) {
+        try {
+            $lectureId = intval($id);
+            
+            // 로그인 확인
+            if (!isset($_SESSION['user_id'])) {
+                ResponseHelper::error('로그인이 필요합니다.', 401);
+                return;
+            }
+            
+            $currentUserId = $_SESSION['user_id'];
+            
+            // 강의 정보 조회
+            $lecture = $this->getLectureById($lectureId, false);
+            
+            if (!$lecture) {
+                ResponseHelper::error('존재하지 않는 강의입니다.', 404);
+                return;
+            }
+            
+            // 수정 권한 확인
+            if (!$this->canEditLecture($lecture)) {
+                ResponseHelper::error('이 강의를 수정할 권한이 없습니다.', 403);
+                return;
+            }
+            
+            // 기업회원 권한 확인
+            require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
+            $permission = CorporateMiddleware::checkLectureEventPermission();
+            
+            if (!$permission['hasPermission']) {
+                ResponseHelper::error($permission['message'], 403);
+                return;
+            }
+            
+            // CSRF 토큰 검증
+            if (!$this->validateCsrfToken()) {
+                ResponseHelper::error('보안 토큰이 유효하지 않습니다.', 403);
+                return;
+            }
+            
+            // 입력 데이터 검증
+            $validationResult = $this->validateLectureData($_POST, $_FILES, false);
+            if (!$validationResult['isValid']) {
+                ResponseHelper::error($validationResult['message'], 400);
+                return;
+            }
+            
+            $this->db->beginTransaction();
+            
+            try {
+                // 파일 업로드 처리
+                $uploadedImages = $this->handleImageUploads($_FILES);
+                $instructorImages = $this->handleInstructorImageUploads($_FILES);
+                
+                // 기존 이미지와 새 이미지 병합
+                $existingImages = [];
+                if (isset($_POST['existing_lecture_images']) && !empty($_POST['existing_lecture_images'])) {
+                    $existingImages = json_decode($_POST['existing_lecture_images'], true) ?: [];
+                }
+                
+                $finalLectureImages = array_merge($existingImages, $uploadedImages);
+                
+                // 강의 정보 업데이트
+                $updateData = [
+                    'title' => trim($_POST['title']),
+                    'description' => trim($_POST['description']),
+                    'category' => $_POST['category'] ?? 'seminar',
+                    'difficulty_level' => $_POST['difficulty_level'] ?? 'all',
+                    'start_date' => $_POST['start_date'],
+                    'end_date' => $_POST['end_date'],
+                    'start_time' => $_POST['start_time'],
+                    'end_time' => $_POST['end_time'],
+                    'timezone' => $_POST['timezone'] ?? 'Asia/Seoul',
+                    'location_type' => $_POST['location_type'],
+                    'venue_name' => $_POST['venue_name'] ?? null,
+                    'venue_address' => $_POST['venue_address'] ?? null,
+                    'venue_latitude' => isset($_POST['venue_latitude']) && $_POST['venue_latitude'] !== '' ? floatval($_POST['venue_latitude']) : null,
+                    'venue_longitude' => isset($_POST['venue_longitude']) && $_POST['venue_longitude'] !== '' ? floatval($_POST['venue_longitude']) : null,
+                    'online_link' => $_POST['online_link'] ?? null,
+                    'max_participants' => isset($_POST['max_participants']) && $_POST['max_participants'] !== '' ? intval($_POST['max_participants']) : null,
+                    'registration_fee' => isset($_POST['participation_fee']) && $_POST['participation_fee'] !== '' ? intval($_POST['participation_fee']) : 0,
+                    'registration_deadline' => !empty($_POST['registration_deadline']) ? $_POST['registration_deadline'] . ':00' : null,
+                    'contact_info' => $_POST['contact_info'] ?? null,
+                    'prerequisites' => $_POST['prerequisites'] ?? null,
+                    'additional_notes' => $_POST['what_to_bring'] ?? null,
+                    'special_notes' => $_POST['additional_info'] ?? null,
+                    'benefits' => $_POST['benefits'] ?? null,
+                    'youtube_link' => $_POST['youtube_video'] ?? null,
+                    'instructors' => !empty($instructorImages) ? json_encode($instructorImages) : $lecture['instructors'],
+                    'lecture_images' => !empty($finalLectureImages) ? json_encode($finalLectureImages) : $lecture['lecture_images'],
+                    'status' => $_POST['status'] ?? 'published',
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+                
+                // 강의 업데이트 실행
+                $sql = "UPDATE lectures SET 
+                    title = ?, description = ?, category = ?, difficulty_level = ?,
+                    start_date = ?, end_date = ?, start_time = ?, end_time = ?, timezone = ?,
+                    location_type = ?, venue_name = ?, venue_address = ?, venue_latitude = ?, venue_longitude = ?,
+                    online_link = ?, max_participants = ?, registration_fee = ?, registration_deadline = ?,
+                    contact_info = ?, prerequisites = ?, additional_notes = ?, special_notes = ?, benefits = ?,
+                    youtube_link = ?, instructors = ?, lecture_images = ?, status = ?, updated_at = ?
+                    WHERE id = ? AND user_id = ?";
+                
+                $params = [
+                    $updateData['title'], $updateData['description'], $updateData['category'], $updateData['difficulty_level'],
+                    $updateData['start_date'], $updateData['end_date'], $updateData['start_time'], $updateData['end_time'], $updateData['timezone'],
+                    $updateData['location_type'], $updateData['venue_name'], $updateData['venue_address'], $updateData['venue_latitude'], $updateData['venue_longitude'],
+                    $updateData['online_link'], $updateData['max_participants'], $updateData['registration_fee'], $updateData['registration_deadline'],
+                    $updateData['contact_info'], $updateData['prerequisites'], $updateData['additional_notes'], $updateData['special_notes'], $updateData['benefits'],
+                    $updateData['youtube_link'], $updateData['instructors'], $updateData['lecture_images'], $updateData['status'], $updateData['updated_at'],
+                    $lectureId, $currentUserId
+                ];
+                
+                $result = $this->db->execute($sql, $params);
+                
+                if ($result) {
+                    $this->db->commit();
+                    
+                    // 성공 응답
+                    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                        ResponseHelper::success('강의가 성공적으로 수정되었습니다.', [
+                            'lecture_id' => $lectureId,
+                            'redirect_url' => "/lectures/{$lectureId}"
+                        ]);
+                    } else {
+                        $_SESSION['success_message'] = '강의가 성공적으로 수정되었습니다.';
+                        header("Location: /lectures/{$lectureId}");
+                        exit;
+                    }
+                } else {
+                    throw new Exception('강의 업데이트에 실패했습니다.');
+                }
+                
+            } catch (Exception $e) {
+                $this->db->rollback();
+                throw $e;
+            }
+            
+        } catch (Exception $e) {
+            error_log("강의 수정 처리 오류: " . $e->getMessage());
+            
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                ResponseHelper::error('강의 수정 중 오류가 발생했습니다: ' . $e->getMessage());
+            } else {
+                $_SESSION['error_message'] = '강의 수정 중 오류가 발생했습니다.';
+                header("Location: /lectures/{$lectureId}/edit");
+                exit;
+            }
+        }
+    }
+    
+    /**
+     * Geocoding API - 주소를 좌표로 변환
+     */
+    public function geocode() {
+        header('Content-Type: application/json; charset=utf-8');
+        
+        // GET 요청만 허용
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            return;
+        }
+        
+        // 주소 파라미터 확인
+        if (!isset($_GET['address']) || empty($_GET['address'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Address parameter is required']);
+            return;
+        }
+        
+        $address = trim($_GET['address']);
+        
+        // Naver Geocoding API 호출 (개발자센터 API)
+        $url = 'https://openapi.naver.com/v1/map/geocode?query=' . urlencode($address);
+        
+        $headers = [
+            'X-Naver-Client-Id: ' . NAVER_MAPS_CLIENT_ID,
+            'X-Naver-Client-Secret: ' . NAVER_MAPS_CLIENT_SECRET
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+        
+        if ($error) {
+            // 네트워크 오류 시 지역 기반 근사 좌표 반환
+            $this->returnFallbackCoordinates($address);
+            return;
+        }
+        
+        if ($httpCode !== 200) {
+            // API 오류 시 지역 기반 근사 좌표 반환
+            $this->returnFallbackCoordinates($address);
+            return;
+        }
+        
+        $data = json_decode($response, true);
+        
+        if (!$data) {
+            $this->returnFallbackCoordinates($address);
+            return;
+        }
+        
+        // 성공적인 응답인 경우 좌표 추출 (네이버 개발자센터 API 응답 구조)
+        if (isset($data['result']) && isset($data['result']['items']) && count($data['result']['items']) > 0) {
+            $location = $data['result']['items'][0];
+            echo json_encode([
+                'success' => true,
+                'latitude' => floatval($location['point']['y']),
+                'longitude' => floatval($location['point']['x']),
+                'address' => $location['address']
+            ]);
+        } else {
+            $this->returnFallbackCoordinates($address);
+        }
+    }
+    
+    /**
+     * 지역 기반 근사 좌표 반환
+     */
+    private function returnFallbackCoordinates($address) {
+        $regionCoordinates = [
+            '서울' => ['lat' => 37.5665, 'lng' => 126.9780],
+            '부산' => ['lat' => 35.1796, 'lng' => 129.0756],
+            '대구' => ['lat' => 35.8714, 'lng' => 128.6014],
+            '인천' => ['lat' => 37.4563, 'lng' => 126.7052],
+            '광주' => ['lat' => 35.1595, 'lng' => 126.8526],
+            '대전' => ['lat' => 36.3504, 'lng' => 127.3845],
+            '울산' => ['lat' => 35.5384, 'lng' => 129.3114],
+            '세종' => ['lat' => 36.4800, 'lng' => 127.2890],
+            '청주' => ['lat' => 36.6424, 'lng' => 127.4890],
+            '전주' => ['lat' => 35.8242, 'lng' => 127.1479],
+            '창원' => ['lat' => 35.2281, 'lng' => 128.6811]
+        ];
+        
+        $foundCoords = null;
+        foreach ($regionCoordinates as $region => $coords) {
+            if (mb_strpos($address, $region) !== false) {
+                $foundCoords = $coords;
+                break;
+            }
+        }
+        
+        if ($foundCoords) {
+            echo json_encode([
+                'success' => true,
+                'latitude' => $foundCoords['lat'],
+                'longitude' => $foundCoords['lng'],
+                'address' => $address,
+                'fallback' => true
+            ]);
+        } else {
+            echo json_encode([
+                'success' => true,
+                'latitude' => 37.5665,
+                'longitude' => 126.9780,
+                'address' => $address,
+                'fallback' => true
+            ]);
         }
     }
 }
