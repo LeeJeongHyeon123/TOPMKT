@@ -3466,21 +3466,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // 추가 강사가 있는 경우 폼 필드 추가
         if (instructors.length > 1) {
             for (let i = 1; i < instructors.length; i++) {
-                addInstructor();
+                addInstructorField();
             }
         }
         
-        // 각 강사 데이터로 폼 필드 채우기
-        instructors.forEach((instructor, index) => {
-            if (instructor.name) document.querySelector(`input[name="instructors[${index}][name]"]`).value = instructor.name;
-            if (instructor.title) document.querySelector(`input[name="instructors[${index}][title]"]`).value = instructor.title;
-            if (instructor.info) document.querySelector(`textarea[name="instructors[${index}][info]"]`).value = instructor.info;
-            
-            // 강사 이미지 로드
-            if (instructor.image_url) {
-                loadInstructorImage(index, instructor.image_url);
-            }
-        });
+        // 각 강사 데이터로 폼 필드 채우기 (약간의 지연을 주어 DOM이 준비될 때까지 기다림)
+        setTimeout(() => {
+            instructors.forEach((instructor, index) => {
+                const nameField = document.querySelector(`input[name="instructors[${index}][name]"]`);
+                const titleField = document.querySelector(`input[name="instructors[${index}][title]"]`);
+                const infoField = document.querySelector(`textarea[name="instructors[${index}][info]"]`);
+                
+                if (nameField && instructor.name) nameField.value = instructor.name;
+                if (titleField && instructor.title) titleField.value = instructor.title;
+                if (infoField && instructor.info) infoField.value = instructor.info;
+                
+                // 강사 이미지 로드
+                if (instructor.image_url) {
+                    loadInstructorImage(index, instructor.image_url);
+                }
+            });
+        }, 200);
     <?php endif; ?>
     
     // 강의 이미지 초기화
