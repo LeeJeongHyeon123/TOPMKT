@@ -3486,7 +3486,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // 강사 이미지 로드
                 if (instructor.image_url) {
-                    loadInstructorImage(index, instructor.image_url);
+                    if (typeof loadInstructorImage === 'function') {
+                        loadInstructorImage(index, instructor.image_url);
+                    } else {
+                        // 함수가 없는 경우 직접 이미지 로드
+                        loadInstructorImageDirect(index, instructor.image_url);
+                    }
                 }
             });
         }, 200);
@@ -3504,7 +3509,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 소요시간 계산
     setTimeout(() => {
-        calculateDuration();
+        if (typeof calculateDuration === 'function') {
+            calculateDuration();
+        } else {
+            console.warn('calculateDuration function not available yet');
+        }
     }, 500);
 });
 
@@ -3554,10 +3563,27 @@ function createAdditionalInstructorField(container, index) {
     container.appendChild(newInstructor);
 }
 
+// 강사 이미지 직접 로드 함수 (edit mode 전용)
+function loadInstructorImageDirect(index, imageUrl) {
+    const preview = document.getElementById(`instructor-preview-${index}`);
+    const img = document.getElementById(`instructor-img-${index}`);
+    
+    if (preview && img) {
+        img.src = imageUrl;
+        preview.style.display = 'block';
+        console.log(`Instructor ${index} image loaded:`, imageUrl);
+    } else {
+        console.warn(`Could not find preview elements for instructor ${index}`);
+    }
+}
+
 // 기존 이미지 표시 함수
 function displayExistingImages(images) {
-    const container = document.getElementById('image-preview-container');
-    if (!container) return;
+    const container = document.getElementById('lectureImagePreview');
+    if (!container) {
+        console.warn('Lecture image preview container not found');
+        return;
+    }
     
     images.forEach((image, index) => {
         const imageItem = document.createElement('div');
@@ -3627,7 +3653,7 @@ function formatFileSize(bytes) {
 
 // 이미지 정렬 활성화
 function enableImageSorting() {
-    const container = document.getElementById('image-preview-container');
+    const container = document.getElementById('lectureImagePreview');
     if (!container) return;
     
     // 기존 Sortable이 있다면 제거
