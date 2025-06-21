@@ -4,9 +4,9 @@
  * 오류를 방지하기 위해 단계별로 확인
  */
 
-// 오류 표시 설정
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// 오류 표시 설정 (프로덕션에서는 비활성화)
+ini_set('display_errors', 0);
+error_reporting(0);
 
 // 기본 세션 시작
 session_start();

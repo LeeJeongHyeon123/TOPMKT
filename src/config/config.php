@@ -7,7 +7,7 @@
 define('APP_NAME', '탑마케팅');
 define('APP_VERSION', '1.0.0');
 define('APP_URL', 'https://www.topmktx.com');
-define('APP_DEBUG', true);
+define('APP_DEBUG', false);
 
 // 에러 로깅 설정
 ini_set('log_errors', 1);

@@ -14,10 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/l
     file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "FILES 데이터 존재: " . (empty($_FILES) ? 'NO' : 'YES') . "\n", FILE_APPEND);
 }
 
-// 오류 표시
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// 오류 표시 (프로덕션에서는 비활성화)
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 
 try {
     // 상대 경로 설정
