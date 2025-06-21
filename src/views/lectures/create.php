@@ -3463,10 +3463,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const instructors = <?= json_encode($lecture['instructors'], JSON_UNESCAPED_UNICODE) ?>;
         console.log('Instructors data:', instructors);
         
-        // 추가 강사가 있는 경우 폼 필드 추가
+        // 추가 강사가 있는 경우 폼 필드 직접 생성
         if (instructors.length > 1) {
-            for (let i = 1; i < instructors.length; i++) {
-                addInstructorField();
+            const container = document.getElementById('instructors-container');
+            if (container) {
+                for (let i = 1; i < instructors.length; i++) {
+                    createAdditionalInstructorField(container, i);
+                }
             }
         }
         
@@ -3504,6 +3507,52 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateDuration();
     }, 500);
 });
+
+// 추가 강사 필드 생성 함수 (edit mode 전용)
+function createAdditionalInstructorField(container, index) {
+    const newInstructor = document.createElement('div');
+    newInstructor.className = 'instructor-item';
+    newInstructor.setAttribute('data-instructor-index', index);
+    
+    newInstructor.innerHTML = `
+        <div class="instructor-header">
+            <h4>강사 ${index + 1}</h4>
+            <button type="button" class="btn-remove-instructor" onclick="removeInstructorField(this.closest('.instructor-item'))">
+                <i class="fas fa-times"></i> 삭제
+            </button>
+        </div>
+        <div class="instructor-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="instructor_name_${index}">강사명 *</label>
+                    <input type="text" id="instructor_name_${index}" name="instructors[${index}][name]" required>
+                </div>
+                <div class="form-group">
+                    <label for="instructor_title_${index}">직책/소속</label>
+                    <input type="text" id="instructor_title_${index}" name="instructors[${index}][title]">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="instructor_info_${index}">강사 소개</label>
+                <textarea id="instructor_info_${index}" name="instructors[${index}][info]" rows="3" placeholder="강사의 경력, 전문분야 등을 입력해주세요"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="instructor_image_${index}">강사 이미지</label>
+                <div class="instructor-image-wrapper">
+                    <input type="file" id="instructor_image_${index}" name="instructors[${index}][image]" accept="image/*" onchange="handleInstructorImage(${index}, this)">
+                    <div class="instructor-image-preview" id="instructor-preview-${index}" style="display: none;">
+                        <img id="instructor-img-${index}" src="" alt="강사 이미지">
+                        <button type="button" class="btn-remove-image" onclick="removeInstructorImage(${index})">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(newInstructor);
+}
 
 // 기존 이미지 표시 함수
 function displayExistingImages(images) {
