@@ -3451,3 +3451,150 @@ document.head.appendChild(Object.assign(document.createElement('script'), {
 
 <!-- 네이버 Maps API 스크립트 추가 -->
 <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?php echo NAVER_MAPS_CLIENT_ID; ?>&submodules=geocoder"></script>
+
+<?php if ($isEditMode && !empty($lecture)): ?>
+<script>
+// 수정 모드 데이터 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Edit mode initialization started');
+    
+    // 강사 데이터 초기화
+    <?php if (!empty($lecture['instructors'])): ?>
+        const instructors = <?= json_encode($lecture['instructors'], JSON_UNESCAPED_UNICODE) ?>;
+        console.log('Instructors data:', instructors);
+        
+        // 추가 강사가 있는 경우 폼 필드 추가
+        if (instructors.length > 1) {
+            for (let i = 1; i < instructors.length; i++) {
+                addInstructor();
+            }
+        }
+        
+        // 각 강사 데이터로 폼 필드 채우기
+        instructors.forEach((instructor, index) => {
+            if (instructor.name) document.querySelector(`input[name="instructors[${index}][name]"]`).value = instructor.name;
+            if (instructor.title) document.querySelector(`input[name="instructors[${index}][title]"]`).value = instructor.title;
+            if (instructor.info) document.querySelector(`textarea[name="instructors[${index}][info]"]`).value = instructor.info;
+            
+            // 강사 이미지 로드
+            if (instructor.image_url) {
+                loadInstructorImage(index, instructor.image_url);
+            }
+        });
+    <?php endif; ?>
+    
+    // 강의 이미지 초기화
+    <?php if (!empty($lecture['images'])): ?>
+        const lectureImages = <?= json_encode($lecture['images'], JSON_UNESCAPED_UNICODE) ?>;
+        console.log('Lecture images data:', lectureImages);
+        currentImageData = lectureImages;
+        
+        // 기존 이미지 UI 표시
+        displayExistingImages(lectureImages);
+    <?php endif; ?>
+    
+    // 소요시간 계산
+    setTimeout(() => {
+        calculateDuration();
+    }, 500);
+});
+
+// 기존 이미지 표시 함수
+function displayExistingImages(images) {
+    const container = document.getElementById('image-preview-container');
+    if (!container) return;
+    
+    images.forEach((image, index) => {
+        const imageItem = document.createElement('div');
+        imageItem.className = 'image-item existing-image';
+        imageItem.setAttribute('data-image-id', image.file_name || index);
+        
+        imageItem.innerHTML = `
+            <div class="image-wrapper">
+                <img src="${image.file_path}" alt="${image.original_name}" class="preview-image">
+                <div class="image-overlay">
+                    <button type="button" class="btn-remove-image" onclick="removeExistingImage(${index})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                    </div>
+                </div>
+                <div class="image-info">
+                    <span class="image-name">${image.original_name}</span>
+                    <span class="image-size">${formatFileSize(image.file_size)}</span>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(imageItem);
+    });
+    
+    // 드래그 앤 드롭 활성화
+    enableImageSorting();
+}
+
+// 기존 이미지 삭제 함수
+function removeExistingImage(index) {
+    if (confirm('이 이미지를 삭제하시겠습니까?')) {
+        // currentImageData에서 제거
+        if (currentImageData && currentImageData[index]) {
+            currentImageData.splice(index, 1);
+        }
+        
+        // UI에서 제거
+        const imageItems = document.querySelectorAll('.existing-image');
+        if (imageItems[index]) {
+            imageItems[index].remove();
+        }
+        
+        // existing_lecture_images 필드 업데이트
+        updateExistingImagesField();
+    }
+}
+
+// existing_lecture_images 필드 업데이트
+function updateExistingImagesField() {
+    const field = document.querySelector('input[name="existing_lecture_images"]');
+    if (field && currentImageData) {
+        field.value = JSON.stringify(currentImageData);
+    }
+}
+
+// 파일 크기 포맷팅
+function formatFileSize(bytes) {
+    if (!bytes) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 이미지 정렬 활성화
+function enableImageSorting() {
+    const container = document.getElementById('image-preview-container');
+    if (!container) return;
+    
+    // 기존 Sortable이 있다면 제거
+    if (container.sortable) {
+        container.sortable.destroy();
+    }
+    
+    // 새로운 Sortable 인스턴스 생성
+    if (typeof Sortable !== 'undefined') {
+        container.sortable = Sortable.create(container, {
+            animation: 150,
+            handle: '.drag-handle',
+            onEnd: function(evt) {
+                // 순서 변경 후 currentImageData 업데이트
+                if (currentImageData) {
+                    const item = currentImageData.splice(evt.oldIndex, 1)[0];
+                    currentImageData.splice(evt.newIndex, 0, item);
+                    updateExistingImagesField();
+                }
+            }
+        });
+    }
+}
+</script>
+<?php endif; ?>
