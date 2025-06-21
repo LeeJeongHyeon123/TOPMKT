@@ -3450,4 +3450,4 @@ document.head.appendChild(Object.assign(document.createElement('script'), {
 </script>
 
 <!-- 네이버 Maps API 스크립트 추가 -->
-<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?= NAVER_MAPS_CLIENT_ID ?>&submodules=geocoder"></script>
+<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?php echo NAVER_MAPS_CLIENT_ID; ?>&submodules=geocoder"></script>
