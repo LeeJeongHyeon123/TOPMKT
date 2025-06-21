@@ -3484,14 +3484,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (titleField && instructor.title) titleField.value = instructor.title;
                 if (infoField && instructor.info) infoField.value = instructor.info;
                 
-                // 강사 이미지 로드
+                // 강사 이미지 로드 (충분한 지연 후 실행)
                 if (instructor.image_url) {
-                    if (typeof loadInstructorImage === 'function') {
-                        loadInstructorImage(index, instructor.image_url);
-                    } else {
-                        // 함수가 없는 경우 직접 이미지 로드
-                        loadInstructorImageDirect(index, instructor.image_url);
-                    }
+                    setTimeout(() => {
+                        if (typeof loadInstructorImage === 'function') {
+                            loadInstructorImage(index, instructor.image_url);
+                        } else {
+                            // 함수가 없는 경우 직접 이미지 로드
+                            loadInstructorImageDirect(index, instructor.image_url);
+                        }
+                    }, 300);
                 }
             });
         }, 200);
@@ -3507,14 +3509,21 @@ document.addEventListener('DOMContentLoaded', function() {
         displayExistingImages(lectureImages);
     <?php endif; ?>
     
-    // 소요시간 계산
+    // 소요시간 계산 (모든 스크립트 로드 후 실행)
     setTimeout(() => {
         if (typeof calculateDuration === 'function') {
             calculateDuration();
         } else {
-            console.warn('calculateDuration function not available yet');
+            // 함수가 아직 없으면 더 기다린 후 재시도
+            setTimeout(() => {
+                if (typeof calculateDuration === 'function') {
+                    calculateDuration();
+                } else {
+                    console.log('Duration calculation will be handled by form events');
+                }
+            }, 1000);
         }
-    }, 500);
+    }, 800);
 });
 
 // 추가 강사 필드 생성 함수 (edit mode 전용)
