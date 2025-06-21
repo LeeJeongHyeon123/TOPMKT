@@ -3534,37 +3534,47 @@ function createAdditionalInstructorField(container, index) {
     
     newInstructor.innerHTML = `
         <div class="instructor-header">
-            <h4>강사 ${index + 1}</h4>
-            <button type="button" class="btn-remove-instructor" onclick="removeInstructorField(this.closest('.instructor-item'))">
-                <i class="fas fa-times"></i> 삭제
+            <h3>강사 ${index + 1}</h3>
+            <button type="button" class="remove-instructor-btn" onclick="removeInstructorField(this.closest('.instructor-item'))">
+                <i class="fas fa-times"></i> 제거
             </button>
         </div>
-        <div class="instructor-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="instructor_name_${index}">강사명 *</label>
-                    <input type="text" id="instructor_name_${index}" name="instructors[${index}][name]" required>
+        <!-- 강사 이미지 업로드 -->
+        <div class="instructor-image-upload">
+            <label class="form-label">강사 프로필 이미지</label>
+            <div class="instructor-image-container" onclick="document.getElementById('instructor_image_${index}').click()">
+                <div class="instructor-image-placeholder">
+                    <i class="fas fa-user-circle"></i>
+                    <span>클릭하여 이미지 선택</span>
                 </div>
-                <div class="form-group">
-                    <label for="instructor_title_${index}">직책/소속</label>
-                    <input type="text" id="instructor_title_${index}" name="instructors[${index}][title]">
-                </div>
+                <button type="button" class="remove-instructor-image" onclick="removeInstructorImage(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            <input type="file" id="instructor_image_${index}" name="instructors[${index}][image]" 
+                   style="display: none" accept="image/*" onchange="handleInstructorImage(${index}, this)">
+            <div class="form-help">JPG, PNG, GIF, WebP 파일을 업로드하세요 (최대 2MB)</div>
+        </div>
+
+        <div class="form-grid">
             <div class="form-group">
-                <label for="instructor_info_${index}">강사 소개</label>
-                <textarea id="instructor_info_${index}" name="instructors[${index}][info]" rows="3" placeholder="강사의 경력, 전문분야 등을 입력해주세요"></textarea>
+                <label for="instructor_name_${index}" class="form-label required">강사명</label>
+                <input type="text" id="instructor_name_${index}" name="instructors[${index}][name]" class="form-input" 
+                       placeholder="예: 김마케팅" required>
+                <div class="form-error" id="instructor_name_${index}-error"></div>
             </div>
+            
             <div class="form-group">
-                <label for="instructor_image_${index}">강사 이미지</label>
-                <div class="instructor-image-wrapper">
-                    <input type="file" id="instructor_image_${index}" name="instructors[${index}][image]" accept="image/*" onchange="handleInstructorImage(${index}, this)">
-                    <div class="instructor-image-preview" id="instructor-preview-${index}" style="display: none;">
-                        <img id="instructor-img-${index}" src="" alt="강사 이미지">
-                        <button type="button" class="btn-remove-image" onclick="removeInstructorImage(${index})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
+                <label for="instructor_title_${index}" class="form-label">직책/전문분야</label>
+                <input type="text" id="instructor_title_${index}" name="instructors[${index}][title]" class="form-input" 
+                       placeholder="예: 디지털 마케팅 전문가">
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="instructor_info_${index}" class="form-label">강사 소개</label>
+                <textarea id="instructor_info_${index}" name="instructors[${index}][info]" class="form-textarea" 
+                          placeholder="강사의 경력, 전문분야, 주요 실적 등을 소개해주세요"></textarea>
+                <div class="form-help">강사의 전문성을 어필할 수 있는 내용을 작성해주세요</div>
             </div>
         </div>
     `;
@@ -3574,15 +3584,78 @@ function createAdditionalInstructorField(container, index) {
 
 // 강사 이미지 직접 로드 함수 (edit mode 전용)
 function loadInstructorImageDirect(index, imageUrl) {
-    const preview = document.getElementById(`instructor-preview-${index}`);
-    const img = document.getElementById(`instructor-img-${index}`);
+    console.log(`loadInstructorImageDirect 시작: index=${index}, imageUrl=${imageUrl}`);
     
-    if (preview && img) {
+    // 다양한 방식으로 컨테이너 찾기
+    let container = null;
+    
+    // 방법 1: 파일 입력을 통해 컨테이너 찾기
+    const fileInput = document.querySelector(`#instructor_image_${index}`);
+    if (fileInput) {
+        const uploadDiv = fileInput.closest('.instructor-image-upload');
+        container = uploadDiv ? uploadDiv.querySelector('.instructor-image-container') : null;
+        console.log(`방법 1로 찾은 컨테이너 (index ${index}):`, container);
+    }
+    
+    // 방법 2: 직접 컨테이너 찾기
+    if (!container) {
+        container = document.querySelector(`[data-instructor-index="${index}"] .instructor-image-container`);
+        console.log(`방법 2로 찾은 컨테이너 (index ${index}):`, container);
+    }
+    
+    // 방법 3: nth-child 선택자 사용
+    if (!container) {
+        const instructorItems = document.querySelectorAll('.instructor-item');
+        if (instructorItems[index]) {
+            container = instructorItems[index].querySelector('.instructor-image-container');
+            console.log(`방법 3로 찾은 컨테이너 (index ${index}):`, container);
+        }
+    }
+    
+    if (container) {
+        // 플레이스홀더 제거
+        const placeholder = container.querySelector('.instructor-image-placeholder');
+        if (placeholder) {
+            placeholder.style.display = 'none';
+        }
+        
+        // 기존 이미지 제거
+        const existingImg = container.querySelector('.instructor-image-preview, img');
+        if (existingImg) {
+            existingImg.remove();
+        }
+        
+        // 새 이미지 생성
+        const img = document.createElement('img');
+        img.className = 'instructor-image-preview';
         img.src = imageUrl;
-        preview.style.display = 'block';
-        console.log(`Instructor ${index} image loaded:`, imageUrl);
+        img.alt = `강사 ${index + 1} 이미지`;
+        img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 8px;';
+        
+        // 삭제 버튼 생성
+        let removeBtn = container.querySelector('.remove-instructor-image');
+        if (!removeBtn) {
+            removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-instructor-image';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.style.display = 'flex';
+            removeBtn.onclick = function() { removeInstructorImage(index); };
+            container.appendChild(removeBtn);
+        }
+        removeBtn.style.display = 'flex';
+        
+        // 이미지 추가
+        container.appendChild(img);
+        container.classList.add('has-image');
+        
+        console.log(`강사 ${index} 이미지 로딩 성공:`, imageUrl);
     } else {
-        console.warn(`Could not find preview elements for instructor ${index}`);
+        console.error(`강사 ${index}의 이미지 컨테이너를 찾을 수 없습니다`);
+        
+        // 디버깅: 현재 DOM 구조 출력
+        console.log('현재 강사 아이템들:', document.querySelectorAll('.instructor-item'));
+        console.log(`instructor_image_${index} 요소:`, document.querySelector(`#instructor_image_${index}`));
     }
 }
 
