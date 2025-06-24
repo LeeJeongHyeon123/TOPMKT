@@ -3018,9 +3018,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const regDeadlineEl = document.getElementById('registration_deadline');
             // console.log('등록 마감일시 엘리먼트:', regDeadlineEl);
             if (regDeadlineEl) {
-                // MySQL datetime을 datetime-local 형식으로 변환
-                const date = new Date(draftData.registration_deadline);
-                const localDateTime = date.toISOString().slice(0, 16);
+                // MySQL datetime을 datetime-local 형식으로 변환 (타임존 문제 방지)
+                // MySQL datetime은 이미 로컬 타임존이므로 직접 변환
+                let localDateTime = draftData.registration_deadline;
+                if (localDateTime.includes(' ')) {
+                    // "2025-06-25 11:48:00" -> "2025-06-25T11:48"
+                    localDateTime = localDateTime.slice(0, 16).replace(' ', 'T');
+                } else if (localDateTime.length > 16) {
+                    // "2025-06-25T11:48:00" -> "2025-06-25T11:48"
+                    localDateTime = localDateTime.slice(0, 16);
+                }
                 // console.log('변환된 날짜:', localDateTime);
                 regDeadlineEl.value = localDateTime;
             }

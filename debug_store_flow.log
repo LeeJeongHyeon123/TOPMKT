@@ -2523,3 +2523,389 @@ display_order 재설정 완료: [1,2,3,4,5]
 최종 이미지 2: file_name=1750739758_3_KakaoTalk_20250621_144804430_04.jpg, file_path=/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg
 최종 이미지 3: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
 최종 이미지 4: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+=== store() 메서드 시작 - 2025-06-24 13:49:26 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1175 chars
+existing_lecture_images 내용: [{"original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_path":"/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_size":944919,"upload_time":"2025-06-24 13:35:58","display_order":2},{"original_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_path":"/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_size":985272,"upload_time":"2025-06-24 13:35:58","display_order":3},{"original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_path":"/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_size":1384733,"upload_time":"2025-06-24 13:35:58","display_order":4},{"original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_path":"/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_size":1275245,"upload_time":"2025-06-24 13:35:58","display_order":5}]
+lecture_images FILES: {"name":["KakaoTalk_20250621_144804430.jpg"],"type":["image\/jpeg"],"tmp_name":["\/tmp\/phpmMtJQB"],"error":[0],"size":[1192808]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_path":"\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","file_size":1192808,"upload_time":"2025-06-24 13:49:26"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1264
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'original_name' => '1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'file_name' => '1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1750740567146_0',
+    'file_name' => 'temp_1750740567146_0',
+    'file_size' => 1192808,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 0,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_3_KakaoTalk_20250621_144804430_04.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+파일 크기 매칭 성공: 크기 1192808 -> 1750740566_0_KakaoTalk_20250621_144804430.jpg
+새 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 5, file_path: /assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_3_KakaoTalk_20250621_144804430_04.jpg","original_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":4},{"original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_path":"\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","file_size":1192808,"upload_time":"2025-06-24 13:49:26","display_order":5}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_3_KakaoTalk_20250621_144804430_04.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg
+최종 이미지 2: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 3: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 4: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
+=== store() 메서드 시작 - 2025-06-24 13:49:43 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1406 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg","original_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","is_existing":true,"display_order":2},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":4},{"original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_path":"/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg","file_size":1192808,"upload_time":"2025-06-24 13:49:26","display_order":5}]
+lecture_images FILES: {"name":["KakaoTalk_20250621_144804430.jpg"],"type":["image\/jpeg"],"tmp_name":["\/tmp\/phpLJ4CS4"],"error":[0],"size":[1192808]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750740583_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740583_0_KakaoTalk_20250621_144804430.jpg","file_path":"\/assets\/uploads\/lectures\/1750740583_0_KakaoTalk_20250621_144804430.jpg","file_size":1192808,"upload_time":"2025-06-24 13:49:43"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1392
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'original_name' => '1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'file_name' => '1750739758_3_KakaoTalk_20250621_144804430_04.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'original_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'file_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_3_KakaoTalk_20250621_144804430_04.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+기존 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_3_KakaoTalk_20250621_144804430_04.jpg","original_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","file_name":"1750739758_3_KakaoTalk_20250621_144804430_04.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_3_KakaoTalk_20250621_144804430_04.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_3_KakaoTalk_20250621_144804430_04.jpg
+최종 이미지 2: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 3: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 4: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
+=== store() 메서드 시작 - 2025-06-24 13:49:59 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1112 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":4},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":5}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1112
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'original_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'file_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+기존 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+display_order 재설정 완료: [1,2,3,4]
+순서 정렬된 최종 이미지: 4개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 2: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 3: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
+=== store() 메서드 시작 - 2025-06-24 13:50:12 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1112 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4}]
+lecture_images FILES: {"name":["KakaoTalk_20250621_144804430_03.jpg"],"type":["image\/jpeg"],"tmp_name":["\/tmp\/phphP22nY"],"error":[0],"size":[1275245]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_path":"\/assets\/uploads\/lectures\/1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_size":1275245,"upload_time":"2025-06-24 13:50:12"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1255
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'original_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'file_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1750740613697_0',
+    'file_name' => 'temp_1750740613697_0',
+    'file_size' => 1275245,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 0,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+기존 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+파일 크기 매칭 성공: 크기 1275245 -> 1750740612_0_KakaoTalk_20250621_144804430_03.jpg
+새 이미지 순서 적용: 1750740612_0_KakaoTalk_20250621_144804430_03.jpg (순서: 5, file_path: /assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4},{"original_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_path":"\/assets\/uploads\/lectures\/1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_size":1275245,"upload_time":"2025-06-24 13:50:12","display_order":5}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 2: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 3: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
+최종 이미지 4: file_name=1750740612_0_KakaoTalk_20250621_144804430_03.jpg, file_path=/assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg
+=== store() 메서드 시작 - 2025-06-24 13:50:35 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1406 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4},{"original_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_path":"/assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_size":1275245,"upload_time":"2025-06-24 13:50:12","display_order":5}]
+lecture_images FILES: {"name":["KakaoTalk_20250621_144804430_03.jpg"],"type":["image\/jpeg"],"tmp_name":["\/tmp\/phpWH9qvS"],"error":[0],"size":[1275245]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1750740635_0_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750740635_0_KakaoTalk_20250621_144804430_03.jpg","file_path":"\/assets\/uploads\/lectures\/1750740635_0_KakaoTalk_20250621_144804430_03.jpg","file_size":1275245,"upload_time":"2025-06-24 13:50:35"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1392
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'original_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'file_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750740612_0_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750740612_0_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+기존 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+기존 이미지 순서 적용: 1750740612_0_KakaoTalk_20250621_144804430_03.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740612_0_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750740612_0_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 2: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 3: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
+최종 이미지 4: file_name=1750740612_0_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740612_0_KakaoTalk_20250621_144804430_03.jpg
+=== store() 메서드 시작 - 2025-06-24 13:50:53 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1112 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1112
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'original_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'file_name' => '1750739758_0_KakaoTalk_20250621_144804430_01.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'original_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'file_name' => '1750739758_1_KakaoTalk_20250621_144804430_02.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'original_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'file_name' => '1750739758_2_KakaoTalk_20250621_144804430_03.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'original_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'file_name' => '1750740566_0_KakaoTalk_20250621_144804430.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+)
+기존 이미지 순서 적용: 1750739758_0_KakaoTalk_20250621_144804430_01.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg)
+기존 이미지 순서 적용: 1750739758_1_KakaoTalk_20250621_144804430_02.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg)
+기존 이미지 순서 적용: 1750739758_2_KakaoTalk_20250621_144804430_03.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg)
+기존 이미지 순서 적용: 1750740566_0_KakaoTalk_20250621_144804430.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg)
+display_order 재설정 완료: [1,2,3,4]
+순서 정렬된 최종 이미지: 4개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_0_KakaoTalk_20250621_144804430_01.jpg","original_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","file_name":"1750739758_0_KakaoTalk_20250621_144804430_01.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_1_KakaoTalk_20250621_144804430_02.jpg","original_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","file_name":"1750739758_1_KakaoTalk_20250621_144804430_02.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750739758_2_KakaoTalk_20250621_144804430_03.jpg","original_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","file_name":"1750739758_2_KakaoTalk_20250621_144804430_03.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1750740566_0_KakaoTalk_20250621_144804430.jpg","original_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","file_name":"1750740566_0_KakaoTalk_20250621_144804430.jpg","is_existing":true,"display_order":4}]
+최종 이미지 0: file_name=1750739758_0_KakaoTalk_20250621_144804430_01.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_0_KakaoTalk_20250621_144804430_01.jpg
+최종 이미지 1: file_name=1750739758_1_KakaoTalk_20250621_144804430_02.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_1_KakaoTalk_20250621_144804430_02.jpg
+최종 이미지 2: file_name=1750739758_2_KakaoTalk_20250621_144804430_03.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750739758_2_KakaoTalk_20250621_144804430_03.jpg
+최종 이미지 3: file_name=1750740566_0_KakaoTalk_20250621_144804430.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1750740566_0_KakaoTalk_20250621_144804430.jpg
