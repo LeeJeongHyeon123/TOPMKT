@@ -16,6 +16,9 @@ class AuthMiddleware {
             exit;
         }
         
+        // 인증된 사용자의 활동 시간 갱신
+        self::updateLastActivity();
+        
         return true;
     }
     
@@ -117,7 +120,14 @@ class AuthMiddleware {
      * @return bool 로그인 여부
      */
     public static function isLoggedIn() {
-        return isset($_SESSION['user_id']);
+        $isLoggedIn = isset($_SESSION['user_id']);
+        
+        // 로그인된 사용자의 활동 시간 갱신
+        if ($isLoggedIn) {
+            self::updateLastActivity();
+        }
+        
+        return $isLoggedIn;
     }
     
     /**
@@ -239,6 +249,41 @@ class AuthMiddleware {
     public static function isOwnerOrAdmin($ownerId) {
         $currentUserId = self::getCurrentUserId();
         return ($currentUserId && $currentUserId == $ownerId) || self::isAdmin();
+    }
+    
+    /**
+     * 세션 활동 시간 갱신
+     * Remember Token이 있는 사용자의 세션을 자동으로 연장
+     */
+    public static function updateLastActivity() {
+        // 로그인된 사용자만 처리
+        if (!isset($_SESSION['user_id'])) {
+            return;
+        }
+        
+        $currentTime = time();
+        $lastActivity = $_SESSION['last_activity'] ?? $currentTime;
+        
+        // 5분 이상 지난 경우에만 갱신 (너무 자주 갱신하지 않기 위해)
+        if (($currentTime - $lastActivity) >= 300) {
+            $_SESSION['last_activity'] = $currentTime;
+            
+            // Remember Token이 있는 사용자는 세션 쿠키 연장
+            if (isset($_COOKIE['remember_token'])) {
+                $params = session_get_cookie_params();
+                $extendedLifetime = 24 * 60 * 60; // 24시간
+                
+                setcookie(
+                    session_name(),
+                    session_id(),
+                    $currentTime + $extendedLifetime,
+                    $params['path'],
+                    $params['domain'],
+                    $params['secure'],
+                    $params['httponly']
+                );
+            }
+        }
     }
     
 } 

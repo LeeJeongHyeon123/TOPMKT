@@ -32,7 +32,15 @@ try {
 
     // 기본 세션 시작
     if (session_status() === PHP_SESSION_NONE) {
-        // PHP 버전에 따른 세션 설정
+        // 세션 설정을 먼저 적용
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_secure', 0); // HTTPS 환경에서만 1
+        ini_set('session.gc_maxlifetime', 2592000); // 30일
+        ini_set('session.cookie_lifetime', 0); // 브라우저 종료시
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_divisor', 1000);
+        
+        // PHP 버전에 따른 세션 시작
         if (version_compare(PHP_VERSION, '7.3.0', '>=')) {
             session_start([
                 'cookie_httponly' => true,
@@ -43,10 +51,6 @@ try {
             ]);
         } else {
             // PHP 7.3 미만에서는 cookie_samesite 지원 안함
-            ini_set('session.cookie_httponly', 1);
-            ini_set('session.cookie_secure', 0);
-            ini_set('session.gc_maxlifetime', 2592000);
-            ini_set('session.cookie_lifetime', 0);
             session_start();
         }
     }
@@ -95,6 +99,42 @@ try {
         } else {
             // 유효하지 않은 토큰 삭제
             setcookie('remember_token', '', time() - 3600, '/');
+        }
+    }
+    
+    // Remember Token 기반 자동 세션 연장 처리
+    if (isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
+        // 마지막 활동 시간 확인
+        $lastActivity = $_SESSION['last_activity'] ?? time();
+        $currentTime = time();
+        $timeSinceLastActivity = $currentTime - $lastActivity;
+        
+        // 30분 이내 활동이 있거나 세션이 새로 생성된 경우 세션 연장
+        if ($timeSinceLastActivity < 1800 || !isset($_SESSION['last_activity'])) {
+            // 세션 활동 시간 갱신
+            $_SESSION['last_activity'] = $currentTime;
+            
+            // 세션 쿠키를 24시간으로 연장
+            $params = session_get_cookie_params();
+            $extendedLifetime = 24 * 60 * 60; // 24시간
+            
+            setcookie(
+                session_name(),
+                session_id(),
+                $currentTime + $extendedLifetime,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
+            
+            // Remember Token이 있는 사용자의 세션은 더 오래 유지
+            ini_set('session.gc_maxlifetime', $extendedLifetime);
+            
+            // 디버깅용 로그 (필요시)
+            if (defined('APP_DEBUG') && APP_DEBUG) {
+                error_log("세션 자동 연장: 사용자 {$_SESSION['user_id']}, 연장 시간: {$extendedLifetime}초");
+            }
         }
     }
 

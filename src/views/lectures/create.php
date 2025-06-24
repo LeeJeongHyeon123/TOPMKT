@@ -703,6 +703,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     overflow: hidden;
     background: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    vertical-align: top;
 }
 
 .lecture-image-item:hover {
@@ -851,6 +853,32 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     font-weight: 600;
     color: #2563eb;
     margin-top: 5px;
+}
+
+/* 강의 이미지 프리뷰 컨테이너 */
+#lectureImagePreview {
+    min-height: 80px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    background: #f8fafc;
+    text-align: center;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+#lectureImagePreview:not(:empty) {
+    background: white;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    padding: 10px;
+}
+
+#lectureImagePreview.has-images {
+    background: white;
+    border: 1px solid #e2e8f0;
+    text-align: left;
+    padding: 10px;
 }
 </style>
 
@@ -1185,9 +1213,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
             </a>
             
             <div style="display: flex; gap: 15px;">
+                <?php if (!$isEditMode): ?>
                 <button type="submit" name="status" value="draft" class="btn btn-draft">
                     💾 임시저장
                 </button>
+                <?php endif; ?>
                 <button type="submit" name="status" value="published" class="btn btn-primary">
                     <?= $isEditMode ? '✏️ 수정완료' : '🚀 등록하기' ?>
                 </button>
@@ -1195,7 +1225,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
         </div>
         
         <div class="loading" id="loading">
-            ⏳ 강의를 등록하고 있습니다...
+            ⏳ <?= $isEditMode ? '강의를 수정하고 있습니다...' : '강의를 등록하고 있습니다...' ?>
         </div>
     </form>
 </div>
@@ -3667,33 +3697,57 @@ function displayExistingImages(images) {
         return;
     }
     
+    console.log('Displaying existing images:', images);
+    
     images.forEach((image, index) => {
         const imageItem = document.createElement('div');
-        imageItem.className = 'image-item existing-image';
+        imageItem.className = 'lecture-image-item existing-image';
+        imageItem.draggable = true;
         imageItem.setAttribute('data-image-id', image.file_name || index);
+        imageItem.setAttribute('data-image-index', index);
         
         imageItem.innerHTML = `
-            <div class="image-wrapper">
-                <img src="${image.file_path}" alt="${image.original_name}" class="preview-image">
-                <div class="image-overlay">
-                    <button type="button" class="btn-remove-image" onclick="removeExistingImage(${index})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <div class="drag-handle">
-                        <i class="fas fa-grip-vertical"></i>
-                    </div>
+            <div class="image-container">
+                <img src="${image.file_path}" alt="${image.original_name}" class="lecture-image-preview" 
+                     style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <div class="drag-handle">
+                    <i class="fas fa-grip-lines"></i>
                 </div>
-                <div class="image-info">
-                    <span class="image-name">${image.original_name}</span>
-                    <span class="image-size">${formatFileSize(image.file_size)}</span>
+                <div class="image-order">${index + 1}</div>
+                <button type="button" class="remove-lecture-image" onclick="removeExistingImage(${index})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="image-info">
+                <div style="font-size: 12px; color: #666; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                    ${image.original_name}
+                </div>
+                <div style="font-size: 10px; color: #999;">
+                    ${formatFileSize(image.file_size)} • 기존 이미지
                 </div>
             </div>
         `;
         
+        // 기존 이미지는 기본 드래그 이벤트 사용
+        
         container.appendChild(imageItem);
     });
     
-    // 드래그 앤 드롭 활성화
+    // 컨테이너에 has-images 클래스 추가
+    if (images.length > 0) {
+        container.classList.add('has-images');
+    }
+    
+    // 이미지 순서 번호 업데이트
+    updateImageOrderNumbers();
+    
+    // 업로드 플레이스홀더 상태 업데이트
+    updateImageUploadPlaceholder();
+    
+    // 정렬 가능한 컨테이너 상태 업데이트
+    updateSortableContainerState();
+    
+    // 이미지 정렬 활성화
     enableImageSorting();
 }
 
@@ -3710,6 +3764,18 @@ function removeExistingImage(index) {
         if (imageItems[index]) {
             imageItems[index].remove();
         }
+        
+        // 컨테이너 상태 업데이트
+        const container = document.getElementById('lectureImagePreview');
+        if (container) {
+            const remainingImages = container.querySelectorAll('.lecture-image-item');
+            if (remainingImages.length === 0) {
+                container.classList.remove('has-images');
+            }
+        }
+        
+        // 이미지 순서 번호 업데이트
+        updateImageOrderNumbers();
         
         // existing_lecture_images 필드 업데이트
         updateExistingImagesField();
@@ -3731,6 +3797,59 @@ function formatFileSize(bytes) {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 이미지 순서 번호 업데이트
+function updateImageOrderNumbers() {
+    const container = document.getElementById('lectureImagePreview');
+    if (!container) return;
+    
+    const imageItems = container.querySelectorAll('.lecture-image-item');
+    imageItems.forEach((item, index) => {
+        const orderElement = item.querySelector('.image-order');
+        if (orderElement) {
+            orderElement.textContent = index + 1;
+        }
+        item.setAttribute('data-image-index', index);
+    });
+}
+
+// 업로드 플레이스홀더 상태 업데이트
+function updateImageUploadPlaceholder() {
+    const container = document.getElementById('lectureImagePreview');
+    const uploadArea = document.getElementById('lectureImageUploadArea');
+    
+    if (container && uploadArea) {
+        const imageCount = container.querySelectorAll('.lecture-image-item').length;
+        const existingImageCount = Array.isArray(currentImageData) ? currentImageData.length : 0;
+        const totalImages = imageCount + existingImageCount;
+        
+        if (totalImages >= maxLectureImages) {
+            uploadArea.style.display = 'none';
+        } else {
+            uploadArea.style.display = 'block';
+        }
+    }
+}
+
+// 정렬 가능한 컨테이너 상태 업데이트
+function updateSortableContainerState() {
+    const container = document.getElementById('lectureImagePreview');
+    if (!container) return;
+    
+    const imageItems = container.querySelectorAll('.lecture-image-item');
+    if (imageItems.length > 1) {
+        container.classList.add('sortable-container');
+        // 드래그 핸들 표시
+        imageItems.forEach(item => {
+            const dragHandle = item.querySelector('.drag-handle');
+            if (dragHandle) {
+                dragHandle.style.display = 'block';
+            }
+        });
+    } else {
+        container.classList.remove('sortable-container');
+    }
 }
 
 // 이미지 정렬 활성화
@@ -3755,6 +3874,8 @@ function enableImageSorting() {
                     currentImageData.splice(evt.newIndex, 0, item);
                     updateExistingImagesField();
                 }
+                // 순서 번호 업데이트
+                updateImageOrderNumbers();
             }
         });
     }

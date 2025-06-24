@@ -924,6 +924,7 @@ class AuthController {
         $_SESSION['phone'] = $user['phone'];
         $_SESSION['user_role'] = $user['role'] ?? 'GENERAL';
         $_SESSION['profile_image'] = $user['profile_image'] ?? null;
+        $_SESSION['last_activity'] = time(); // 활동 시간 초기화
         
         // 로그인 상태 유지 설정
         if ($remember) {
@@ -966,8 +967,8 @@ class AuthController {
                 error_log('Remember token 저장 실패: ' . $e->getMessage());
             }
         } else {
-            // 로그인 상태 유지를 선택하지 않은 경우 기본 세션 수명 (30분)
-            ini_set('session.gc_maxlifetime', 1800);
+            // 로그인 상태 유지를 선택하지 않은 경우 기본 세션 수명 (4시간으로 연장)
+            ini_set('session.gc_maxlifetime', 14400); // 4시간
         }
         
         // 세션 ID 재생성 (세션 고정 공격 방지)

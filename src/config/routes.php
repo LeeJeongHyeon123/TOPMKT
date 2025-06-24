@@ -89,6 +89,7 @@ class Router {
             'POST:/lectures/store' => ['LectureController', 'store'],
             'GET:/lectures/{id}/edit' => ['LectureController', 'edit'],
             'POST:/lectures/{id}/update' => ['LectureController', 'update'],
+            'PUT:/lectures/{id}/update' => ['LectureController', 'update'],
             'POST:/lectures/{id}/delete' => ['LectureController', 'delete'],
             'POST:/lectures/{id}/register' => ['LectureController', 'register'],
             'POST:/lectures/update-images' => ['LectureController', 'updateImages'],

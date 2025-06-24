@@ -1240,11 +1240,15 @@ class LectureController {
         }
         
         // YouTube URL 검증
-        if (!empty($data['youtube_video'])) {
+        if (!empty($data['youtube_video']) && trim($data['youtube_video']) !== '') {
+            $url = trim($data['youtube_video']);
             $pattern = '/^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|embed\/|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/';
-            if (!preg_match($pattern, $data['youtube_video'])) {
+            if (!preg_match($pattern, $url)) {
                 $errors[] = '올바른 YouTube URL을 입력해주세요.';
             }
+        } else {
+            // 빈 값이거나 공백만 있는 경우 NULL로 설정
+            $data['youtube_video'] = null;
         }
         
         // 난이도는 전체 대상으로 고정
@@ -1916,10 +1920,32 @@ class LectureController {
      * CSRF 토큰 검증
      */
     private function validateCsrfToken() {
-        if (!isset($_SESSION['csrf_token']) || !isset($_POST['csrf_token'])) {
+        if (!isset($_SESSION['csrf_token'])) {
             return false;
         }
-        return hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+        
+        $requestCsrfToken = null;
+        
+        // POST 요청이나 method override를 사용하는 경우
+        if (isset($_POST['csrf_token'])) {
+            $requestCsrfToken = $_POST['csrf_token'];
+        }
+        // 실제 PUT/PATCH 요청인 경우 raw input에서 파싱
+        else if (in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'PATCH']) && empty($_POST)) {
+            $rawInput = file_get_contents('php://input');
+            if ($rawInput) {
+                parse_str($rawInput, $parsedData);
+                if (isset($parsedData['csrf_token'])) {
+                    $requestCsrfToken = $parsedData['csrf_token'];
+                }
+            }
+        }
+        
+        if (!$requestCsrfToken) {
+            return false;
+        }
+        
+        return hash_equals($_SESSION['csrf_token'], $requestCsrfToken);
     }
     
     /**
@@ -2485,6 +2511,17 @@ class LectureController {
      */
     public function update($id) {
         try {
+            // HTTP 메서드 검증 및 _method 매개변수 처리
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            if ($requestMethod === 'POST' && isset($_POST['_method'])) {
+                $requestMethod = strtoupper($_POST['_method']);
+            }
+            
+            if (!in_array($requestMethod, ['POST', 'PUT'])) {
+                ResponseHelper::error('허용되지 않은 HTTP 메서드입니다.', 405);
+                return;
+            }
+            
             $lectureId = intval($id);
             
             // 로그인 확인
@@ -2524,8 +2561,18 @@ class LectureController {
                 return;
             }
             
+            // PUT 요청에서 POST 데이터와 파일 데이터 처리
+            $postData = $_POST;
+            $fileData = $_FILES;
+            
+            // PUT 요청인 경우 multipart/form-data 파싱
+            if ($requestMethod === 'PUT' && empty($postData)) {
+                // 이미 FormData로 전송되고 있으므로 $_POST와 $_FILES 사용 가능
+                // PHP는 PUT 요청에서도 multipart/form-data를 자동으로 파싱함
+            }
+            
             // 입력 데이터 검증
-            $validationResult = $this->validateLectureData($_POST, $_FILES, false);
+            $validationResult = $this->validateLectureData($postData, $fileData, false);
             if (!$validationResult['isValid']) {
                 ResponseHelper::error($validationResult['message'], 400);
                 return;
@@ -2535,46 +2582,71 @@ class LectureController {
             
             try {
                 // 파일 업로드 처리
-                $uploadedImages = $this->handleImageUploads($_FILES);
-                $instructorImages = $this->handleInstructorImageUploads($_FILES);
+                $uploadedImages = $this->handleImageUploads($fileData);
+                $instructorImages = $this->handleInstructorImageUploads($fileData);
                 
                 // 기존 이미지와 새 이미지 병합
                 $existingImages = [];
-                if (isset($_POST['existing_lecture_images']) && !empty($_POST['existing_lecture_images'])) {
-                    $existingImages = json_decode($_POST['existing_lecture_images'], true) ?: [];
+                if (isset($postData['existing_lecture_images']) && !empty($postData['existing_lecture_images'])) {
+                    $existingImages = json_decode($postData['existing_lecture_images'], true) ?: [];
                 }
                 
                 $finalLectureImages = array_merge($existingImages, $uploadedImages);
                 
+                // 강사 정보 처리 (이미지 업로드 여부와 관계없이 폼 데이터 업데이트)
+                $finalInstructors = [];
+                if (isset($postData['instructors']) && is_array($postData['instructors'])) {
+                    foreach ($postData['instructors'] as $index => $instructorData) {
+                        $instructor = [
+                            'name' => $instructorData['name'] ?? '',
+                            'title' => $instructorData['title'] ?? '',
+                            'info' => $instructorData['info'] ?? ''
+                        ];
+                        
+                        // 새로 업로드된 이미지가 있으면 사용
+                        if (isset($instructorImages[$index])) {
+                            $instructor['image'] = $instructorImages[$index];
+                        } else {
+                            // 기존 강사 이미지 유지
+                            $existingInstructors = json_decode($lecture['instructors'], true) ?: [];
+                            if (isset($existingInstructors[$index]['image'])) {
+                                $instructor['image'] = $existingInstructors[$index]['image'];
+                            }
+                        }
+                        
+                        $finalInstructors[] = $instructor;
+                    }
+                }
+                
                 // 강의 정보 업데이트
                 $updateData = [
-                    'title' => trim($_POST['title']),
-                    'description' => trim($_POST['description']),
-                    'category' => $_POST['category'] ?? 'seminar',
-                    'difficulty_level' => $_POST['difficulty_level'] ?? 'all',
-                    'start_date' => $_POST['start_date'],
-                    'end_date' => $_POST['end_date'],
-                    'start_time' => $_POST['start_time'],
-                    'end_time' => $_POST['end_time'],
-                    'timezone' => $_POST['timezone'] ?? 'Asia/Seoul',
-                    'location_type' => $_POST['location_type'],
-                    'venue_name' => $_POST['venue_name'] ?? null,
-                    'venue_address' => $_POST['venue_address'] ?? null,
-                    'venue_latitude' => isset($_POST['venue_latitude']) && $_POST['venue_latitude'] !== '' ? floatval($_POST['venue_latitude']) : null,
-                    'venue_longitude' => isset($_POST['venue_longitude']) && $_POST['venue_longitude'] !== '' ? floatval($_POST['venue_longitude']) : null,
-                    'online_link' => $_POST['online_link'] ?? null,
-                    'max_participants' => isset($_POST['max_participants']) && $_POST['max_participants'] !== '' ? intval($_POST['max_participants']) : null,
-                    'registration_fee' => isset($_POST['participation_fee']) && $_POST['participation_fee'] !== '' ? intval($_POST['participation_fee']) : 0,
-                    'registration_deadline' => !empty($_POST['registration_deadline']) ? $_POST['registration_deadline'] . ':00' : null,
-                    'contact_info' => $_POST['contact_info'] ?? null,
-                    'prerequisites' => $_POST['prerequisites'] ?? null,
-                    'additional_notes' => $_POST['what_to_bring'] ?? null,
-                    'special_notes' => $_POST['additional_info'] ?? null,
-                    'benefits' => $_POST['benefits'] ?? null,
-                    'youtube_link' => $_POST['youtube_video'] ?? null,
-                    'instructors' => !empty($instructorImages) ? json_encode($instructorImages) : $lecture['instructors'],
+                    'title' => trim($postData['title']),
+                    'description' => trim($postData['description']),
+                    'category' => $postData['category'] ?? 'seminar',
+                    'difficulty_level' => $postData['difficulty_level'] ?? 'all',
+                    'start_date' => $postData['start_date'],
+                    'end_date' => $postData['end_date'],
+                    'start_time' => $postData['start_time'],
+                    'end_time' => $postData['end_time'],
+                    'timezone' => $postData['timezone'] ?? 'Asia/Seoul',
+                    'location_type' => $postData['location_type'],
+                    'venue_name' => $postData['venue_name'] ?? null,
+                    'venue_address' => $postData['venue_address'] ?? null,
+                    'venue_latitude' => isset($postData['venue_latitude']) && $postData['venue_latitude'] !== '' ? floatval($postData['venue_latitude']) : null,
+                    'venue_longitude' => isset($postData['venue_longitude']) && $postData['venue_longitude'] !== '' ? floatval($postData['venue_longitude']) : null,
+                    'online_link' => $postData['online_link'] ?? null,
+                    'max_participants' => isset($postData['max_participants']) && $postData['max_participants'] !== '' ? intval($postData['max_participants']) : null,
+                    'registration_fee' => isset($postData['registration_fee']) && $postData['registration_fee'] !== '' ? intval($postData['registration_fee']) : 0,
+                    'registration_deadline' => !empty($postData['registration_deadline']) ? $postData['registration_deadline'] . ':00' : null,
+                    'contact_info' => $postData['contact_info'] ?? null,
+                    'prerequisites' => $postData['prerequisites'] ?? null,
+                    'what_to_bring' => $postData['what_to_bring'] ?? null,
+                    'additional_info' => $postData['additional_info'] ?? null,
+                    'benefits' => $postData['benefits'] ?? null,
+                    'youtube_video' => $postData['youtube_video'] ?? null,
+                    'instructors_json' => !empty($finalInstructors) ? json_encode($finalInstructors) : $lecture['instructors_json'],
                     'lecture_images' => !empty($finalLectureImages) ? json_encode($finalLectureImages) : $lecture['lecture_images'],
-                    'status' => $_POST['status'] ?? 'published',
+                    'status' => $postData['status'] ?? 'published',
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
                 
@@ -2584,8 +2656,8 @@ class LectureController {
                     start_date = ?, end_date = ?, start_time = ?, end_time = ?, timezone = ?,
                     location_type = ?, venue_name = ?, venue_address = ?, venue_latitude = ?, venue_longitude = ?,
                     online_link = ?, max_participants = ?, registration_fee = ?, registration_deadline = ?,
-                    contact_info = ?, prerequisites = ?, additional_notes = ?, special_notes = ?, benefits = ?,
-                    youtube_link = ?, instructors = ?, lecture_images = ?, status = ?, updated_at = ?
+                    contact_info = ?, prerequisites = ?, what_to_bring = ?, additional_info = ?, benefits = ?,
+                    youtube_video = ?, instructors_json = ?, lecture_images = ?, status = ?, updated_at = ?
                     WHERE id = ? AND user_id = ?";
                 
                 $params = [
@@ -2593,8 +2665,8 @@ class LectureController {
                     $updateData['start_date'], $updateData['end_date'], $updateData['start_time'], $updateData['end_time'], $updateData['timezone'],
                     $updateData['location_type'], $updateData['venue_name'], $updateData['venue_address'], $updateData['venue_latitude'], $updateData['venue_longitude'],
                     $updateData['online_link'], $updateData['max_participants'], $updateData['registration_fee'], $updateData['registration_deadline'],
-                    $updateData['contact_info'], $updateData['prerequisites'], $updateData['additional_notes'], $updateData['special_notes'], $updateData['benefits'],
-                    $updateData['youtube_link'], $updateData['instructors'], $updateData['lecture_images'], $updateData['status'], $updateData['updated_at'],
+                    $updateData['contact_info'], $updateData['prerequisites'], $updateData['what_to_bring'], $updateData['additional_info'], $updateData['benefits'],
+                    $updateData['youtube_video'], $updateData['instructors_json'], $updateData['lecture_images'], $updateData['status'], $updateData['updated_at'],
                     $lectureId, $currentUserId
                 ];
                 

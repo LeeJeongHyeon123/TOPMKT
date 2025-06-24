@@ -521,3 +521,123 @@ instructors 파일 데이터 발견
 강사 0 이미지 처리 시작
 파일 정보: 고윤정.webp, tmp: /tmp/phpbKLBLa, error: 0
 강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750341960_file_68541948cf09f.webp
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 15:32:12
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":"KakaoTalk_20250621_144804430.jpg"},{"image":"KakaoTalk_20250621_144804430_01.jpg"}],"type":[{"image":"image\/jpeg"},{"image":"image\/jpeg"}],"tmp_name":[{"image":"\/tmp\/phpsdsNlS"},{"image":"\/tmp\/phpkimZnI"}],"error":[{"image":0},{"image":0}],"size":[{"image":1192808},{"image":944919}]},"lecture_images":{"name":["KakaoTalk_20250621_144804430.jpg","KakaoTalk_20250621_144804430_01.jpg","KakaoTalk_20250621_144804430_02.jpg","KakaoTalk_20250621_144804430_03.jpg","KakaoTalk_20250621_144804430_04.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpXOhpr9","\/tmp\/php1hb6gF","\/tmp\/phpe1895n","\/tmp\/phpCXZ5yY","\/tmp\/phpJqUUi0"],"error":[0,0,0,0,0],"size":[1192808,944919,1384733,1275245,985272]}}
+instructors 파일 데이터 발견
+강사 0 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430.jpg, tmp: /tmp/phpsdsNlS, error: 0
+강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750487532_KakaoTalk_20250621_144804430.jpg
+강사 1 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430_01.jpg, tmp: /tmp/phpkimZnI, error: 0
+강사 1 이미지 업로드 성공: /assets/uploads/instructors/instructor_1_1750487532_KakaoTalk_20250621_144804430_01.jpg
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 15:49:18
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 15:50:04
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 15:58:35
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":"KakaoTalk_20250621_144804430.jpg"},{"image":"KakaoTalk_20250621_144804430_01.jpg"}],"type":[{"image":"image\/jpeg"},{"image":"image\/jpeg"}],"tmp_name":[{"image":"\/tmp\/phph2AmbV"},{"image":"\/tmp\/phpGpL1FU"}],"error":[{"image":0},{"image":0}],"size":[{"image":1192808},{"image":944919}]},"lecture_images":{"name":["KakaoTalk_20250621_144804430.jpg","KakaoTalk_20250621_144804430_01.jpg","KakaoTalk_20250621_144804430_02.jpg","KakaoTalk_20250621_144804430_03.jpg","KakaoTalk_20250621_144804430_04.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpaBvjU8","\/tmp\/phplyNYWs","\/tmp\/php8I4RaM","\/tmp\/phpBbU7NR","\/tmp\/phpJ0oYnN"],"error":[0,0,0,0,0],"size":[1192808,944919,1384733,1275245,985272]}}
+instructors 파일 데이터 발견
+강사 0 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430.jpg, tmp: /tmp/phph2AmbV, error: 0
+강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750489115_KakaoTalk_20250621_144804430.jpg
+강사 1 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430_01.jpg, tmp: /tmp/phpGpL1FU, error: 0
+강사 1 이미지 업로드 성공: /assets/uploads/instructors/instructor_1_1750489115_KakaoTalk_20250621_144804430_01.jpg
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:02:35
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:21:10
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:21:26
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:46:15
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":"KakaoTalk_20250621_144804430.jpg"},{"image":"KakaoTalk_20250621_144804430_01.jpg"}],"type":[{"image":"image\/jpeg"},{"image":"image\/jpeg"}],"tmp_name":[{"image":"\/tmp\/phpgBMMEN"},{"image":"\/tmp\/php0fO2dA"}],"error":[{"image":0},{"image":0}],"size":[{"image":1192808},{"image":944919}]},"lecture_images":{"name":["KakaoTalk_20250621_144804430.jpg","KakaoTalk_20250621_144804430_01.jpg","KakaoTalk_20250621_144804430_02.jpg","KakaoTalk_20250621_144804430_03.jpg","KakaoTalk_20250621_144804430_04.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/php77j207","\/tmp\/phpsxUbzS","\/tmp\/phpcMoYsx","\/tmp\/phpWZoobn","\/tmp\/phppesOKI"],"error":[0,0,0,0,0],"size":[1192808,944919,1384733,1275245,985272]}}
+instructors 파일 데이터 발견
+강사 0 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430.jpg, tmp: /tmp/phpgBMMEN, error: 0
+강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750491975_KakaoTalk_20250621_144804430.jpg
+강사 1 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430_01.jpg, tmp: /tmp/php0fO2dA, error: 0
+강사 1 이미지 업로드 성공: /assets/uploads/instructors/instructor_1_1750491975_KakaoTalk_20250621_144804430_01.jpg
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:46:32
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:50:19
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":"KakaoTalk_20250621_144804430.jpg"},{"image":"KakaoTalk_20250621_144804430_01.jpg"}],"type":[{"image":"image\/jpeg"},{"image":"image\/jpeg"}],"tmp_name":[{"image":"\/tmp\/phpuA9srX"},{"image":"\/tmp\/phpaw3CHg"}],"error":[{"image":0},{"image":0}],"size":[{"image":1192808},{"image":944919}]},"lecture_images":{"name":["KakaoTalk_20250621_144804430.jpg","KakaoTalk_20250621_144804430_01.jpg","KakaoTalk_20250621_144804430_02.jpg","KakaoTalk_20250621_144804430_03.jpg","KakaoTalk_20250621_144804430_04.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpbjD79V","\/tmp\/phpP0SRQK","\/tmp\/phpozBdAB","\/tmp\/phpYTp9E0","\/tmp\/phpwDKGUe"],"error":[0,0,0,0,0],"size":[1192808,944919,1384733,1275245,985272]}}
+instructors 파일 데이터 발견
+강사 0 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430.jpg, tmp: /tmp/phpuA9srX, error: 0
+강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750492219_KakaoTalk_20250621_144804430.jpg
+강사 1 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430_01.jpg, tmp: /tmp/phpaw3CHg, error: 0
+강사 1 이미지 업로드 성공: /assets/uploads/instructors/instructor_1_1750492219_KakaoTalk_20250621_144804430_01.jpg
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:50:32
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 16:54:57
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":"KakaoTalk_20250621_144804430.jpg"},{"image":"KakaoTalk_20250621_144804430_01.jpg"}],"type":[{"image":"image\/jpeg"},{"image":"image\/jpeg"}],"tmp_name":[{"image":"\/tmp\/phpoZQMx1"},{"image":"\/tmp\/phpDw7To5"}],"error":[{"image":0},{"image":0}],"size":[{"image":1192808},{"image":944919}]},"lecture_images":{"name":["KakaoTalk_20250621_144804430.jpg","KakaoTalk_20250621_144804430_01.jpg","KakaoTalk_20250621_144804430_02.jpg","KakaoTalk_20250621_144804430_03.jpg","KakaoTalk_20250621_144804430_04.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpHLrJTM","\/tmp\/phpvWPLXR","\/tmp\/phptLC0Q2","\/tmp\/phpfAoK4Q","\/tmp\/php37eoXC"],"error":[0,0,0,0,0],"size":[1192808,944919,1384733,1275245,985272]}}
+instructors 파일 데이터 발견
+강사 0 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430.jpg, tmp: /tmp/phpoZQMx1, error: 0
+강사 0 이미지 업로드 성공: /assets/uploads/instructors/instructor_0_1750492497_KakaoTalk_20250621_144804430.jpg
+강사 1 이미지 처리 시작
+파일 정보: KakaoTalk_20250621_144804430_01.jpg, tmp: /tmp/phpDw7To5, error: 0
+강사 1 이미지 업로드 성공: /assets/uploads/instructors/instructor_1_1750492497_KakaoTalk_20250621_144804430_01.jpg
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 17:35:19
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 17:48:07
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견
+=== handleInstructorImageUploads 함수 호출됨 ===
+시간: 2025-06-21 17:57:27
+FILES 키들: ["instructors","lecture_images"]
+=== FILES 구조 상세 분석 ===
+전체 FILES: {"instructors":{"name":[{"image":""},{"image":""}],"type":[{"image":""},{"image":""}],"tmp_name":[{"image":""},{"image":""}],"error":[{"image":4},{"image":4}],"size":[{"image":0},{"image":0}]},"lecture_images":{"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}}
+instructors 파일 데이터 발견

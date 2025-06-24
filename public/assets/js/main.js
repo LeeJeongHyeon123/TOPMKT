@@ -77,9 +77,8 @@ function setupFormMethodOverride() {
                     
                     fetch(url, {
                         method: method,
-                        body: new URLSearchParams(formData),
+                        body: formData,
                         headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })

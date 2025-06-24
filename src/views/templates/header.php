@@ -876,11 +876,8 @@
         const userMenu = document.querySelector('.user-menu');
         
         if (userMenu) {
-            console.log('사용자 메뉴 이벤트 리스너 설정 중...');
-            
             // 클릭으로 드롭다운 토글
             userMenu.addEventListener('click', function(e) {
-                console.log('클릭: 드롭다운 토글');
                 e.preventDefault();
                 e.stopPropagation();
                 
@@ -891,7 +888,6 @@
                     // 드롭다운이 이미 있으면 제거
                     existingDropdown.remove();
                     this.classList.remove('active');
-                    console.log('클릭으로 드롭다운 제거됨');
                 } else {
                     // 새 드롭다운 생성
                     this.classList.add('active');
@@ -994,11 +990,8 @@
                     });
                     
                     document.body.appendChild(floatingDropdown);
-                    console.log('클릭으로 독립 드롭다운 생성됨');
-                    console.log('드롭다운 위치:', { top: rect.bottom + 10, right: window.innerWidth - rect.right });
                 }
                 
-                console.log('클릭 후 active 상태:', this.classList.contains('active'));
             });
             
             // 호버 이벤트 제거 - 클릭만 사용
@@ -1007,10 +1000,8 @@
             document.addEventListener('click', function(e) {
                 const existingDropdown = document.getElementById('floating-user-dropdown');
                 if (existingDropdown && !userMenu.contains(e.target) && !existingDropdown.contains(e.target)) {
-                    console.log('외부 클릭: 드롭다운 닫기');
                     existingDropdown.remove();
                     userMenu.classList.remove('active');
-                    console.log('외부 클릭으로 독립 드롭다운 제거됨');
                 }
             });
             
@@ -1019,15 +1010,12 @@
                 if (e.key === 'Escape') {
                     const existingDropdown = document.getElementById('floating-user-dropdown');
                     if (existingDropdown) {
-                        console.log('ESC 키: 드롭다운 닫기');
                         existingDropdown.remove();
                         userMenu.classList.remove('active');
-                        console.log('ESC 키로 독립 드롭다운 제거됨');
                     }
                 }
             });
         } else {
-            console.log('사용자 메뉴를 찾을 수 없습니다');
         }
         
         // 로그아웃 확인
