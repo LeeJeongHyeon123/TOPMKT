@@ -1273,6 +1273,58 @@ function removeExistingImage(imageIndex, imageElement) {
     }
 }
 
+// 서버에 업데이트된 이미지 목록 전송 함수 (전역 함수로 정의)
+function updateImageListOnServer(updatedImageData) {
+    const formData = new FormData();
+    formData.append('action', 'update_images');
+    formData.append('lecture_images', JSON.stringify(updatedImageData));
+    formData.append('csrf_token', <?php echo json_encode($_SESSION['csrf_token']); ?>);
+    
+    fetch(window.location.origin + '/lectures/update-images', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        // console.log('Response status:', response.status);
+        // console.log('Response headers:', [...response.headers.entries()]);
+        
+        // 응답이 JSON인지 확인
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            // HTML 응답인 경우 내용 확인을 위해 텍스트로 읽기
+            return response.text().then(text => {
+                console.error('Non-JSON response:', text.substring(0, 500));
+                throw new Error('서버에서 올바르지 않은 응답을 받았습니다. 로그인 상태나 권한을 확인해주세요.');
+            });
+        }
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showAlert('이미지가 삭제되었습니다.', 'success');
+        } else {
+            showAlert(data.message || '이미지 삭제 중 오류가 발생했습니다.', 'error');
+            console.error('서버 오류:', data);
+        }
+    })
+    .catch(error => {
+        console.error('이미지 업데이트 오류:', error);
+        if (error.message.includes('JSON')) {
+            showAlert('서버 응답 오류입니다. 페이지를 새로고침하고 다시 시도해주세요.', 'error');
+        } else {
+            showAlert(error.message || '이미지 업데이트 중 오류가 발생했습니다.', 'error');
+        }
+    });
+}
+
 // 이미지 인덱스 업데이트 함수 (전역 함수로 먼저 정의)
 function updateImageIndexes() {
     const existingImages = document.querySelectorAll('.existing-image');
@@ -3167,57 +3219,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 이미지 인덱스 업데이트 함수
     
 
-    // 서버에 업데이트된 이미지 목록 전송 함수
-    function updateImageListOnServer(updatedImageData) {
-        const formData = new FormData();
-        formData.append('action', 'update_images');
-        formData.append('lecture_images', JSON.stringify(updatedImageData));
-        formData.append('csrf_token', <?php echo json_encode($_SESSION['csrf_token']); ?>);
-        
-        fetch(window.location.origin + '/lectures/update-images', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => {
-            // console.log('Response status:', response.status);
-            // console.log('Response headers:', [...response.headers.entries()]);
-            
-            // 응답이 JSON인지 확인
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                // HTML 응답인 경우 내용 확인을 위해 텍스트로 읽기
-                return response.text().then(text => {
-                    console.error('Non-JSON response:', text.substring(0, 500));
-                    throw new Error('서버에서 올바르지 않은 응답을 받았습니다. 로그인 상태나 권한을 확인해주세요.');
-                });
-            }
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                showAlert('이미지가 삭제되었습니다.', 'success');
-            } else {
-                showAlert(data.message || '이미지 삭제 중 오류가 발생했습니다.', 'error');
-                console.error('서버 오류:', data);
-            }
-        })
-        .catch(error => {
-            console.error('이미지 업데이트 오류:', error);
-            if (error.message.includes('JSON')) {
-                showAlert('서버 응답 오류입니다. 페이지를 새로고침하고 다시 시도해주세요.', 'error');
-            } else {
-                showAlert(error.message || '이미지 업데이트 중 오류가 발생했습니다.', 'error');
-            }
-        });
-    }
+    // updateImageListOnServer 함수는 전역 스코프에서 이미 정의됨
     
     
     
