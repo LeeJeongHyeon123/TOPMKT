@@ -3051,19 +3051,26 @@ document.addEventListener('DOMContentLoaded', function() {
                             const imageItem = document.createElement('div');
                             imageItem.className = 'lecture-image-item existing-image';
                             imageItem.setAttribute('data-image-index', index);
+                            
+                            // temp_ 파일인지 확인하여 적절한 이미지 소스 설정
+                            const isTemp = image.file_path && image.file_path.includes('temp_');
+                            const imageSrc = isTemp ? 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjdGQUZDIi8+CjxwYXRoIGQ9Ik0xMDAgNzBDOTIuMjY4NiA3MCA4NiA3Ni4yNjg2IDg2IDg0Qzg2IDkxLjczMTQgOTIuMjY4NiA5OCAxMDAgOThDMTA3LjczMSA5OCAxMTQgOTEuNzMxNCAxMTQgODRDMTE0IDc2LjI2ODYgMTA3LjczMSA3MCAxMDAgNzBaIiBmaWxsPSIjQkVCRUJFIi8+CjxwYXRoIGQ9Ik0xNzAgMTQwSDMwVjE1MEg0MFYxNjBIMTYwVjE1MEgxNzBWMTQwWiIgZmlsbD0iI0JFQkVCRSIvPgo8dGV4dCB4PSIxMDAiIHk9IjEyMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzE4MDk2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Apt2DlKzshI08L3RleHQ+Cjwvc3ZnPgo=' : image.file_path;
+                            
                             imageItem.innerHTML = `
                                 <div class="image-container">
-                                    <img src="${image.file_path}" alt="${image.original_name || '강의 이미지'}">
+                                    <img src="${imageSrc}" alt="${image.original_name || '강의 이미지'}" 
+                                         onerror="this.src='/assets/images/default-avatar.png';">
                                     <button type="button" class="remove-existing-image">
                                         ×
                                     </button>
+                                    ${isTemp ? '<div class="temp-badge">임시</div>' : ''}
                                 </div>
                                 <div class="image-info">
                                     <div style="font-size: 12px; color: #666; margin-bottom: 2px;">
                                         ${image.original_name || '이미지'}
                                     </div>
                                     <div style="font-size: 11px; color: #999;">
-                                        기존 업로드된 이미지
+                                        ${isTemp ? '임시 파일' : '기존 업로드된 이미지'}
                                     </div>
                                 </div>
                             `;
