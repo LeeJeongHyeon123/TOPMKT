@@ -816,6 +816,20 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color: #718096;
 }
 
+/* 임시 파일 배지 스타일 */
+.temp-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #fed7d7;
+    color: #c53030;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    z-index: 10;
+}
+
 /* 드래그 중 상태 표시 */
 .sortable-container.drag-active {
     background: rgba(102, 126, 234, 0.05);
@@ -3706,10 +3720,15 @@ function displayExistingImages(images) {
         imageItem.setAttribute('data-image-id', image.file_name || index);
         imageItem.setAttribute('data-image-index', index);
         
+        // temp_ 파일인지 확인하여 적절한 이미지 소스 설정
+        const isTemp = image.file_path && image.file_path.includes('temp_');
+        const imageSrc = isTemp ? 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjdGQUZDIi8+CjxwYXRoIGQ9Ik0xMDAgNzBDOTIuMjY4NiA3MCA4NiA3Ni4yNjg2IDg2IDg0Qzg2IDkxLjczMTQgOTIuMjY4NiA5OCAxMDAgOThDMTA3LjczMSA5OCAxMTQgOTEuNzMxNCAxMTQgODRDMTE0IDc2LjI2ODYgMTA3LjczMSA3MCAxMDAgNzBaIiBmaWxsPSIjQkVCRUJFIi8+CjxwYXRoIGQ9Ik0xNzAgMTQwSDMwVjE1MEg0MFYxNjBIMTYwVjE1MEgxNzBWMTQwWiIgZmlsbD0iI0JFQkVCRSIvPgo8dGV4dCB4PSIxMDAiIHk9IjEyMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNzE4MDk2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7Apt2DlKzshI08L3RleHQ+Cjwvc3ZnPgo=' : image.file_path;
+        
         imageItem.innerHTML = `
             <div class="image-container">
-                <img src="${image.file_path}" alt="${image.original_name}" class="lecture-image-preview" 
-                     style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                <img src="${imageSrc}" alt="${image.original_name}" class="lecture-image-preview" 
+                     style="width: 100%; height: 100%; object-fit: cover; display: block;" 
+                     onerror="this.src='/assets/images/default-avatar.png';">
                 <div class="drag-handle">
                     <i class="fas fa-grip-lines"></i>
                 </div>
@@ -3717,13 +3736,14 @@ function displayExistingImages(images) {
                 <button type="button" class="remove-lecture-image" onclick="removeExistingImage(${index})">
                     <i class="fas fa-times"></i>
                 </button>
+                ${isTemp ? '<div class="temp-badge">임시</div>' : ''}
             </div>
             <div class="image-info">
                 <div style="font-size: 12px; color: #666; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     ${image.original_name}
                 </div>
                 <div style="font-size: 10px; color: #999;">
-                    ${formatFileSize(image.file_size)} • 기존 이미지
+                    ${formatFileSize(image.file_size)} • ${isTemp ? '임시 파일' : '기존 이미지'}
                 </div>
             </div>
         `;

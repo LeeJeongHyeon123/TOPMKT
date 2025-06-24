@@ -616,3 +616,12 @@ isDraft: false
 user_id 확인: data[user_id]=NULL, session[user_id]=4
 강사 0 최종 데이터: {"name":"\uc218\uc815\ud14c\uc2a4\ud2b8","info":"\uc218\uc815\ud14c\uc2a4\ud2b8","title":"\uc218\uc815\ud14c\uc2a4\ud2b8"}
 강사 1 최종 데이터: {"name":"\uc218\uc815\ud14c\uc2a4\ud2b8","info":"\uc218\uc815\ud14c\uc2a4\ud2b8","title":"\uc218\uc815\ud14c\uc2a4\ud2b8"}
+=== 강사 데이터 검증 시작 (2025-06-24 13:35:58) ===
+isDraft: true
+전달받은 강사 데이터: [{"name":"ASasaASDASDASDSAD","title":"ASasaASDASDASDSAD","info":"ASasaASDASDASDSAD","image":"\/assets\/uploads\/instructors\/instructor_0_1750739758_KakaoTalk_20250621_144804430.jpg"},{"name":"ASasaASDASDASDSAD","title":"ASasaASDASDASDSAD","info":"ASasaASDASDASDSAD","image":"\/assets\/uploads\/instructors\/instructor_1_1750739758_KakaoTalk_20250621_144804430_01.jpg"}]
+user_id 확인: data[user_id]=NULL, session[user_id]=4
+기존 데이터 조회 SQL: SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1, user_id: 4
+기존 데이터 조회 결과: null
+기존 강사 데이터 없음
+강사 0 최종 데이터: {"name":"ASasaASDASDASDSAD","info":"ASasaASDASDASDSAD","title":"ASasaASDASDASDSAD","image":"\/assets\/uploads\/instructors\/instructor_0_1750739758_KakaoTalk_20250621_144804430.jpg"}
+강사 1 최종 데이터: {"name":"ASasaASDASDASDSAD","info":"ASasaASDASDASDSAD","title":"ASasaASDASDASDSAD","image":"\/assets\/uploads\/instructors\/instructor_1_1750739758_KakaoTalk_20250621_144804430_01.jpg"}
