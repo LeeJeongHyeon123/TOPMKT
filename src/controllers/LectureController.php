@@ -1705,10 +1705,12 @@ class LectureController {
      * 강사 이미지 업로드 처리
      */
     private function handleInstructorImageUploads($files) {
-        // 직접 파일에 로그 기록 (디버깅용)
-        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "=== handleInstructorImageUploads 함수 호출됨 ===\n", FILE_APPEND);
-        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "시간: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
-        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "FILES 키들: " . json_encode(array_keys($files)) . "\n", FILE_APPEND);
+        // 직접 파일에 로그 기록 (디버깅용) - 권한 문제 해결
+        $logFile = '/workspace/debug_instructor_images.log';
+        file_put_contents($logFile, "=== handleInstructorImageUploads 함수 호출됨 ===\n", FILE_APPEND);
+        file_put_contents($logFile, "시간: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
+        file_put_contents($logFile, "FILES 전체 구조: " . json_encode($files) . "\n", FILE_APPEND);
+        file_put_contents($logFile, "FILES 키들: " . json_encode(array_keys($files)) . "\n", FILE_APPEND);
         
         $instructorImages = [];
         
@@ -1716,19 +1718,19 @@ class LectureController {
         error_log("전체 FILES 배열: " . json_encode(array_keys($files)));
         
         // FILES 구조 상세 분석
-        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "=== FILES 구조 상세 분석 ===\n", FILE_APPEND);
-        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "전체 FILES: " . json_encode($files) . "\n", FILE_APPEND);
+        file_put_contents($logFile, "=== FILES 구조 상세 분석 ===\n", FILE_APPEND);
+        file_put_contents($logFile, "전체 FILES: " . json_encode($files) . "\n", FILE_APPEND);
         
         // PHP 다차원 배열 구조로 전송된 강사 이미지 처리
         if (isset($files['instructors']) && is_array($files['instructors'])) {
             $instructorsFiles = $files['instructors'];
-            file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "instructors 파일 데이터 발견\n", FILE_APPEND);
+            file_put_contents($logFile, "instructors 파일 데이터 발견\n", FILE_APPEND);
             
             // PHP 다차원 파일 업로드 구조 처리
             if (isset($instructorsFiles['name']) && is_array($instructorsFiles['name'])) {
                 foreach ($instructorsFiles['name'] as $index => $nameData) {
                     if (isset($nameData['image']) && !empty($nameData['image'])) {
-                        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 이미지 처리 시작\n", FILE_APPEND);
+                        file_put_contents($logFile, "강사 {$index} 이미지 처리 시작\n", FILE_APPEND);
                         
                         $originalName = $nameData['image'];
                         $tmpName = $instructorsFiles['tmp_name'][$index]['image'] ?? '';
@@ -1736,7 +1738,7 @@ class LectureController {
                         $fileError = $instructorsFiles['error'][$index]['image'] ?? UPLOAD_ERR_NO_FILE;
                         $fileSize = $instructorsFiles['size'][$index]['image'] ?? 0;
                         
-                        file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "파일 정보: {$originalName}, tmp: {$tmpName}, error: {$fileError}\n", FILE_APPEND);
+                        file_put_contents($logFile, "파일 정보: {$originalName}, tmp: {$tmpName}, error: {$fileError}\n", FILE_APPEND);
                         
                         if ($fileError === UPLOAD_ERR_OK && !empty($tmpName) && is_uploaded_file($tmpName)) {
                             $uploadDir = '/var/www/html/topmkt/public/assets/uploads/instructors/';
@@ -1752,13 +1754,13 @@ class LectureController {
                             $fileExt = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
                             
                             if (!in_array($fileExt, $allowedTypes)) {
-                                file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 이미지 형식 불허용: {$fileExt}\n", FILE_APPEND);
+                                file_put_contents($logFile, "강사 {$index} 이미지 형식 불허용: {$fileExt}\n", FILE_APPEND);
                                 continue;
                             }
                             
                             // 파일 크기 검증 (2MB 제한)
                             if ($fileSize > 2 * 1024 * 1024) {
-                                file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 이미지 크기 초과: {$fileSize}\n", FILE_APPEND);
+                                file_put_contents($logFile, "강사 {$index} 이미지 크기 초과: {$fileSize}\n", FILE_APPEND);
                                 continue;
                             }
                             
@@ -1770,14 +1772,14 @@ class LectureController {
                             
                             if (move_uploaded_file($tmpName, $filePath)) {
                                 $instructorImages[$index] = $webPath . $safeName;
-                                file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 이미지 업로드 성공: {$webPath}{$safeName}\n", FILE_APPEND);
+                                file_put_contents($logFile, "강사 {$index} 이미지 업로드 성공: {$webPath}{$safeName}\n", FILE_APPEND);
                                 error_log("강사 {$index} 이미지 업로드 성공: " . $webPath . $safeName);
                             } else {
-                                file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 이미지 업로드 실패\n", FILE_APPEND);
+                                file_put_contents($logFile, "강사 {$index} 이미지 업로드 실패\n", FILE_APPEND);
                                 error_log("강사 {$index} 이미지 업로드 실패");
                             }
                         } else {
-                            file_put_contents('/var/www/html/topmkt/debug_instructor_images.log', "강사 {$index} 파일 에러 또는 임시파일 없음\n", FILE_APPEND);
+                            file_put_contents($logFile, "강사 {$index} 파일 에러 또는 임시파일 없음\n", FILE_APPEND);
                         }
                     }
                 }

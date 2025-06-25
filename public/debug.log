@@ -138,3 +138,19 @@
 {"timestamp":"2025-06-24 13:50:53","action":"calling_updateLecture","lecture_id":156}
 {"timestamp":"2025-06-24 13:50:53","action":"updateLecture_result","lecture_id":156,"affected_rows":1,"registration_deadline_param":"2025-06-25 02:48:00","youtube_video_param":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
 {"timestamp":"2025-06-24 13:50:53","action":"actual_saved_data","lecture_id":156,"saved_registration_deadline":"2025-06-25 02:48:00","saved_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","saved_updated_at":"2025-06-24 13:50:53"}
+{"timestamp":"2025-06-25 20:58:24","action":"store_request","method":"POST","isDraft":true,"registration_deadline":"2025-06-26T08:54","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"draft","title":"ASasaASDASDASDSAD"}
+{"timestamp":"2025-06-25 20:58:24","action":"branch_decision","user_id":4,"draftLecture_exists":true,"draftLecture_id":156,"status_is_draft":true,"final_registration_deadline":"2025-06-26 08:54:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 20:58:24","action":"calling_updateLecture","lecture_id":156}
+{"timestamp":"2025-06-25 20:58:24","action":"updateLecture_result","lecture_id":156,"affected_rows":1,"registration_deadline_param":"2025-06-26 08:54:00","youtube_video_param":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 20:58:24","action":"actual_saved_data","lecture_id":156,"saved_registration_deadline":"2025-06-26 08:54:00","saved_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","saved_updated_at":"2025-06-25 20:58:24"}
+{"timestamp":"2025-06-25 20:58:45","action":"store_request","method":"POST","isDraft":true,"registration_deadline":"2025-06-26T08:54","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"draft","title":"ASasaASDASDASDSAD"}
+{"timestamp":"2025-06-25 20:58:45","action":"branch_decision","user_id":4,"draftLecture_exists":true,"draftLecture_id":156,"status_is_draft":true,"final_registration_deadline":"2025-06-26 08:54:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 20:58:45","action":"calling_updateLecture","lecture_id":156}
+{"timestamp":"2025-06-25 20:58:45","action":"updateLecture_result","lecture_id":156,"affected_rows":1,"registration_deadline_param":"2025-06-26 08:54:00","youtube_video_param":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 20:58:45","action":"actual_saved_data","lecture_id":156,"saved_registration_deadline":"2025-06-26 08:54:00","saved_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","saved_updated_at":"2025-06-25 20:58:45"}
+{"timestamp":"2025-06-25 20:58:57","action":"store_request","method":"POST","isDraft":false,"registration_deadline":"2025-06-26T08:54","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"published","title":"ASasaASDASDASDSAD"}
+{"timestamp":"2025-06-25 20:58:57","action":"branch_decision","user_id":4,"draftLecture_exists":true,"draftLecture_id":156,"status_is_draft":false,"final_registration_deadline":"2025-06-26 08:54:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 20:58:57","action":"calling_createLecture"}
+{"timestamp":"2025-06-25 21:31:48","action":"store_request","method":"POST","isDraft":false,"registration_deadline":"2025-06-26T14:35","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"published","title":"sdasdsadassadasdsaasd"}
+{"timestamp":"2025-06-25 21:31:48","action":"branch_decision","user_id":4,"draftLecture_exists":false,"draftLecture_id":null,"status_is_draft":false,"final_registration_deadline":"2025-06-26 14:35:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-06-25 21:31:48","action":"calling_createLecture"}

@@ -68,7 +68,8 @@
       "Bash(/workspace/test_figma_api.sh:*)",
       "Bash(/workspace/extract_figma_styles.sh:*)",
       "Bash(/workspace/complete_figma_analysis.sh:*)",
-      "Bash(timedatectl:*)"
+      "Bash(timedatectl:*)",
+      "Bash(scp:*)"
     ],
     "deny": []
   }
