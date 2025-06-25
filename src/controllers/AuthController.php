@@ -4,6 +4,7 @@
  */
 
 require_once SRC_PATH . '/helpers/SmsHelper.php';
+require_once SRC_PATH . '/helpers/JWTHelper.php';
 require_once SRC_PATH . '/models/User.php';
 
 class AuthController {
@@ -92,8 +93,8 @@ class AuthController {
                 return;
             }
             
-            // 로그인 세션 생성
-            $this->createUserSession($user);
+            // JWT 기반 로그인 세션 생성  
+            $tokens = $this->createJWTSession($user, $input['remember'] ?? false);
             
             echo json_encode([
                 'success' => true, 
@@ -103,6 +104,11 @@ class AuthController {
                     'phone' => $user['phone'],
                     'nickname' => $user['nickname'],
                     'role' => $user['role'] ?? 'GENERAL'
+                ],
+                'tokens' => [
+                    'access_token' => $tokens['access_token'],
+                    'expires_in' => 3600, // 1시간
+                    'has_refresh_token' => isset($_COOKIE['refresh_token'])
                 ]
             ]);
             
@@ -154,8 +160,8 @@ class AuthController {
                 return;
             }
             
-            // 로그인 세션 생성
-            $this->createUserSession($user, $remember);
+            // JWT 기반 로그인 세션 생성
+            $this->createJWTSession($user, $remember);
             
             $_SESSION['success'] = $user['nickname'] . '님, 환영합니다!';
             
@@ -706,7 +712,15 @@ class AuthController {
                 error_log('User ' . $_SESSION['user_id'] . ' logged out');
             }
             
-            // Remember Me 쿠키 삭제
+            // JWT 토큰 쿠키 삭제
+            if (isset($_COOKIE['access_token'])) {
+                setcookie('access_token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+            }
+            if (isset($_COOKIE['refresh_token'])) {
+                setcookie('refresh_token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+            }
+            
+            // 기존 Remember Me 쿠키 삭제 (마이그레이션 호환성)
             if (isset($_COOKIE['remember_token'])) {
                 setcookie('remember_token', '', time() - 3600, '/', '', false, true);
             }
@@ -765,6 +779,125 @@ class AuthController {
             echo "</div>";
             echo "<a href='/' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none;'>메인으로 돌아가기</a>";
             exit;
+        }
+    }
+    
+    /**
+     * JWT 토큰 갱신 (리프레시)
+     */
+    public function refreshToken() {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'POST 요청만 허용됩니다.']);
+            return;
+        }
+        
+        try {
+            // 리프레시 토큰 확인
+            $refreshToken = $_COOKIE['refresh_token'] ?? null;
+            if (!$refreshToken) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '리프레시 토큰이 없습니다.']);
+                return;
+            }
+            
+            // 리프레시 토큰 검증
+            $payload = JWTHelper::validateToken($refreshToken);
+            if (!$payload || ($payload['type'] ?? '') !== 'refresh') {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '유효하지 않은 리프레시 토큰입니다.']);
+                return;
+            }
+            
+            // 사용자 정보 조회
+            $user = $this->userModel->findById($payload['user_id']);
+            if (!$user) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '사용자를 찾을 수 없습니다.']);
+                return;
+            }
+            
+            // 새로운 액세스 토큰 생성
+            $newTokens = JWTHelper::createTokenPair($user);
+            
+            // 새 액세스 토큰을 쿠키에 저장
+            setcookie(
+                'access_token',
+                $newTokens['access_token'],
+                time() + 3600, // 1시간
+                '/',
+                '',
+                isset($_SERVER['HTTPS']),
+                true
+            );
+            
+            // 응답
+            echo json_encode([
+                'success' => true,
+                'message' => '토큰이 갱신되었습니다.',
+                'access_token' => $newTokens['access_token'],
+                'expires_in' => 3600
+            ]);
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => '토큰 갱신 중 오류가 발생했습니다.']);
+            error_log('JWT 토큰 갱신 오류: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 현재 사용자 정보 조회 (JWT 기반)
+     */
+    public function me() {
+        header('Content-Type: application/json');
+        
+        try {
+            // JWT에서 사용자 정보 추출
+            $accessToken = $_COOKIE['access_token'] ?? null;
+            if (!$accessToken) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '인증 토큰이 없습니다.']);
+                return;
+            }
+            
+            $userData = JWTHelper::getUserFromToken($accessToken);
+            if (!$userData) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => '유효하지 않은 토큰입니다.']);
+                return;
+            }
+            
+            // 사용자 정보 조회
+            $user = $this->userModel->findById($userData['user_id']);
+            if (!$user) {
+                http_response_code(404);
+                echo json_encode(['success' => false, 'message' => '사용자를 찾을 수 없습니다.']);
+                return;
+            }
+            
+            echo json_encode([
+                'success' => true,
+                'user' => [
+                    'id' => $user['id'],
+                    'nickname' => $user['nickname'],
+                    'phone' => $user['phone'],
+                    'role' => $user['role'],
+                    'profile_image' => $user['profile_image_thumb'] ?? null,
+                    'created_at' => $user['created_at']
+                ],
+                'token_info' => [
+                    'expires_in' => JWTHelper::getTokenTimeLeft($accessToken),
+                    'has_refresh_token' => isset($_COOKIE['refresh_token'])
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => '사용자 정보 조회 중 오류가 발생했습니다.']);
+            error_log('JWT 사용자 정보 조회 오류: ' . $e->getMessage());
         }
     }
     
@@ -944,28 +1077,8 @@ class AuthController {
                 $params['httponly']
             );
             
-            // 리멤버 토큰 생성 및 저장
-            $rememberToken = bin2hex(random_bytes(32));
-            $_SESSION['remember_token'] = $rememberToken;
-            $_SESSION['remember_expires'] = time() + $lifetime;
-            
-            // Remember Me 쿠키 설정
-            setcookie(
-                'remember_token',
-                $rememberToken,
-                time() + $lifetime,
-                '/',
-                '',
-                $params['secure'],
-                true // httponly
-            );
-            
-            // 데이터베이스에도 토큰 저장 (선택적)
-            try {
-                $this->userModel->updateRememberToken($user['id'], $rememberToken, date('Y-m-d H:i:s', time() + $lifetime));
-            } catch (Exception $e) {
-                error_log('Remember token 저장 실패: ' . $e->getMessage());
-            }
+            // JWT 기반에서는 Remember Token 시스템 대신 Refresh Token 사용
+            // 별도 Remember Token 저장 불필요
         } else {
             // 로그인 상태 유지를 선택하지 않은 경우 기본 세션 수명 (4시간으로 연장)
             ini_set('session.gc_maxlifetime', 14400); // 4시간
@@ -973,6 +1086,58 @@ class AuthController {
         
         // 세션 ID 재생성 (세션 고정 공격 방지)
         session_regenerate_id(true);
+    }
+    
+    /**
+     * JWT 기반 사용자 세션 생성
+     * 
+     * @param array $user 사용자 정보
+     * @param bool $remember 로그인 상태 유지 여부
+     * @return array JWT 토큰 정보
+     */
+    private function createJWTSession($user, $remember = false) {
+        // JWT 토큰 생성
+        $tokens = JWTHelper::createTokenPair($user);
+        
+        // 액세스 토큰을 HTTP-Only 쿠키에 저장
+        $accessTokenExpiry = time() + 3600; // 1시간
+        setcookie(
+            'access_token',
+            $tokens['access_token'],
+            $accessTokenExpiry,
+            '/',
+            '',
+            isset($_SERVER['HTTPS']), // HTTPS에서만 secure
+            true // httponly
+        );
+        
+        // 로그인 상태 유지 선택시 리프레시 토큰도 쿠키에 저장
+        if ($remember) {
+            $refreshTokenExpiry = time() + (30 * 24 * 60 * 60); // 30일
+            setcookie(
+                'refresh_token',
+                $tokens['refresh_token'],
+                $refreshTokenExpiry,
+                '/',
+                '',
+                isset($_SERVER['HTTPS']), // HTTPS에서만 secure  
+                true // httponly
+            );
+        }
+        
+        // 호환성을 위해 세션에도 기본 정보 저장
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['nickname'];
+        $_SESSION['phone'] = $user['phone'];
+        $_SESSION['user_role'] = $user['role'] ?? 'GENERAL';
+        $_SESSION['profile_image'] = $user['profile_image'] ?? null;
+        $_SESSION['auth_method'] = 'jwt'; // JWT 인증 표시
+        $_SESSION['last_activity'] = time();
+        
+        // 세션 ID 재생성
+        session_regenerate_id(true);
+        
+        return $tokens;
     }
     
     /**

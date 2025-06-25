@@ -31,6 +31,10 @@ class Router {
             'POST:/auth/send-verification' => ['AuthController', 'sendVerification'],
             'POST:/auth/verify-code' => ['AuthController', 'verifyCode'],
             
+            // JWT API 라우트
+            'POST:/auth/refresh' => ['AuthController', 'refreshToken'],
+            'GET:/auth/me' => ['AuthController', 'me'],
+            
             // 법적 문서 라우트
             'GET:/terms' => ['LegalController', 'showTerms'],
             'GET:/privacy' => ['LegalController', 'showPrivacy'],

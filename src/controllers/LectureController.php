@@ -100,8 +100,9 @@ class LectureController {
             
             // 현재 사용자의 신청 상태 확인
             $userRegistration = null;
-            if (isset($_SESSION['user_id'])) {
-                $userRegistration = $this->getUserRegistration($lectureId, $_SESSION['user_id']);
+            $currentUserId = AuthMiddleware::getCurrentUserId();
+            if ($currentUserId) {
+                $userRegistration = $this->getUserRegistration($lectureId, $currentUserId);
             }
             
             // 신청자 목록 (일부만)
@@ -158,10 +159,8 @@ class LectureController {
      */
     public function create() {
         // 로그인 확인
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: /auth/login?redirect=' . urlencode('/lectures/create'));
-            exit;
-        }
+        AuthMiddleware::isAuthenticated();
+        $currentUserId = AuthMiddleware::getCurrentUserId();
         
         // 기업회원 권한 확인
         require_once SRC_PATH . '/middleware/CorporateMiddleware.php';
@@ -177,7 +176,7 @@ class LectureController {
             $categories = $this->getCategories();
             
             // 현재 사용자의 임시저장된 강의 조회
-            $draftLecture = $this->getLatestDraftLecture($_SESSION['user_id']);
+            $draftLecture = $this->getLatestDraftLecture($currentUserId);
             
             // 임시저장 데이터 디버깅
             if ($draftLecture) {
@@ -243,9 +242,10 @@ class LectureController {
             file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "LectureController::store() 호출됨 - " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
             
             // 로그인 확인
-            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "로그인 확인 중... session user_id: " . ($_SESSION['user_id'] ?? 'NULL') . "\n", FILE_APPEND);
-            if (!isset($_SESSION['user_id'])) {
-                file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "로그인 안됨 - 세션에 user_id 없음\n", FILE_APPEND);
+            $currentUserId = AuthMiddleware::getCurrentUserId();
+            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "로그인 확인 중... current user_id: " . ($currentUserId ?? 'NULL') . "\n", FILE_APPEND);
+            if (!$currentUserId) {
+                file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "로그인 안됨 - JWT에서 user_id 없음\n", FILE_APPEND);
                 ResponseHelper::error('로그인이 필요합니다.', 401);
                 return;
             }
@@ -528,8 +528,8 @@ class LectureController {
                 error_log("=== 강의 저장 프로세스 시작 ===");
                 
                 // 임시저장된 강의가 있으면 UPDATE, 없으면 INSERT
-                $draftLecture = $this->getLatestDraftLecture($_SESSION['user_id']);
-                error_log("현재 사용자 ID: " . $_SESSION['user_id']);
+                $draftLecture = $this->getLatestDraftLecture($currentUserId);
+                error_log("현재 사용자 ID: " . $currentUserId);
                 error_log("기존 임시저장 강의: " . ($draftLecture ? 'ID=' . $draftLecture['id'] . ', user_id=' . $draftLecture['user_id'] : 'NONE'));
                 error_log("요청 상태: " . ($validationResult['data']['status'] ?? 'NULL'));
                 
@@ -542,7 +542,7 @@ class LectureController {
                 $branchData = [
                     'timestamp' => date('Y-m-d H:i:s'),
                     'action' => 'branch_decision',
-                    'user_id' => $_SESSION['user_id'],
+                    'user_id' => $currentUserId,
                     'draftLecture_exists' => $draftLecture ? true : false,
                     'draftLecture_id' => $draftLecture ? $draftLecture['id'] : null,
                     'status_is_draft' => ($validationResult['data']['status'] === 'draft'),
@@ -553,10 +553,10 @@ class LectureController {
                 
                 if ($draftLecture && $validationResult['data']['status'] === 'draft') {
                     file_put_contents('/var/www/html/topmkt/public/debug.log', json_encode(['timestamp' => date('Y-m-d H:i:s'), 'action' => 'calling_updateLecture', 'lecture_id' => $draftLecture['id']]) . "\n", FILE_APPEND);
-                    $lectureId = $this->updateLecture($draftLecture['id'], $validationResult['data'], $_SESSION['user_id']);
+                    $lectureId = $this->updateLecture($draftLecture['id'], $validationResult['data'], $currentUserId);
                 } else {
                     file_put_contents('/var/www/html/topmkt/public/debug.log', json_encode(['timestamp' => date('Y-m-d H:i:s'), 'action' => 'calling_createLecture']) . "\n", FILE_APPEND);
-                    $lectureId = $this->createLecture($validationResult['data'], $_SESSION['user_id']);
+                    $lectureId = $this->createLecture($validationResult['data'], $currentUserId);
                 }
                 
                 if ($lectureId) {
@@ -595,7 +595,7 @@ class LectureController {
                                 'post_youtube_video' => $_POST['youtube_video'] ?? 'NOT_SET',
                                 'validated_registration_deadline' => $validationResult['data']['registration_deadline'] ?? 'NOT_SET',
                                 'validated_youtube_video' => $validationResult['data']['youtube_video'] ?? 'NOT_SET',
-                                'user_id' => $_SESSION['user_id'],
+                                'user_id' => $currentUserId,
                                 'draft_lecture_found' => $draftLecture ? $draftLecture['id'] : 'NONE',
                                 'method_called' => $draftLecture && $validationResult['data']['status'] === 'draft' ? 'updateLecture' : 'createLecture',
                                 'sql_result' => $GLOBALS['debug_sql_result'] ?? 'NOT_SET',
@@ -938,13 +938,13 @@ class LectureController {
      * 강의 수정 권한 확인
      */
     private function canEditLecture($lecture) {
-        if (!isset($_SESSION['user_id'])) {
+        $currentUserId = AuthMiddleware::getCurrentUserId();
+        if (!$currentUserId) {
             return false;
         }
         
         // 작성자 본인 또는 관리자
-        return $_SESSION['user_id'] == $lecture['user_id'] || 
-               in_array($_SESSION['user_role'] ?? '', ['ADMIN', 'SUPER_ADMIN']);
+        return $currentUserId == $lecture['user_id'] || AuthMiddleware::isAdmin();
     }
     
     /**
@@ -1029,7 +1029,7 @@ class LectureController {
         
         // 임시저장 시 기존 강사 이미지 정보 보존
         $existingInstructors = [];
-        $currentUserId = $_SESSION['user_id'] ?? null;
+        $currentUserId = AuthMiddleware::getCurrentUserId();
         file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "user_id 확인: data[user_id]=" . ($data['user_id'] ?? 'NULL') . ", session[user_id]=" . ($currentUserId ?? 'NULL') . "\n", FILE_APPEND);
         
         if ($isDraft && !empty($currentUserId)) {
@@ -1954,18 +1954,14 @@ class LectureController {
     public function register($id) {
         try {
             // 로그인 확인
-            if (!isset($_SESSION['user_id'])) {
-                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                    ResponseHelper::error('로그인이 필요합니다.', 401);
-                    return;
-                } else {
-                    header('Location: /auth/login?redirect=' . urlencode($_SERVER['REQUEST_URI']));
-                    exit;
-                }
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                AuthMiddleware::apiAuthenticate();
+            } else {
+                AuthMiddleware::isAuthenticated();
             }
             
             $lectureId = intval($id);
-            $userId = $_SESSION['user_id'];
+            $userId = AuthMiddleware::getCurrentUserId();
             
             // 강의 정보 확인
             $lecture = $this->getLectureById($lectureId);
@@ -2409,12 +2405,8 @@ class LectureController {
             $lectureId = intval($id);
             
             // 로그인 확인
-            if (!isset($_SESSION['user_id'])) {
-                header('Location: /auth/login?redirect=' . urlencode("/lectures/{$lectureId}/edit"));
-                exit;
-            }
-            
-            $currentUserId = $_SESSION['user_id'];
+            AuthMiddleware::isAuthenticated();
+            $currentUserId = AuthMiddleware::getCurrentUserId();
             
             // 강의 정보 조회
             $lecture = $this->getLectureById($lectureId, false);
@@ -2525,12 +2517,8 @@ class LectureController {
             $lectureId = intval($id);
             
             // 로그인 확인
-            if (!isset($_SESSION['user_id'])) {
-                ResponseHelper::error('로그인이 필요합니다.', 401);
-                return;
-            }
-            
-            $currentUserId = $_SESSION['user_id'];
+            AuthMiddleware::apiAuthenticate();
+            $currentUserId = AuthMiddleware::getCurrentUserId();
             
             // 강의 정보 조회
             $lecture = $this->getLectureById($lectureId, false);

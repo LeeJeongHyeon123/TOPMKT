@@ -35,9 +35,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
-    <?php if (isset($_SESSION['user_id'])): ?>
-    <meta name="user-id" content="<?= $_SESSION['user_id'] ?>">
-    <?php endif; ?>
+    <?php 
+    require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+    try {
+        $currentUserId = AuthMiddleware::getCurrentUserId();
+        if ($currentUserId): ?>
+    <meta name="user-id" content="<?= $currentUserId ?>">
+    <?php endif;
+    } catch (Exception $e) {
+        // 로그인하지 않은 사용자의 경우 무시
+        $currentUserId = null;
+    } ?>
     <link rel="canonical" href="<?= 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] ?>">
     
     <!-- 파비콘 - 모든 페이지 통일 -->
@@ -63,10 +71,11 @@
     
     <!-- JavaScript -->
     <script src="/assets/js/loading.js"></script>
+    <script src="/assets/js/jwt-auth.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
     
     <!-- Firebase SDK (채팅 알림용) -->
-    <?php if (isset($_SESSION['user_id']) && $_SERVER['REQUEST_URI'] !== '/chat'): ?>
+    <?php if (isset($currentUserId) && $currentUserId && $_SERVER['REQUEST_URI'] !== '/chat'): ?>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="/assets/js/chat-notifications.js"></script>
@@ -131,7 +140,13 @@
 
                 <!-- 로그인 상태별 우측 메뉴 -->
                 <div class="nav-auth">
-                    <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php 
+                    try {
+                        $isLoggedIn = AuthMiddleware::isLoggedIn();
+                    } catch (Exception $e) {
+                        $isLoggedIn = false;
+                    }
+                    if ($isLoggedIn): ?>
                         <!-- 로그인된 사용자 메뉴 -->
                         <div class="user-menu">
                             <div class="user-avatar">
@@ -147,13 +162,19 @@
                                     👤
                                 </div>
                             </div>
-                            <span class="user-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
+                            <?php 
+                            try {
+                                $currentUser = AuthMiddleware::getCurrentUser();
+                            } catch (Exception $e) {
+                                $currentUser = null;
+                            } ?>
+                            <span class="user-name"><?= htmlspecialchars($currentUser['nickname'] ?? '사용자') ?></span>
                             <i class="fas fa-chevron-down"></i>
                             
                             <div class="user-dropdown">
                                 <div class="dropdown-header">
                                     <div class="user-info">
-                                        <span class="user-display-name"><?= htmlspecialchars($_SESSION['username'] ?? '사용자') ?></span>
+                                        <span class="user-display-name"><?= htmlspecialchars($currentUser['nickname'] ?? '사용자') ?></span>
                                     </div>
                                 </div>
                                 <div class="dropdown-divider"></div>

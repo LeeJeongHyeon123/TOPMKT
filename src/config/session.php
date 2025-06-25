@@ -39,52 +39,13 @@ function initializeSession($rememberMe = false) {
 }
 
 /**
- * 세션 유효성 확인
- * Remember Me 토큰이 있는 경우 자동 로그인 처리
+ * 세션 유효성 확인 (JWT 기반)
+ * JWT 토큰을 통한 인증으로 변경됨
  */
 function validateSession() {
-    // 세션에 user_id가 없고 remember 쿠키가 있는 경우
-    if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_token'])) {
-        $token = $_COOKIE['remember_token'];
-        
-        // User 모델로 토큰 검증
-        require_once SRC_PATH . '/models/User.php';
-        $userModel = new User();
-        $user = $userModel->findByRememberToken($token);
-        
-        if ($user) {
-            // 자동 로그인 처리
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['nickname'];
-            $_SESSION['phone'] = $user['phone'];
-            $_SESSION['user_role'] = $user['role'];
-            
-            // 새로운 remember 토큰 생성
-            $newToken = bin2hex(random_bytes(32));
-            $expires = time() + 2592000; // 30일
-            
-            // 토큰 업데이트
-            $userModel->updateRememberToken($user['id'], $newToken, date('Y-m-d H:i:s', $expires));
-            
-            // 쿠키 업데이트
-            setcookie(
-                'remember_token',
-                $newToken,
-                $expires,
-                '/',
-                '',
-                isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-                true
-            );
-            
-            return true;
-        } else {
-            // 유효하지 않은 토큰 삭제
-            setcookie('remember_token', '', time() - 3600, '/');
-        }
-    }
-    
-    return isset($_SESSION['user_id']);
+    // JWT 기반 인증은 AuthMiddleware에서 처리
+    require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
+    return AuthMiddleware::isLoggedIn();
 }
 
 /**
@@ -140,9 +101,17 @@ function destroySession() {
         );
     }
     
-    // Remember Me 쿠키 삭제
+    // 기존 Remember Me 쿠키 삭제 (마이그레이션 호환성)
     if (isset($_COOKIE['remember_token'])) {
         setcookie('remember_token', '', time() - 3600, '/');
+    }
+    
+    // JWT 토큰 쿠키 삭제
+    if (isset($_COOKIE['access_token'])) {
+        setcookie('access_token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+    }
+    if (isset($_COOKIE['refresh_token'])) {
+        setcookie('refresh_token', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
     }
     
     // 세션 파괴
