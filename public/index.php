@@ -14,16 +14,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/l
     file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "FILES 데이터 존재: " . (empty($_FILES) ? 'NO' : 'YES') . "\n", FILE_APPEND);
 }
 
-// 오류 표시 (프로덕션에서는 비활성화)
-ini_set('display_errors', 0);
-ini_set('display_startup_errors', 0);
-error_reporting(0);
+// 오류 표시 (개발용으로 활성화)
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 try {
+    // CORS 헤더 설정
+    require_once __DIR__ . '/cors-headers.php';
+    
     // 상대 경로 설정
     define('ROOT_PATH', dirname(__DIR__));
     define('SRC_PATH', ROOT_PATH . '/src');
     define('CONFIG_PATH', SRC_PATH . '/config');
+    
+    // 보안 미들웨어 적용
+    require_once SRC_PATH . '/middlewares/SecurityMiddleware.php';
+    SecurityMiddleware::setSecurityHeaders();
+    
+    // Rate Limiting (IP 기반)
+    $clientIp = SecurityMiddleware::getClientIp();
+    if (!SecurityMiddleware::rateLimit($clientIp, 1000, 3600)) { // 시간당 1000회 제한
+        http_response_code(429);
+        echo 'Too Many Requests';
+        exit;
+    }
 
     // 설정 파일 로드
     require_once CONFIG_PATH . '/config.php';

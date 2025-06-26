@@ -35,6 +35,14 @@ class Router {
             'POST:/auth/refresh' => ['AuthController', 'refreshToken'],
             'GET:/auth/me' => ['AuthController', 'me'],
             
+            // React API 라우트
+            'POST:/api/auth/login' => ['AuthController', 'apiLogin'],
+            'POST:/api/auth/signup' => ['AuthController', 'apiSignup'],
+            'POST:/api/auth/logout' => ['AuthController', 'apiLogout'],
+            'POST:/api/auth/refresh' => ['AuthController', 'apiRefreshToken'],
+            'GET:/api/auth/me' => ['AuthController', 'apiMe'],
+            'GET:/api/csrf-token' => ['AuthController', 'getCsrfToken'],
+            
             // 법적 문서 라우트
             'GET:/terms' => ['LegalController', 'showTerms'],
             'GET:/privacy' => ['LegalController', 'showPrivacy'],
@@ -44,6 +52,11 @@ class Router {
             'GET:/users/{id}' => ['UserController', 'getUser'],
             'PUT:/users/{id}' => ['UserController', 'updateUser'],
             'DELETE:/users/{id}' => ['UserController', 'deleteUser'],
+            
+            // React 사용자 API
+            'GET:/api/users/profile' => ['UserController', 'apiGetProfile'],
+            'PUT:/api/users/profile' => ['UserController', 'apiUpdateProfile'],
+            'POST:/api/users/profile/image' => ['UserController', 'apiUploadProfileImage'],
             
             // 프로필 라우트 (새로 추가)
             'GET:/profile' => ['UserController', 'showMyProfile'],
@@ -60,6 +73,13 @@ class Router {
             'GET:/community/posts/{id}/edit' => ['CommunityController', 'showEdit'],
             'PUT:/community/posts/{id}' => ['CommunityController', 'update'],
             'DELETE:/community/posts/{id}' => ['CommunityController', 'delete'],
+            
+            // React 커뮤니티 API
+            'GET:/api/community/posts' => ['CommunityController', 'apiIndex'],
+            'GET:/api/community/posts/{id}' => ['CommunityController', 'apiShow'],
+            'POST:/api/community/posts' => ['CommunityController', 'apiCreate'],
+            'PUT:/api/community/posts/{id}' => ['CommunityController', 'apiUpdate'],
+            'DELETE:/api/community/posts/{id}' => ['CommunityController', 'apiDelete'],
             
             // 기존 게시글 라우트 (호환성 유지)
             'GET:/posts' => ['PostController', 'index'],
@@ -98,6 +118,13 @@ class Router {
             'POST:/lectures/{id}/register' => ['LectureController', 'register'],
             'POST:/lectures/update-images' => ['LectureController', 'updateImages'],
             'GET:/lectures/{id}/ical' => ['LectureController', 'generateICal'],
+            
+            // React 강의 API
+            'GET:/api/lectures' => ['LectureController', 'apiIndex'],
+            'GET:/api/lectures/{id}' => ['LectureController', 'apiShow'],
+            'POST:/api/lectures' => ['LectureController', 'apiStore'],
+            'PUT:/api/lectures/{id}' => ['LectureController', 'apiUpdate'],
+            'DELETE:/api/lectures/{id}' => ['LectureController', 'apiDelete'],
             
             // 행사 일정 라우트
             'GET:/events' => ['EventController', 'index'],
@@ -164,6 +191,12 @@ class Router {
         $uri = rtrim($uri, '/');
         if (empty($uri)) {
             $uri = '/';
+        }
+        
+        // React Frontend 라우트 처리
+        if (strpos($uri, '/frontend') === 0) {
+            $this->serveReactApp();
+            return;
         }
         
         // HTTP 메서드 가져오기
@@ -306,6 +339,58 @@ class Router {
         } else {
             echo '<h1>404 - Page Not Found</h1>';
             echo '<p>The requested page could not be found.</p>';
+        }
+    }
+    
+    /**
+     * React 앱 서빙
+     */
+    private function serveReactApp() {
+        $frontendPath = ROOT_PATH . '/public/frontend';
+        $requestPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        
+        // /frontend 프리픽스 제거
+        $filePath = str_replace('/frontend', '', $requestPath);
+        $fullPath = $frontendPath . $filePath;
+        
+        // 파일이 존재하고 실제 파일인 경우
+        if ($filePath !== '/' && file_exists($fullPath) && is_file($fullPath)) {
+            $mimeTypes = [
+                'css' => 'text/css',
+                'js' => 'application/javascript',
+                'png' => 'image/png',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'gif' => 'image/gif',
+                'svg' => 'image/svg+xml',
+                'ico' => 'image/x-icon',
+                'woff' => 'font/woff',
+                'woff2' => 'font/woff2',
+                'ttf' => 'font/ttf'
+            ];
+            
+            $ext = pathinfo($fullPath, PATHINFO_EXTENSION);
+            if (isset($mimeTypes[$ext])) {
+                header('Content-Type: ' . $mimeTypes[$ext]);
+                header('Cache-Control: public, max-age=31536000'); // 1년 캐시
+            }
+            
+            readfile($fullPath);
+            return;
+        }
+        
+        // React 앱의 index.html 서빙
+        $indexPath = $frontendPath . '/index.html';
+        if (file_exists($indexPath)) {
+            header('Content-Type: text/html; charset=utf-8');
+            header('Cache-Control: no-cache, no-store, must-revalidate');
+            header('Pragma: no-cache');
+            header('Expires: 0');
+            
+            readfile($indexPath);
+        } else {
+            header('HTTP/1.1 404 Not Found');
+            echo 'React app not built. Please run: npm run build';
         }
     }
 } 

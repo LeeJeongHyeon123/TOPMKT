@@ -1,5 +1,15 @@
 RewriteEngine On
 
+# React Frontend 라우트 처리
+RewriteCond %{REQUEST_URI} ^/frontend
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^frontend/(.*)$ /frontend/index.html [L]
+
+# API 라우트는 PHP로 전달
+RewriteCond %{REQUEST_URI} ^/api
+RewriteRule ^(.*)$ index.php [QSA,L]
+
 # 파일이나 디렉토리가 존재하지 않으면 index.php로 라우팅
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

@@ -5,6 +5,7 @@
 
 require_once SRC_PATH . '/helpers/SmsHelper.php';
 require_once SRC_PATH . '/helpers/JWTHelper.php';
+require_once SRC_PATH . '/helpers/ApiResponseHelper.php';
 require_once SRC_PATH . '/models/User.php';
 
 class AuthController {
@@ -1179,5 +1180,240 @@ class AuthController {
         }
         
         return false;
+    }
+    
+    /**
+     * React API - 로그인
+     */
+    public function apiLogin() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            ApiResponseHelper::methodNotAllowed(['POST']);
+        }
+        
+        $input = ApiResponseHelper::getRequestData();
+        ApiResponseHelper::validateRequired($input, ['phone', 'password']);
+        
+        $phone = $this->sanitizePhone($input['phone']);
+        $password = $input['password'];
+        $remember = $input['remember'] ?? false;
+        
+        // 사용자 인증
+        $user = $this->userModel->login($phone, $password);
+        
+        if (!$user) {
+            ApiResponseHelper::unauthorized('휴대폰 번호 또는 비밀번호가 올바르지 않습니다.');
+        }
+        
+        try {
+            // JWT 토큰 생성
+            $tokens = $this->createJWTSession($user, $remember);
+            
+            ApiResponseHelper::success([
+                'user' => [
+                    'id' => $user['id'],
+                    'nickname' => $user['nickname'],
+                    'phone' => $user['phone'],
+                    'email' => $user['email'],
+                    'role' => $user['role'],
+                    'profile_image' => $user['profile_image'],
+                    'profile_image_thumb' => $user['profile_image_thumb']
+                ],
+                'token' => $tokens['access_token'],
+                'refresh_token' => $tokens['refresh_token']
+            ], '로그인되었습니다.');
+            
+        } catch (Exception $e) {
+            error_log('Login error: ' . $e->getMessage());
+            ApiResponseHelper::serverError('로그인 처리 중 오류가 발생했습니다.');
+        }
+    }
+    
+    /**
+     * React API - 회원가입
+     */
+    public function apiSignup() {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            return;
+        }
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (!$input) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '잘못된 요청입니다.']);
+            return;
+        }
+        
+        $nickname = $input['nickname'] ?? '';
+        $phone = $this->sanitizePhone($input['phone'] ?? '');
+        $email = $input['email'] ?? '';
+        $password = $input['password'] ?? '';
+        $passwordConfirmation = $input['password_confirmation'] ?? '';
+        
+        // 유효성 검사
+        if (empty($nickname) || empty($phone) || empty($email) || empty($password)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '모든 필드를 입력해주세요.']);
+            return;
+        }
+        
+        if ($password !== $passwordConfirmation) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '비밀번호가 일치하지 않습니다.']);
+            return;
+        }
+        
+        // 사용자 생성
+        $userId = $this->userModel->createUser($nickname, $phone, $email, $password);
+        
+        if ($userId) {
+            $user = $this->userModel->getUserById($userId);
+            $tokens = $this->createJWTSession($user, false);
+            
+            echo json_encode([
+                'success' => true,
+                'data' => [
+                    'user' => [
+                        'id' => $user['id'],
+                        'nickname' => $user['nickname'],
+                        'phone' => $user['phone'],
+                        'email' => $user['email'],
+                        'role' => $user['role']
+                    ],
+                    'token' => $tokens['access_token'],
+                    'refresh_token' => $tokens['refresh_token']
+                ],
+                'message' => '회원가입이 완료되었습니다.'
+            ]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => '회원가입에 실패했습니다.']);
+        }
+    }
+    
+    /**
+     * React API - 로그아웃
+     */
+    public function apiLogout() {
+        header('Content-Type: application/json');
+        
+        // 세션 정리
+        session_destroy();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => '로그아웃되었습니다.'
+        ]);
+    }
+    
+    /**
+     * React API - 토큰 갱신
+     */
+    public function apiRefreshToken() {
+        header('Content-Type: application/json');
+        
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+            return;
+        }
+        
+        $headers = getallheaders();
+        $authHeader = $headers['Authorization'] ?? '';
+        
+        if (!$authHeader || !preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '인증 토큰이 필요합니다.']);
+            return;
+        }
+        
+        $token = $matches[1];
+        $payload = JWTHelper::validateToken($token);
+        
+        if (!$payload) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '유효하지 않은 토큰입니다.']);
+            return;
+        }
+        
+        $user = $this->userModel->getUserById($payload['user_id']);
+        if (!$user) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '사용자를 찾을 수 없습니다.']);
+            return;
+        }
+        
+        $tokens = $this->createJWTSession($user, false);
+        
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'token' => $tokens['access_token']
+            ]
+        ]);
+    }
+    
+    /**
+     * React API - 현재 사용자 정보
+     */
+    public function apiMe() {
+        header('Content-Type: application/json');
+        
+        $headers = getallheaders();
+        $authHeader = $headers['Authorization'] ?? '';
+        
+        if (!$authHeader || !preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '인증 토큰이 필요합니다.']);
+            return;
+        }
+        
+        $token = $matches[1];
+        $payload = JWTHelper::validateToken($token);
+        
+        if (!$payload) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '유효하지 않은 토큰입니다.']);
+            return;
+        }
+        
+        $user = $this->userModel->getUserById($payload['user_id']);
+        if (!$user) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => '사용자를 찾을 수 없습니다.']);
+            return;
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'data' => [
+                'id' => $user['id'],
+                'nickname' => $user['nickname'],
+                'phone' => $user['phone'],
+                'email' => $user['email'],
+                'role' => $user['role'],
+                'profile_image' => $user['profile_image'],
+                'profile_image_thumb' => $user['profile_image_thumb'],
+                'introduction' => $user['introduction'] ?? '',
+                'marketing_agreed' => (bool)$user['marketing_agreed'],
+                'phone_verified' => (bool)$user['phone_verified'],
+                'email_verified' => (bool)$user['email_verified'],
+                'created_at' => $user['created_at'],
+                'updated_at' => $user['updated_at']
+            ]
+        ]);
+    }
+    
+    /**
+     * React API - CSRF 토큰 가져오기
+     */
+    public function getCsrfToken() {
+        ApiResponseHelper::success([
+            'csrf_token' => $_SESSION['csrf_token']
+        ]);
     }
 } 
