@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import Button from './Button';
-import { cn } from '../../utils/cn';
 
 const Header: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -31,11 +29,11 @@ const Header: React.FC = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="main-header">
+      <div className="container">
+        <div className="header-content">
           {/* 로고 */}
-          <div className="flex-shrink-0">
+          <div className="header-left">
             <h1 className="logo">
               <Link to="/" className="logo-link">
                 <div className="logo-icon">
@@ -47,12 +45,12 @@ const Header: React.FC = () => {
           </div>
 
           {/* 데스크톱 네비게이션 */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="nav-menu">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
+                className="nav-link"
               >
                 {item.name}
               </Link>
@@ -60,144 +58,118 @@ const Header: React.FC = () => {
           </nav>
 
           {/* 사용자 메뉴 */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="header-right">
             {isAuthenticated && user ? (
-              <div className="flex items-center space-x-4">
+              <div className="user-menu">
                 {/* 사용자 정보 */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="user-info">
+                  <div className="user-avatar">
                     {user.profile_image_thumb ? (
                       <img
                         src={user.profile_image_thumb}
                         alt={user.nickname}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="avatar-image"
                       />
                     ) : (
-                      <span className="text-blue-600 text-sm font-medium">
+                      <span className="avatar-initial">
                         {user.nickname.charAt(0).toUpperCase()}
                       </span>
                     )}
                   </div>
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="user-name">
                     {user.nickname}
                   </span>
                 </div>
 
                 {/* 메뉴 버튼들 */}
-                <div className="relative">
-                  <div className="flex items-center space-x-6">
-                    <Link
-                      to="/profile"
-                      className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
-                    >
-                      프로필
-                    </Link>
-                    <button
-                      onClick={() => {
-                        // 채팅 기능 - Firebase 채팅창 열기
-                        window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
-                      }}
-                      className="text-gray-600 hover:text-green-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 bg-transparent border-none cursor-pointer"
-                      title="채팅"
-                    >
-                      채팅
-                    </button>
-                    <button
-                      onClick={handleLogout}
-                      className="text-gray-600 hover:text-red-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 bg-transparent border-none cursor-pointer"
-                    >
-                      로그아웃
-                    </button>
-                  </div>
+                <div className="user-actions">
+                  <Link to="/profile" className="btn btn-nav">
+                    프로필
+                  </Link>
+                  <button
+                    onClick={() => {
+                      window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
+                    }}
+                    className="btn btn-nav btn-chat"
+                    title="채팅"
+                  >
+                    채팅
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-nav btn-logout"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center space-x-3">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    로그인
-                  </Button>
+              <div className="auth-buttons">
+                <Link to="/login" className="btn btn-outline">
+                  로그인
                 </Link>
-                <Link to="/signup">
-                  <Button variant="primary" size="sm">
-                    회원가입
-                  </Button>
+                <Link to="/signup" className="btn btn-primary">
+                  회원가입
                 </Link>
               </div>
             )}
           </div>
 
           {/* 모바일 메뉴 버튼 */}
-          <div className="md:hidden">
+          <div className="mobile-menu-toggle">
             <button
               onClick={toggleMenu}
-              className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900 p-2"
+              className="mobile-toggle-btn"
+              aria-label="메뉴 토글"
             >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isMenuOpen ? (
-                  <path d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
+              <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
             </button>
           </div>
         </div>
 
         {/* 모바일 메뉴 */}
-        <div className={cn(
-          'md:hidden transition-all duration-300 ease-in-out overflow-hidden',
-          isMenuOpen ? 'max-h-96 pb-4' : 'max-h-0'
-        )}>
-          <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-200 mt-2">
+        <div className={`mobile-menu ${isMenuOpen ? 'mobile-menu-open' : ''}`}>
+          <div className="mobile-menu-content">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                className="mobile-nav-link"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.name}
               </Link>
             ))}
             
-            <div className="border-t border-gray-200 pt-3 mt-3">
+            <div className="mobile-menu-divider">
               {isAuthenticated && user ? (
-                <div className="space-y-2">
-                  <div className="flex items-center px-3 py-2">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                <div className="mobile-user-section">
+                  <div className="mobile-user-info">
+                    <div className="mobile-user-avatar">
                       {user.profile_image_thumb ? (
                         <img
                           src={user.profile_image_thumb}
                           alt={user.nickname}
-                          className="w-10 h-10 rounded-full object-cover"
+                          className="mobile-avatar-image"
                         />
                       ) : (
-                        <span className="text-blue-600 font-medium">
+                        <span className="mobile-avatar-initial">
                           {user.nickname.charAt(0).toUpperCase()}
                         </span>
                       )}
                     </div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">
+                    <div className="mobile-user-details">
+                      <div className="mobile-user-name">
                         {user.nickname}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="mobile-user-email">
                         {user.email}
                       </div>
                     </div>
                   </div>
                   <Link
                     to="/profile"
-                    className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                    className="mobile-nav-link"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     프로필
@@ -207,7 +179,7 @@ const Header: React.FC = () => {
                       window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
                       setIsMenuOpen(false);
                     }}
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors"
+                    className="mobile-nav-link mobile-nav-btn"
                   >
                     채팅
                   </button>
@@ -216,23 +188,23 @@ const Header: React.FC = () => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-red-600 hover:bg-gray-50 rounded-md transition-colors"
+                    className="mobile-nav-link mobile-nav-btn mobile-logout-btn"
                   >
                     로그아웃
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="mobile-auth-section">
                   <Link
                     to="/login"
-                    className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors"
+                    className="mobile-nav-link"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     로그인
                   </Link>
                   <Link
                     to="/signup"
-                    className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+                    className="mobile-nav-link mobile-signup-link"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     회원가입

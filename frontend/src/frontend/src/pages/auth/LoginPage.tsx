@@ -114,8 +114,9 @@ const LoginPage: React.FC = () => {
     <>
       <SEOHead {...metaData} />
       
-      {/* 로그인 페이지 - 기존 PHP 디자인과 동일 */}
-      <section className="auth-section">
+      <div className="auth-page-wrapper">
+        {/* 로그인 페이지 - 기존 PHP 디자인과 동일 */}
+        <section className="auth-section">
         <div className="auth-background">
           <div className="auth-gradient-overlay"></div>
           <div className="auth-shapes">
@@ -272,7 +273,8 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
 
       {/* 원본 PHP와 동일한 스타일 */}
       <style>{`

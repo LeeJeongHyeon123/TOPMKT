@@ -54,7 +54,7 @@ const ToastContainer: React.FC = () => {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-20 right-4 z-40 space-y-2 max-w-md w-full">
+    <div className="fixed top-20 right-4 z-[9999] space-y-4 max-w-md w-full pointer-events-none">
       {toasts.map((toast) => (
         <div
           key={toast.id}
@@ -62,20 +62,20 @@ const ToastContainer: React.FC = () => {
             'transform transition-all duration-300 ease-in-out',
             'animate-in slide-in-from-right-full fade-in',
             getToastStyles(toast.type),
-            'rounded-lg p-4 backdrop-blur-sm'
+            'rounded-lg p-5 backdrop-blur-sm pointer-events-auto min-h-[80px]'
           )}
         >
-          <div className="flex items-start">
+          <div className="flex items-center min-h-[48px]">
             <div className="flex-shrink-0">
               {getToastIcon(toast.type)}
             </div>
             <div className="ml-3 flex-1">
               {toast.title && (
-                <p className="text-sm font-semibold text-gray-900 mb-1">
+                <p className="text-base font-semibold text-gray-900 mb-2">
                   {toast.title}
                 </p>
               )}
-              <p className="text-sm text-gray-700">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {toast.message}
               </p>
               {toast.action && (

@@ -68,7 +68,7 @@ function sendSms($phone, $message, $title = '')
  */
 function sendAuthCodeSms($phone, $authCode) 
 {
-    $message = "[탑마케팅] 인증번호는 [{$authCode}]입니다. 정확히 입력해주세요.";
+    $message = "[탑마케팅] 인증번호 {$authCode}";
     return sendSms($phone, $message);
 }
 

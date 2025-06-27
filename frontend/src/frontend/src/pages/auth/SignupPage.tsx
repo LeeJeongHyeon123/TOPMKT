@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import SEOHead from '../../components/common/SEOHead';
+import AuthService from '../../services/authService';
 
 // reCAPTCHA 타입 정의
 declare global {
@@ -109,10 +110,16 @@ const SignupPage: React.FC = () => {
   const formatPhoneNumber = (value: string) => {
     let numbers = value.replace(/[^0-9]/g, '');
     
-    // 010으로 시작하지 않으면 에러
-    if (numbers.length > 0 && !numbers.startsWith('010')) {
+    // 입력이 비어있으면 빈 문자열 반환
+    if (numbers.length === 0) {
+      return '';
+    }
+    
+    // 010으로 시작하지 않으면 경고만 표시하고 입력은 허용
+    if (!numbers.startsWith('010')) {
       setErrors(prev => ({ ...prev, phone: '010으로 시작하는 휴대폰 번호만 입력할 수 있습니다.' }));
-      return formData.phone;
+    } else {
+      setErrors(prev => ({ ...prev, phone: '' }));
     }
     
     // 자동 하이픈 삽입
@@ -253,8 +260,8 @@ const SignupPage: React.FC = () => {
     try {
       const recaptchaToken = await generateRecaptchaToken('send_verification');
       
-      // API 호출 (실제 구현 시)
-      // await AuthService.sendVerificationCode(formData.phone, recaptchaToken);
+      // API 호출
+      await AuthService.sendVerificationCode(formData.phone, 'SIGNUP');
       console.log('reCAPTCHA token:', recaptchaToken);
       
       setVerificationSent(true);
@@ -336,8 +343,9 @@ const SignupPage: React.FC = () => {
       {/* reCAPTCHA v3 스크립트 */}
       <script src="https://www.google.com/recaptcha/api.js?render=6LfViDErAAAAAMcOf3D-JxEhisMDhzLhEDYEahZb"></script>
       
-      {/* 회원가입 페이지 - 기존 PHP 디자인과 동일 */}
-      <section className="auth-section">
+      <div className="auth-page-wrapper">
+        {/* 회원가입 페이지 - 기존 PHP 디자인과 동일 */}
+        <section className="auth-section">
         <div className="auth-background">
           <div className="auth-gradient-overlay"></div>
           <div className="auth-shapes">
@@ -627,41 +635,74 @@ const SignupPage: React.FC = () => {
             {/* 사이드 정보 */}
             <div className="auth-side-info">
               <div className="side-info-content">
-                <div className="side-info-icon">
-                  <i className="fas fa-users"></i>
-                </div>
-                <h2>성공의 시작</h2>
-                <p>전 세계 네트워크 마케팅 전문가들과 함께 새로운 기회를 발견하고 성장하세요</p>
-                
-                <div className="info-stats">
-                  <div className="info-stat">
-                    <div className="stat-number">10,000+</div>
-                    <div className="stat-label">글로벌 멤버</div>
+                <div className="side-info-hero">
+                  <div className="side-info-icon">
+                    <i className="fas fa-rocket"></i>
                   </div>
-                  <div className="info-stat">
-                    <div className="stat-number">24/7</div>
-                    <div className="stat-label">언제든지 소통</div>
-                  </div>
-                  <div className="info-stat">
-                    <div className="stat-number">100+</div>
-                    <div className="stat-label">전문 콘텐츠</div>
-                  </div>
+                  <h2 className="side-info-title">성공의 여정을 시작하세요</h2>
+                  <p className="side-info-description">
+                    네트워크 마케팅의 새로운 기회를 발견하고, 
+                    전문가들과 함께 성장하는 플랫폼에 참여하세요
+                  </p>
                 </div>
 
                 <div className="signup-benefits">
-                  <h3>가입 혜택</h3>
-                  <ul>
-                    <li><i className="fas fa-check"></i> 무료 커뮤니티 액세스</li>
-                    <li><i className="fas fa-check"></i> 전문가 네트워킹 기회</li>
-                    <li><i className="fas fa-check"></i> 독점 행사 및 강의 참여</li>
-                    <li><i className="fas fa-check"></i> 실시간 마케팅 인사이트</li>
-                  </ul>
+                  <h3 className="benefits-title">
+                    <i className="fas fa-gift"></i>
+                    가입 혜택
+                  </h3>
+                  <div className="benefits-grid">
+                    <div className="benefit-item">
+                      <div className="benefit-icon">
+                        <i className="fas fa-users"></i>
+                      </div>
+                      <div className="benefit-text">
+                        <span className="benefit-title">커뮤니티 참여</span>
+                        <span className="benefit-desc">전문가 네트워크 액세스</span>
+                      </div>
+                    </div>
+                    <div className="benefit-item">
+                      <div className="benefit-icon">
+                        <i className="fas fa-graduation-cap"></i>
+                      </div>
+                      <div className="benefit-text">
+                        <span className="benefit-title">전문 교육</span>
+                        <span className="benefit-desc">독점 강의 및 세미나</span>
+                      </div>
+                    </div>
+                    <div className="benefit-item">
+                      <div className="benefit-icon">
+                        <i className="fas fa-chart-line"></i>
+                      </div>
+                      <div className="benefit-text">
+                        <span className="benefit-title">성장 지원</span>
+                        <span className="benefit-desc">실시간 마케팅 인사이트</span>
+                      </div>
+                    </div>
+                    <div className="benefit-item">
+                      <div className="benefit-icon">
+                        <i className="fas fa-handshake"></i>
+                      </div>
+                      <div className="benefit-text">
+                        <span className="benefit-title">비즈니스 기회</span>
+                        <span className="benefit-desc">파트너십 및 협업 기회</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="side-info-footer">
+                  <div className="trust-badge">
+                    <i className="fas fa-shield-check"></i>
+                    <span>안전하고 신뢰할 수 있는 플랫폼</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 };

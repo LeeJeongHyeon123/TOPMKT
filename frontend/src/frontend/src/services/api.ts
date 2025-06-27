@@ -1,13 +1,14 @@
 // Basic API configuration
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://www.topmktx.com' 
-  : 'http://localhost:3000';
+  : 'https://www.topmktx.com';
 
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
   const defaultOptions: RequestInit = {
     headers: {
+      'X-Requested-With': 'XMLHttpRequest',
       ...options.headers,
     },
     ...options,

@@ -96,7 +96,13 @@
       "mcp__context7__get-library-docs",
       "Bash(npm uninstall:*)",
       "Bash(whereis:*)",
-      "Bash(tar:*)"
+      "Bash(tar:*)",
+      "Bash(update-ca-certificates:*)",
+      "Bash(ss:*)",
+      "Bash(httpd:*)",
+      "Bash(/workspace/read_logs.sh:*)",
+      "Bash(mount)",
+      "Bash(/workspace/sync_logs_host.sh:*)"
     ],
     "deny": []
   },

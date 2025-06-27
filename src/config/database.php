@@ -20,10 +20,7 @@ class Database {
     
     private function __construct() {
         try {
-            // 프로젝트별 로그 경로 설정
-            $projectLogPath = '/var/www/html/topmkt/logs/topmkt_errors.log';
-            ini_set('log_errors', 1);
-            ini_set('error_log', $projectLogPath);
+            // 로그 경로는 index.php에서 이미 설정됨
             
             // 환경변수에서 데이터베이스 설정 로드 (보안 강화)
             $socket_path = $_ENV['DB_SOCKET'] ?? self::SOCKET_PATH;

@@ -19,6 +19,29 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// topmkt 프로젝트 전용 로그 시스템 설정
+$topmktLogPath = '/var/www/html/topmkt/logs/topmkt_errors.log';
+
+// 로그 디렉토리 생성
+$logDir = dirname($topmktLogPath);
+if (!file_exists($logDir)) {
+    @mkdir($logDir, 0755, true);
+}
+
+// topmkt 프로젝트 전체에서 사용할 로그 경로 설정
+ini_set('log_errors', 1);
+ini_set('error_log', $topmktLogPath);
+
+// 전역 상수로 정의 (다른 파일에서도 사용 가능)
+define('TOPMKT_LOG_PATH', $topmktLogPath);
+
+// 로그 시스템 테스트
+error_log("=== 탑마케팅 애플리케이션 시작 ===");
+error_log("현재 시간: " . date('Y-m-d H:i:s'));
+error_log("요청 URI: " . ($_SERVER['REQUEST_URI'] ?? 'N/A'));
+error_log("요청 메서드: " . ($_SERVER['REQUEST_METHOD'] ?? 'N/A'));
+error_log("로그 경로: " . $topmktLogPath);
+
 try {
     // CORS 헤더 설정
     require_once __DIR__ . '/cors-headers.php';

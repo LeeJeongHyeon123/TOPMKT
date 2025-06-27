@@ -30,6 +30,8 @@ class Router {
             // 휴대폰 인증 라우트
             'POST:/auth/send-verification' => ['AuthController', 'sendVerification'],
             'POST:/auth/verify-code' => ['AuthController', 'verifyCode'],
+            'POST:/auth/verification/send' => ['AuthController', 'sendVerification'],
+            'POST:/auth/verification/verify' => ['AuthController', 'verifyCode'],
             
             // JWT API 라우트
             'POST:/auth/refresh' => ['AuthController', 'refreshToken'],

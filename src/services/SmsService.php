@@ -33,18 +33,29 @@ class SmsService
     public function sendSms($receiver, $message, $title = '', $msgType = '') 
     {
         try {
+            error_log("=== SmsService::sendSms 시작 ===");
+            error_log("수신자: " . $receiver);
+            error_log("메시지: " . $message);
+            error_log("제목: " . $title);
+            error_log("메시지 타입: " . $msgType);
+            
             // 입력값 검증
             if (empty($receiver)) {
+                error_log("오류: 수신자 전화번호가 비어있음");
                 return ['success' => false, 'message' => '수신자 전화번호가 필요합니다.'];
             }
             
             if (empty($message)) {
+                error_log("오류: 메시지 내용이 비어있음");
                 return ['success' => false, 'message' => '메시지 내용이 필요합니다.'];
             }
             
             // 전화번호 포맷팅 및 검증
             $receiver = $this->formatPhone($receiver);
+            error_log("포맷팅된 전화번호: " . $receiver);
+            
             if (!$this->isValidPhone($receiver)) {
+                error_log("오류: 유효하지 않은 전화번호 형식");
                 return ['success' => false, 'message' => '유효하지 않은 전화번호 형식입니다.'];
             }
             
@@ -74,11 +85,19 @@ class SmsService
                 $postData['title'] = $title;
             }
             
+            error_log("API 호출 전송 데이터: " . json_encode($postData));
+            error_log("API URL: " . $this->apiUrl);
+            
             $response = $this->callApi($this->apiUrl, $postData);
+            
+            error_log("API 응답: " . json_encode($response));
             
             // 응답 처리
             if ($response && isset($response['result_code'])) {
                 $success = in_array($response['result_code'], ['1', 1]);
+                
+                error_log("API 결과 코드: " . $response['result_code']);
+                error_log("발송 성공 여부: " . ($success ? 'true' : 'false'));
                 
                 return [
                     'success' => $success,
@@ -86,7 +105,8 @@ class SmsService
                     'data' => $response
                 ];
             } else {
-                return ['success' => false, 'message' => 'API 응답 오류가 발생했습니다.'];
+                error_log("오류: API 응답이 올바르지 않음");
+                return ['success' => false, 'message' => 'API 응답 오류가 발생했습니다.', 'response' => $response];
             }
             
         } catch (Exception $e) {
@@ -404,6 +424,10 @@ class SmsService
     private function callApi($url, $data) 
     {
         try {
+            error_log("=== callApi 시작 ===");
+            error_log("요청 URL: " . $url);
+            error_log("요청 데이터: " . json_encode($data));
+            
             $ch = curl_init();
             
             curl_setopt_array($ch, [
@@ -419,9 +443,14 @@ class SmsService
                 ]
             ]);
             
+            error_log("CURL 요청 시작...");
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $error = curl_error($ch);
+            
+            error_log("HTTP 상태 코드: " . $httpCode);
+            error_log("CURL 오류: " . ($error ?: '없음'));
+            error_log("원시 응답: " . substr($response, 0, 500) . (strlen($response) > 500 ? '...' : ''));
             
             curl_close($ch);
             
@@ -436,6 +465,7 @@ class SmsService
             }
             
             $decodedResponse = json_decode($response, true);
+            error_log("JSON 디코딩 결과: " . json_encode($decodedResponse));
             
             if (json_last_error() !== JSON_ERROR_NONE) {
                 error_log('JSON 파싱 오류: ' . json_last_error_msg());

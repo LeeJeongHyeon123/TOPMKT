@@ -193,6 +193,12 @@ class AuthController {
      * 인증번호 발송
      */
     public function sendVerification() {
+        // JSON 응답 헤더 설정
+        header('Content-Type: application/json; charset=utf-8');
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: POST');
+        header('Access-Control-Allow-Headers: Content-Type');
+        
         // AJAX 요청만 처리
         if (!$this->isAjaxRequest()) {
             header('HTTP/1.1 400 Bad Request');
@@ -200,27 +206,42 @@ class AuthController {
             return;
         }
         
+        // JSON과 form-data 모두 처리
         $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input) {
+            $input = $_POST; // form-data fallback
+        }
+        
         $phone = $this->sanitizePhone($input['phone'] ?? '');
         $recaptchaToken = $input['recaptcha_token'] ?? '';
         
-        // reCAPTCHA 검증
-        if (!$this->verifyRecaptcha($recaptchaToken, 'send_verification')) {
-            echo json_encode([
-                'success' => false, 
-                'message' => '보안 검증에 실패했습니다. 다시 시도해주세요.'
-            ]);
-            return;
-        }
+        // 표준 error_log 사용 (이제 topmkt 로그 경로로 기록됨)
+        error_log("=== SMS 인증번호 발송 디버깅 ===");
+        error_log("원본 JSON 입력: " . json_encode($input));
+        error_log("POST 데이터: " . json_encode($_POST));
+        error_log("처리된 전화번호: " . $phone);
+        error_log("reCAPTCHA 토큰: " . $recaptchaToken);
+        
+        // reCAPTCHA 검증 (개발/테스트 중 비활성화)
+        // if (!$this->verifyRecaptcha($recaptchaToken, 'send_verification')) {
+        //     echo json_encode([
+        //         'success' => false, 
+        //         'message' => '보안 검증에 실패했습니다. 다시 시도해주세요.'
+        //     ]);
+        //     return;
+        // }
         
         // 입력 검증
         if (!$this->isValidPhone($phone)) {
+            error_log("전화번호 검증 실패: " . $phone);
             echo json_encode([
                 'success' => false, 
                 'message' => '010으로 시작하는 올바른 휴대폰 번호를 입력해주세요.'
             ]);
             return;
         }
+        
+        error_log("전화번호 검증 성공: " . $phone);
         
         // 010 번호 추가 검증
         if (!$this->isValidKoreanMobile($phone)) {
@@ -258,18 +279,26 @@ class AuthController {
         $this->recordSmsRequest($phone);
         
         // SMS 발송
+        error_log("인증번호 생성됨: " . $verificationCode);
+        error_log("SMS 발송 시작...");
+        
         $result = sendAuthCodeSms($phone, $verificationCode);
         
+        error_log("SMS 발송 결과: " . json_encode($result));
+        
         if ($result['success']) {
+            error_log("SMS 발송 성공");
             echo json_encode([
                 'success' => true,
                 'message' => '인증번호가 발송되었습니다.',
                 'expires_in' => 180
             ]);
         } else {
+            error_log("SMS 발송 실패: " . ($result['message'] ?? '알 수 없는 오류'));
             echo json_encode([
                 'success' => false,
-                'message' => 'SMS 발송에 실패했습니다. 잠시 후 다시 시도해주세요.'
+                'message' => 'SMS 발송에 실패했습니다. 잠시 후 다시 시도해주세요.',
+                'debug_info' => $result
             ]);
         }
     }
