@@ -1,13 +1,9 @@
 {
   "mcpServers": {
-    "TalkToFigma": {
-      "command": "bunx",
-      "args": [
-        "cursor-talk-to-figma-mcp@latest"
-      ],
-      "env": {
-        "FIGMA_CHANNEL": "al1wsaom"
-      }
+    "context7": {
+      "command": "npx",
+      "args": ["@mseep/context7-mcp"],
+      "env": {}
     }
   }
 }

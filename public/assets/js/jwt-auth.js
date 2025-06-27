@@ -20,7 +20,7 @@ class JWTAuth {
         // 설정
         this.config = {
             refreshBeforeExpiry: 5 * 60 * 1000, // 5분 전에 갱신
-            heartbeatInterval: 5 * 60 * 1000,   // 5분마다 하트비트
+            heartbeatInterval: 15 * 60 * 1000,  // 15분마다 하트비트 (부하 감소)
             warningBeforeExpiry: 10 * 60 * 1000 // 10분 전에 경고
         };
         
@@ -77,6 +77,7 @@ class JWTAuth {
     async checkTokenStatus() {
         // JWT 토큰이 있는지 먼저 확인
         if (!this.hasJWTToken()) {
+            console.log('No JWT token found');
             return false;
         }
         
@@ -106,14 +107,26 @@ class JWTAuth {
                 }
             }
             
-            // 토큰이 유효하지 않은 경우
+            // 토큰이 유효하지 않은 경우 - 공개 페이지라면 조용히 처리
             if (response.status === 401) {
-                await this.handleTokenExpiry();
-                return false;
+                const currentUrl = window.location.pathname;
+                const isPublicPage = currentUrl === '/' || currentUrl.startsWith('/community') || 
+                                   currentUrl.startsWith('/lectures') || currentUrl.startsWith('/events');
+                
+                if (isPublicPage) {
+                    console.log('Token invalid but on public page, ignoring');
+                    this.stopTokenRefresh();
+                    this.stopHeartbeat();
+                    return false;
+                } else {
+                    await this.handleTokenExpiry();
+                    return false;
+                }
             }
             
         } catch (error) {
-            console.error('Token status check failed:', error);
+            console.warn('Token status check failed:', error);
+            // 네트워크 오류 등은 조용히 처리
         }
         
         return false;
@@ -170,14 +183,19 @@ class JWTAuth {
         // 토큰 만료 이벤트 발생
         this.dispatchEvent('tokenExpired');
         
-        // 현재 페이지가 로그인 관련 페이지가 아닌 경우에만 리다이렉트
+        // 현재 페이지가 로그인 관련 페이지가 아니고, 인증이 필수인 페이지에서만 리다이렉트
         const currentUrl = window.location.pathname + window.location.search;
         const isAuthPage = currentUrl.startsWith('/auth/');
+        const isPublicPage = currentUrl === '/' || currentUrl.startsWith('/community') || 
+                            currentUrl.startsWith('/lectures') || currentUrl.startsWith('/events');
         
-        if (!isAuthPage) {
-            console.log('Redirecting to login');
+        // 공개 페이지이거나 인증 페이지라면 리다이렉트하지 않음
+        if (!isAuthPage && !isPublicPage) {
+            console.log('Redirecting to login from protected page');
             localStorage.setItem('jwt_redirect_after_login', currentUrl);
             window.location.href = '/auth/login';
+        } else {
+            console.log('Token expired but staying on public page');
         }
     }
     

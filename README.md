@@ -36,15 +36,23 @@
 - **프로필 이미지 지연 로딩**: 0.025초 로딩 시간 달성
 - **AJAX 기반 모달**: 필요시에만 원본 이미지 로딩
 
-## 최신 업데이트 (2025.12)
+## 최신 업데이트 (2025.06)
 
-### 🚀 React 프론트엔드 전환 (NEW!)
-- ✅ **React + TypeScript 기반 프론트엔드**: 기존 PHP 뷰를 React로 완전 전환
-- ✅ **기존 디자인 완벽 재현**: 원본 PHP 버전과 동일한 디자인 구현
-- ✅ **현대적 개발 환경**: Vite, ESLint, 타입 안전성 확보
-- ✅ **컴포넌트 기반 아키텍처**: 재사용 가능한 UI 컴포넌트 시스템
-- ✅ **JWT 인증 시스템 연동**: React에서 JWT 토큰 기반 인증 구현
-- ✅ **API 통신 최적화**: useApi 훅 기반 효율적인 데이터 페칭
+### 🚀 주요 라이브러리 업그레이드 (NEW!)
+- ✅ **React 19.1.0 업그레이드**: 최신 React 성능 개선 및 새로운 기능 적용
+- ✅ **Node.js 20.19.0 업그레이드**: 최신 JavaScript 런타임 환경 적용
+- ✅ **Vite 7.0.0 업그레이드**: 차세대 빌드 도구로 빌드 성능 대폭 향상
+- ✅ **TypeScript 5.8.3 업그레이드**: 개선된 타입 시스템 및 컴파일 성능
+- ✅ **TailwindCSS 4.1.11 업그레이드**: 새로운 @theme 구문 및 성능 개선
+- ✅ **React Router 7.6.2 업그레이드**: 최신 라우팅 시스템 기능
+- ✅ **ESLint 9.29.0 업그레이드**: 새로운 flat config 형식 적용
+- ✅ **보안 취약점 완전 해결**: 모든 의존성 보안 이슈 0개 달성
+
+### 🔧 기술 스택 현대화
+- ✅ **React Helmet 제거**: React 19 호환을 위한 직접 DOM 조작 방식 적용
+- ✅ **PostCSS 설정 최신화**: TailwindCSS 4.x 지원을 위한 설정 변경
+- ✅ **ESLint 설정 마이그레이션**: flat config 형식으로 완전 전환
+- ✅ **성능 최적화**: 빌드 시간 단축 및 번들 크기 최적화
 
 ### 🆕 신규 기능 (2025.01)
 - ✅ 프로필 공유 시스템 (Web Share API 지원)
@@ -72,7 +80,8 @@
 - MariaDB 10.6.5 이상
 - Apache/Nginx 웹서버
 - Composer
-- Node.js & npm
+- Node.js 20.19.0+ 이상
+- npm 10.8.2+ 이상
 
 ### 설치 과정
 ```bash
@@ -82,9 +91,16 @@ git clone https://github.com/LeeJeongHyeon123/topmkt.git
 # 디렉토리 이동
 cd topmkt
 
-# 의존성 설치
+# PHP 의존성 설치
 composer install
+
+# Node.js 의존성 설치
 npm install
+
+# 프론트엔드 의존성 설치 및 빌드
+cd frontend/src/frontend
+npm install
+npm run build
 
 # 환경 설정
 cp .env.example .env
@@ -121,11 +137,13 @@ RECAPTCHA_SECRET_KEY=your_secret_key
 - **Apache**: 웹서버
 
 ### Frontend
-- **React 18**: 컴포넌트 기반 UI 라이브러리
-- **TypeScript**: 타입 안전성을 위한 JavaScript 슈퍼셋
-- **Vite**: 빠른 빌드 도구 및 개발 서버
-- **React Router**: SPA 라우팅 시스템
-- **Tailwind CSS**: 유틸리티 기반 CSS 프레임워크
+- **React 19.1.0**: 최신 컴포넌트 기반 UI 라이브러리 (React 19 최신 성능 개선)
+- **TypeScript 5.8.3**: 향상된 타입 안전성을 위한 JavaScript 슈퍼셋
+- **Vite 7.0.0**: 차세대 초고속 빌드 도구 및 개발 서버
+- **React Router 7.6.2**: 최신 SPA 라우팅 시스템
+- **TailwindCSS 4.1.11**: 차세대 유틸리티 기반 CSS 프레임워크
+- **Axios 1.10.0**: 최신 HTTP 클라이언트 라이브러리
+- **ESLint 9.29.0**: 최신 코드 품질 관리 도구
 - **Web Share API**: 네이티브 공유 기능
 
 ### 외부 서비스
@@ -139,6 +157,7 @@ RECAPTCHA_SECRET_KEY=your_secret_key
 - **GitHub Actions**: CI/CD 파이프라인
 - **Composer**: PHP 의존성 관리
 - **npm**: JavaScript 의존성 관리
+- **Node.js 20.19.0**: 최신 JavaScript 런타임 환경
 
 ## 프로젝트 구조
 ```
@@ -271,7 +290,7 @@ topmkt/
 - **웹사이트**: https://www.topmktx.com
 
 ## 버전 정보
-- **현재 버전**: 3.0.0 (React 프론트엔드 전환)
-- **마지막 업데이트**: 2025년 12월
+- **현재 버전**: 3.1.0 (라이브러리 현대화)
+- **마지막 업데이트**: 2025년 6월
 - **안정성**: Production Ready
-- **주요 변경사항**: PHP 뷰에서 React 기반 SPA로 전면 전환, 기존 디자인 완벽 재현 
+- **주요 변경사항**: 모든 주요 라이브러리 최신 버전 업그레이드, 보안 강화, 성능 최적화 

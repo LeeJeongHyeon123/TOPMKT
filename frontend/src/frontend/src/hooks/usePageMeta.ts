@@ -1,6 +1,4 @@
-// Unused imports commented out
-// import { useEffect } from 'react';
-// import { Helmet } from 'react-helmet-async';
+// React Helmet replaced with direct DOM manipulation in SEOHead component
 
 interface PageMetaOptions {
   title?: string;

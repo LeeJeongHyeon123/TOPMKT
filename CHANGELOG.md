@@ -1,5 +1,136 @@
 # 변경 로그 (Changelog)
 
+## [3.1.0] - 2025-06-27
+
+### 🚀 주요 라이브러리 업그레이드
+
+#### 🔄 런타임 환경 업그레이드
+- **Node.js**: 18.20.8 → **20.19.0** (LTS)
+  - 최신 JavaScript 런타임 환경
+  - 향상된 성능과 보안 개선
+  - ES 모듈 지원 강화
+
+#### ⚛️ React 생태계 업그레이드
+- **React**: 18.2.0 → **19.1.0**
+  - React 19의 새로운 성능 최적화 기능
+  - 향상된 Server Components 지원
+  - 개선된 Concurrent Features
+- **React DOM**: 18.2.0 → **19.1.0**
+- **React Router**: 6.11.0 → **7.6.2**
+  - 새로운 라우팅 최적화
+  - 향상된 타입 안전성
+  - 개선된 Data Loading API
+
+#### 🛠️ 개발 도구 업그레이드
+- **Vite**: 4.4.5 → **7.0.0**
+  - 차세대 빌드 시스템 적용
+  - 빌드 성능 대폭 향상 (2.5초 내 완료)
+  - 개선된 HMR 성능
+- **TypeScript**: 5.0.2 → **5.8.3**
+  - 향상된 타입 추론 시스템
+  - 개선된 컴파일 성능
+  - 새로운 타입 기능 추가
+- **ESLint**: 8.45.0 → **9.29.0**
+  - Flat Config 형식 적용
+  - 향상된 성능과 규칙
+  - 모던 JavaScript 지원 강화
+
+#### 🎨 스타일링 및 UI 라이브러리 업그레이드
+- **TailwindCSS**: 3.3.0 → **4.1.11**
+  - 새로운 @theme 구문 적용
+  - CSS-in-JS 대신 CSS 변수 기반 설정
+  - 향상된 빌드 성능
+- **PostCSS**: 8.4.24 → **8.5.6**
+- **Autoprefixer**: 10.4.14 → **10.4.21**
+
+#### 📡 HTTP 및 유틸리티 라이브러리 업그레이드
+- **Axios**: 1.4.0 → **1.10.0**
+  - 보안 취약점 완전 해결
+  - AbortController 기반 요청 취소 강화
+  - 향상된 타입 정의
+- **clsx**: 1.2.1 → **2.1.1**
+- **tailwind-merge**: 1.12.0 → **3.3.1**
+
+### 🔧 기술적 개선사항
+
+#### 📦 설정 파일 현대화
+- **ESLint 설정**: `.eslintrc.cjs` → `eslint.config.js`
+  - Flat Config 형식으로 완전 마이그레이션
+  - 모던 JavaScript 환경 지원
+  - 향상된 타입스크립트 지원
+- **PostCSS 설정**: TailwindCSS 4.x 호환성 적용
+  - `@tailwindcss/postcss` 플러그인 사용
+  - 새로운 `@import "tailwindcss"` 구문 적용
+
+#### 🚫 호환성 조정
+- **React Helmet 제거**: React 19 호환성 이슈로 제거
+  - 직접 DOM 조작 방식으로 변경
+  - SEOHead 컴포넌트 완전 재작성
+  - Meta 태그 관리 최적화
+
+#### 🎨 TailwindCSS 4.x 적용
+- **@theme 구문**: CSS 변수 기반 테마 설정
+  - 기존 JavaScript 설정 파일 대신 CSS 파일에서 설정
+  - 향상된 성능과 타입 안전성
+  - 커스텀 색상 및 애니메이션 정의
+
+### 🔐 보안 강화
+
+#### 🛡️ 의존성 보안
+- **보안 취약점 0개 달성**: 모든 known vulnerabilities 해결
+- **Axios 보안 패치**: 최신 보안 업데이트 적용
+- **의존성 정리**: 중복 및 불필요한 의존성 제거
+
+### 📈 성능 최적화
+
+#### ⚡ 빌드 성능
+- **빌드 시간**: 2.5초 내 완료 (Vite 7.0 적용)
+- **번들 크기 최적화**: 코드 스플리팅 및 트리 쉐이킹 향상
+- **개발 서버**: HMR 성능 대폭 개선
+
+#### 🚀 런타임 성능
+- **React 19 최적화**: 렌더링 성능 향상
+- **Node.js 20**: 향상된 V8 엔진 성능
+- **TypeScript 5.8**: 컴파일 속도 개선
+
+### 🛠️ 개발 경험 개선
+
+#### 📝 코드 품질
+- **ESLint 9**: 향상된 코드 분석 및 규칙
+- **TypeScript 5.8**: 더 정확한 타입 추론
+- **Flat Config**: 간소화된 설정 관리
+
+#### 🔄 호환성
+- **Node.js 20 요구사항**: 최신 JavaScript 기능 활용
+- **React 19 준비**: 차세대 React 기능 지원
+- **모던 브라우저**: 최신 웹 표준 지원
+
+### 📁 파일 변경사항
+
+#### 🆕 추가된 파일
+- `eslint.config.js`: ESLint 9 flat config 설정
+- `@tailwindcss/postcss`: TailwindCSS 4.x PostCSS 플러그인
+
+#### 🔄 수정된 파일
+- `package.json`: 모든 주요 의존성 버전 업그레이드
+- `postcss.config.js`: TailwindCSS 4.x 호환 설정
+- `src/index.css`: @theme 구문 적용 및 CSS 변수 정의
+- `src/components/common/SEOHead.tsx`: 직접 DOM 조작 방식으로 재작성
+- `src/main.tsx`: React Helmet Provider 제거
+
+#### 🗑️ 제거된 파일
+- `.eslintrc.cjs`: ESLint 9 flat config로 대체
+- `tailwind.config.js`: CSS 기반 설정으로 대체 (백업 유지)
+
+### 🏗️ 인프라 개선
+
+#### 🐳 Docker 환경 최적화
+- **Node.js 20.19.0**: Docker 환경에서 최신 런타임 적용
+- **Claude Code 호환성**: MCP 서버와의 호환성 유지
+- **개발 환경 통일**: 로컬과 Docker 환경 일치
+
+---
+
 ## [3.0.0] - 2025-06-16
 
 ### 🎯 주요 기능 추가

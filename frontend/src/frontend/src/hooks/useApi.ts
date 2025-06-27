@@ -44,14 +44,14 @@ export function useApi<T = any>(
   });
 
   const { addToast } = useToast();
-  const { setLoading } = useLoading();
+  const { startRequest, endRequest } = useLoading();
 
   const execute = useCallback(async (...args: any[]): Promise<T | null> => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
       if (showLoading) {
-        setLoading(true, loadingMessage);
+        startRequest();
       }
 
       const result = await apiFunction(...args);
@@ -81,10 +81,10 @@ export function useApi<T = any>(
       return null;
     } finally {
       if (showLoading) {
-        setLoading(false);
+        endRequest();
       }
     }
-  }, [apiFunction, addToast, setLoading, showLoading, showError, showSuccess, successMessage, loadingMessage]);
+  }, [apiFunction, addToast, startRequest, endRequest, showLoading, showError, showSuccess, successMessage, loadingMessage]);
 
   const reset = useCallback(() => {
     setState({

@@ -1,47 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { Post, PostSearchParams } from '../../types';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useApi } from '../../hooks/useApi';
+import CommunityService, { CommunityPost } from '../../services/CommunityService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const CommunityPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState<CommunityPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [searchFilter, setSearchFilter] = useState(searchParams.get('filter') || 'all');
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   const { isAuthenticated } = useAuth();
-  const { execute } = useApi(async (data: any) => data);
 
   // 게시글 목록 조회
-  const fetchPosts = async (params: PostSearchParams = {}) => {
+  const fetchPosts = async () => {
     setLoading(true);
+    setError(null);
+    
     try {
-      const queryParams = {
-        query: searchQuery,
-        filter: searchFilter,
-        sort_by: 'created_at',
-        sort_direction: 'desc',
+      const filters = {
+        search: searchQuery || undefined,
+        filter: (searchFilter === 'all' ? undefined : searchFilter) as 'title' | 'content' | 'author' | undefined,
         page: currentPage,
-        per_page: 10,
-        status: 'PUBLISHED',
-        ...params,
+        limit: 20 // 기존 PHP와 동일한 페이지 크기
       };
 
-      const response = await execute({
-        url: '/posts',
-        method: 'GET',
-        params: queryParams,
-      });
+      const response = await CommunityService.getPosts(filters);
 
       if (response.success && response.data) {
-        setPosts(response.data.data);
+        setPosts(response.data.posts || []);
+        setTotalPages(response.data.pagination?.total_pages || 1);
+        setTotalCount(response.data.pagination?.total_count || 0);
+      } else {
+        setError('게시글을 불러오는데 실패했습니다.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('게시글 목록 조회 실패:', error);
+      setError(error.response?.data?.message || '게시글을 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
     }
@@ -408,6 +409,52 @@ const CommunityPage: React.FC = () => {
             margin-bottom: 20px;
           }
           
+          /* 페이지네이션 스타일 */
+          .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+          }
+          
+          .pagination {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+          }
+          
+          .pagination-btn {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            background: #fff;
+            color: #4a5568;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 44px;
+          }
+          
+          .pagination-btn:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+            color: #667eea;
+            transform: translateY(-1px);
+          }
+          
+          .pagination-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+          }
+          
+          .pagination-btn.active:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+          }
+          
           @media (max-width: 768px) {
             .community-container {
               padding: 15px;
@@ -515,47 +562,75 @@ const CommunityPage: React.FC = () => {
         {/* 게시판 통계 */}
         <div className="board-stats">
           <p className="stats-text">
-            📊 총 <strong>{posts.length}</strong>개의 게시글이 있습니다
+            📊 총 <strong>{totalCount.toLocaleString()}</strong>개의 게시글이 있습니다
             {searchQuery && ' (검색 결과)'}
+            {' | '}
+            <strong>{currentPage}</strong>/{totalPages} 페이지
           </p>
         </div>
 
+        {/* 에러 메시지 */}
+        {error && (
+          <div style={{ 
+            background: '#fed7d7', 
+            border: '1px solid #fc8181', 
+            borderRadius: '8px', 
+            padding: '16px', 
+            margin: '20px 0',
+            color: '#742a2a'
+          }}>
+            <strong>⚠️ 오류가 발생했습니다:</strong> {error}
+            <button 
+              onClick={fetchPosts}
+              style={{
+                marginLeft: '10px',
+                padding: '4px 8px',
+                background: '#fc8181',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
         {/* 게시글 목록 */}
         {loading ? (
-          <div style={{ display: 'flex', justifyContent: 'center', padding: '60px 0' }}>
-            <LoadingSpinner size="lg" message="게시글을 불러오는 중..." />
-          </div>
-        ) : (
+          <LoadingSpinner fullScreen={true} message="게시글을 불러오는 중..." />
+        ) : error ? null : (
           <div className="post-list">
             {posts.length > 0 ? (
               posts.map((post) => (
                 <div
                   key={post.id}
                   className="post-item"
-                  onClick={() => window.location.href = `/community/${post.id}`}
+                  onClick={() => navigate(`/community/post/${post.id}`)}
                 >
                   {/* 작성자 프로필 이미지 */}
                   <div 
                     className="post-author-avatar profile-image-clickable"
-                    data-user-id={post.user?.id}
-                    data-user-name={post.user?.nickname || '익명'}
+                    data-user-id={post.user_id}
+                    data-user-name={post.author_name || '익명'}
                     title="프로필 이미지 크게 보기"
                     onClick={(e) => {
                       e.stopPropagation();
                       // TODO: Profile modal functionality  
                     }}
                   >
-                    {post.user?.profile_image ? (
+                    {post.profile_image ? (
                       <img
-                        src={post.user.profile_image}
-                        alt={post.user?.nickname || '익명'}
+                        src={post.profile_image}
+                        alt={post.author_name || '익명'}
                         loading="lazy"
                         width="50"
                         height="50"
                         style={{ objectFit: 'cover', borderRadius: '50%' }}
                       />
                     ) : (
-                      (post.user?.nickname || '?').charAt(0)
+                      (post.author_name || '?').charAt(0)
                     )}
                   </div>
                   
@@ -563,31 +638,31 @@ const CommunityPage: React.FC = () => {
                   <div className="post-content-wrapper">
                     <div className="post-title">
                       {post.title}
-                      {(post.comments_count || 0) > 0 && (
+                      {(post.comment_count || 0) > 0 && (
                         <span style={{ color: '#e53e3e', fontSize: '0.9rem' }}>
-                          [{post.comments_count}]
+                          [{post.comment_count}]
                         </span>
                       )}
                     </div>
                     
                     <div className="post-meta">
-                      <span className="post-author">👤 {post.user?.nickname || '익명'}</span>
+                      <span className="post-author">👤 {post.author_name || '익명'}</span>
                       <span className="post-date">📅 {formatDate(post.created_at)}</span>
                     </div>
                     
                     <div className="post-content-preview">
-                      {getPreviewText(post.content)}
+                      {getPreviewText(post.content_preview || post.content)}
                     </div>
                     
                     <div className="post-stats">
                       <span className="stat-item">
-                        👁️ {(post.views || 0).toLocaleString()}
+                        👁️ {(post.view_count || 0).toLocaleString()}
                       </span>
                       <span className="stat-item">
-                        💬 {(post.comments_count || 0).toLocaleString()}
+                        💬 {(post.comment_count || 0).toLocaleString()}
                       </span>
                       <span className="stat-item">
-                        ❤️ {(post.likes_count || 0).toLocaleString()}
+                        ❤️ {(post.like_count || 0).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -616,6 +691,97 @@ const CommunityPage: React.FC = () => {
                 )}
               </div>
             )}
+          </div>
+        )}
+        
+        {/* 페이지네이션 */}
+        {!loading && posts.length > 0 && totalPages > 1 && (
+          <div className="pagination-wrapper">
+            <div className="pagination">
+              {/* 이전 페이지 */}
+              {currentPage > 1 && (
+                <>
+                  <button
+                    onClick={() => {
+                      setCurrentPage(1);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('page', '1');
+                      setSearchParams(newParams);
+                    }}
+                    className="pagination-btn"
+                  >
+                    « 처음
+                  </button>
+                  <button
+                    onClick={() => {
+                      const newPage = currentPage - 1;
+                      setCurrentPage(newPage);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('page', newPage.toString());
+                      setSearchParams(newParams);
+                    }}
+                    className="pagination-btn"
+                  >
+                    ‹ 이전
+                  </button>
+                </>
+              )}
+              
+              {/* 페이지 번호들 */}
+              {(() => {
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, currentPage + 2);
+                const pages = [];
+                
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setCurrentPage(i);
+                        const newParams = new URLSearchParams(searchParams);
+                        newParams.set('page', i.toString());
+                        setSearchParams(newParams);
+                      }}
+                      className={`pagination-btn ${i === currentPage ? 'active' : ''}`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+                
+                return pages;
+              })()}
+              
+              {/* 다음 페이지 */}
+              {currentPage < totalPages && (
+                <>
+                  <button
+                    onClick={() => {
+                      const newPage = currentPage + 1;
+                      setCurrentPage(newPage);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('page', newPage.toString());
+                      setSearchParams(newParams);
+                    }}
+                    className="pagination-btn"
+                  >
+                    다음 ›
+                  </button>
+                  <button
+                    onClick={() => {
+                      setCurrentPage(totalPages);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set('page', totalPages.toString());
+                      setSearchParams(newParams);
+                    }}
+                    className="pagination-btn"
+                  >
+                    마지막 »
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

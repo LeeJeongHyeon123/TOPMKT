@@ -1,6 +1,6 @@
 {
   "name": "topmkt",
-  "version": "1.0.1",
+  "version": "3.1.0",
   "description": "탑마케팅 웹 애플리케이션",
   "scripts": {
     "lint:js": "eslint public/assets/js/**/*.js",
@@ -17,6 +17,8 @@
   "author": "LeeJeongHyeon",
   "license": "MIT",
   "devDependencies": {
-    "eslint": "^9.28.0"
+    "clsx": "^2.1.1",
+    "eslint": "^9.29.0",
+    "tailwind-merge": "^3.3.1"
   }
 }

@@ -54,13 +54,13 @@ const ToastContainer: React.FC = () => {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-md w-full">
+    <div className="fixed top-20 right-4 z-40 space-y-2 max-w-md w-full">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={cn(
             'transform transition-all duration-300 ease-in-out',
-            'animate-in slide-in-from-right-full',
+            'animate-in slide-in-from-right-full fade-in',
             getToastStyles(toast.type),
             'rounded-lg p-4 backdrop-blur-sm'
           )}

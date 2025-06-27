@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === 'production') {
   };
 }
 import { BrowserRouter } from 'react-router-dom'
-import { HelmetProvider } from 'react-helmet-async'
+// React Helmet removed - using direct DOM manipulation for SEO
 import App from './App'
 import './index.css'
 import './styles/logo.css'
@@ -23,24 +23,29 @@ import { AuthProvider } from '@/context/AuthContext'
 import { LoadingProvider } from '@/context/LoadingContext'
 import { ToastProvider } from '@/context/ToastContext'
 
+// 로딩 시스템 초기화
+import { initializeLoading } from '@/utils/loadingUtils'
+
+// 로딩 시스템 초기화 실행
+initializeLoading();
+
+// 스크롤 복원을 수동으로 제어
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <HelmetProvider>
-      <BrowserRouter 
-        basename="/frontend"
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
-      >
-        <LoadingProvider>
-          <ToastProvider>
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          </ToastProvider>
-        </LoadingProvider>
-      </BrowserRouter>
-    </HelmetProvider>
+    <BrowserRouter 
+      basename="/frontend"
+    >
+      <LoadingProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ToastProvider>
+      </LoadingProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 )

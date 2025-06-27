@@ -1,6 +1,6 @@
 // Basic API configuration
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
+  ? 'https://www.topmktx.com' 
   : 'http://localhost:3000';
 
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {

@@ -69,8 +69,39 @@
       "Bash(/workspace/extract_figma_styles.sh:*)",
       "Bash(/workspace/complete_figma_analysis.sh:*)",
       "Bash(timedatectl:*)",
-      "Bash(scp:*)"
+      "Bash(scp:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(mysql -u root -pDnlszkem1! -e \"SHOW VARIABLES LIKE 'character_set%';\")",
+      "Bash(pkill:*)",
+      "Bash(git reset:*)",
+      "Bash(NODE_ENV=production npm run build)",
+      "Bash(npm run:*)",
+      "Bash(npx:*)",
+      "Bash(npm search:*)",
+      "Bash(claude mcp:*)",
+      "Bash(npm --version)",
+      "Bash(context7-mcp:*)",
+      "Bash(timeout:*)",
+      "Bash(claude --debug)",
+      "Bash(claude --version)",
+      "Bash(npm cache clean:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "Bash(npm uninstall:*)",
+      "Bash(whereis:*)",
+      "Bash(tar:*)"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7"
+  ]
 }

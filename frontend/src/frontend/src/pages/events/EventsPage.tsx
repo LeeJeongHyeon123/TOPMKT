@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../components/common/Layout';
 
 interface Event {
   id: number;
@@ -133,119 +132,117 @@ const EventsPage: React.FC = () => {
   const nextMonth = getNextMonth();
 
   return (
-    <Layout>
-      <div className="events-container">
-        {/* 헤더 */}
-        <div className="events-header">
-          <h1>🎉 행사 일정</h1>
-          <p>다양한 마케팅 행사와 네트워킹 행사에 참여하세요</p>
-        </div>
+    <div className="events-container">
+      {/* 헤더 */}
+      <div className="events-header">
+        <h1>🎉 행사 일정</h1>
+        <p>다양한 마케팅 행사와 네트워킹 행사에 참여하세요</p>
+      </div>
 
-        {/* 컨트롤 영역 */}
-        <div className="events-controls">
-          <div className="events-navigation">
-            {/* 월 네비게이션 */}
-            <div className="month-nav">
-              <button 
-                className="nav-btn" 
-                onClick={() => navigateMonth(prevMonth.year, prevMonth.month)}
-              >
-                <i className="fas fa-chevron-left"></i>
-              </button>
-              <div className="current-month">
-                {currentYear}년 {monthNames[currentMonth]}
-              </div>
-              <button 
-                className="nav-btn" 
-                onClick={() => navigateMonth(nextMonth.year, nextMonth.month)}
-              >
-                <i className="fas fa-chevron-right"></i>
-              </button>
+      {/* 컨트롤 영역 */}
+      <div className="events-controls">
+        <div className="events-navigation">
+          {/* 월 네비게이션 */}
+          <div className="month-nav">
+            <button 
+              className="nav-btn" 
+              onClick={() => navigateMonth(prevMonth.year, prevMonth.month)}
+            >
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <div className="current-month">
+              {currentYear}년 {monthNames[currentMonth]}
             </div>
-
-            {/* 뷰 토글 */}
-            <div className="view-toggle">
-              <button 
-                className={`view-btn ${view === 'calendar' ? 'active' : ''}`}
-                onClick={() => setView('calendar')}
-              >
-                <i className="fas fa-calendar-alt"></i> 캘린더
-              </button>
-              <button 
-                className={`view-btn ${view === 'list' ? 'active' : ''}`}
-                onClick={() => setView('list')}
-              >
-                <i className="fas fa-list"></i> 목록
-              </button>
-            </div>
+            <button 
+              className="nav-btn" 
+              onClick={() => navigateMonth(nextMonth.year, nextMonth.month)}
+            >
+              <i className="fas fa-chevron-right"></i>
+            </button>
           </div>
 
-          {/* 행사 등록 버튼 */}
-          {isLoggedIn ? (
-            <a href="/events/create" className="create-event-btn">
-              <i className="fas fa-plus"></i>
-              새 행사 등록
-            </a>
-          ) : (
-            <a href="/auth/login" className="create-event-btn">
-              <i className="fas fa-sign-in-alt"></i>
-              로그인 후 등록
-            </a>
+          {/* 뷰 토글 */}
+          <div className="view-toggle">
+            <button 
+              className={`view-btn ${view === 'calendar' ? 'active' : ''}`}
+              onClick={() => setView('calendar')}
+            >
+              <i className="fas fa-calendar-alt"></i> 캘린더
+            </button>
+            <button 
+              className={`view-btn ${view === 'list' ? 'active' : ''}`}
+              onClick={() => setView('list')}
+            >
+              <i className="fas fa-list"></i> 목록
+            </button>
+          </div>
+        </div>
+
+        {/* 행사 등록 버튼 */}
+        {isLoggedIn ? (
+          <a href="/events/create" className="create-event-btn">
+            <i className="fas fa-plus"></i>
+            새 행사 등록
+          </a>
+        ) : (
+          <a href="/auth/login" className="create-event-btn">
+            <i className="fas fa-sign-in-alt"></i>
+            로그인 후 등록
+          </a>
+        )}
+      </div>
+
+      {/* 캘린더 */}
+      <div className="calendar-container">
+        {/* 요일 헤더 */}
+        <div className="calendar-header">
+          {['일', '월', '화', '수', '목', '금', '토'].map(day => (
+            <div key={day} className="calendar-day-header">{day}</div>
+          ))}
+        </div>
+
+        {/* 캘린더 그리드 */}
+        <div className="calendar-grid">
+          {calendarData.map((week, weekIndex) =>
+            week.map((day, dayIndex) => {
+              const dayEvents = getEventsForDay(day.date);
+              const displayEvents = dayEvents.slice(0, 3);
+              const remainingCount = dayEvents.length - 3;
+
+              return (
+                <div 
+                  key={`${weekIndex}-${dayIndex}`} 
+                  className={`calendar-day ${day.class}`} 
+                  data-date={day.date}
+                >
+                  <div className="calendar-day-number">{day.day}</div>
+                  
+                  {displayEvents.map((event, eventIndex) => (
+                    <div 
+                      key={eventIndex}
+                      className={`event-item ${getScaleClass(event.event_scale)}`}
+                      onClick={() => window.location.href = `/events/detail?id=${event.id}`}
+                      title={event.title}
+                    >
+                      {event.title.length > 15 ? event.title.substring(0, 15) + '...' : event.title}
+                      {event.has_networking && (
+                        <i className="fas fa-users networking-icon" title="네트워킹 포함"></i>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {remainingCount > 0 && (
+                    <div 
+                      className="more-events" 
+                      onClick={() => showDayEvents(day.date)}
+                    >
+                      +{remainingCount}개 더보기
+                    </div>
+                  )}
+                </div>
+              );
+            })
           )}
-        </div>
-
-        {/* 캘린더 */}
-        <div className="calendar-container">
-          {/* 요일 헤더 */}
-          <div className="calendar-header">
-            {['일', '월', '화', '수', '목', '금', '토'].map(day => (
-              <div key={day} className="calendar-day-header">{day}</div>
-            ))}
-          </div>
-
-          {/* 캘린더 그리드 */}
-          <div className="calendar-grid">
-            {calendarData.map((week, weekIndex) =>
-              week.map((day, dayIndex) => {
-                const dayEvents = getEventsForDay(day.date);
-                const displayEvents = dayEvents.slice(0, 3);
-                const remainingCount = dayEvents.length - 3;
-
-                return (
-                  <div 
-                    key={`${weekIndex}-${dayIndex}`} 
-                    className={`calendar-day ${day.class}`} 
-                    data-date={day.date}
-                  >
-                    <div className="calendar-day-number">{day.day}</div>
-                    
-                    {displayEvents.map((event, eventIndex) => (
-                      <div 
-                        key={eventIndex}
-                        className={`event-item ${getScaleClass(event.event_scale)}`}
-                        onClick={() => window.location.href = `/events/detail?id=${event.id}`}
-                        title={event.title}
-                      >
-                        {event.title.length > 15 ? event.title.substring(0, 15) + '...' : event.title}
-                        {event.has_networking && (
-                          <i className="fas fa-users networking-icon" title="네트워킹 포함"></i>
-                        )}
-                      </div>
-                    ))}
-                    
-                    {remainingCount > 0 && (
-                      <div 
-                        className="more-events" 
-                        onClick={() => showDayEvents(day.date)}
-                      >
-                        +{remainingCount}개 더보기
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
         </div>
       </div>
 
@@ -677,7 +674,7 @@ const EventsPage: React.FC = () => {
           }
         }
       `}</style>
-    </Layout>
+    </div>
   );
 };
 

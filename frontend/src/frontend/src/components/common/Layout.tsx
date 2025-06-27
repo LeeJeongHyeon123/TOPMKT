@@ -5,13 +5,17 @@ import Footer from './Footer'
 import LoadingSpinner from './LoadingSpinner'
 import ToastContainer from './ToastContainer'
 import { useLoading } from '@/context/LoadingContext'
+import { useRouterLoading } from '@/hooks/useRouterLoading'
 
 interface LayoutProps {
   children?: ReactNode
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { loading } = useLoading();
+  const { isLoading, message } = useLoading();
+  
+  // 라우터 로딩 초기화
+  useRouterLoading();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -24,10 +28,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Footer />
       
       {/* 전역 로딩 스피너 */}
-      {loading.isLoading && (
+      {isLoading && (
         <LoadingSpinner 
-          message={loading.message} 
-          overlay 
+          message={message} 
+          fullScreen 
         />
       )}
       

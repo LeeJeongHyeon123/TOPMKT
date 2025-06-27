@@ -43,7 +43,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     const id = Math.random().toString(36).substr(2, 9)
     const newToast: Toast = {
       id,
-      duration: 5000, // 기본 5초
+      duration: toast.duration || 5000, // 기본 5초
       ...toast,
     }
 
@@ -56,8 +56,8 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     // 자동 제거
     if (newToast.duration && newToast.duration > 0) {
       setTimeout(() => {
-        removeToast(id)
-      }, newToast.duration)
+        setToasts(prev => prev.filter(toast => toast.id !== id));
+      }, newToast.duration);
     }
   }, [maxToasts])
 
@@ -71,7 +71,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 
   // 편의 메서드들
   const success = useCallback((message: string, title?: string, duration?: number) => {
-    addToast({ type: 'success', message, title, duration })
+    addToast({ type: 'success', message, title, duration: duration || 5000 })
   }, [addToast])
 
   const error = useCallback((message: string, title?: string, duration?: number) => {
@@ -79,11 +79,11 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   }, [addToast])
 
   const warning = useCallback((message: string, title?: string, duration?: number) => {
-    addToast({ type: 'warning', message, title, duration })
+    addToast({ type: 'warning', message, title, duration: duration || 6000 })
   }, [addToast])
 
   const info = useCallback((message: string, title?: string, duration?: number) => {
-    addToast({ type: 'info', message, title, duration })
+    addToast({ type: 'info', message, title, duration: duration || 5000 })
   }, [addToast])
 
   const value: ToastContextType = {

@@ -440,27 +440,31 @@ const SignupPage: React.FC = () => {
                         onChange={handleInputChange}
                         required 
                         maxLength={4}
+                        pattern="[0-9]{4}"
                       />
                       <button 
                         type="button" 
-                        className="btn btn-primary"
+                        id="verify-code-btn"
+                        className="btn btn-success"
                         onClick={verifyCode}
                         disabled={!formData.verification_code || formData.verification_code.length !== 4}
                       >
                         확인
                       </button>
-                      <div className={`timer ${timer <= 30 ? 'text-red-500' : 'text-gray-600'}`}>
+                      <div id="timer-display" className={`timer-display ${timer <= 30 ? 'expired' : ''}`}>
                         {formatTimer(timer)}
                       </div>
                     </div>
                     {errors.verification_code && <div className="error-message">{errors.verification_code}</div>}
-                    <small className="form-help">휴대폰으로 전송된 4자리 인증번호를 입력하세요</small>
+                    <small className="form-help">
+                      <span id="verification-help">휴대폰으로 전송된 4자리 인증번호를 입력하세요</span>
+                    </small>
                   </div>
                 )}
 
                 {phoneVerified && (
-                  <div className="text-green-600 text-sm flex items-center">
-                    <i className="fas fa-check mr-2"></i>
+                  <div className="verification-status success">
+                    <i className="fas fa-check"></i>
                     휴대폰 인증이 완료되었습니다.
                   </div>
                 )}
@@ -547,41 +551,36 @@ const SignupPage: React.FC = () => {
                   {errors.password_confirm && <div className="error-message">{errors.password_confirm}</div>}
                 </div>
 
-                {/* 약관 동의 */}
-                <div className="terms-group">
-                  <div className="checkbox-item">
+                {/* 약관 동의 - PHP와 동일한 스타일 */}
+                <div className="form-options">
+                  <label className="checkbox-label">
                     <input
-                      id="terms"
-                      name="terms"
                       type="checkbox"
+                      name="terms"
                       checked={formData.terms}
                       onChange={handleInputChange}
                       required
                     />
-                    <label htmlFor="terms" className="ml-2 text-sm text-gray-700">
-                      <Link to="/terms" target="_blank" className="text-blue-600 hover:text-blue-500">
-                        이용약관
-                      </Link>
-                      {' '}및{' '}
-                      <Link to="/privacy" target="_blank" className="text-blue-600 hover:text-blue-500">
-                        개인정보처리방침
-                      </Link>
-                      에 동의합니다 <span className="text-red-500">*</span>
-                    </label>
-                  </div>
+                    <span className="checkbox-custom"></span>
+                    <span className="checkbox-text">
+                      <Link to="/terms" target="_blank">이용약관</Link> 및{' '}
+                      <Link to="/privacy" target="_blank">개인정보처리방침</Link>에 동의합니다{' '}
+                      <span className="required">*</span>
+                    </span>
+                  </label>
+                </div>
 
-                  <div className="checkbox-item">
+                <div className="form-options">
+                  <label className="checkbox-label">
                     <input
-                      id="marketing"
-                      name="marketing"
                       type="checkbox"
+                      name="marketing"
                       checked={formData.marketing}
                       onChange={handleInputChange}
                     />
-                    <label htmlFor="marketing" className="ml-2 text-sm text-gray-700">
-                      마케팅 정보 수신에 동의합니다 (선택)
-                    </label>
-                  </div>
+                    <span className="checkbox-custom"></span>
+                    <span className="checkbox-text">마케팅 정보 수신에 동의합니다 (선택)</span>
+                  </label>
                 </div>
 
                 {/* 숨겨진 필드들 */}
@@ -592,34 +591,34 @@ const SignupPage: React.FC = () => {
                 <button
                   type="submit"
                   className="btn btn-primary-gradient btn-large btn-full"
+                  id="signup-btn"
                   disabled={!isFormValid || isLoading}
                 >
                   <i className="fas fa-user-plus"></i>
                   <span>{isLoading ? '가입 중...' : '회원가입'}</span>
                 </button>
-
-                <div className="text-xs text-gray-500 text-center bg-blue-50 p-3 rounded-lg">
-                  <i className="fas fa-shield-alt mr-2"></i>
+                
+                <div className="recaptcha-notice">
+                  <i className="fas fa-shield-alt"></i>
                   이 사이트는 reCAPTCHA로 보호되며, Google의{' '}
-                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-500">
+                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
                     개인정보처리방침
                   </a>
                   과{' '}
-                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-500">
+                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">
                     서비스 약관
                   </a>
                   이 적용됩니다.
                 </div>
               </form>
 
+              {/* 로그인 링크 */}
               <div className="auth-footer">
                 <p className="auth-switch">
                   이미 계정이 있으신가요?{' '}
-                  <Link
-                    to="/auth/login"
-                    className="auth-link"
-                  >
+                  <Link to="/auth/login" className="auth-link">
                     로그인하기
+                    <i className="fas fa-arrow-right"></i>
                   </Link>
                 </p>
               </div>
@@ -629,33 +628,33 @@ const SignupPage: React.FC = () => {
             <div className="auth-side-info">
               <div className="side-info-content">
                 <div className="side-info-icon">
-                  <i className="fas fa-rocket"></i>
+                  <i className="fas fa-users"></i>
                 </div>
-                <h2>커뮤니티 가입의 혜택</h2>
-                <p>글로벌 네트워크 마케팅 전문가들과 함께 성장하세요</p>
+                <h2>성공의 시작</h2>
+                <p>전 세계 네트워크 마케팅 전문가들과 함께 새로운 기회를 발견하고 성장하세요</p>
                 
-                <div className="security-features">
-                  <div className="security-feature">
-                    <i className="fas fa-users"></i>
-                    <span>10,000+ 글로벌 멤버</span>
+                <div className="info-stats">
+                  <div className="info-stat">
+                    <div className="stat-number">10,000+</div>
+                    <div className="stat-label">글로벌 멤버</div>
                   </div>
-                  <div className="security-feature">
-                    <i className="fas fa-clock"></i>
-                    <span>24/7 언제든지 소통</span>
+                  <div className="info-stat">
+                    <div className="stat-number">24/7</div>
+                    <div className="stat-label">언제든지 소통</div>
                   </div>
-                  <div className="security-feature">
-                    <i className="fas fa-graduation-cap"></i>
-                    <span>100+ 전문 콘텐츠</span>
+                  <div className="info-stat">
+                    <div className="stat-number">100+</div>
+                    <div className="stat-label">전문 콘텐츠</div>
                   </div>
                 </div>
 
-                <div className="login-benefits">
-                  <h3>가입 후 이용 가능한 서비스</h3>
+                <div className="signup-benefits">
+                  <h3>가입 혜택</h3>
                   <ul>
-                    <li><i className="fas fa-comments"></i> 커뮤니티 참여</li>
-                    <li><i className="fas fa-bell"></i> 실시간 알림</li>
-                    <li><i className="fas fa-chart-line"></i> 성과 분석 도구</li>
-                    <li><i className="fas fa-graduation-cap"></i> 전문가 강의</li>
+                    <li><i className="fas fa-check"></i> 무료 커뮤니티 액세스</li>
+                    <li><i className="fas fa-check"></i> 전문가 네트워킹 기회</li>
+                    <li><i className="fas fa-check"></i> 독점 행사 및 강의 참여</li>
+                    <li><i className="fas fa-check"></i> 실시간 마케팅 인사이트</li>
                   </ul>
                 </div>
               </div>

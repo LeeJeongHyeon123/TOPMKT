@@ -109,14 +109,6 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  // 개발용 테스트 계정 자동 입력
-  const fillTestAccount = () => {
-    setFormData(prev => ({
-      ...prev,
-      phone: '010-0000-0000',
-      password: 'admin123!'
-    }));
-  };
 
   return (
     <>
@@ -241,21 +233,6 @@ const LoginPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* 관리자 테스트 계정 안내 (개발용) */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="dev-notice">
-                  <h4>🔧 개발자 테스트 계정</h4>
-                  <p><strong>휴대폰:</strong> 010-0000-0000</p>
-                  <p><strong>비밀번호:</strong> admin123!</p>
-                  <button 
-                    type="button" 
-                    className="btn btn-outline-secondary"
-                    onClick={fillTestAccount}
-                  >
-                    테스트 계정으로 자동 입력
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* 사이드 정보 */}
@@ -639,18 +616,6 @@ const LoginPage: React.FC = () => {
           width: 100%;
         }
 
-        .btn-outline-secondary {
-          background: transparent;
-          color: #0ea5e9;
-          border: 1px solid #0ea5e9;
-          padding: 8px 16px;
-          font-size: 0.8rem;
-        }
-
-        .btn-outline-secondary:hover {
-          background: #0ea5e9;
-          color: white;
-        }
 
         .auth-footer {
           text-align: center;
@@ -758,24 +723,6 @@ const LoginPage: React.FC = () => {
           width: 16px;
         }
 
-        .dev-notice {
-          margin-top: 20px;
-          padding: 15px;
-          background: #f0f9ff;
-          border: 1px solid #0ea5e9;
-          border-radius: 6px;
-          font-size: 13px;
-        }
-
-        .dev-notice h4 {
-          margin: 0 0 10px 0;
-          color: #0369a1;
-        }
-
-        .dev-notice p {
-          margin: 5px 0;
-          color: #0369a1;
-        }
 
         /* 알림 메시지 스타일 */
         .alert {

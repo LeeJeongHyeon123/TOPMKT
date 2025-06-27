@@ -2,6 +2,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 import ToastContainer from '@/components/common/ToastContainer'
+import ScrollToTop from '@/components/common/ScrollToTop'
+import { LoadingEventHandler } from '@/context/LoadingContext'
 
 // Pages
 import HomePage from '@/pages/HomePage'
@@ -22,6 +24,7 @@ import UserProfilePage from '@/pages/user/UserProfilePage'
 function App() {
   return (
     <>
+      <ScrollToTop />
       <Routes>
         {/* All routes with layout */}
         <Route path="/" element={<Layout />}>
@@ -66,6 +69,7 @@ function App() {
       </Routes>
       
       <ToastContainer />
+      <LoadingEventHandler />
     </>
   )
 }

@@ -35,6 +35,55 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
+    
+    <?php
+    // Content Security Policy 설정
+    $csp = "default-src 'self'; " .
+           "script-src 'self' 'unsafe-inline' 'unsafe-eval' " .
+           "https://www.gstatic.com " .
+           "https://cdnjs.cloudflare.com " .
+           "https://cdn.jsdelivr.net " .
+           "https://apis.google.com " .
+           "https://www.google.com " .
+           "https://recaptcha.net " .
+           "https://www.gstatic.com/recaptcha/ " .
+           "https://ssl.google-analytics.com " .
+           "https://www.google-analytics.com " .
+           "https://www.googletagmanager.com; " .
+           "style-src 'self' 'unsafe-inline' " .
+           "https://fonts.googleapis.com " .
+           "https://cdnjs.cloudflare.com " .
+           "https://cdn.jsdelivr.net; " .
+           "font-src 'self' " .
+           "https://fonts.gstatic.com " .
+           "https://cdnjs.cloudflare.com; " .
+           "img-src 'self' data: blob: " .
+           "https: " .
+           "http:; " .
+           "connect-src 'self' " .
+           "https: " .
+           "wss: " .
+           "ws: " .
+           "wss://topmkt-832f2-default-rtdb.asia-southeast1.firebasedatabase.app " .
+           "https://topmkt-832f2-default-rtdb.asia-southeast1.firebasedatabase.app " .
+           "https://www.gstatic.com " .
+           "https://identitytoolkit.googleapis.com " .
+           "https://securetoken.googleapis.com " .
+           "*.firebaseio.com " .
+           "*.googleapis.com; " .
+           "frame-src 'self' " .
+           "https://www.google.com " .
+           "https://recaptcha.net " .
+           "https://www.youtube.com " .
+           "https://player.vimeo.com; " .
+           "object-src 'none'; " .
+           "base-uri 'self'; " .
+           "form-action 'self'; " .
+           "upgrade-insecure-requests;";
+    
+    header("Content-Security-Policy: " . $csp);
+    ?>
+    
     <?php 
     require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
     try {

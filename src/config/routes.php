@@ -81,6 +81,12 @@ class Router {
             'PUT:/api/community/posts/{id}' => ['CommunityController', 'apiUpdate'],
             'DELETE:/api/community/posts/{id}' => ['CommunityController', 'apiDelete'],
             
+            // React 커뮤니티 댓글 API
+            'GET:/api/community/posts/{id}/comments' => ['CommunityController', 'apiGetComments'],
+            'POST:/api/community/posts/{id}/comments' => ['CommunityController', 'apiCreateComment'],
+            'PUT:/api/community/posts/{id}/comments/{commentId}' => ['CommunityController', 'apiUpdateComment'],
+            'DELETE:/api/community/posts/{id}/comments/{commentId}' => ['CommunityController', 'apiDeleteComment'],
+            
             // 기존 게시글 라우트 (호환성 유지)
             'GET:/posts' => ['PostController', 'index'],
             'GET:/posts/{id}' => ['PostController', 'show'],

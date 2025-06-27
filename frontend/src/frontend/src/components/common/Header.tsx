@@ -24,8 +24,8 @@ const Header: React.FC = () => {
   const navItems = [
     { name: '홈', path: '/', public: true },
     { name: '커뮤니티', path: '/community', public: true },
-    { name: '강의', path: '/lectures', public: true },
-    { name: '이벤트', path: '/events', public: true },
+    { name: '강의 일정', path: '/lectures', public: true },
+    { name: '행사 일정', path: '/events', public: true },
   ];
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -83,22 +83,31 @@ const Header: React.FC = () => {
                   </span>
                 </div>
 
-                {/* 드롭다운 메뉴 */}
+                {/* 메뉴 버튼들 */}
                 <div className="relative">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-6">
                     <Link
                       to="/profile"
-                      className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors"
+                      className="text-gray-600 hover:text-blue-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
                     >
                       프로필
                     </Link>
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
+                      onClick={() => {
+                        // 채팅 기능 - Firebase 채팅창 열기
+                        window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
+                      }}
+                      className="text-gray-600 hover:text-green-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 bg-transparent border-none cursor-pointer"
+                      title="채팅"
+                    >
+                      채팅
+                    </button>
+                    <button
                       onClick={handleLogout}
+                      className="text-gray-600 hover:text-red-600 text-sm font-medium transition-colors px-3 py-2 rounded-lg hover:bg-gray-50 bg-transparent border-none cursor-pointer"
                     >
                       로그아웃
-                    </Button>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -193,6 +202,15 @@ const Header: React.FC = () => {
                   >
                     프로필
                   </Link>
+                  <button
+                    onClick={() => {
+                      window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
+                      setIsMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-3 py-2 text-base font-medium text-gray-600 hover:text-green-600 hover:bg-gray-50 rounded-md transition-colors"
+                  >
+                    채팅
+                  </button>
                   <button
                     onClick={() => {
                       handleLogout();
