@@ -22,16 +22,58 @@ export default defineConfig({
         emptyOutDir: true,
         assetsDir: 'assets',
         target: 'es2020',
+        chunkSizeWarningLimit: 1000,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    vendor: ['react', 'react-dom'],
-                    router: ['react-router-dom'],
-                    utils: ['axios', 'clsx', 'tailwind-merge']
+                manualChunks: (id) => {
+                    // 라이브러리 청크 분할
+                    if (id.includes('node_modules')) {
+                        if (id.includes('react') || id.includes('react-dom')) {
+                            return 'react-vendor';
+                        }
+                        if (id.includes('react-router')) {
+                            return 'router-vendor';
+                        }
+                        if (id.includes('@tanstack/react-query')) {
+                            return 'query-vendor';
+                        }
+                        if (id.includes('react-window')) {
+                            return 'virtualization-vendor';
+                        }
+                        if (id.includes('axios')) {
+                            return 'http-vendor';
+                        }
+                        if (id.includes('tailwind') || id.includes('clsx')) {
+                            return 'style-vendor';
+                        }
+                        return 'other-vendor';
+                    }
+                    
+                    // 페이지별 청크 분할
+                    if (id.includes('/pages/community/')) {
+                        return 'community-pages';
+                    }
+                    if (id.includes('/pages/chat/')) {
+                        return 'chat-pages';
+                    }
+                    if (id.includes('/components/chat/')) {
+                        return 'chat-components';
+                    }
+                    if (id.includes('/hooks/api/')) {
+                        return 'api-hooks';
+                    }
                 }
             }
         },
-        // Force legacy mode for better Node.js compatibility
+        // 압축 최적화
+        minify: 'terser',
+        terserOptions: {
+            compress: {
+                drop_console: true,
+                drop_debugger: true,
+                pure_funcs: ['console.log', 'console.debug']
+            }
+        },
         reportCompressedSize: false
     },
     server: {

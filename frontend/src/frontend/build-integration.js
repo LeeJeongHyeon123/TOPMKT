@@ -166,7 +166,7 @@ async function main() {
     try {
       execSync('npm run type-check', { stdio: 'inherit' })
       log('✅ Type check passed!', 'green')
-    } catch (error) {
+    } catch {
       log('❌ Type check failed. Please fix TypeScript errors.', 'red')
       process.exit(1)
     }

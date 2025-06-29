@@ -105,7 +105,16 @@
       "Bash(/workspace/sync_logs_host.sh:*)",
       "Bash(/workspace/scripts/auto-git-push.sh:*)",
       "Bash(git --version)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git gc:*)",
+      "Bash(killall:*)",
+      "Bash(npm ls:*)",
+      "Bash(nvm:*)",
+      "Bash(yum install:*)",
+      "Bash(./node-v20.19.0-linux-x64/bin/node:*)",
+      "Bash(sudo apt-get:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(awk:*)"
     ],
     "deny": []
   },

@@ -5,6 +5,7 @@ import ToastContainer from '@/components/common/ToastContainer'
 import ScrollToTop from '@/components/common/ScrollToTop'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { LoadingEventHandler } from '@/context/LoadingContext'
+import { QueryProvider } from '@/providers/QueryProvider'
 
 // Pages
 import HomePage from '@/pages/HomePage'
@@ -29,8 +30,9 @@ import UserManagement from '@/pages/admin/UserManagement'
 
 function App() {
   return (
-    <ErrorBoundary>
-      <ScrollToTop />
+    <QueryProvider>
+      <ErrorBoundary>
+        <ScrollToTop />
       <Routes>
         {/* All routes with layout */}
         <Route path="/" element={<Layout />}>
@@ -89,7 +91,8 @@ function App() {
       
       <ToastContainer />
       <LoadingEventHandler />
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </QueryProvider>
   )
 }
 

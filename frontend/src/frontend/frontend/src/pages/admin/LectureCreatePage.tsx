@@ -14,7 +14,7 @@ const LectureCreatePage: React.FC = () => {
   const { success, error } = useToast();
   const { request } = useApi();
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   
   // 강의 정보 폼

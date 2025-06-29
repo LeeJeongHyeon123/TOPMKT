@@ -36,7 +36,7 @@ const LectureEditPage: React.FC = () => {
   // 파일 업로드
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string>('');
-  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoFile] = useState<File | null>(null);
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
@@ -152,23 +152,23 @@ const LectureEditPage: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  // 동영상 선택 처리
-  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // 동영상 선택 처리 (향후 구현 예정)
+  // const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    if (!file.type.startsWith('video/')) {
-      error('동영상 파일만 업로드할 수 있습니다.');
-      return;
-    }
+  //   if (!file.type.startsWith('video/')) {
+  //     error('동영상 파일만 업로드할 수 있습니다.');
+  //     return;
+  //   }
 
-    if (file.size > 500 * 1024 * 1024) {
-      error('동영상 파일 크기는 500MB를 초과할 수 없습니다.');
-      return;
-    }
+  //   if (file.size > 500 * 1024 * 1024) {
+  //     error('동영상 파일 크기는 500MB를 초과할 수 없습니다.');
+  //     return;
+  //   }
 
-    setVideoFile(file);
-  };
+  //   setVideoFile(file);
+  // };
 
   // 유효성 검사
   const validateForm = () => {

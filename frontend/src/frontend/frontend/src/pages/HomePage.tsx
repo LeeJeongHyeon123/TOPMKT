@@ -4,7 +4,7 @@ import Button from '../components/common/Button';
 import { useAuth } from '../context/AuthContext';
 
 const HomePage: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen">
