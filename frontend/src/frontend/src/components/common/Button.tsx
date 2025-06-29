@@ -37,9 +37,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: [
-        'bg-blue-600 text-white',
-        'hover:bg-blue-700 active:bg-blue-800',
-        'focus:ring-blue-500',
+        'bg-gradient-to-r from-blue-800 to-blue-700 text-white',
+        'hover:from-blue-900 hover:to-blue-800 active:from-blue-900 active:to-blue-800',
+        'focus:ring-blue-600',
         'shadow-sm hover:shadow-md'
       ],
       secondary: [
@@ -49,9 +49,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         'border border-gray-300'
       ],
       outline: [
-        'bg-transparent text-blue-600 border-2 border-blue-600',
+        'bg-transparent text-blue-800 border-2 border-blue-800',
         'hover:bg-blue-50 active:bg-blue-100',
-        'focus:ring-blue-500'
+        'focus:ring-blue-600'
       ],
       ghost: [
         'bg-transparent text-gray-700',

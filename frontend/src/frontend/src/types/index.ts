@@ -1,3 +1,5 @@
+import React from 'react';
+
 // ===== 기본 타입 정의 =====
 
 export type UserRole = 'ROLE_USER' | 'ROLE_CORP' | 'ROLE_ADMIN';

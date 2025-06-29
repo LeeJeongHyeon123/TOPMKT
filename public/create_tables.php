@@ -240,6 +240,7 @@ try {
     echo "테이블 생성이 완료되었습니다. 보안을 위해 이 파일(/create_tables.php)을 삭제하는 것을 권장합니다.<br>";
     echo "또는 24시간 후 자동으로 접근이 차단됩니다.";
     echo "</div>";
+}
     
 } catch (Exception $e) {
     echo "<h2>❌ 오류 발생</h2>\n";

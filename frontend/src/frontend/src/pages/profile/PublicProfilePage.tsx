@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useToast } from '../../hooks/useToast';
+import { createSafeHtml } from '../../utils/sanitize';
 
 // 인터페이스 정의
 interface PublicUser {
@@ -346,7 +347,7 @@ const PublicProfilePage: React.FC = () => {
                 <div className="mb-4 space-y-1">
                   {publicUser.bio && (
                     <div className="text-lg text-blue-100 leading-relaxed" 
-                         dangerouslySetInnerHTML={{ __html: publicUser.bio }} />
+                         dangerouslySetInnerHTML={createSafeHtml(publicUser.bio)} />
                   )}
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm text-blue-100">
                     {publicUser.birth_date && (
@@ -453,7 +454,7 @@ const PublicProfilePage: React.FC = () => {
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">자기소개</h3>
                         <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed"
-                             dangerouslySetInnerHTML={{ __html: publicUser.bio }} />
+                             dangerouslySetInnerHTML={createSafeHtml(publicUser.bio)} />
                       </div>
                     )}
                     

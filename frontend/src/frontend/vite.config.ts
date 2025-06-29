@@ -10,10 +10,18 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
+    define: {
+        global: 'globalThis',
+        'process.env': {},
+    },
+    optimizeDeps: {
+        include: ['react', 'react-dom', 'react-router-dom']
+    },
     build: {
         outDir: '../../../public/frontend',
         emptyOutDir: true,
         assetsDir: 'assets',
+        target: 'es2020',
         rollupOptions: {
             output: {
                 manualChunks: {
@@ -22,7 +30,9 @@ export default defineConfig({
                     utils: ['axios', 'clsx', 'tailwind-merge']
                 }
             }
-        }
+        },
+        // Force legacy mode for better Node.js compatibility
+        reportCompressedSize: false
     },
     server: {
         port: 3000,

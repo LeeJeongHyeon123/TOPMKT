@@ -425,7 +425,7 @@ const LecturesPage: React.FC = () => {
         }
 
         .lectures-header {
-          background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+          background: linear-gradient(to right, #1E3A8A, #3949ab);
           color: white;
           padding: 3rem 0;
           position: relative;

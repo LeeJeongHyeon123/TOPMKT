@@ -104,7 +104,7 @@ const CommunityPage: React.FC = () => {
           }
           
           .community-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to right, #1E3A8A, #3949ab);
             color: white;
             padding: 40px 0;
             text-align: center;

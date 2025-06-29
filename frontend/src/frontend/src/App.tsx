@@ -3,6 +3,7 @@ import Layout from '@/components/common/Layout'
 import ProtectedRoute from '@/components/common/ProtectedRoute'
 import ToastContainer from '@/components/common/ToastContainer'
 import ScrollToTop from '@/components/common/ScrollToTop'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { LoadingEventHandler } from '@/context/LoadingContext'
 
 // Pages
@@ -22,9 +23,13 @@ import MyPage from '@/pages/profile/MyPage'
 import EditProfilePage from '@/pages/profile/EditProfilePage'
 import UserProfilePage from '@/pages/user/UserProfilePage'
 
+// Admin Pages
+import AdminDashboard from '@/pages/admin/AdminDashboard'
+import UserManagement from '@/pages/admin/UserManagement'
+
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <ScrollToTop />
       <Routes>
         {/* All routes with layout */}
@@ -64,6 +69,18 @@ function App() {
               <EditProfilePage />
             </ProtectedRoute>
           } />
+          
+          {/* Admin routes - protected */}
+          <Route path="admin" element={
+            <ProtectedRoute requiredRole="ROLE_ADMIN">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="admin/users" element={
+            <ProtectedRoute requiredRole="ROLE_ADMIN">
+              <UserManagement />
+            </ProtectedRoute>
+          } />
         </Route>
         
         {/* Fallback route */}
@@ -72,7 +89,7 @@ function App() {
       
       <ToastContainer />
       <LoadingEventHandler />
-    </>
+    </ErrorBoundary>
   )
 }
 

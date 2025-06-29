@@ -153,7 +153,7 @@ class AuthService {
       } else {
         throw new Error('토큰 갱신에 실패했습니다.');
       }
-    } catch (error: any) {
+    } catch {
       this.logout();
       throw new Error('인증이 만료되었습니다. 다시 로그인해주세요.');
     }

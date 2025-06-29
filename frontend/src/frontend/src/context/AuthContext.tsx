@@ -147,13 +147,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (token) {
           console.log('AuthContext - Token exists, maintaining auth state');
           // 기본 사용자 객체로 설정
-          const fallbackUser = { 
+          const fallbackUser: User = { 
             id: 0, 
             nickname: '사용자', 
             phone: '', 
             email: '',
             role: 'ROLE_USER',
-            created_at: new Date().toISOString()
+            marketing_agreed: false,
+            phone_verified: false,
+            email_verified: false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
           };
           dispatch({ type: 'AUTH_SUCCESS', payload: fallbackUser });
         } else {

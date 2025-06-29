@@ -243,6 +243,15 @@ const EditProfilePage: React.FC = () => {
     }
   };
 
+  // 컴포넌트 언마운트 시 크로퍼 정리
+  useEffect(() => {
+    return () => {
+      if (cropper) {
+        cropper.destroy();
+      }
+    };
+  }, [cropper]);
+
   // 프로필 이미지 경로
   const getProfileImageUrl = () => {
     if (cropData) return cropData;
@@ -535,7 +544,7 @@ const EditProfilePage: React.FC = () => {
         </div>
 
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl shadow-lg p-8 mb-8">
+        <div className="bg-gradient-to-r from-blue-800 to-blue-700 text-white rounded-2xl shadow-lg p-8 mb-8">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
               <span className="text-2xl">✏️</span>
@@ -564,7 +573,7 @@ const EditProfilePage: React.FC = () => {
                   onClick={() => setActiveTab(tab.key as any)}
                   className={`flex items-center py-3 px-4 rounded-lg font-medium text-sm transition-all duration-200 ${
                     activeTab === tab.key
-                      ? 'bg-purple-50 text-purple-600 shadow-sm'
+                      ? 'bg-blue-50 text-blue-800 shadow-sm'
                       : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -680,7 +689,7 @@ const EditProfilePage: React.FC = () => {
                   <Button
                     type="submit"
                     loading={saving}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-blue-800 hover:bg-blue-900"
                   >
                     저장하기
                   </Button>
@@ -733,7 +742,7 @@ const EditProfilePage: React.FC = () => {
                       type="button"
                       loading={imageUploading}
                       onClick={handleImageUpload}
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="bg-blue-800 hover:bg-blue-900"
                     >
                       이미지 저장
                     </Button>
@@ -818,7 +827,7 @@ const EditProfilePage: React.FC = () => {
                   <Button
                     type="submit"
                     loading={saving}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-blue-800 hover:bg-blue-900"
                   >
                     저장하기
                   </Button>
@@ -944,7 +953,7 @@ const EditProfilePage: React.FC = () => {
                   <Button
                     type="button"
                     onClick={handleCropImage}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-blue-800 hover:bg-blue-900"
                   >
                     크롭 완료
                   </Button>

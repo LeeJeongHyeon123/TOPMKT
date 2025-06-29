@@ -617,14 +617,14 @@ const EventsPage: React.FC = () => {
         }
 
         .category-btn:hover {
-          border-color: #4A90E2;
-          color: #4A90E2;
+          border-color: #1E3A8A;
+          color: #1E3A8A;
         }
 
         .category-btn.active {
-          background: #4A90E2;
+          background: #1E3A8A;
           color: white;
-          border-color: #4A90E2;
+          border-color: #1E3A8A;
         }
 
         /* 캘린더 뷰 */
@@ -638,7 +638,7 @@ const EventsPage: React.FC = () => {
         .calendar-header {
           display: grid;
           grid-template-columns: repeat(7, 1fr);
-          background: #4A90E2;
+          background: #1E3A8A;
           color: white;
         }
 
@@ -681,7 +681,7 @@ const EventsPage: React.FC = () => {
         }
 
         .calendar-day.today .day-number {
-          background: #4A90E2;
+          background: #1E3A8A;
           color: white;
           width: 24px;
           height: 24px;

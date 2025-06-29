@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useToast } from '../../hooks/useToast';
+import { createSafeHtml } from '../../utils/sanitize';
 
 // 인터페이스 정의
 interface ProfileUser {
@@ -262,7 +263,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* 프로필 헤더 */}
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-purple-700 text-white relative overflow-hidden">
+      <div className="bg-gradient-to-br from-blue-800 via-blue-700 to-blue-900 text-white relative overflow-hidden">
         {/* 배경 패턴 */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full transform translate-x-32 -translate-y-32"></div>
@@ -312,7 +313,7 @@ const ProfilePage: React.FC = () => {
                 <div className="mb-4 space-y-1">
                   {profileUser.bio && (
                     <div className="text-lg text-blue-100 leading-relaxed" 
-                         dangerouslySetInnerHTML={{ __html: profileUser.bio }} />
+                         dangerouslySetInnerHTML={createSafeHtml(profileUser.bio)} />
                   )}
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm text-blue-100">
                     {profileUser.birth_date && (
@@ -332,7 +333,7 @@ const ProfilePage: React.FC = () => {
                   <Link to="/profile/edit">
                     <Button
                       variant="outline"
-                      className="border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-200"
+                      className="border-white text-white hover:bg-white hover:text-blue-800 transition-all duration-200"
                     >
                       ✏️ 프로필 수정
                     </Button>
@@ -341,13 +342,13 @@ const ProfilePage: React.FC = () => {
                   <>
                     <Button
                       variant="outline"
-                      className="border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-200"
+                      className="border-white text-white hover:bg-white hover:text-blue-800 transition-all duration-200"
                     >
                       💌 메시지 보내기
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-200"
+                      className="border-white text-white hover:bg-white hover:text-blue-800 transition-all duration-200"
                     >
                       👥 팔로우
                     </Button>
@@ -400,7 +401,7 @@ const ProfilePage: React.FC = () => {
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">자기소개</h3>
                         <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed"
-                             dangerouslySetInnerHTML={{ __html: profileUser.bio }} />
+                             dangerouslySetInnerHTML={createSafeHtml(profileUser.bio)} />
                       </div>
                     )}
                     

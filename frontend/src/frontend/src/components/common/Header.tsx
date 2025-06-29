@@ -75,7 +75,7 @@ const Header: React.FC = () => {
                 e.preventDefault();
                 e.stopPropagation();
                 const menu = e.currentTarget;
-                const dropdown = menu.querySelector('.user-dropdown');
+                // Check if dropdown exists but we don't need the reference
                 const isActive = menu.classList.contains('active');
                 
                 // 기존 active 클래스 제거
@@ -260,8 +260,8 @@ const Header: React.FC = () => {
       <style>{`
         /* 헤더 레이아웃 */
         .main-header {
-          background: white;
-          border-bottom: 1px solid #e5e7eb;
+          background: linear-gradient(to right, #1E3A8A, #3949ab);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           position: sticky;
           top: 0;
           z-index: 100;
@@ -294,7 +294,7 @@ const Header: React.FC = () => {
         }
         
         .nav-menu .nav-link {
-          color: #374151 !important;
+          color: white !important;
           text-decoration: none;
           padding: 10px 15px;
           border-radius: 4px;
@@ -304,8 +304,8 @@ const Header: React.FC = () => {
         }
         
         .nav-menu .nav-link:hover {
-          background-color: rgba(59, 130, 246, 0.1);
-          color: #1d4ed8 !important;
+          background-color: rgba(255, 255, 255, 0.1);
+          color: white !important;
           text-decoration: none;
         }
         
@@ -317,7 +317,7 @@ const Header: React.FC = () => {
         }
         
         .login-btn {
-          color: #374151;
+          color: white;
           text-decoration: none;
           padding: 8px 16px;
           border-radius: 6px;
@@ -329,12 +329,12 @@ const Header: React.FC = () => {
         }
         
         .login-btn:hover {
-          background-color: rgba(59, 130, 246, 0.1);
-          color: #1d4ed8;
+          background-color: rgba(255, 255, 255, 0.1);
+          color: white;
         }
         
         .btn-primary {
-          background: #3b82f6;
+          background: #F59E0B;
           color: white;
           padding: 8px 16px;
           border-radius: 6px;
@@ -349,7 +349,7 @@ const Header: React.FC = () => {
         }
         
         .btn-primary:hover {
-          background: #1d4ed8;
+          background: #D97706;
         }
         
         /* 사용자 메뉴 스타일 */
@@ -396,7 +396,7 @@ const Header: React.FC = () => {
         }
         
         .user-name {
-          color: #374151;
+          color: white;
           font-size: 14px;
           font-weight: 500;
           max-width: 100px;
@@ -406,7 +406,7 @@ const Header: React.FC = () => {
         }
         
         .user-menu i {
-          color: rgba(0, 0, 0, 0.5);
+          color: rgba(255, 255, 255, 0.8);
           font-size: 12px;
           transition: transform 0.3s ease;
         }
@@ -714,7 +714,7 @@ const Header: React.FC = () => {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           transform-origin: center bottom;
           position: relative;
-          color: #3b82f6;
+          color: #fbbf24;
           font-size: 1.8rem;
         }
         
@@ -936,7 +936,7 @@ const Header: React.FC = () => {
         /* 로고 텍스트 */
         .logo-text {
           transition: all 0.3s ease;
-          color: #1f2937;
+          color: white;
           font-weight: 700;
           font-size: 1.5rem;
           opacity: 0;
@@ -990,8 +990,8 @@ const Header: React.FC = () => {
         }
         
         .logo-link:hover .logo-text {
-          color: #1d4ed8;
-          text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+          color: #fbbf24;
+          text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
         }
         
         .logo-link:hover .logo-icon {

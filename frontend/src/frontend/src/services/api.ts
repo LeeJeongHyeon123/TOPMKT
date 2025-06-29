@@ -3,10 +3,15 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
   ? 'https://www.topmktx.com' 
   : 'https://www.topmktx.com';
 
-const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
+// Type definitions for better type safety
+interface ApiRequestOptions extends RequestInit {
+  headers?: Record<string, string>;
+}
+
+const apiRequest = async (endpoint: string, options: ApiRequestOptions = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
-  const defaultOptions: RequestInit = {
+  const defaultOptions: ApiRequestOptions = {
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       ...options.headers,
@@ -23,7 +28,10 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     
     return await response.json();
   } catch (error) {
-    console.error(`API request failed for ${endpoint}:`, error);
+    // Log error in development only
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`API request failed for ${endpoint}:`, error);
+    }
     throw error;
   }
 };
@@ -31,7 +39,7 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
 // Create API object with HTTP methods
 const api = {
   get: (endpoint: string) => apiRequest(endpoint, { method: 'GET' }),
-  post: (endpoint: string, data?: any, options?: RequestInit) => {
+  post: (endpoint: string, data?: unknown, options?: ApiRequestOptions) => {
     const body = data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined);
     const baseHeaders: Record<string, string> = data instanceof FormData ? {} : { 'Content-Type': 'application/json' };
     
@@ -42,7 +50,7 @@ const api = {
       headers: { ...baseHeaders, ...(options?.headers as Record<string, string> || {}) }
     });
   },
-  put: (endpoint: string, data?: any, options?: RequestInit) => {
+  put: (endpoint: string, data?: unknown, options?: ApiRequestOptions) => {
     const body = data instanceof FormData ? data : (data ? JSON.stringify(data) : undefined);
     const baseHeaders: Record<string, string> = data instanceof FormData ? {} : { 'Content-Type': 'application/json' };
     
