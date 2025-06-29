@@ -40,7 +40,7 @@ const SignupPage: React.FC = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, checkAuth } = useAuth();
   const { success, error, info } = useToast();
   const navigate = useNavigate();
 
@@ -284,15 +284,16 @@ const SignupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // API 호출 (실제 구현 시)
-      // await AuthService.verifyCode(formData.phone, formData.verification_code);
+      // 실제 API 호출
+      await AuthService.verifyCode(formData.phone, formData.verification_code, 'SIGNUP');
       
       setPhoneVerified(true);
       setFormData(prev => ({ ...prev, phone_verified: '1' }));
       setVerificationSent(false);
       success('휴대폰 인증이 완료되었습니다.', '');
-    } catch (err) {
-      error('인증번호가 올바르지 않습니다.', '다시 확인해주세요');
+    } catch (err: any) {
+      console.error('인증번호 확인 오류:', err);
+      error(err.message || '인증번호가 올바르지 않습니다.', '다시 확인해주세요');
     } finally {
       setIsLoading(false);
     }
@@ -309,21 +310,42 @@ const SignupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      const recaptchaToken = await generateRecaptchaToken('signup');
+      await generateRecaptchaToken('signup');
       
       const submitData = {
-        ...formData,
-        recaptcha_token: recaptchaToken
+        nickname: formData.nickname,
+        phone: formData.phone,
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.password_confirm,
+        verification_code: formData.verification_code,
+        terms_agreed: formData.terms,
+        marketing_agreed: formData.marketing,
+        privacy_agreed: formData.terms
       };
 
-      // API 호출 (실제 구현 시)
-      // await AuthService.signup(submitData);
       console.log('Submit data:', submitData);
       
-      success('회원가입이 완료되었습니다!', '환영합니다');
-      navigate('/login');
-    } catch (err) {
-      error('회원가입에 실패했습니다.', '다시 시도해주세요');
+      // AuthContext의 signup 메서드 사용
+      const response = await AuthService.signup(submitData);
+      
+      if (response.success && response.data) {
+        success('회원가입이 완료되었습니다!', '환영합니다');
+        
+        // AuthContext의 상태를 직접 업데이트
+        // 이미 토큰과 사용자 데이터가 저장되었으므로 checkAuth 호출
+        await checkAuth();
+        
+        // 약간의 딜레이 후 메인 페이지로 이동
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 1000);
+      } else {
+        error(response.message || '회원가입에 실패했습니다.', '다시 시도해주세요');
+      }
+    } catch (err: any) {
+      console.error('회원가입 오류:', err);
+      error(err.message || '회원가입에 실패했습니다.', '다시 시도해주세요');
     } finally {
       setIsLoading(false);
     }
@@ -624,7 +646,7 @@ const SignupPage: React.FC = () => {
               <div className="auth-footer">
                 <p className="auth-switch">
                   이미 계정이 있으신가요?{' '}
-                  <Link to="/auth/login" className="auth-link">
+                  <Link to="/login" className="auth-link">
                     로그인하기
                     <i className="fas fa-arrow-right"></i>
                   </Link>

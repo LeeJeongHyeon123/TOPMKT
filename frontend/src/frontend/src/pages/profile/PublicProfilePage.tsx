@@ -6,11 +6,10 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { useToast } from '../../hooks/useToast';
 
 // 인터페이스 정의
-interface ProfileUser {
+interface PublicUser {
   id: number;
   nickname: string;
-  email: string;
-  phone?: string;
+  email?: string; // 공개 설정에 따라 표시
   bio?: string;
   birth_date?: string;
   gender?: 'M' | 'F' | 'OTHER';
@@ -28,9 +27,8 @@ interface ProfileUser {
   role: 'ROLE_USER' | 'ROLE_CORP' | 'ROLE_ADMIN';
   phone_verified: boolean;
   email_verified: boolean;
-  last_login?: string;
   created_at: string;
-  updated_at: string;
+  last_login?: string;
 }
 
 interface ProfileStats {
@@ -58,41 +56,35 @@ interface CommentItem {
   created_at: string;
 }
 
-const ProfilePage: React.FC = () => {
-  const { nickname } = useParams<{ nickname?: string }>();
+const PublicProfilePage: React.FC = () => {
+  const { nickname } = useParams<{ nickname: string }>();
   const { user: currentUser, isAuthenticated } = useAuth();
-  const { error: showError } = useToast();
+  const { success: showSuccess, error: showError } = useToast();
 
-  const [profileUser, setProfileUser] = useState<ProfileUser | null>(null);
+  const [publicUser, setPublicUser] = useState<PublicUser | null>(null);
   const [stats, setStats] = useState<ProfileStats | null>(null);
   const [recentPosts, setRecentPosts] = useState<PostItem[]>([]);
   const [recentComments, setRecentComments] = useState<CommentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'info' | 'posts' | 'comments'>('info');
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
-  // 내 프로필인지 확인 (nickname이 없거나 현재 사용자와 동일한 경우)
-  const isOwnProfile = !nickname || (currentUser && currentUser.nickname === nickname);
+  // 현재 사용자와 동일한지 확인
+  const isOwnProfile = currentUser && currentUser.nickname === nickname;
 
   // 프로필 데이터 조회
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchPublicProfile = async () => {
+      if (!nickname) {
+        showError('잘못된 접근입니다.', 'error');
+        return;
+      }
+
       setLoading(true);
       try {
-        let targetNickname = nickname;
-        
-        // nickname이 없으면 현재 로그인한 사용자의 프로필
-        if (!nickname && currentUser) {
-          targetNickname = currentUser.nickname;
-        }
-
-        if (!targetNickname && !isAuthenticated) {
-          showError('로그인이 필요합니다.', 'error');
-          return;
-        }
-
-        // 프로필 데이터 조회 (PHP API 엔드포인트 사용)
-        const url = targetNickname ? `/profile/${encodeURIComponent(targetNickname)}` : '/profile';
-        const response = await fetch(url, {
+        const response = await fetch(`/profile/${encodeURIComponent(nickname)}`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
@@ -101,13 +93,19 @@ const ProfilePage: React.FC = () => {
         });
 
         if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('존재하지 않는 사용자입니다.');
+          }
           throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
         
         if (data.user) {
-          setProfileUser(data.user);
+          setPublicUser(data.user);
+          setIsFollowing(data.is_following || false);
+          setFollowerCount(data.follower_count || 0);
+          setFollowingCount(data.following_count || 0);
         }
         
         if (data.stats) {
@@ -122,18 +120,51 @@ const ProfilePage: React.FC = () => {
           setRecentComments(data.recent_comments);
         }
       } catch (error) {
-        console.error('프로필 조회 실패:', error);
-        showError('프로필을 불러오는데 실패했습니다.', 'error');
+        console.error('공개 프로필 조회 실패:', error);
+        showError(error instanceof Error ? error.message : '프로필을 불러오는데 실패했습니다.', 'error');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProfile();
-  }, [nickname, currentUser, isAuthenticated]);
+    fetchPublicProfile();
+  }, [nickname, isAuthenticated]);
+
+  // 팔로우/언팔로우 처리
+  const handleFollowToggle = async () => {
+    if (!isAuthenticated) {
+      showError('로그인이 필요합니다.');
+      return;
+    }
+
+    if (!publicUser) return;
+
+    try {
+      const response = await fetch(`/users/${publicUser.id}/follow`, {
+        method: isFollowing ? 'DELETE' : 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setIsFollowing(!isFollowing);
+        setFollowerCount(prev => isFollowing ? prev - 1 : prev + 1);
+        showSuccess(result.message || (isFollowing ? '팔로우를 취소했습니다.' : '팔로우했습니다.'));
+      } else {
+        throw new Error(result.error || '팔로우 처리에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('팔로우 처리 실패:', error);
+      showError(error instanceof Error ? error.message : '팔로우 처리에 실패했습니다.');
+    }
+  };
 
   // 프로필 이미지 경로 설정
-  const getProfileImageUrl = (user: ProfileUser) => {
+  const getProfileImageUrl = (user: PublicUser) => {
     if (user.profile_image_profile) {
       return user.profile_image_profile;
     }
@@ -142,9 +173,33 @@ const ProfilePage: React.FC = () => {
     }
     return '/assets/images/default-avatar.png';
   };
-  
+
+  // 나이 계산
+  const calculateAge = (birthDate: string) => {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
+  // 성별 표시
+  const getGenderLabel = (gender?: string) => {
+    switch (gender) {
+      case 'M': return '남성';
+      case 'F': return '여성';
+      case 'OTHER': return '기타';
+      default: return null;
+    }
+  };
+
   // 소셜 링크 렌더링
-  const renderSocialLinks = (socialLinks: ProfileUser['social_links']) => {
+  const renderSocialLinks = (socialLinks: PublicUser['social_links']) => {
     if (!socialLinks) return null;
     
     const socialPlatforms = [
@@ -186,30 +241,6 @@ const ProfilePage: React.FC = () => {
       </div>
     );
   };
-  
-  // 나이 계산
-  const calculateAge = (birthDate: string) => {
-    const birth = new Date(birthDate);
-    const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    
-    return age;
-  };
-  
-  // 성별 표시
-  const getGenderLabel = (gender?: string) => {
-    switch (gender) {
-      case 'M': return '남성';
-      case 'F': return '여성';
-      case 'OTHER': return '기타';
-      default: return null;
-    }
-  };
 
   // 날짜 포맷팅
   const formatDate = (dateString: string) => {
@@ -219,7 +250,7 @@ const ProfilePage: React.FC = () => {
       day: 'numeric',
     });
   };
-  
+
   // 상대적 시간 표시
   const getRelativeTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -245,12 +276,15 @@ const ProfilePage: React.FC = () => {
     );
   }
 
-  if (!profileUser) {
+  if (!publicUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
+          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span className="text-4xl">😕</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">사용자를 찾을 수 없습니다</h2>
-          <p className="text-gray-600 mb-6">요청하신 프로필이 존재하지 않거나 접근할 수 없습니다.</p>
+          <p className="text-gray-600 mb-6">요청하신 프로필이 존재하지 않거나 비공개 상태입니다.</p>
           <Link to="/">
             <Button>홈으로 돌아가기</Button>
           </Link>
@@ -275,8 +309,8 @@ const ProfilePage: React.FC = () => {
             <div className="relative">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-2xl">
                 <img
-                  src={getProfileImageUrl(profileUser)}
-                  alt={profileUser.nickname}
+                  src={getProfileImageUrl(publicUser)}
+                  alt={publicUser.nickname}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -292,14 +326,14 @@ const ProfilePage: React.FC = () => {
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center md:space-x-4 mb-4">
                 <h1 className="text-3xl md:text-4xl font-bold">
-                  {profileUser.nickname}
+                  {publicUser.nickname}
                 </h1>
                 <div className="flex justify-center md:justify-start items-center space-x-2 mt-2 md:mt-0">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white bg-opacity-20 text-white">
-                    {profileUser.role === 'ROLE_ADMIN' ? '👑 관리자' : 
-                     profileUser.role === 'ROLE_CORP' ? '🏢 기업회원' : '👤 일반회원'}
+                    {publicUser.role === 'ROLE_ADMIN' ? '👑 관리자' : 
+                     publicUser.role === 'ROLE_CORP' ? '🏢 기업회원' : '👤 일반회원'}
                   </span>
-                  {profileUser.phone_verified && (
+                  {publicUser.phone_verified && (
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-500 bg-opacity-20 text-green-100">
                       ✓ 인증
                     </span>
@@ -308,23 +342,38 @@ const ProfilePage: React.FC = () => {
               </div>
               
               {/* 기본 정보 */}
-              {(profileUser.bio || profileUser.birth_date || profileUser.gender) && (
+              {(publicUser.bio || publicUser.birth_date || publicUser.gender) && (
                 <div className="mb-4 space-y-1">
-                  {profileUser.bio && (
+                  {publicUser.bio && (
                     <div className="text-lg text-blue-100 leading-relaxed" 
-                         dangerouslySetInnerHTML={{ __html: profileUser.bio }} />
+                         dangerouslySetInnerHTML={{ __html: publicUser.bio }} />
                   )}
                   <div className="flex flex-wrap justify-center md:justify-start items-center gap-4 text-sm text-blue-100">
-                    {profileUser.birth_date && (
-                      <span>🎂 {calculateAge(profileUser.birth_date)}세</span>
+                    {publicUser.birth_date && (
+                      <span>🎂 {calculateAge(publicUser.birth_date)}세</span>
                     )}
-                    {getGenderLabel(profileUser.gender) && (
-                      <span>👤 {getGenderLabel(profileUser.gender)}</span>
+                    {getGenderLabel(publicUser.gender) && (
+                      <span>👤 {getGenderLabel(publicUser.gender)}</span>
                     )}
-                    <span>📅 {formatDate(profileUser.created_at)} 가입</span>
+                    <span>📅 {formatDate(publicUser.created_at)} 가입</span>
+                    {publicUser.last_login && (
+                      <span>🕒 {getRelativeTime(publicUser.last_login)} 접속</span>
+                    )}
                   </div>
                 </div>
               )}
+
+              {/* 팔로워 정보 */}
+              <div className="flex justify-center md:justify-start items-center space-x-6 text-sm text-blue-100 mb-4">
+                <div className="text-center">
+                  <div className="font-bold text-lg">{followerCount}</div>
+                  <div>팔로워</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-lg">{followingCount}</div>
+                  <div>팔로잉</div>
+                </div>
+              </div>
 
               {/* 액션 버튼 */}
               <div className="flex justify-center md:justify-start space-x-3">
@@ -339,17 +388,22 @@ const ProfilePage: React.FC = () => {
                   </Link>
                 ) : (
                   <>
+                    {isAuthenticated ? (
+                      <Button
+                        onClick={handleFollowToggle}
+                        className={isFollowing
+                          ? "bg-white bg-opacity-20 text-white border border-white hover:bg-white hover:text-purple-600"
+                          : "bg-white text-purple-600 hover:bg-gray-100"
+                        }
+                      >
+                        {isFollowing ? '👥 팔로잉' : '👥 팔로우'}
+                      </Button>
+                    ) : null}
                     <Button
                       variant="outline"
                       className="border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-200"
                     >
                       💌 메시지 보내기
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="border-white text-white hover:bg-white hover:text-purple-600 transition-all duration-200"
-                    >
-                      👥 팔로우
                     </Button>
                   </>
                 )}
@@ -391,33 +445,27 @@ const ProfilePage: React.FC = () => {
 
               {/* 탭 콘텐츠 */}
               <div className="p-6">
-
                 {/* 기본 정보 탭 */}
                 {activeTab === 'info' && (
                   <div className="space-y-6">
                     {/* 자기소개 */}
-                    {profileUser.bio && (
+                    {publicUser.bio && (
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-3">자기소개</h3>
                         <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed"
-                             dangerouslySetInnerHTML={{ __html: profileUser.bio }} />
+                             dangerouslySetInnerHTML={{ __html: publicUser.bio }} />
                       </div>
                     )}
                     
                     {/* 소셜 링크 */}
-                    {renderSocialLinks(profileUser.social_links)}
+                    {renderSocialLinks(publicUser.social_links)}
                     
-                    {!profileUser.bio && !profileUser.social_links && (
+                    {!publicUser.bio && !publicUser.social_links && (
                       <div className="text-center py-8">
                         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                           <span className="text-2xl">📝</span>
                         </div>
-                        <p className="text-gray-500 mb-4">아직 작성된 정보가 없습니다.</p>
-                        {isOwnProfile && (
-                          <Link to="/profile/edit">
-                            <Button>프로필 작성하기</Button>
-                          </Link>
-                        )}
+                        <p className="text-gray-500">아직 작성된 정보가 없습니다.</p>
                       </div>
                     )}
                   </div>
@@ -465,11 +513,6 @@ const ProfilePage: React.FC = () => {
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
                           아직 작성한 게시글이 없습니다
                         </h3>
-                        {isOwnProfile && (
-                          <Link to="/community/write">
-                            <Button className="mt-4">첫 게시글 작성하기</Button>
-                          </Link>
-                        )}
                       </div>
                     )}
                   </div>
@@ -508,11 +551,6 @@ const ProfilePage: React.FC = () => {
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
                           아직 작성한 댓글이 없습니다
                         </h3>
-                        {isOwnProfile && (
-                          <Link to="/community">
-                            <Button className="mt-4">커뮤니티 둘러보기</Button>
-                          </Link>
-                        )}
                       </div>
                     )}
                   </div>
@@ -563,28 +601,28 @@ const ProfilePage: React.FC = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">회원 등급</span>
                   <span className="font-medium">
-                    {profileUser.role === 'ROLE_ADMIN' ? '👑 관리자' : 
-                     profileUser.role === 'ROLE_CORP' ? '🏢 기업회원' : '👤 일반회원'}
+                    {publicUser.role === 'ROLE_ADMIN' ? '👑 관리자' : 
+                     publicUser.role === 'ROLE_CORP' ? '🏢 기업회원' : '👤 일반회원'}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">가입일</span>
-                  <span className="font-medium">{formatDate(profileUser.created_at)}</span>
+                  <span className="font-medium">{formatDate(publicUser.created_at)}</span>
                 </div>
-                {profileUser.last_login && (
+                {publicUser.last_login && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">마지막 접속</span>
-                    <span className="font-medium">{getRelativeTime(profileUser.last_login)}</span>
+                    <span className="font-medium">{getRelativeTime(publicUser.last_login)}</span>
                   </div>
                 )}
                 <div className="pt-2 border-t border-gray-100">
                   <div className="flex flex-wrap gap-2">
-                    {profileUser.phone_verified && (
+                    {publicUser.phone_verified && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         ✓ 휴대폰 인증
                       </span>
                     )}
-                    {profileUser.email_verified && (
+                    {publicUser.email_verified && (
                       <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         ✓ 이메일 인증
                       </span>
@@ -600,4 +638,4 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-export default ProfilePage;
+export default PublicProfilePage;

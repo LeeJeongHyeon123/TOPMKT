@@ -49,7 +49,8 @@
            "https://www.gstatic.com/recaptcha/ " .
            "https://ssl.google-analytics.com " .
            "https://www.google-analytics.com " .
-           "https://www.googletagmanager.com; " .
+           "https://www.googletagmanager.com " .
+           "blob: data:; " .
            "style-src 'self' 'unsafe-inline' " .
            "https://fonts.googleapis.com " .
            "https://cdnjs.cloudflare.com " .

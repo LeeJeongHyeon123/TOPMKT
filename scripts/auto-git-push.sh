@@ -6,7 +6,7 @@
 
 # 변수 설정
 PROJECT_DIR="/var/www/html/topmkt"
-LOG_FILE="/var/log/auto-git-push.log"
+LOG_FILE="/var/www/html/topmkt/logs/auto-git-push.log"
 MAX_LOG_SIZE=10485760  # 10MB
 
 # 로그 로테이션 함수

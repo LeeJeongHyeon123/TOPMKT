@@ -51,19 +51,39 @@ class AuthService {
   async signup(signupData: SignupRequest): Promise<ApiResponse<AuthResponse>> {
     try {
       const response = await apiClient.post<ApiResponse<AuthResponse>>('/auth/signup', signupData);
+      
+      console.log('Signup response:', response.data);
 
-      if (response.data.success && response.data.data) {
-        const { token, user } = response.data.data;
+      // 응답이 문자열인 경우 JSON 파싱 시도
+      let responseData: any = response.data;
+      if (typeof responseData === 'string') {
+        // PHP 경고 메시지 제거 후 JSON 파싱
+        const jsonMatch = (responseData as string).match(/\{.*\}$/s);
+        if (jsonMatch) {
+          try {
+            responseData = JSON.parse(jsonMatch[0]);
+          } catch (e) {
+            console.error('JSON parsing failed:', e);
+            throw new Error('서버 응답 파싱에 실패했습니다.');
+          }
+        } else {
+          throw new Error('올바르지 않은 서버 응답입니다.');
+        }
+      }
+
+      if (responseData.success && responseData.data) {
+        const { token, user } = responseData.data;
         
         // 토큰을 세션 스토리지에 저장 (회원가입 후 자동 로그인)
         sessionStorage.setItem('auth_token', token);
         sessionStorage.setItem('user_data', JSON.stringify(user));
         
-        return response.data;
+        return responseData;
       } else {
-        throw new Error(response.data.message || '회원가입에 실패했습니다.');
+        throw new Error(responseData.message || '회원가입에 실패했습니다.');
       }
     } catch (error: any) {
+      console.error('Signup error:', error);
       if (error.response?.data?.message) {
         throw new Error(error.response.data.message);
       }

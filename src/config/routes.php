@@ -27,6 +27,9 @@ class Router {
             'GET:/auth/logout' => ['AuthController', 'logout'],
             'POST:/auth/logout' => ['AuthController', 'logout'],
             
+            // CSRF 토큰 라우트
+            'GET:/csrf-token' => ['AuthController', 'getCsrfToken'],
+            
             // 휴대폰 인증 라우트
             'POST:/auth/send-verification' => ['AuthController', 'sendVerification'],
             'POST:/auth/verify-code' => ['AuthController', 'verifyCode'],

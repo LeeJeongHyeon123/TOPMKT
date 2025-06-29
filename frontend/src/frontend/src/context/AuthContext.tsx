@@ -111,33 +111,58 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // 인증 상태 확인
   const checkAuth = async () => {
     try {
-      // 토큰이 없으면 API 호출하지 않고 바로 로그아웃 상태로 설정
       const token = AuthService.getToken();
+      console.log('AuthContext - checkAuth - token:', token);
+      
       if (!token) {
+        console.log('AuthContext - No token found, setting logout state');
         dispatch({ type: 'AUTH_LOGOUT' });
+        return;
+      }
+
+      // 먼저 저장된 사용자 정보가 있는지 확인
+      const storedUser = AuthService.getStoredUser();
+      if (storedUser) {
+        console.log('AuthContext - Using stored user data for immediate auth');
+        dispatch({ type: 'AUTH_SUCCESS', payload: storedUser });
         return;
       }
 
       dispatch({ type: 'AUTH_START' });
       
-      const response = await AuthService.getCurrentUser();
-      
-      if (response.success && response.data) {
-        dispatch({ type: 'AUTH_SUCCESS', payload: response.data });
-      } else {
-        dispatch({ type: 'AUTH_LOGOUT' });
+      try {
+        const response = await AuthService.getCurrentUser();
+        console.log('AuthContext - getCurrentUser response:', response);
+        
+        if (response.success && response.data) {
+          console.log('AuthContext - Setting auth success with user:', response.data);
+          dispatch({ type: 'AUTH_SUCCESS', payload: response.data });
+        } else {
+          console.log('AuthContext - getCurrentUser failed, setting logout');
+          dispatch({ type: 'AUTH_LOGOUT' });
+        }
+      } catch (apiError) {
+        console.log('AuthContext - getCurrentUser API error, using token fallback:', apiError);
+        // API 실패 시에도 토큰이 있으면 인증된 상태로 유지
+        if (token) {
+          console.log('AuthContext - Token exists, maintaining auth state');
+          // 기본 사용자 객체로 설정
+          const fallbackUser = { 
+            id: 0, 
+            nickname: '사용자', 
+            phone: '', 
+            email: '',
+            role: 'ROLE_USER',
+            created_at: new Date().toISOString()
+          };
+          dispatch({ type: 'AUTH_SUCCESS', payload: fallbackUser });
+        } else {
+          dispatch({ type: 'AUTH_LOGOUT' });
+        }
       }
     } catch (error) {
-      // API 호출 실패 시 토큰만 확인하여 상태 설정
-      const token = AuthService.getToken();
-      const storedUser = AuthService.getStoredUser();
-      
-      if (token && storedUser) {
-        // 토큰과 저장된 사용자 정보가 있으면 인증된 상태로 설정
-        dispatch({ type: 'AUTH_SUCCESS', payload: storedUser });
-      } else {
-        dispatch({ type: 'AUTH_LOGOUT' });
-      }
+      console.log('AuthContext - Unexpected error:', error);
+      dispatch({ type: 'AUTH_LOGOUT' });
     }
   };
 

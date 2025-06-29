@@ -102,7 +102,10 @@
       "Bash(httpd:*)",
       "Bash(/workspace/read_logs.sh:*)",
       "Bash(mount)",
-      "Bash(/workspace/sync_logs_host.sh:*)"
+      "Bash(/workspace/sync_logs_host.sh:*)",
+      "Bash(/workspace/scripts/auto-git-push.sh:*)",
+      "Bash(git --version)",
+      "Bash(tree:*)"
     ],
     "deny": []
   },

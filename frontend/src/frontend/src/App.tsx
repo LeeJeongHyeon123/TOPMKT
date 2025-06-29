@@ -17,6 +17,7 @@ import PostDetailPage from '@/pages/community/PostDetailPage'
 import PostWritePage from '@/pages/community/PostWritePage'
 import EventsPage from '@/pages/events/EventsPage'
 import ProfilePage from '@/pages/profile/ProfilePage'
+import PublicProfilePage from '@/pages/profile/PublicProfilePage'
 import MyPage from '@/pages/profile/MyPage'
 import EditProfilePage from '@/pages/profile/EditProfilePage'
 import UserProfilePage from '@/pages/user/UserProfilePage'
@@ -40,7 +41,8 @@ function App() {
           <Route path="community" element={<CommunityPage />} />
           <Route path="community/post/:id" element={<PostDetailPage />} />
           <Route path="events" element={<EventsPage />} />
-          <Route path="profile/:id" element={<ProfilePage />} />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile/:nickname" element={<PublicProfilePage />} />
           <Route path="user/:nickname" element={<UserProfilePage />} />
           
           {/* Protected routes */}

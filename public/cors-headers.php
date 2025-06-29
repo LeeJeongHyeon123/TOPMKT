@@ -10,7 +10,9 @@ function setCorsHeaders() {
         'http://localhost:5173',
         'http://localhost',
         'https://topmkt.kr',
-        'https://www.topmkt.kr'
+        'https://www.topmkt.kr',
+        'https://topmktx.com',
+        'https://www.topmktx.com'
     ];
     
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';

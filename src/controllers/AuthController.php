@@ -405,7 +405,14 @@ class AuthController {
         $nickname = $this->sanitizeInput($input['nickname'] ?? '');
         $email = filter_var($input['email'] ?? '', FILTER_SANITIZE_EMAIL);
         $password = $input['password'] ?? '';
-        $passwordConfirm = $input['password_confirm'] ?? '';
+        $passwordConfirm = $input['password_confirmation'] ?? $input['password_confirm'] ?? '';
+        
+        // 디버깅 로그 추가
+        error_log('=== 회원가입 JSON 데이터 수신 ===');
+        error_log('받은 JSON: ' . json_encode($input));
+        error_log('비밀번호: ' . $password);
+        error_log('비밀번호 확인: ' . $passwordConfirm);
+        error_log('비밀번호 일치 여부: ' . ($password === $passwordConfirm ? 'YES' : 'NO'));
         
         // 입력 검증
         $errors = [];
@@ -439,29 +446,97 @@ class AuthController {
         }
         
         try {
+            // 중복 확인
+            if ($this->userModel->findByPhone($phone)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => '이미 등록된 휴대폰 번호입니다.']);
+                return;
+            }
+            
+            if ($this->userModel->findByEmail($email)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => '이미 등록된 이메일 주소입니다.']);
+                return;
+            }
+            
             // 회원가입 처리
-            $result = $this->userModel->create([
+            $userId = $this->userModel->create([
                 'phone' => $phone,
                 'nickname' => $nickname,
                 'email' => $email,
                 'password' => $password,
                 'role' => 'GENERAL',
                 'terms_accepted' => true,
-                'marketing_accepted' => false
+                'marketing_agreed' => isset($input['marketing_agreed']) && $input['marketing_agreed']
             ]);
             
-            if ($result) {
-                echo json_encode([
-                    'success' => true,
-                    'message' => '회원가입이 완료되었습니다.',
-                    'redirect' => '/auth/login'
-                ]);
+            if ($userId) {
+                error_log('✅ 회원가입 성공 - 사용자 ID: ' . $userId);
+                
+                // 생성된 사용자 정보 조회
+                $user = $this->userModel->findById($userId);
+                
+                if ($user) {
+                    // JWT 토큰 생성 (자동 로그인)
+                    $tokenData = [
+                        'user_id' => $user['id'],
+                        'phone' => $user['phone'],
+                        'role' => $user['role'],
+                        'iat' => time(),
+                        'exp' => time() + (24 * 60 * 60) // 24시간
+                    ];
+                    
+                    $accessToken = JWTHelper::createToken($tokenData);
+                    
+                    // 리프레시 토큰 생성 (30일)
+                    $refreshTokenData = [
+                        'user_id' => $user['id'],
+                        'type' => 'refresh',
+                        'iat' => time(),
+                        'exp' => time() + (30 * 24 * 60 * 60) // 30일
+                    ];
+                    
+                    $refreshToken = JWTHelper::createToken($refreshTokenData);
+                    
+                    // 리프레시 토큰을 쿠키에 저장 (HttpOnly, Secure)
+                    setcookie(
+                        'refresh_token',
+                        $refreshToken,
+                        time() + (30 * 24 * 60 * 60), // expires
+                        '/', // path
+                        '', // domain
+                        false, // secure (HTTPS 환경에서는 true)
+                        true // httponly
+                    );
+                    
+                    echo json_encode([
+                        'success' => true,
+                        'message' => '회원가입이 완료되었습니다.',
+                        'data' => [
+                            'token' => $accessToken,
+                            'user' => [
+                                'id' => $user['id'],
+                                'nickname' => $user['nickname'],
+                                'phone' => $user['phone'],
+                                'email' => $user['email'],
+                                'role' => $user['role'],
+                                'profile_image' => $user['profile_image_thumb'] ?? null,
+                                'created_at' => $user['created_at']
+                            ],
+                            'expires_in' => 24 * 60 * 60 // 24시간
+                        ]
+                    ]);
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['success' => false, 'message' => '사용자 정보 조회에 실패했습니다.']);
+                }
             } else {
                 http_response_code(500);
                 echo json_encode(['success' => false, 'message' => '회원가입 처리 중 오류가 발생했습니다.']);
             }
             
         } catch (Exception $e) {
+            error_log('❌ 회원가입 오류: ' . $e->getMessage());
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }

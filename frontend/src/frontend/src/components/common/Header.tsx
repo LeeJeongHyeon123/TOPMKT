@@ -9,6 +9,10 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // 디버깅 정보
+  console.log('Header - isAuthenticated:', isAuthenticated);
+  console.log('Header - user:', user);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -26,7 +30,14 @@ const Header: React.FC = () => {
     { name: '행사 일정', path: '/events', public: true },
   ];
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    // 햄버거 메뉴 애니메이션을 위한 클래스 토글
+    const button = document.getElementById('mobile-menu-toggle');
+    if (button) {
+      button.classList.toggle('active');
+    }
+  };
 
   return (
     <header className="main-header">
@@ -57,74 +68,100 @@ const Header: React.FC = () => {
             ))}
           </nav>
 
-          {/* 사용자 메뉴 */}
-          <div className="header-right">
+          {/* 로그인 상태별 우측 메뉴 */}
+          <div className="nav-auth">
             {isAuthenticated && user ? (
-              <div className="user-menu">
-                {/* 사용자 정보 */}
-                <div className="user-info">
-                  <div className="user-avatar">
-                    {user.profile_image_thumb ? (
-                      <img
-                        src={user.profile_image_thumb}
-                        alt={user.nickname}
-                        className="avatar-image"
-                      />
-                    ) : (
-                      <span className="avatar-initial">
-                        {user.nickname.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+              <div className="user-menu" onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const menu = e.currentTarget;
+                const dropdown = menu.querySelector('.user-dropdown');
+                const isActive = menu.classList.contains('active');
+                
+                // 기존 active 클래스 제거
+                document.querySelectorAll('.user-menu').forEach(m => m.classList.remove('active'));
+                
+                if (!isActive) {
+                  menu.classList.add('active');
+                  // 외부 클릭 시 드롭다운 닫기
+                  const closeDropdown = (event: MouseEvent) => {
+                    if (!menu.contains(event.target as Node)) {
+                      menu.classList.remove('active');
+                      document.removeEventListener('click', closeDropdown);
+                    }
+                  };
+                  setTimeout(() => document.addEventListener('click', closeDropdown), 0);
+                }
+              }}>
+                <div className="user-avatar">
+                  {user.profile_image_thumb ? (
+                    <img 
+                      src={user.profile_image_thumb} 
+                      alt="프로필"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div className="avatar-fallback" style={{ display: user.profile_image_thumb ? 'none' : 'flex' }}>
+                    👤
                   </div>
-                  <span className="user-name">
-                    {user.nickname}
-                  </span>
                 </div>
-
-                {/* 메뉴 버튼들 */}
-                <div className="user-actions">
-                  <Link to="/profile" className="btn btn-nav">
-                    프로필
+                <span className="user-name">{user.nickname}</span>
+                <i className="fas fa-chevron-down"></i>
+                
+                <div className="user-dropdown">
+                  <div className="dropdown-header">
+                    <div className="user-info">
+                      <span className="user-display-name">{user.nickname}</span>
+                    </div>
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <Link to="/profile" className="dropdown-item">
+                    <i className="fas fa-user"></i>
+                    <span>프로필</span>
                   </Link>
-                  <button
-                    onClick={() => {
-                      window.open('/chat', 'chat', 'width=400,height=600,scrollbars=yes,resizable=yes');
-                    }}
-                    className="btn btn-nav btn-chat"
-                    title="채팅"
+                  <Link to="/chat" className="dropdown-item">
+                    <i className="fas fa-envelope"></i>
+                    <span>채팅</span>
+                  </Link>
+                  <div className="dropdown-divider"></div>
+                  <button 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (window.confirm('정말 로그아웃하시겠습니까?')) {
+                        handleLogout();
+                      }
+                    }} 
+                    className="dropdown-item logout-item"
                   >
-                    채팅
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="btn btn-nav btn-logout"
-                  >
-                    로그아웃
+                    <i className="fas fa-sign-out-alt"></i>
+                    <span>로그아웃</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="btn btn-outline">
+              <>
+                <Link to="/login" className="nav-link login-btn">
+                  <i className="fas fa-sign-in-alt"></i>
                   로그인
                 </Link>
                 <Link to="/signup" className="btn btn-primary">
+                  <i className="fas fa-user-plus"></i>
                   회원가입
                 </Link>
-              </div>
+              </>
             )}
           </div>
 
-          {/* 모바일 메뉴 버튼 */}
-          <div className="mobile-menu-toggle">
-            <button
-              onClick={toggleMenu}
-              className="mobile-toggle-btn"
-              aria-label="메뉴 토글"
-            >
-              <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
-            </button>
-          </div>
+          {/* 모바일 메뉴 토글 */}
+          <button className="mobile-menu-toggle" id="mobile-menu-toggle" onClick={toggleMenu}>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
         </div>
 
         {/* 모바일 메뉴 */}
@@ -214,10 +251,463 @@ const Header: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* 모바일 메뉴 오버레이 */}
+        <div className={`mobile-menu-overlay ${isMenuOpen ? 'mobile-menu-overlay-open' : ''}`} onClick={toggleMenu}></div>
       </div>
 
-      {/* 로고 애니메이션 스타일 */}
+      {/* 헤더 스타일 */}
       <style>{`
+        /* 헤더 레이아웃 */
+        .main-header {
+          background: white;
+          border-bottom: 1px solid #e5e7eb;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+        
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 20px;
+        }
+        
+        .header-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          padding: 15px 0;
+        }
+        
+        .header-left {
+          flex: 0 0 auto;
+        }
+        
+        .nav-menu {
+          flex: 1;
+          display: flex;
+          justify-content: center;
+          margin: 0 40px;
+          gap: 20px;
+        }
+        
+        .nav-menu .nav-link {
+          color: #374151 !important;
+          text-decoration: none;
+          padding: 10px 15px;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+          font-weight: 500;
+          font-size: 16px;
+        }
+        
+        .nav-menu .nav-link:hover {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #1d4ed8 !important;
+          text-decoration: none;
+        }
+        
+        .nav-auth {
+          flex: 0 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 15px;
+        }
+        
+        .login-btn {
+          color: #374151;
+          text-decoration: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          transition: background-color 0.3s ease;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+        }
+        
+        .login-btn:hover {
+          background-color: rgba(59, 130, 246, 0.1);
+          color: #1d4ed8;
+        }
+        
+        .btn-primary {
+          background: #3b82f6;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 6px;
+          text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 14px;
+          border: none;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+          background: #1d4ed8;
+        }
+        
+        /* 사용자 메뉴 스타일 */
+        .user-menu {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 12px;
+          background: rgba(0, 0, 0, 0.05);
+          border-radius: 25px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-menu:hover {
+          background: rgba(0, 0, 0, 0.08);
+        }
+        
+        .user-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          overflow: hidden;
+          position: relative;
+        }
+        
+        .user-avatar img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .avatar-fallback {
+          width: 100%;
+          height: 100%;
+          background: #667eea;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 16px;
+        }
+        
+        .user-name {
+          color: #374151;
+          font-size: 14px;
+          font-weight: 500;
+          max-width: 100px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        
+        .user-menu i {
+          color: rgba(0, 0, 0, 0.5);
+          font-size: 12px;
+          transition: transform 0.3s ease;
+        }
+        
+        .user-menu.active i {
+          transform: rotate(180deg);
+        }
+        
+        /* 드롭다운 메뉴 */
+        .user-dropdown {
+          position: absolute !important;
+          top: calc(100% + 10px) !important;
+          right: 0 !important;
+          min-width: 200px !important;
+          background: white !important;
+          border-radius: 8px !important;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          transform: translateY(-10px) !important;
+          transition: all 0.3s ease !important;
+          z-index: 1000 !important;
+          border: 1px solid #e5e7eb !important;
+          display: block !important;
+          pointer-events: none !important;
+        }
+        
+        .user-menu.active .user-dropdown {
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: translateY(0) !important;
+          display: block !important;
+          pointer-events: auto !important;
+        }
+        
+        .dropdown-header {
+          padding: 15px;
+          border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .user-display-name {
+          display: block;
+          font-weight: 600;
+          color: #1f2937;
+          font-size: 14px;
+        }
+        
+        .dropdown-divider {
+          height: 1px;
+          background: #f3f4f6;
+          margin: 0;
+        }
+        
+        .dropdown-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 15px;
+          color: #374151;
+          text-decoration: none;
+          font-size: 14px;
+          transition: background-color 0.2s ease;
+          border: none;
+          background: none;
+          width: 100%;
+          cursor: pointer;
+        }
+        
+        .dropdown-item:hover {
+          background-color: #f9fafb;
+        }
+        
+        .dropdown-item i {
+          width: 16px;
+          color: #6b7280;
+        }
+        
+        .logout-item {
+          color: #dc2626;
+        }
+        
+        .logout-item:hover {
+          background-color: #fef2f2;
+        }
+        
+        .logout-item i {
+          color: #dc2626;
+        }
+        
+        /* 모바일 메뉴 토글 */
+        .mobile-menu-toggle {
+          display: none;
+          flex-direction: column;
+          justify-content: space-around;
+          width: 30px;
+          height: 30px;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          z-index: 10;
+        }
+        
+        .hamburger-line {
+          width: 25px;
+          height: 3px;
+          background-color: #374151;
+          transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+          transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+          opacity: 0;
+        }
+        
+        .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+          transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        /* 모바일 메뉴 */
+        .mobile-menu {
+          display: none;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: white;
+          border-top: 1px solid #e5e7eb;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          z-index: 50;
+        }
+        
+        .mobile-menu-open {
+          display: block;
+        }
+        
+        .mobile-menu-content {
+          padding: 20px;
+        }
+        
+        .mobile-nav-link {
+          display: block;
+          padding: 15px 0;
+          color: #374151;
+          text-decoration: none;
+          border-bottom: 1px solid #f3f4f6;
+          font-size: 16px;
+          font-weight: 500;
+        }
+        
+        .mobile-nav-link:hover {
+          color: #1d4ed8;
+        }
+        
+        .mobile-menu-divider {
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 2px solid #f3f4f6;
+        }
+        
+        .mobile-user-section {
+          background: #f9fafb;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 15px;
+        }
+        
+        .mobile-user-info {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+        
+        .mobile-user-avatar {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          overflow: hidden;
+        }
+        
+        .mobile-avatar-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .mobile-avatar-initial {
+          width: 100%;
+          height: 100%;
+          background: #667eea;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 20px;
+          font-weight: bold;
+        }
+        
+        .mobile-user-details {
+          flex: 1;
+        }
+        
+        .mobile-user-name {
+          font-size: 18px;
+          font-weight: 600;
+          color: #1f2937;
+          margin-bottom: 5px;
+        }
+        
+        .mobile-user-email {
+          font-size: 14px;
+          color: #6b7280;
+        }
+        
+        .mobile-nav-btn {
+          background: none;
+          border: none;
+          width: 100%;
+          text-align: left;
+          cursor: pointer;
+        }
+        
+        .mobile-logout-btn {
+          color: #dc2626;
+        }
+        
+        .mobile-auth-section {
+          background: #f9fafb;
+          padding: 20px;
+          border-radius: 8px;
+        }
+        
+        .mobile-signup-link {
+          background: #3b82f6;
+          color: white !important;
+          text-align: center;
+          border-radius: 6px;
+          margin-top: 10px;
+        }
+        
+        /* 모바일 메뉴 오버레이 */
+        .mobile-menu-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 40;
+        }
+        
+        .mobile-menu-overlay-open {
+          display: block;
+        }
+        
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+          .header-content {
+            padding: 10px 0;
+          }
+          
+          .nav-menu {
+            display: none;
+          }
+          
+          .mobile-menu-toggle {
+            display: flex;
+          }
+          
+          .mobile-menu-overlay {
+            display: none;
+          }
+          
+          .mobile-menu-overlay-open {
+            display: block;
+          }
+          
+          .user-name {
+            display: none;
+          }
+          
+          .user-dropdown {
+            min-width: 180px;
+            right: -10px;
+          }
+          
+          .nav-auth {
+            gap: 10px;
+          }
+          
+          .login-btn {
+            padding: 6px 12px;
+            font-size: 13px;
+          }
+        }
+        
         /* 🚀 헤더 로켓 애니메이션 */
         .header-rocket {
           display: inline-block;
