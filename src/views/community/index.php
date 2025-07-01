@@ -662,19 +662,129 @@ $pageLoadTime = round((microtime(true) - $pageLoadStart) * 1000, 2);
     }
 }
 
-/* 다크모드 대응 */
-@media (prefers-color-scheme: dark) {
+/* PC와 모바일 모든 화면 크기에서 화이트 배경 일관성 유지 */
+
+/* 글로벌 화이트 배경 강제 적용 */
+body {
+    background-color: white !important;
+}
+
+/* 모든 화면 크기에서 화이트 배경 유지 */
+.community-container {
+    background: white !important;
+}
+
+.post-list {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.post-item {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    color: #333 !important;
+}
+
+.post-item:hover {
+    background-color: #f8fafc !important;
+}
+
+.post-title {
+    color: #2d3748 !important;
+}
+
+.post-content {
+    color: #4a5568 !important;
+}
+
+.post-meta {
+    color: #718096 !important;
+}
+
+.board-controls {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.search-form input, .search-form select {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    color: #333 !important;
+}
+
+/* 모바일에서도 화이트 배경 강제 유지 */
+@media (max-width: 768px) {
+    body {
+        background-color: white !important;
+    }
+    
+    .community-container {
+        background: white !important;
+        padding: 15px;
+    }
+    
     .post-list {
-        background: #2d3748;
-        border-color: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .post-item {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
     }
     
     .post-item:hover {
-        background-color: #4a5568;
+        background-color: #f8fafc !important;
+    }
+}
+
+/* 다크모드 감지되어도 화이트 배경 강제 유지 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: white !important;
+    }
+    
+    .community-container {
+        background: white !important;
+    }
+    
+    .post-list {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .post-item {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    .post-item:hover {
+        background-color: #f8fafc !important;
     }
     
     .post-title {
-        color: #e2e8f0;
+        color: #2d3748 !important;
+    }
+    
+    .post-content {
+        color: #4a5568 !important;
+    }
+    
+    .post-meta {
+        color: #718096 !important;
+    }
+    
+    .board-controls {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .search-form input, .search-form select {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
     }
 }
 </style>

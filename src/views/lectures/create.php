@@ -614,27 +614,128 @@ if (!isset($_SESSION['csrf_token'])) {
     background: #dc2626;
 }
 
-/* 다크모드 대응 */
-@media (prefers-color-scheme: dark) {
+/* PC와 모바일 모든 화면 크기에서 화이트 배경 일관성 유지 */
+
+/* 글로벌 화이트 배경 강제 적용 */
+body {
+    background-color: white !important;
+}
+
+/* 모든 화면 크기에서 화이트 배경 유지 */
+.create-container {
+    background: white !important;
+}
+
+.create-form {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.form-input, .form-select, .form-textarea {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    color: #333 !important;
+}
+
+.location-fields {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.image-upload-area {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.instructor-form {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* 모바일에서도 화이트 배경 강제 유지 */
+@media (max-width: 768px) {
+    body {
+        background-color: white !important;
+    }
+    
+    .create-container {
+        background: white !important;
+    }
+    
     .create-form {
-        background: #2d3748;
-        border-color: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
     }
     
     .form-input, .form-select, .form-textarea {
-        background: #4a5568;
-        border-color: #718096;
-        color: white;
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
     }
     
     .location-fields {
-        background: #4a5568;
-        border-color: #718096;
+        background: white !important;
+        border-color: #e2e8f0 !important;
     }
     
     .image-upload-area {
-        background: #4a5568;
-        border-color: #718096;
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+}
+
+/* 다크모드 감지되어도 화이트 배경 강제 유지 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: white !important;
+    }
+    
+    .create-container {
+        background: white !important;
+    }
+    
+    .create-form {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    .location-fields {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .image-upload-area {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    .instructor-form {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    /* 텍스트 색상도 라이트 모드로 유지 */
+    .form-label, .form-title, .section-title {
+        color: #333 !important;
+    }
+    
+    .form-help, .form-hint {
+        color: #718096 !important;
+    }
+    
+    /* 플레이스홀더 색상 */
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+        color: #a0aec0 !important;
     }
 }
 

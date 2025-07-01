@@ -1294,28 +1294,110 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     font-size: 0.875rem;
 }
 
-/* 다크모드 대응 */
-@media (prefers-color-scheme: dark) {
+/* PC와 모바일 모든 화면 크기에서 화이트 배경 일관성 유지 */
+
+/* 글로벌 화이트 배경 강제 적용 */
+body {
+    background-color: white !important;
+}
+
+/* 모든 화면 크기에서 화이트 배경 유지 */
+.lecture-detail-container {
+    background: white !important;
+}
+
+.lecture-header, .lecture-main, .sidebar-card {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.schedule-item, .instructor-info, .participant-item, .related-lecture-item {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+    color: #333 !important;
+}
+
+.profile-image-modal .modal-content {
+    background: white !important;
+    color: #333 !important;
+}
+
+.profile-image-modal .modal-header {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+.profile-image-modal .modal-header h3 {
+    color: #2d3748 !important;
+}
+
+/* 모바일에서도 화이트 배경 강제 유지 */
+@media (max-width: 768px) {
+    body {
+        background-color: white !important;
+    }
+    
+    .lecture-detail-container {
+        background: white !important;
+    }
+    
     .lecture-header, .lecture-main, .sidebar-card {
-        background: #2d3748;
-        border-color: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
     }
     
     .schedule-item, .instructor-info, .participant-item, .related-lecture-item {
-        background: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+}
+
+/* 다크모드 감지되어도 화이트 배경 강제 유지 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: white !important;
+    }
+    
+    .lecture-detail-container {
+        background: white !important;
+    }
+    
+    .lecture-header, .lecture-main, .sidebar-card {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
+    }
+    
+    .schedule-item, .instructor-info, .participant-item, .related-lecture-item {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+        color: #333 !important;
     }
     
     .profile-image-modal .modal-content {
-        background: #2d3748;
+        background: white !important;
+        color: #333 !important;
     }
     
     .profile-image-modal .modal-header {
-        background: #4a5568;
-        border-color: #718096;
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
     }
     
     .profile-image-modal .modal-header h3 {
-        color: #e2e8f0;
+        color: #2d3748 !important;
+    }
+    
+    /* 텍스트 색상도 라이트 모드로 유지 */
+    .lecture-title, .lecture-subtitle, .lecture-description,
+    .schedule-date, .schedule-time, .instructor-name,
+    .instructor-title, .participant-name, .related-lecture-title {
+        color: #333 !important;
+    }
+    
+    .lecture-meta, .schedule-meta, .instructor-info-text {
+        color: #718096 !important;
     }
 }
 </style>

@@ -22,7 +22,8 @@ class RegistrationDashboardController extends BaseController
         }
         
         $userRole = AuthMiddleware::getUserRole();
-        if ($userRole !== 'ROLE_CORP' && $userRole !== 'ROLE_ADMIN') {
+        // 관리자이거나 기업 회원이거나 일반 사용자(강의 생성자)라면 접근 허용
+        if ($userRole !== 'ROLE_CORP' && $userRole !== 'ROLE_ADMIN' && $userRole !== 'ROLE_USER') {
             header('HTTP/1.1 403 Forbidden');
             include SRC_PATH . '/views/errors/403.php';
             exit;
@@ -31,23 +32,38 @@ class RegistrationDashboardController extends BaseController
         $userId = AuthMiddleware::getCurrentUserId();
         
         try {
-            // 내 강의 목록 조회 (최근 10개)
+            // 날짜 필터 파라미터 처리
+            $startDate = $_GET['start_date'] ?? null;
+            $endDate = $_GET['end_date'] ?? null;
+            
+            // 기본값: 최근 1개월
+            if (!$startDate || !$endDate) {
+                $startDate = date('Y-m-d', strtotime('-1 month'));
+                $endDate = date('Y-m-d');
+            }
+            
+            // 내 강의 목록 조회 (날짜 필터 적용)
             $lecturesQuery = "
                 SELECT 
                     l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
                     l.max_participants, l.current_participants, l.auto_approval,
                     l.registration_end_date,
-                    stats.total_applications, stats.pending_count, stats.approved_count,
-                    stats.rejected_count, stats.waiting_count
+                    COUNT(DISTINCT lr.id) as total_applications,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'pending' THEN lr.id END) as pending_count,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as approved_count,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'rejected' THEN lr.id END) as rejected_count,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'waiting' THEN lr.id END) as waiting_count
                 FROM lectures l
-                LEFT JOIN registration_statistics stats ON l.id = stats.lecture_id
-                WHERE l.user_id = ? AND l.status = 'published'
+                LEFT JOIN lecture_registrations lr ON l.id = lr.lecture_id
+                WHERE l.user_id = ? AND l.status = 'published' 
+                AND l.start_date >= ? AND l.start_date <= ?
+                GROUP BY l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
+                         l.max_participants, l.current_participants, l.auto_approval, l.registration_end_date
                 ORDER BY l.start_date DESC, l.created_at DESC
-                LIMIT 10
             ";
             
             $stmt = $this->db->prepare($lecturesQuery);
-            $stmt->bind_param("i", $userId);
+            $stmt->bind_param("iss", $userId, $startDate, $endDate);
             $stmt->execute();
             $lectures = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             
@@ -298,15 +314,16 @@ class RegistrationDashboardController extends BaseController
      */
     private function getDashboardStats($userId)
     {
+        // registration_statistics 테이블 없이 직접 집계
         $statsQuery = "
             SELECT 
                 COUNT(DISTINCT l.id) as total_lectures,
-                COALESCE(SUM(stats.total_applications), 0) as total_applications,
-                COALESCE(SUM(stats.pending_count), 0) as pending_applications,
-                COALESCE(SUM(stats.approved_count), 0) as approved_applications,
-                COALESCE(SUM(stats.rejected_count), 0) as rejected_applications
+                COUNT(DISTINCT lr.id) as total_applications,
+                COUNT(DISTINCT CASE WHEN lr.status = 'pending' THEN lr.id END) as pending_applications,
+                COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as approved_applications,
+                COUNT(DISTINCT CASE WHEN lr.status = 'rejected' THEN lr.id END) as rejected_applications
             FROM lectures l
-            LEFT JOIN registration_statistics stats ON l.id = stats.lecture_id
+            LEFT JOIN lecture_registrations lr ON l.id = lr.lecture_id
             WHERE l.user_id = ? AND l.status = 'published'
         ";
         

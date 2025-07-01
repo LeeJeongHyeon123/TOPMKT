@@ -826,21 +826,156 @@ $monthNames = [
     }
 }
 
-/* 다크모드 대응 */
-@media (prefers-color-scheme: dark) {
+/* PC와 모바일 모든 화면 크기에서 화이트 배경 일관성 유지 */
+
+/* 글로벌 화이트 배경 강제 적용 */
+body {
+    background-color: white !important;
+}
+
+/* 모든 화면 크기에서 화이트 배경 유지 */
+.lectures-container {
+    background: white !important;
+}
+
+.calendar-view, .lectures-sidebar, .list-view {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.calendar-header {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+.day-header {
+    color: #4a5568 !important;
+    border-color: #e2e8f0 !important;
+}
+
+.calendar-day {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.calendar-day.today {
+    background: #fff5f5 !important;
+    border-color: #667eea !important;
+}
+
+.day-number {
+    color: #2d3748 !important;
+}
+
+.color-legend {
+    background: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+}
+
+.legend-item {
+    color: #4a5568 !important;
+}
+
+.calendar-controls {
+    background: white !important;
+    border-color: #e2e8f0 !important;
+}
+
+.month-navigation button {
+    background: white !important;
+    color: #4a5568 !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* 강의 아이템 색상은 원래 시스템 유지 - 오프라인(보라)/온라인(초록) 구분 */
+
+/* 모바일에서도 화이트 배경 강제 유지 */
+@media (max-width: 768px) {
+    body {
+        background-color: white !important;
+    }
+    
+    .lectures-container {
+        background: white !important;
+        padding: 20px 10px 15px 10px;
+    }
+    
     .calendar-view, .lectures-sidebar, .list-view {
-        background: #2d3748;
-        border-color: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
     }
     
     .calendar-day {
-        background: #2d3748;
-        border-color: #4a5568;
+        background: white !important;
+        border-color: #e2e8f0 !important;
     }
     
     .calendar-day.today {
-        background: #553c9a;
+        background: #fff5f5 !important;
+        border-color: #667eea !important;
     }
+}
+
+/* 다크모드 감지되어도 화이트 배경 강제 유지 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: white !important;
+    }
+    
+    .lectures-container {
+        background: white !important;
+    }
+    
+    .calendar-view, .lectures-sidebar, .list-view {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .calendar-header {
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .day-header {
+        color: #4a5568 !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .calendar-day {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .calendar-day.today {
+        background: #fff5f5 !important;
+        border-color: #667eea !important;
+    }
+    
+    .day-number {
+        color: #2d3748 !important;
+    }
+    
+    .color-legend {
+        background: #f8fafc !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .legend-item {
+        color: #4a5568 !important;
+    }
+    
+    .calendar-controls {
+        background: white !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    .month-navigation button {
+        background: white !important;
+        color: #4a5568 !important;
+        border-color: #e2e8f0 !important;
+    }
+    
+    /* 강의 아이템 색상은 원래 시스템 유지 - 다크모드에서도 오프라인(보라)/온라인(초록) 구분 */
 }
 </style>
 

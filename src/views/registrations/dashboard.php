@@ -149,6 +149,7 @@
     gap: 16px;
     font-size: 0.9rem;
     opacity: 0.9;
+    color: white;
 }
 
 .lecture-body {
@@ -274,6 +275,53 @@
 .status-rejected { background: #fed7d7; color: #c53030; }
 .status-waiting { background: #bee3f8; color: #2b6cb0; }
 
+/* 날짜 필터 스타일 */
+.date-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.date-filter label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4a5568;
+    white-space: nowrap;
+}
+
+.date-input {
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: white;
+    color: #2d3748;
+    transition: border-color 0.2s ease;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .dashboard-container {
@@ -306,6 +354,27 @@
     
     .table-responsive {
         overflow-x: auto;
+    }
+    
+    .date-filter-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .date-filter {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px;
+    }
+    
+    .date-filter label {
+        min-width: 60px;
+    }
+    
+    .date-input {
+        flex: 1;
+        min-width: 120px;
     }
 }
 </style>
@@ -360,11 +429,18 @@
     <div class="section">
         <div class="section-header">
             <h2 class="section-title">
-                🎯 최근 강의 목록
+                🎯 최근 강의 목록 (1개월)
             </h2>
-            <a href="/lectures" class="btn btn-outline">
-                📚 모든 강의 보기
-            </a>
+            <div class="date-filter-container">
+                <div class="date-filter">
+                    <label for="startDate">시작일:</label>
+                    <input type="date" id="startDate" class="date-input">
+                    <label for="endDate">종료일:</label>
+                    <input type="date" id="endDate" class="date-input">
+                    <button onclick="applyDateFilter()" class="btn btn-primary btn-sm">필터 적용</button>
+                    <button onclick="resetDateFilter()" class="btn btn-outline btn-sm">초기화</button>
+                </div>
+            </div>
         </div>
         
         <?php if (empty($lectures)): ?>
@@ -387,7 +463,7 @@
                             <div class="lecture-meta">
                                 <span>📅 <?= date('Y-m-d H:i', strtotime($lecture['start_date'] . ' ' . $lecture['start_time'])) ?></span>
                                 <?php if ($lecture['max_participants']): ?>
-                                    <span>👥 <?= $lecture['current_participants'] ?>/<?= $lecture['max_participants'] ?>명</span>
+                                    <span>👥 <?= number_format($lecture['current_participants']) ?>/<?= number_format($lecture['max_participants']) ?>명</span>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -421,6 +497,11 @@
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
+    </div>
+    
+    <!-- 무한 스크롤 로딩 인디케이터 -->
+    <div id="loading-indicator" style="display: none; text-align: center; padding: 20px; color: #718096;">
+        <i class="fas fa-spinner fa-spin"></i> 더 많은 강의를 불러오는 중...
     </div>
     
     <!-- 최근 신청 목록 -->
@@ -492,3 +573,84 @@
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+// 날짜 필터 기능
+function applyDateFilter() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    
+    if (!startDate || !endDate) {
+        alert('시작일과 종료일을 모두 선택해주세요.');
+        return;
+    }
+    
+    if (new Date(startDate) > new Date(endDate)) {
+        alert('시작일이 종료일보다 늦을 수 없습니다.');
+        return;
+    }
+    
+    // 현재 URL에 날짜 파라미터 추가
+    const url = new URL(window.location.href);
+    url.searchParams.set('start_date', startDate);
+    url.searchParams.set('end_date', endDate);
+    window.location.href = url.toString();
+}
+
+function resetDateFilter() {
+    // URL에서 날짜 파라미터 제거
+    const url = new URL(window.location.href);
+    url.searchParams.delete('start_date');
+    url.searchParams.delete('end_date');
+    window.location.href = url.toString();
+}
+
+// 페이지 로드 시 URL 파라미터로부터 날짜 값 설정
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const startDate = urlParams.get('start_date');
+    const endDate = urlParams.get('end_date');
+    
+    if (startDate) {
+        document.getElementById('startDate').value = startDate;
+    }
+    if (endDate) {
+        document.getElementById('endDate').value = endDate;
+    }
+    
+    // 기본값: 최근 1개월
+    if (!startDate && !endDate) {
+        const today = new Date();
+        const oneMonthAgo = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+        
+        document.getElementById('startDate').value = oneMonthAgo.toISOString().split('T')[0];
+        document.getElementById('endDate').value = today.toISOString().split('T')[0];
+    }
+});
+
+// 무한 스크롤 구현
+let isLoading = false;
+let hasMoreData = true;
+let currentPage = 1;
+
+function loadMoreLectures() {
+    if (isLoading || !hasMoreData) return;
+    
+    isLoading = true;
+    document.getElementById('loading-indicator').style.display = 'block';
+    
+    // AJAX로 추가 강의 데이터 로드 (필요시 구현)
+    setTimeout(() => {
+        isLoading = false;
+        document.getElementById('loading-indicator').style.display = 'none';
+        // 실제로는 서버에서 데이터를 받아와서 DOM에 추가
+    }, 1000);
+}
+
+// 스크롤 이벤트 리스너
+window.addEventListener('scroll', () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+        loadMoreLectures();
+    }
+});
+</script>

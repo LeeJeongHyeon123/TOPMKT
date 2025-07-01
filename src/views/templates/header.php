@@ -135,16 +135,6 @@
                         <li><a href="/community" class="<?= ($pageSection ?? '') === 'community' ? 'active' : '' ?>">커뮤니티</a></li>
                         <li><a href="/lectures" class="<?= ($pageSection ?? '') === 'lectures' ? 'active' : '' ?>">강의 일정</a></li>
                         <li><a href="/events" class="<?= ($pageSection ?? '') === 'events' ? 'active' : '' ?>">행사 일정</a></li>
-                        <?php 
-                        // 기업 사용자를 위한 신청 관리 메뉴
-                        try {
-                            $userRole = AuthMiddleware::getUserRole();
-                            if ($userRole === 'ROLE_CORP' || $userRole === 'ROLE_ADMIN'): ?>
-                        <li><a href="/registrations" class="<?= ($pageSection ?? '') === 'registrations' ? 'active' : '' ?>">📊 신청 관리</a></li>
-                        <?php endif;
-                        } catch (Exception $e) {
-                            // 권한 확인 실패 시 무시
-                        } ?>
                     </ul>
                 </nav>
 
@@ -196,6 +186,30 @@
                                     <i class="fas fa-envelope"></i>
                                     <span>채팅</span>
                                 </a>
+                                
+                                <?php 
+                                // 모든 로그인된 사용자에게 신청 관리 메뉴 표시
+                                try {
+                                    $isLoggedIn = AuthMiddleware::isLoggedIn();
+                                    if ($isLoggedIn): ?>
+                                <a href="/registrations" class="dropdown-item">
+                                    <i class="fas fa-clipboard-list"></i>
+                                    <span>신청 관리</span>
+                                </a>
+                                <?php endif;
+                                    
+                                    // 관리자를 위한 관리자 대시보드 메뉴
+                                    $userRole = AuthMiddleware::getUserRole();
+                                    if ($userRole === 'ROLE_ADMIN'): ?>
+                                <a href="/admin" class="dropdown-item">
+                                    <i class="fas fa-cog"></i>
+                                    <span>⚙️ 관리자</span>
+                                </a>
+                                <?php endif;
+                                } catch (Exception $e) {
+                                    // 권한 확인 실패 시 무시
+                                } ?>
+                                
                                 <div class="dropdown-divider"></div>
                                 <a href="/auth/logout" class="dropdown-item logout-item" onclick="return confirmLogout()">
                                     <i class="fas fa-sign-out-alt"></i>
@@ -954,6 +968,10 @@
                             <i class="fas fa-envelope"></i>
                             <span>채팅</span>
                             ${badgeHtml}
+                        </a>
+                        <a href="/registrations" class="dropdown-item">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>신청 관리</span>
                         </a>
                         ${adminMenuHtml}
                         <div class="dropdown-divider"></div>
