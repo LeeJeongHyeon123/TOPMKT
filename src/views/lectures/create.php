@@ -2452,9 +2452,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (fileIndex >= 0 && fileIndex < lectureImages.length) {
                         const file = lectureImages[fileIndex];
+                        const fileExtension = file.name.split('.').pop().toLowerCase();
+                        const timestamp = Date.now();
                         const imageData = {
-                            original_name: `temp_${Date.now()}_${fileIndex}`,  // 임시 안전한 이름
-                            file_name: `temp_${Date.now()}_${fileIndex}`,     // 서버에서 실제 파일명으로 매칭
+                            original_name: `temp_${timestamp}_${fileIndex}.${fileExtension}`,  // 확장자 포함한 임시 이름
+                            file_name: `temp_${timestamp}_${fileIndex}.${fileExtension}`,     // 서버에서 실제 파일명으로 매칭
                             file_size: file.size,
                             is_new: true,
                             display_order: actualOrder,  // DOM에서의 실제 순서 사용
@@ -2554,14 +2556,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('서버에서 올바르지 않은 데이터를 받았습니다.');
             }
             
-            if (data.success) {
+            if (data.success || (data.data && data.data.success)) {
+                // 중첩된 응답 구조 처리
+                const responseData = data.data || data;
+                
                 // 성공 메시지 표시
-                showSuccessMessage(data.message);
+                showSuccessMessage(responseData.message || data.message);
                 hasUnsavedChanges = false;
                 
-                if (data.isDraft) {
+                if (responseData.isDraft) {
                     // 임시저장인 경우 현재 페이지에 머물기
-                    // console.log('임시저장 완료, 강의 ID:', data.lectureId);
+                    // console.log('임시저장 완료, 강의 ID:', responseData.lectureId);
                     
                     // 임시저장 후 최신 이미지 데이터로 업데이트
                     // console.log('=== 임시저장 응답 처리 시작 ===');
@@ -2633,15 +2638,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     // 정식 등록인 경우 리다이렉트
                     setTimeout(() => {
-                        if (isEditMode && data.lectureId) {
+                        if (isEditMode && responseData.lectureId) {
                             // 수정 모드인 경우 강의 상세 페이지의 수정 모드로 리다이렉트
-                            window.location.href = `/lectures/${data.lectureId}/edit`;
-                        } else if (data.lectureId) {
+                            window.location.href = `/lectures/${responseData.lectureId}/edit`;
+                        } else if (responseData.lectureId) {
                             // 새 강의 등록인 경우 강의 상세 페이지의 수정 모드로 리다이렉트
-                            window.location.href = `/lectures/${data.lectureId}/edit`;
+                            window.location.href = `/lectures/${responseData.lectureId}/edit`;
                         } else {
                             // 기본 리다이렉트
-                            window.location.href = data.redirectUrl || '/lectures';
+                            window.location.href = responseData.redirectUrl || data.redirectUrl || '/lectures';
                         }
                     }, 1500);
                 }
@@ -2817,6 +2822,12 @@ document.addEventListener('DOMContentLoaded', function() {
         img.style.height = '100%';
         img.style.objectFit = 'cover';
         img.style.borderRadius = '8px';
+        
+        // 이미지 로드 실패 시 기본 이미지로 대체
+        img.onerror = function() {
+            console.warn(`강사 이미지 로드 실패: ${imagePath}, 기본 이미지로 대체`);
+            this.src = '<?= DEFAULT_AVATAR_PATH ?>';
+        };
         
         // placeholder 숨기고 이미지 표시
         if (placeholder) placeholder.style.display = 'none';
@@ -3118,7 +3129,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             imageItem.innerHTML = `
                                 <div class="image-container">
                                     <img src="${imageSrc}" alt="${image.original_name || '강의 이미지'}" 
-                                         onerror="this.src='/assets/images/default-avatar.png';">
+                                         onerror="this.src='<?= DEFAULT_AVATAR_PATH ?>';">
                                     <button type="button" class="remove-existing-image">
                                         ×
                                     </button>
@@ -3323,116 +3334,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 네이버 Maps API를 통한 정확한 좌표 설정 (클라이언트 사이드)
-    function getCoordinates(address) {
-        // console.log('주소 저장됨:', address);
-        
-        if (!address) {
-            document.getElementById('venue_latitude').value = '';
-            document.getElementById('venue_longitude').value = '';
-            return;
-        }
-        
-        // 네이버 Maps API가 로드되어 있는지 확인
-        if (typeof naver !== 'undefined' && naver.maps && naver.maps.Service) {
-            // 네이버 Maps Geocoding 서비스 사용
-            naver.maps.Service.geocode({
-                query: address
-            }, function(status, response) {
-                if (status === naver.maps.Service.Status.OK) {
-                    const result = response.v2.addresses[0];
-                    if (result) {
-                        const lat = parseFloat(result.y);
-                        const lng = parseFloat(result.x);
-                        
-                        document.getElementById('venue_latitude').value = lat;
-                        document.getElementById('venue_longitude').value = lng;
-                        
-                        // 성공 시각적 피드백
-                        const addressField = document.getElementById('venue_address');
-                        addressField.style.backgroundColor = '#f0fdf4';
-                        addressField.style.borderColor = '#22c55e';
-                        
-                        console.log('정확한 좌표 설정 완료:', {
-                            address: address,
-                            latitude: lat,
-                            longitude: lng
-                        });
-                        return;
-                    }
-                }
-                
-                // API 실패 시 지역 기반 근사 좌표 사용
-                console.warn('네이버 Geocoding 실패, 지역 기반 좌표 사용');
-                setRegionBasedCoordinates(address);
-            });
-        } else {
-            // 네이버 Maps API가 로드되지 않은 경우 지역 기반 근사 좌표 사용
-            console.warn('네이버 Maps API 미로드, 지역 기반 좌표 사용');
-            setRegionBasedCoordinates(address);
-        }
-        
-        // 주소 입력 완료를 시각적으로 표시
-        const addressField = document.getElementById('venue_address');
-        addressField.style.backgroundColor = '#f0f9ff';
-        addressField.style.borderColor = '#0ea5e9';
-    }
-    
-    // 지역 기반 근사 좌표 설정 함수
-    function setRegionBasedCoordinates(address) {
-        const regionCoordinates = {
-            // 서울 지역
-            '서울': { lat: 37.5665, lng: 126.9780 },
-            '강남': { lat: 37.4979, lng: 127.0276 },
-            '강북': { lat: 37.6390, lng: 127.0258 },
-            '강동': { lat: 37.5301, lng: 127.1238 },
-            '강서': { lat: 37.5509, lng: 126.8495 },
-            '홍대': { lat: 37.5563, lng: 126.9236 },
-            '가산': { lat: 37.4816, lng: 126.8819 },
-            '여의도': { lat: 37.5219, lng: 126.9245 },
-            '잠실': { lat: 37.5133, lng: 127.1028 },
-            
-            // 광역시/도청 소재지
-            '부산': { lat: 35.1796, lng: 129.0756 },
-            '대구': { lat: 35.8714, lng: 128.6014 },
-            '인천': { lat: 37.4563, lng: 126.7052 },
-            '광주': { lat: 35.1595, lng: 126.8526 },
-            '대전': { lat: 36.3504, lng: 127.3845 },
-            '울산': { lat: 35.5384, lng: 129.3114 },
-            '세종': { lat: 36.4800, lng: 127.2890 },
-            
-            // 주요 도시
-            '청주': { lat: 36.6424, lng: 127.4890 },
-            '서원구': { lat: 36.637, lng: 127.491 },  // 청주 서원구
-            '전주': { lat: 35.8242, lng: 127.1479 },
-            '창원': { lat: 35.2281, lng: 128.6811 },
-            '천안': { lat: 36.8151, lng: 127.1139 },
-            '안양': { lat: 37.3943, lng: 126.9568 },
-            '안산': { lat: 37.3236, lng: 126.8219 },
-            '용인': { lat: 37.2411, lng: 127.1776 },
-            '성남': { lat: 37.4449, lng: 127.1388 },
-            '수원': { lat: 37.2636, lng: 127.0286 }
-        };
-        
-        let foundCoords = null;
-        for (const [region, coords] of Object.entries(regionCoordinates)) {
-            if (address.includes(region)) {
-                foundCoords = coords;
-                break;
-            }
-        }
-        
-        if (foundCoords) {
-            document.getElementById('venue_latitude').value = foundCoords.lat;
-            document.getElementById('venue_longitude').value = foundCoords.lng;
-            // console.log('지역 기반 근사 좌표 사용:', foundCoords, 'for address:', address);
-        } else {
-            // 기본 서울 좌표 사용
-            document.getElementById('venue_latitude').value = '37.5665';
-            document.getElementById('venue_longitude').value = '126.9780';
-            // console.log('기본 서울 좌표 사용 for address:', address);
-        }
-    }
     
     // 등록 마감일시 검증 설정
     function initRegistrationDeadlineValidation() {
@@ -3509,8 +3410,168 @@ document.head.appendChild(Object.assign(document.createElement('script'), {
 // 네이버 Maps API 로드 (Geocoding 기능을 위해)
 </script>
 
-<!-- 네이버 Maps API 스크립트 추가 -->
-<script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?php echo NAVER_MAPS_CLIENT_ID; ?>&submodules=geocoder"></script>
+<!-- 네이버 Maps API 스크립트 비동기 로딩 -->
+<script>
+// 네이버 지도 API 비동기 로딩 (document.write 경고 해결)
+function loadNaverMapsAPI() {
+    return new Promise((resolve, reject) => {
+        if (window.naver && window.naver.maps) {
+            resolve();
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=<?php echo NAVER_MAPS_CLIENT_ID; ?>&submodules=geocoder';
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+// 네이버 Maps API를 통한 정확한 좌표 설정 (클라이언트 사이드)
+function getCoordinates(address) {
+    // console.log('주소 저장됨:', address);
+    
+    if (!address) {
+        document.getElementById('venue_latitude').value = '';
+        document.getElementById('venue_longitude').value = '';
+        return;
+    }
+    
+    // 네이버 Maps API가 로드되어 있는지 확인
+    if (typeof naver !== 'undefined' && naver.maps && naver.maps.Service) {
+        // 네이버 Maps Geocoding 서비스 사용
+        naver.maps.Service.geocode({
+            query: address
+        }, function(status, response) {
+            if (status === naver.maps.Service.Status.OK) {
+                const result = response.v2.addresses[0];
+                if (result) {
+                    const lat = parseFloat(result.y);
+                    const lng = parseFloat(result.x);
+                    
+                    document.getElementById('venue_latitude').value = lat;
+                    document.getElementById('venue_longitude').value = lng;
+                    
+                    // 성공 시각적 피드백
+                    const addressField = document.getElementById('venue_address');
+                    addressField.style.backgroundColor = '#f0fdf4';
+                    addressField.style.borderColor = '#22c55e';
+                    
+                    console.log('정확한 좌표 설정 완료:', {
+                        address: address,
+                        latitude: lat,
+                        longitude: lng
+                    });
+                    return;
+                }
+            }
+            
+            // API 실패 시 지역 기반 근사 좌표 사용
+            console.warn('네이버 Geocoding 실패, 지역 기반 좌표 사용');
+            setRegionBasedCoordinates(address);
+        });
+    } else {
+        // 네이버 Maps API가 로드되지 않은 경우 지역 기반 근사 좌표 사용
+        console.warn('네이버 Maps API 미로드, 지역 기반 좌표 사용');
+        setRegionBasedCoordinates(address);
+    }
+    
+    // 주소 입력 완료를 시각적으로 표시
+    const addressField = document.getElementById('venue_address');
+    addressField.style.backgroundColor = '#f0f9ff';
+    addressField.style.borderColor = '#0ea5e9';
+}
+
+// 지역 기반 근사 좌표 설정 함수
+function setRegionBasedCoordinates(address) {
+    const regionCoordinates = {
+        // 서울 지역
+        '서울': { lat: 37.5665, lng: 126.9780 },
+        '강남': { lat: 37.4979, lng: 127.0276 },
+        '강북': { lat: 37.6390, lng: 127.0258 },
+        '강동': { lat: 37.5301, lng: 127.1238 },
+        '강서': { lat: 37.5509, lng: 126.8495 },
+        '홍대': { lat: 37.5563, lng: 126.9236 },
+        '가산': { lat: 37.4816, lng: 126.8819 },
+        '여의도': { lat: 37.5219, lng: 126.9245 },
+        '잠실': { lat: 37.5133, lng: 127.1028 },
+        
+        // 광역시/도청 소재지
+        '부산': { lat: 35.1796, lng: 129.0756 },
+        '대구': { lat: 35.8714, lng: 128.6014 },
+        '인천': { lat: 37.4563, lng: 126.7052 },
+        '광주': { lat: 35.1595, lng: 126.8526 },
+        '대전': { lat: 36.3504, lng: 127.3845 },
+        '울산': { lat: 35.5384, lng: 129.3114 },
+        '세종': { lat: 36.4800, lng: 127.2890 },
+        
+        // 도청 소재지
+        '수원': { lat: 37.2636, lng: 127.0286 }, // 경기도
+        '춘천': { lat: 37.8813, lng: 127.7298 }, // 강원도
+        '청주': { lat: 36.6374, lng: 127.4567 }, // 충북
+        '충주': { lat: 36.9910, lng: 127.9259 },
+        '천안': { lat: 36.8151, lng: 127.1139 }, // 충남
+        '전주': { lat: 35.8242, lng: 127.1480 }, // 전북
+        '광양': { lat: 34.9407, lng: 127.6954 }, // 전남
+        '포항': { lat: 36.0190, lng: 129.3435 }, // 경북
+        '창원': { lat: 35.2278, lng: 128.6811 }, // 경남
+        '제주': { lat: 33.4996, lng: 126.5312 }  // 제주도
+    };
+    
+    // 주소에서 지역명 추출하여 좌표 설정
+    for (const [region, coords] of Object.entries(regionCoordinates)) {
+        if (address.includes(region)) {
+            document.getElementById('venue_latitude').value = coords.lat;
+            document.getElementById('venue_longitude').value = coords.lng;
+            
+            console.log(`지역 기반 좌표 설정: ${region}`, coords);
+            
+            // 근사 좌표 시각적 피드백 (주황색)
+            const addressField = document.getElementById('venue_address');
+            addressField.style.backgroundColor = '#fef3c7';
+            addressField.style.borderColor = '#f59e0b';
+            
+            return;
+        }
+    }
+    
+    // 지역을 찾을 수 없는 경우 기본 좌표 (서울시청)
+    document.getElementById('venue_latitude').value = 37.5665;
+    document.getElementById('venue_longitude').value = 126.9780;
+    
+    console.log('기본 좌표 설정 (서울시청)');
+    
+    // 기본 좌표 시각적 피드백 (회색)
+    const addressField = document.getElementById('venue_address');
+    addressField.style.backgroundColor = '#f3f4f6';
+    addressField.style.borderColor = '#9ca3af';
+}
+
+// 좌표 초기화 함수
+function initializeCoordinates() {
+    const addressField = document.getElementById('venue_address');
+    if (addressField && addressField.value) {
+        console.log('기존 주소로 좌표 설정 시도:', addressField.value);
+        getCoordinates(addressField.value);
+    }
+}
+
+// 페이지 로드 후 네이버 지도 API 로딩
+document.addEventListener('DOMContentLoaded', function() {
+    loadNaverMapsAPI().then(() => {
+        console.log('네이버 지도 API 로딩 완료');
+        // 좌표 설정이 필요한 경우 여기서 실행
+        initializeCoordinates();
+    }).catch(error => {
+        console.error('네이버 지도 API 로딩 실패:', error);
+        // API 로딩 실패해도 주소 검색은 동작하도록
+        initializeCoordinates();
+    });
+});
+</script>
 
 <?php if ($isEditMode && !empty($lecture)): ?>
 <script>
@@ -3547,12 +3608,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 강사 이미지 로드 (충분한 지연 후 실행)
                 if (instructor.image_url) {
                     setTimeout(() => {
-                        if (typeof loadInstructorImage === 'function') {
-                            loadInstructorImage(index, instructor.image_url);
-                        } else {
-                            // 함수가 없는 경우 직접 이미지 로드
-                            loadInstructorImageDirect(index, instructor.image_url);
-                        }
+                        // 이미지 파일 존재 여부를 미리 확인
+                        const img = new Image();
+                        img.onload = function() {
+                            // 이미지가 존재하면 로드
+                            if (typeof loadInstructorImage === 'function') {
+                                loadInstructorImage(index, instructor.image_url);
+                            } else {
+                                loadInstructorImageDirect(index, instructor.image_url);
+                            }
+                        };
+                        img.onerror = function() {
+                            // 이미지가 존재하지 않으면 로그만 남기고 넘어감
+                            console.warn(`강사 ${index} 이미지 파일 없음: ${instructor.image_url}`);
+                        };
+                        img.src = instructor.image_url;
                     }, 300);
                 }
             });
@@ -3692,6 +3762,12 @@ function loadInstructorImageDirect(index, imageUrl) {
         img.alt = `강사 ${index + 1} 이미지`;
         img.style.cssText = 'width: 100%; height: 100%; object-fit: cover; border-radius: 8px;';
         
+        // 이미지 로드 실패 시 기본 이미지로 대체
+        img.onerror = function() {
+            console.warn(`강사 이미지 로드 실패: ${imageUrl}, 기본 이미지로 대체`);
+            this.src = '<?= DEFAULT_AVATAR_PATH ?>';
+        };
+        
         // 삭제 버튼 생성
         let removeBtn = container.querySelector('.remove-instructor-image');
         if (!removeBtn) {
@@ -3744,7 +3820,7 @@ function displayExistingImages(images) {
             <div class="image-container">
                 <img src="${imageSrc}" alt="${image.original_name}" class="lecture-image-preview" 
                      style="width: 100%; height: 100%; object-fit: cover; display: block;" 
-                     onerror="this.src='/assets/images/default-avatar.png';">
+                     onerror="this.src='<?= DEFAULT_AVATAR_PATH ?>';">
                 <div class="drag-handle">
                     <i class="fas fa-grip-lines"></i>
                 </div>

@@ -82,24 +82,24 @@ class CommunityController {
             // 성능 디버깅 시작
             WebLogger::init();
             $requestStartTime = microtime(true);
-            WebLogger::log("🚀 [CONTROLLER] 커뮤니티 인덱스 시작: " . date('H:i:s.u'));
+            WebLogger::info("🚀 [CONTROLLER] 커뮤니티 인덱스 시작: " . date('H:i:s.u'));
             
             if ($search) {
-                WebLogger::log("🔍 [CONTROLLER] 검색 요청: '$search' (필터: $filter)");
+                WebLogger::info("🔍 [CONTROLLER] 검색 요청: '$search' (필터: $filter)");
             }
             
             PerformanceDebugger::reset();
             PerformanceDebugger::startTimer('community_index_total');
             
             // 성능 최적화: 총 개수를 먼저 조회해서 페이지 범위 검증
-            WebLogger::log("📊 [CONTROLLER] 총 개수 조회 시작");
+            WebLogger::info("📊 [CONTROLLER] 총 개수 조회 시작");
             $countStartTime = microtime(true);
             $start_time = microtime(true);
             PerformanceDebugger::startTimer('total_count_query');
             $totalCount = $this->postModel->getTotalCount($search, $filter);
             PerformanceDebugger::endTimer('total_count_query');
             $countTime = (microtime(true) - $countStartTime) * 1000;
-            WebLogger::log("📊 [CONTROLLER] 총 개수 조회 완료: {$totalCount}개, " . round($countTime, 2) . "ms");
+            WebLogger::info("📊 [CONTROLLER] 총 개수 조회 완료: {$totalCount}개, " . round($countTime, 2) . "ms");
             
             $totalPages = ceil($totalCount / $pageSize);
             
@@ -120,13 +120,13 @@ class CommunityController {
             
             
             // 게시글 목록 조회 (성능 모니터링 포함)
-            WebLogger::log("📝 [CONTROLLER] 게시글 목록 조회 시작");
+            WebLogger::info("📝 [CONTROLLER] 게시글 목록 조회 시작");
             $list_start = microtime(true);
             PerformanceDebugger::startTimer('post_list_total');
             $posts = $this->postModel->getList($page, $pageSize, $search, $filter);
             PerformanceDebugger::endTimer('post_list_total');
             $list_time = round((microtime(true) - $list_start) * 1000, 2);
-            WebLogger::log("📝 [CONTROLLER] 게시글 목록 조회 완료: " . count($posts) . "개, " . $list_time . "ms");
+            WebLogger::info("📝 [CONTROLLER] 게시글 목록 조회 완료: " . count($posts) . "개, " . $list_time . "ms");
             
             $query_time = round((microtime(true) - $start_time) * 1000, 2);
             
@@ -134,7 +134,7 @@ class CommunityController {
             $totalTimer = PerformanceDebugger::endTimer('community_index_total');
             $totalRequestTime = (microtime(true) - $requestStartTime) * 1000;
             
-            WebLogger::log("🏁 [CONTROLLER] 전체 요청 완료: " . round($totalRequestTime, 2) . "ms");
+            WebLogger::info("🏁 [CONTROLLER] 전체 요청 완료: " . round($totalRequestTime, 2) . "ms");
             
             // 성능 리포트 생성
             $performanceReport = PerformanceDebugger::logReport('커뮤니티 인덱스' . ($search ? " 검색: '$search'" : ''));
@@ -168,7 +168,7 @@ class CommunityController {
                 'pageSize' => $pageSize,
                 'hasNextPage' => $page < $totalPages,
                 'hasPrevPage' => $page > 1,
-                'performanceLogs' => WebLogger::getLogs(), // 성능 로그 추가
+                'performanceLogs' => [], // 성능 로그 (임시 비활성화)
                 'showDebugInfo' => isset($_GET['debug']) || $search // 검색 시 또는 debug 파라미터 시 표시
             ];
             

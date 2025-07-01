@@ -99,6 +99,16 @@ class Router {
             'POST:/lectures/update-images' => ['LectureController', 'updateImages'],
             'GET:/lectures/{id}/ical' => ['LectureController', 'generateICal'],
             
+            // 강의 신청 관리 API 라우트
+            'GET:/api/lectures/{id}/registration-status' => ['RegistrationController', 'getRegistrationStatus'],
+            'POST:/api/lectures/{id}/registration' => ['RegistrationController', 'createRegistration'],
+            'DELETE:/api/lectures/{id}/registration' => ['RegistrationController', 'cancelRegistration'],
+            
+            // 기업 신청 관리 대시보드 라우트
+            'GET:/registrations' => ['RegistrationDashboardController', 'index'],
+            'GET:/registrations/lectures/{id}' => ['RegistrationDashboardController', 'lectureRegistrations'],
+            'POST:/api/registrations/{id}/status' => ['RegistrationDashboardController', 'updateRegistrationStatus'],
+            
             // 행사 일정 라우트
             'GET:/events' => ['EventController', 'index'],
             'GET:/events/detail' => ['EventController', 'detail'],

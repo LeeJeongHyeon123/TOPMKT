@@ -394,7 +394,7 @@ class UserController {
             }
             
             // 업로드 디렉토리 생성 (보안 강화)
-            $uploadDir = ROOT_PATH . '/public/assets/uploads/profiles/' . date('Y/m');
+            $uploadDir = PROFILES_UPLOAD_PATH . '/' . date('Y/m');
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }
@@ -602,7 +602,7 @@ class UserController {
         }
         
         // 업로드 디렉토리 생성
-        $uploadDir = ROOT_PATH . '/public/assets/uploads/profiles/' . date('Y/m');
+        $uploadDir = PROFILES_UPLOAD_PATH . '/' . date('Y/m');
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }

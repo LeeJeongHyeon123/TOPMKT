@@ -3178,3 +3178,798 @@ display_order 재설정 완료: [1,2,3,4,5]
 최종 이미지 2: file_name=1750854708_4_KakaoTalk_20250621_144804430_04.jpg, file_path=/assets/uploads/lectures/1750854708_4_KakaoTalk_20250621_144804430_04.jpg
 최종 이미지 3: file_name=1750854708_3_KakaoTalk_20250621_144804430_03.jpg, file_path=/assets/uploads/lectures/1750854708_3_KakaoTalk_20250621_144804430_03.jpg
 최종 이미지 4: file_name=1750854708_2_KakaoTalk_20250621_144804430_02.jpg, file_path=/assets/uploads/lectures/1750854708_2_KakaoTalk_20250621_144804430_02.jpg
+=== store() 메서드 시작 - 2025-07-01 13:04:17 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 716
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1751342658723_0',
+    'file_name' => 'temp_1751342658723_0',
+    'file_size' => 1299232,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1751342658723_1',
+    'file_name' => 'temp_1751342658723_1',
+    'file_size' => 1497991,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1751342658723_2',
+    'file_name' => 'temp_1751342658723_2',
+    'file_size' => 1692855,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+  3 => 
+  array (
+    'original_name' => 'temp_1751342658723_3',
+    'file_name' => 'temp_1751342658723_3',
+    'file_size' => 1127525,
+    'is_new' => true,
+    'display_order' => 4,
+    'temp_index' => 3,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1751342658723_4',
+    'file_name' => 'temp_1751342658723_4',
+    'file_size' => 3751697,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 4,
+  ),
+)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/temp_1751342658723_0
+기존 이미지 순서 적용: temp_1751342658723_0 (순서: 1, file_path: /assets/uploads/lectures/temp_1751342658723_0)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/temp_1751342658723_1
+기존 이미지 순서 적용: temp_1751342658723_1 (순서: 2, file_path: /assets/uploads/lectures/temp_1751342658723_1)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/temp_1751342658723_2
+기존 이미지 순서 적용: temp_1751342658723_2 (순서: 3, file_path: /assets/uploads/lectures/temp_1751342658723_2)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/temp_1751342658723_3
+기존 이미지 순서 적용: temp_1751342658723_3 (순서: 4, file_path: /assets/uploads/lectures/temp_1751342658723_3)
+기존 이미지 file_path 누락으로 생성됨: /assets/uploads/lectures/temp_1751342658723_4
+기존 이미지 순서 적용: temp_1751342658723_4 (순서: 5, file_path: /assets/uploads/lectures/temp_1751342658723_4)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"original_name":"temp_1751342658723_0","file_name":"temp_1751342658723_0","file_size":1299232,"is_new":true,"display_order":1,"temp_index":0,"file_path":"\/assets\/uploads\/lectures\/temp_1751342658723_0"},{"original_name":"temp_1751342658723_1","file_name":"temp_1751342658723_1","file_size":1497991,"is_new":true,"display_order":2,"temp_index":1,"file_path":"\/assets\/uploads\/lectures\/temp_1751342658723_1"},{"original_name":"temp_1751342658723_2","file_name":"temp_1751342658723_2","file_size":1692855,"is_new":true,"display_order":3,"temp_index":2,"file_path":"\/assets\/uploads\/lectures\/temp_1751342658723_2"},{"original_name":"temp_1751342658723_3","file_name":"temp_1751342658723_3","file_size":1127525,"is_new":true,"display_order":4,"temp_index":3,"file_path":"\/assets\/uploads\/lectures\/temp_1751342658723_3"},{"original_name":"temp_1751342658723_4","file_name":"temp_1751342658723_4","file_size":3751697,"is_new":true,"display_order":5,"temp_index":4,"file_path":"\/assets\/uploads\/lectures\/temp_1751342658723_4"}]
+최종 이미지 0: file_name=temp_1751342658723_0, file_path=/assets/uploads/lectures/temp_1751342658723_0
+최종 이미지 1: file_name=temp_1751342658723_1, file_path=/assets/uploads/lectures/temp_1751342658723_1
+최종 이미지 2: file_name=temp_1751342658723_2, file_path=/assets/uploads/lectures/temp_1751342658723_2
+최종 이미지 3: file_name=temp_1751342658723_3, file_path=/assets/uploads/lectures/temp_1751342658723_3
+최종 이미지 4: file_name=temp_1751342658723_4, file_path=/assets/uploads/lectures/temp_1751342658723_4
+=== store() 메서드 시작 - 2025-07-01 13:11:33 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+기존 이미지 병합 로직 사용
+기존 이미지 없음
+새 이미지 없음
+최종 이미지 없음 - POST에 저장하지 않음
+=== store() 메서드 시작 - 2025-07-01 13:11:50 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["1. \uace0\uace0\ub2e4\uc774\ube0c \ub2e4\ube44\uc774 \uc7a5\ube44.jpg","2. \uace0\uace0\ub2e4\uc774\ube0c \ub871\ud540 \uac00\ubc29(\uc804\ub0a0 \ubc24 \uc9d0 \ubbf8\ub9ac \uc2f8 \ub193\uc740 \uc0ac\uc9c4).jpg","3. \ub525\uc2a4\ud14c\uc774\uc158 \ub3c4\ucc29 \ud6c4 \ucc0d\uc740 \uc0ac\uc9c4.jpg","4. \uc591\ub09c\uc601 \uc324 \ub3c4\uc6c0\uc73c\ub85c \uad6c\ub9e4\ud55c \ub871\ud540 \uac00\ubc29.jpg","5. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","6. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","7. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","8. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpnc2aVe","\/tmp\/php8ejLYy","\/tmp\/phpWG52Z7","\/tmp\/phpn0UdE3","\/tmp\/phpTUvI5W","\/tmp\/phpdjnTY1","\/tmp\/phpJqUxqU","\/tmp\/phppea8uo"],"error":[0,0,0,0,0,0,0,0],"size":[5771614,6058228,5666937,3751697,1692855,1497991,1299232,1127525]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","file_size":3751697,"upload_time":"2025-07-01 13:11:50"},{"original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","file_size":1692855,"upload_time":"2025-07-01 13:11:50"},{"original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","file_size":1497991,"upload_time":"2025-07-01 13:11:50"},{"original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","file_size":1299232,"upload_time":"2025-07-01 13:11:50"},{"original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","file_size":1127525,"upload_time":"2025-07-01 13:11:50"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 756
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1751343111370_0.jpg',
+    'file_name' => 'temp_1751343111370_0.jpg',
+    'file_size' => 1692855,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1751343111370_1.jpg',
+    'file_name' => 'temp_1751343111370_1.jpg',
+    'file_size' => 1497991,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1751343111370_2.jpg',
+    'file_name' => 'temp_1751343111370_2.jpg',
+    'file_size' => 1299232,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+  3 => 
+  array (
+    'original_name' => 'temp_1751343111370_3.jpg',
+    'file_name' => 'temp_1751343111370_3.jpg',
+    'file_size' => 1127525,
+    'is_new' => true,
+    'display_order' => 4,
+    'temp_index' => 3,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1751343111370_4.jpg',
+    'file_name' => 'temp_1751343111370_4.jpg',
+    'file_size' => 3751697,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 4,
+  ),
+)
+파일 크기 매칭 성공: 크기 1692855 -> 1751343110_4_file_68636006b8b7a.jpg
+새 이미지 순서 적용: 1751343110_4_file_68636006b8b7a.jpg (순서: 1, file_path: /assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg)
+파일 크기 매칭 성공: 크기 1497991 -> 1751343110_5_file_68636006b8f34.jpg
+새 이미지 순서 적용: 1751343110_5_file_68636006b8f34.jpg (순서: 2, file_path: /assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg)
+파일 크기 매칭 성공: 크기 1299232 -> 1751343110_6_file_68636006b9259.jpg
+새 이미지 순서 적용: 1751343110_6_file_68636006b9259.jpg (순서: 3, file_path: /assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg)
+파일 크기 매칭 성공: 크기 1127525 -> 1751343110_7_file_68636006b951a.jpg
+새 이미지 순서 적용: 1751343110_7_file_68636006b951a.jpg (순서: 4, file_path: /assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg)
+파일 크기 매칭 성공: 크기 3751697 -> 1751343110_3_file_68636006b74e5.jpg
+새 이미지 순서 적용: 1751343110_3_file_68636006b74e5.jpg (순서: 5, file_path: /assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","file_size":1692855,"upload_time":"2025-07-01 13:11:50","display_order":1},{"original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","file_size":1497991,"upload_time":"2025-07-01 13:11:50","display_order":2},{"original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","file_size":1299232,"upload_time":"2025-07-01 13:11:50","display_order":3},{"original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","file_size":1127525,"upload_time":"2025-07-01 13:11:50","display_order":4},{"original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","file_path":"\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","file_size":3751697,"upload_time":"2025-07-01 13:11:50","display_order":5}]
+최종 이미지 0: file_name=1751343110_4_file_68636006b8b7a.jpg, file_path=/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg
+최종 이미지 1: file_name=1751343110_5_file_68636006b8f34.jpg, file_path=/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg
+최종 이미지 2: file_name=1751343110_6_file_68636006b9259.jpg, file_path=/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg
+최종 이미지 3: file_name=1751343110_7_file_68636006b951a.jpg, file_path=/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg
+최종 이미지 4: file_name=1751343110_3_file_68636006b74e5.jpg, file_path=/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg
+=== store() 메서드 시작 - 2025-07-01 13:12:00 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1276 chars
+existing_lecture_images 내용: [{"original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","file_path":"/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","file_size":1692855,"upload_time":"2025-07-01 13:11:50","display_order":1},{"original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","file_path":"/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","file_size":1497991,"upload_time":"2025-07-01 13:11:50","display_order":2},{"original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","file_path":"/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","file_size":1299232,"upload_time":"2025-07-01 13:11:50","display_order":3},{"original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","file_path":"/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","file_size":1127525,"upload_time":"2025-07-01 13:11:50","display_order":4},{"original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","file_path":"/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","file_size":3751697,"upload_time":"2025-07-01 13:11:50","display_order":5}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg',
+    'original_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'file_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg',
+    'original_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'file_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg',
+    'original_name' => '1751343110_6_file_68636006b9259.jpg',
+    'file_name' => '1751343110_6_file_68636006b9259.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg',
+    'original_name' => '1751343110_7_file_68636006b951a.jpg',
+    'file_name' => '1751343110_7_file_68636006b951a.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg',
+    'original_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'file_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751343110_4_file_68636006b8b7a.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg)
+기존 이미지 순서 적용: 1751343110_5_file_68636006b8f34.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg)
+기존 이미지 순서 적용: 1751343110_6_file_68636006b9259.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg)
+기존 이미지 순서 적용: 1751343110_7_file_68636006b951a.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg)
+기존 이미지 순서 적용: 1751343110_3_file_68636006b74e5.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751343110_4_file_68636006b8b7a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg
+최종 이미지 1: file_name=1751343110_5_file_68636006b8f34.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg
+최종 이미지 2: file_name=1751343110_6_file_68636006b9259.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg
+최종 이미지 3: file_name=1751343110_7_file_68636006b951a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg
+최종 이미지 4: file_name=1751343110_3_file_68636006b74e5.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg
+=== store() 메서드 시작 - 2025-07-01 13:14:00 ===
+isDraft: NO
+POST keys: csrf_token, _method, lecture_id, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1946 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1,"id":1,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","alt_text":"1751343110_4_file_68636006b8b7a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2,"id":2,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","alt_text":"1751343110_5_file_68636006b8f34.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3,"id":3,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","alt_text":"1751343110_6_file_68636006b9259.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4,"id":4,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","alt_text":"1751343110_7_file_68636006b951a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5,"id":5,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","alt_text":"1751343110_3_file_68636006b74e5.jpg"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg',
+    'original_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'file_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg',
+    'original_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'file_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg',
+    'original_name' => '1751343110_6_file_68636006b9259.jpg',
+    'file_name' => '1751343110_6_file_68636006b9259.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg',
+    'original_name' => '1751343110_7_file_68636006b951a.jpg',
+    'file_name' => '1751343110_7_file_68636006b951a.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg',
+    'original_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'file_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751343110_4_file_68636006b8b7a.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg)
+기존 이미지 순서 적용: 1751343110_5_file_68636006b8f34.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg)
+기존 이미지 순서 적용: 1751343110_6_file_68636006b9259.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg)
+기존 이미지 순서 적용: 1751343110_7_file_68636006b951a.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg)
+기존 이미지 순서 적용: 1751343110_3_file_68636006b74e5.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751343110_4_file_68636006b8b7a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg
+최종 이미지 1: file_name=1751343110_5_file_68636006b8f34.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg
+최종 이미지 2: file_name=1751343110_6_file_68636006b9259.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg
+최종 이미지 3: file_name=1751343110_7_file_68636006b951a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg
+최종 이미지 4: file_name=1751343110_3_file_68636006b74e5.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg
+=== store() 메서드 시작 - 2025-07-01 13:26:21 ===
+isDraft: NO
+POST keys: csrf_token, _method, lecture_id, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1946 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1,"id":1,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","alt_text":"1751343110_4_file_68636006b8b7a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2,"id":2,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","alt_text":"1751343110_5_file_68636006b8f34.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3,"id":3,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","alt_text":"1751343110_6_file_68636006b9259.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4,"id":4,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","alt_text":"1751343110_7_file_68636006b951a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5,"id":5,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","alt_text":"1751343110_3_file_68636006b74e5.jpg"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg',
+    'original_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'file_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg',
+    'original_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'file_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg',
+    'original_name' => '1751343110_6_file_68636006b9259.jpg',
+    'file_name' => '1751343110_6_file_68636006b9259.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg',
+    'original_name' => '1751343110_7_file_68636006b951a.jpg',
+    'file_name' => '1751343110_7_file_68636006b951a.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg',
+    'original_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'file_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751343110_4_file_68636006b8b7a.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg)
+기존 이미지 순서 적용: 1751343110_5_file_68636006b8f34.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg)
+기존 이미지 순서 적용: 1751343110_6_file_68636006b9259.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg)
+기존 이미지 순서 적용: 1751343110_7_file_68636006b951a.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg)
+기존 이미지 순서 적용: 1751343110_3_file_68636006b74e5.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751343110_4_file_68636006b8b7a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg
+최종 이미지 1: file_name=1751343110_5_file_68636006b8f34.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg
+최종 이미지 2: file_name=1751343110_6_file_68636006b9259.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg
+최종 이미지 3: file_name=1751343110_7_file_68636006b951a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg
+최종 이미지 4: file_name=1751343110_3_file_68636006b74e5.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg
+=== store() 메서드 시작 - 2025-07-01 13:26:58 ===
+isDraft: NO
+POST keys: csrf_token, _method, lecture_id, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1946 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1,"id":1,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg","alt_text":"1751343110_4_file_68636006b8b7a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2,"id":2,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg","alt_text":"1751343110_5_file_68636006b8f34.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3,"id":3,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg","alt_text":"1751343110_6_file_68636006b9259.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4,"id":4,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg","alt_text":"1751343110_7_file_68636006b951a.jpg"},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5,"id":5,"url":"https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg","alt_text":"1751343110_3_file_68636006b74e5.jpg"}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg',
+    'original_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'file_name' => '1751343110_4_file_68636006b8b7a.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg',
+    'original_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'file_name' => '1751343110_5_file_68636006b8f34.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg',
+    'original_name' => '1751343110_6_file_68636006b9259.jpg',
+    'file_name' => '1751343110_6_file_68636006b9259.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg',
+    'original_name' => '1751343110_7_file_68636006b951a.jpg',
+    'file_name' => '1751343110_7_file_68636006b951a.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg',
+    'original_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'file_name' => '1751343110_3_file_68636006b74e5.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751343110_4_file_68636006b8b7a.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg)
+기존 이미지 순서 적용: 1751343110_5_file_68636006b8f34.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg)
+기존 이미지 순서 적용: 1751343110_6_file_68636006b9259.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg)
+기존 이미지 순서 적용: 1751343110_7_file_68636006b951a.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg)
+기존 이미지 순서 적용: 1751343110_3_file_68636006b74e5.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_4_file_68636006b8b7a.jpg","original_name":"1751343110_4_file_68636006b8b7a.jpg","file_name":"1751343110_4_file_68636006b8b7a.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_5_file_68636006b8f34.jpg","original_name":"1751343110_5_file_68636006b8f34.jpg","file_name":"1751343110_5_file_68636006b8f34.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_6_file_68636006b9259.jpg","original_name":"1751343110_6_file_68636006b9259.jpg","file_name":"1751343110_6_file_68636006b9259.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_7_file_68636006b951a.jpg","original_name":"1751343110_7_file_68636006b951a.jpg","file_name":"1751343110_7_file_68636006b951a.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751343110_3_file_68636006b74e5.jpg","original_name":"1751343110_3_file_68636006b74e5.jpg","file_name":"1751343110_3_file_68636006b74e5.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751343110_4_file_68636006b8b7a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_4_file_68636006b8b7a.jpg
+최종 이미지 1: file_name=1751343110_5_file_68636006b8f34.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_5_file_68636006b8f34.jpg
+최종 이미지 2: file_name=1751343110_6_file_68636006b9259.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_6_file_68636006b9259.jpg
+최종 이미지 3: file_name=1751343110_7_file_68636006b951a.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_7_file_68636006b951a.jpg
+최종 이미지 4: file_name=1751343110_3_file_68636006b74e5.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751343110_3_file_68636006b74e5.jpg
+=== store() 메서드 시작 - 2025-07-01 17:51:45 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["1. \uace0\uace0\ub2e4\uc774\ube0c \ub2e4\ube44\uc774 \uc7a5\ube44.jpg","2. \uace0\uace0\ub2e4\uc774\ube0c \ub871\ud540 \uac00\ubc29(\uc804\ub0a0 \ubc24 \uc9d0 \ubbf8\ub9ac \uc2f8 \ub193\uc740 \uc0ac\uc9c4).jpg","3. \ub525\uc2a4\ud14c\uc774\uc158 \ub3c4\ucc29 \ud6c4 \ucc0d\uc740 \uc0ac\uc9c4.jpg","4. \uc591\ub09c\uc601 \uc324 \ub3c4\uc6c0\uc73c\ub85c \uad6c\ub9e4\ud55c \ub871\ud540 \uac00\ubc29.jpg","5. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","6. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","7. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","8. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpie0Qff","\/tmp\/phpIRR0oo","\/tmp\/phpEc4A7r","\/tmp\/phpVCFxmr","\/tmp\/phpSkUghq","\/tmp\/phpFCnD5A","\/tmp\/phpf9noTp","\/tmp\/php9GX2vo"],"error":[0,0,0,0,0,0,0,0],"size":[5771614,6058228,5666937,3751697,1692855,1497991,1299232,1127525]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1751359905_3_file_6863a1a1f2b5b.jpg","file_name":"1751359905_3_file_6863a1a1f2b5b.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_3_file_6863a1a1f2b5b.jpg","file_size":3751697,"upload_time":"2025-07-01 17:51:45"},{"original_name":"1751359905_4_file_6863a1a1f345c.jpg","file_name":"1751359905_4_file_6863a1a1f345c.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_4_file_6863a1a1f345c.jpg","file_size":1692855,"upload_time":"2025-07-01 17:51:45"},{"original_name":"1751359905_5_file_6863a1a1f3837.jpg","file_name":"1751359905_5_file_6863a1a1f3837.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_5_file_6863a1a1f3837.jpg","file_size":1497991,"upload_time":"2025-07-01 17:51:45"},{"original_name":"1751359905_6_file_6863a1a1f3b98.jpg","file_name":"1751359905_6_file_6863a1a1f3b98.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_6_file_6863a1a1f3b98.jpg","file_size":1299232,"upload_time":"2025-07-01 17:51:45"},{"original_name":"1751359905_7_file_6863a1a1f3e96.jpg","file_name":"1751359905_7_file_6863a1a1f3e96.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_7_file_6863a1a1f3e96.jpg","file_size":1127525,"upload_time":"2025-07-01 17:51:45"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 756
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1751359906570_0.jpg',
+    'file_name' => 'temp_1751359906570_0.jpg',
+    'file_size' => 1692855,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1751359906570_1.jpg',
+    'file_name' => 'temp_1751359906570_1.jpg',
+    'file_size' => 1497991,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1751359906570_2.jpg',
+    'file_name' => 'temp_1751359906570_2.jpg',
+    'file_size' => 1299232,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+  3 => 
+  array (
+    'original_name' => 'temp_1751359906570_3.jpg',
+    'file_name' => 'temp_1751359906570_3.jpg',
+    'file_size' => 1127525,
+    'is_new' => true,
+    'display_order' => 4,
+    'temp_index' => 3,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1751359906570_4.jpg',
+    'file_name' => 'temp_1751359906570_4.jpg',
+    'file_size' => 3751697,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 4,
+  ),
+)
+파일 크기 매칭 성공: 크기 1692855 -> 1751359905_4_file_6863a1a1f345c.jpg
+새 이미지 순서 적용: 1751359905_4_file_6863a1a1f345c.jpg (순서: 1, file_path: /assets/uploads/lectures/1751359905_4_file_6863a1a1f345c.jpg)
+파일 크기 매칭 성공: 크기 1497991 -> 1751359905_5_file_6863a1a1f3837.jpg
+새 이미지 순서 적용: 1751359905_5_file_6863a1a1f3837.jpg (순서: 2, file_path: /assets/uploads/lectures/1751359905_5_file_6863a1a1f3837.jpg)
+파일 크기 매칭 성공: 크기 1299232 -> 1751359905_6_file_6863a1a1f3b98.jpg
+새 이미지 순서 적용: 1751359905_6_file_6863a1a1f3b98.jpg (순서: 3, file_path: /assets/uploads/lectures/1751359905_6_file_6863a1a1f3b98.jpg)
+파일 크기 매칭 성공: 크기 1127525 -> 1751359905_7_file_6863a1a1f3e96.jpg
+새 이미지 순서 적용: 1751359905_7_file_6863a1a1f3e96.jpg (순서: 4, file_path: /assets/uploads/lectures/1751359905_7_file_6863a1a1f3e96.jpg)
+파일 크기 매칭 성공: 크기 3751697 -> 1751359905_3_file_6863a1a1f2b5b.jpg
+새 이미지 순서 적용: 1751359905_3_file_6863a1a1f2b5b.jpg (순서: 5, file_path: /assets/uploads/lectures/1751359905_3_file_6863a1a1f2b5b.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"original_name":"1751359905_4_file_6863a1a1f345c.jpg","file_name":"1751359905_4_file_6863a1a1f345c.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_4_file_6863a1a1f345c.jpg","file_size":1692855,"upload_time":"2025-07-01 17:51:45","display_order":1},{"original_name":"1751359905_5_file_6863a1a1f3837.jpg","file_name":"1751359905_5_file_6863a1a1f3837.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_5_file_6863a1a1f3837.jpg","file_size":1497991,"upload_time":"2025-07-01 17:51:45","display_order":2},{"original_name":"1751359905_6_file_6863a1a1f3b98.jpg","file_name":"1751359905_6_file_6863a1a1f3b98.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_6_file_6863a1a1f3b98.jpg","file_size":1299232,"upload_time":"2025-07-01 17:51:45","display_order":3},{"original_name":"1751359905_7_file_6863a1a1f3e96.jpg","file_name":"1751359905_7_file_6863a1a1f3e96.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_7_file_6863a1a1f3e96.jpg","file_size":1127525,"upload_time":"2025-07-01 17:51:45","display_order":4},{"original_name":"1751359905_3_file_6863a1a1f2b5b.jpg","file_name":"1751359905_3_file_6863a1a1f2b5b.jpg","file_path":"\/assets\/uploads\/lectures\/1751359905_3_file_6863a1a1f2b5b.jpg","file_size":3751697,"upload_time":"2025-07-01 17:51:45","display_order":5}]
+최종 이미지 0: file_name=1751359905_4_file_6863a1a1f345c.jpg, file_path=/assets/uploads/lectures/1751359905_4_file_6863a1a1f345c.jpg
+최종 이미지 1: file_name=1751359905_5_file_6863a1a1f3837.jpg, file_path=/assets/uploads/lectures/1751359905_5_file_6863a1a1f3837.jpg
+최종 이미지 2: file_name=1751359905_6_file_6863a1a1f3b98.jpg, file_path=/assets/uploads/lectures/1751359905_6_file_6863a1a1f3b98.jpg
+최종 이미지 3: file_name=1751359905_7_file_6863a1a1f3e96.jpg, file_path=/assets/uploads/lectures/1751359905_7_file_6863a1a1f3e96.jpg
+최종 이미지 4: file_name=1751359905_3_file_6863a1a1f2b5b.jpg, file_path=/assets/uploads/lectures/1751359905_3_file_6863a1a1f2b5b.jpg
+=== store() 메서드 시작 - 2025-07-01 17:52:56 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["1. \uace0\uace0\ub2e4\uc774\ube0c \ub2e4\ube44\uc774 \uc7a5\ube44.jpg","2. \uace0\uace0\ub2e4\uc774\ube0c \ub871\ud540 \uac00\ubc29(\uc804\ub0a0 \ubc24 \uc9d0 \ubbf8\ub9ac \uc2f8 \ub193\uc740 \uc0ac\uc9c4).jpg","3. \ub525\uc2a4\ud14c\uc774\uc158 \ub3c4\ucc29 \ud6c4 \ucc0d\uc740 \uc0ac\uc9c4.jpg","4. \uc591\ub09c\uc601 \uc324 \ub3c4\uc6c0\uc73c\ub85c \uad6c\ub9e4\ud55c \ub871\ud540 \uac00\ubc29.jpg","5. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","6. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","7. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","8. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpryyiyZ","\/tmp\/phpIbaeNE","\/tmp\/phpyIWN2L","\/tmp\/php5Otx16","\/tmp\/phptq0c0i","\/tmp\/phpD0PBkc","\/tmp\/phpMbPhIi","\/tmp\/php2YUHSS"],"error":[0,0,0,0,0,0,0,0],"size":[5771614,6058228,5666937,3751697,1692855,1497991,1299232,1127525]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_3_file_6863a1e809861.jpg","file_size":3751697,"upload_time":"2025-07-01 17:52:56"},{"original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_4_file_6863a1e80a047.jpg","file_size":1692855,"upload_time":"2025-07-01 17:52:56"},{"original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_5_file_6863a1e80a41c.jpg","file_size":1497991,"upload_time":"2025-07-01 17:52:56"},{"original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_6_file_6863a1e80a730.jpg","file_size":1299232,"upload_time":"2025-07-01 17:52:56"},{"original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_7_file_6863a1e80aa06.jpg","file_size":1127525,"upload_time":"2025-07-01 17:52:56"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 756
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1751359976655_0.jpg',
+    'file_name' => 'temp_1751359976655_0.jpg',
+    'file_size' => 1692855,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1751359976655_1.jpg',
+    'file_name' => 'temp_1751359976655_1.jpg',
+    'file_size' => 1497991,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1751359976655_2.jpg',
+    'file_name' => 'temp_1751359976655_2.jpg',
+    'file_size' => 1299232,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+  3 => 
+  array (
+    'original_name' => 'temp_1751359976655_3.jpg',
+    'file_name' => 'temp_1751359976655_3.jpg',
+    'file_size' => 1127525,
+    'is_new' => true,
+    'display_order' => 4,
+    'temp_index' => 3,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1751359976655_4.jpg',
+    'file_name' => 'temp_1751359976655_4.jpg',
+    'file_size' => 3751697,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 4,
+  ),
+)
+파일 크기 매칭 성공: 크기 1692855 -> 1751359976_4_file_6863a1e80a047.jpg
+새 이미지 순서 적용: 1751359976_4_file_6863a1e80a047.jpg (순서: 1, file_path: /assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg)
+파일 크기 매칭 성공: 크기 1497991 -> 1751359976_5_file_6863a1e80a41c.jpg
+새 이미지 순서 적용: 1751359976_5_file_6863a1e80a41c.jpg (순서: 2, file_path: /assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg)
+파일 크기 매칭 성공: 크기 1299232 -> 1751359976_6_file_6863a1e80a730.jpg
+새 이미지 순서 적용: 1751359976_6_file_6863a1e80a730.jpg (순서: 3, file_path: /assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg)
+파일 크기 매칭 성공: 크기 1127525 -> 1751359976_7_file_6863a1e80aa06.jpg
+새 이미지 순서 적용: 1751359976_7_file_6863a1e80aa06.jpg (순서: 4, file_path: /assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg)
+파일 크기 매칭 성공: 크기 3751697 -> 1751359976_3_file_6863a1e809861.jpg
+새 이미지 순서 적용: 1751359976_3_file_6863a1e809861.jpg (순서: 5, file_path: /assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_4_file_6863a1e80a047.jpg","file_size":1692855,"upload_time":"2025-07-01 17:52:56","display_order":1},{"original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_5_file_6863a1e80a41c.jpg","file_size":1497991,"upload_time":"2025-07-01 17:52:56","display_order":2},{"original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_6_file_6863a1e80a730.jpg","file_size":1299232,"upload_time":"2025-07-01 17:52:56","display_order":3},{"original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_7_file_6863a1e80aa06.jpg","file_size":1127525,"upload_time":"2025-07-01 17:52:56","display_order":4},{"original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","file_path":"\/assets\/uploads\/lectures\/1751359976_3_file_6863a1e809861.jpg","file_size":3751697,"upload_time":"2025-07-01 17:52:56","display_order":5}]
+최종 이미지 0: file_name=1751359976_4_file_6863a1e80a047.jpg, file_path=/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg
+최종 이미지 1: file_name=1751359976_5_file_6863a1e80a41c.jpg, file_path=/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg
+최종 이미지 2: file_name=1751359976_6_file_6863a1e80a730.jpg, file_path=/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg
+최종 이미지 3: file_name=1751359976_7_file_6863a1e80aa06.jpg, file_path=/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg
+최종 이미지 4: file_name=1751359976_3_file_6863a1e809861.jpg, file_path=/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg
+=== store() 메서드 시작 - 2025-07-01 18:12:31 ===
+isDraft: YES
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1276 chars
+existing_lecture_images 내용: [{"original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","file_path":"/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg","file_size":1692855,"upload_time":"2025-07-01 17:52:56","display_order":1},{"original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","file_path":"/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg","file_size":1497991,"upload_time":"2025-07-01 17:52:56","display_order":2},{"original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","file_path":"/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg","file_size":1299232,"upload_time":"2025-07-01 17:52:56","display_order":3},{"original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","file_path":"/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg","file_size":1127525,"upload_time":"2025-07-01 17:52:56","display_order":4},{"original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","file_path":"/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg","file_size":3751697,"upload_time":"2025-07-01 17:52:56","display_order":5}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg',
+    'original_name' => '1751359976_4_file_6863a1e80a047.jpg',
+    'file_name' => '1751359976_4_file_6863a1e80a047.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg',
+    'original_name' => '1751359976_5_file_6863a1e80a41c.jpg',
+    'file_name' => '1751359976_5_file_6863a1e80a41c.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg',
+    'original_name' => '1751359976_6_file_6863a1e80a730.jpg',
+    'file_name' => '1751359976_6_file_6863a1e80a730.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg',
+    'original_name' => '1751359976_7_file_6863a1e80aa06.jpg',
+    'file_name' => '1751359976_7_file_6863a1e80aa06.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg',
+    'original_name' => '1751359976_3_file_6863a1e809861.jpg',
+    'file_name' => '1751359976_3_file_6863a1e809861.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751359976_4_file_6863a1e80a047.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg)
+기존 이미지 순서 적용: 1751359976_5_file_6863a1e80a41c.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg)
+기존 이미지 순서 적용: 1751359976_6_file_6863a1e80a730.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg)
+기존 이미지 순서 적용: 1751359976_7_file_6863a1e80aa06.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg)
+기존 이미지 순서 적용: 1751359976_3_file_6863a1e809861.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_4_file_6863a1e80a047.jpg","original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_5_file_6863a1e80a41c.jpg","original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_6_file_6863a1e80a730.jpg","original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_7_file_6863a1e80aa06.jpg","original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_3_file_6863a1e809861.jpg","original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751359976_4_file_6863a1e80a047.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg
+최종 이미지 1: file_name=1751359976_5_file_6863a1e80a41c.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg
+최종 이미지 2: file_name=1751359976_6_file_6863a1e80a730.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg
+최종 이미지 3: file_name=1751359976_7_file_6863a1e80aa06.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg
+최종 이미지 4: file_name=1751359976_3_file_6863a1e809861.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg
+=== store() 메서드 시작 - 2025-07-01 18:12:42 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, existing_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: YES - 1206 chars
+existing_lecture_images 내용: [{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg","original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","is_existing":true,"display_order":1},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg","original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","is_existing":true,"display_order":2},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg","original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","is_existing":true,"display_order":3},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg","original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","is_existing":true,"display_order":4},{"file_path":"https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg","original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","is_existing":true,"display_order":5}]
+lecture_images FILES: {"name":[""],"type":[""],"tmp_name":[""],"error":[4],"size":[0]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: []
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 1206
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg',
+    'original_name' => '1751359976_4_file_6863a1e80a047.jpg',
+    'file_name' => '1751359976_4_file_6863a1e80a047.jpg',
+    'is_existing' => true,
+    'display_order' => 1,
+  ),
+  1 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg',
+    'original_name' => '1751359976_5_file_6863a1e80a41c.jpg',
+    'file_name' => '1751359976_5_file_6863a1e80a41c.jpg',
+    'is_existing' => true,
+    'display_order' => 2,
+  ),
+  2 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg',
+    'original_name' => '1751359976_6_file_6863a1e80a730.jpg',
+    'file_name' => '1751359976_6_file_6863a1e80a730.jpg',
+    'is_existing' => true,
+    'display_order' => 3,
+  ),
+  3 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg',
+    'original_name' => '1751359976_7_file_6863a1e80aa06.jpg',
+    'file_name' => '1751359976_7_file_6863a1e80aa06.jpg',
+    'is_existing' => true,
+    'display_order' => 4,
+  ),
+  4 => 
+  array (
+    'file_path' => 'https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg',
+    'original_name' => '1751359976_3_file_6863a1e809861.jpg',
+    'file_name' => '1751359976_3_file_6863a1e809861.jpg',
+    'is_existing' => true,
+    'display_order' => 5,
+  ),
+)
+기존 이미지 순서 적용: 1751359976_4_file_6863a1e80a047.jpg (순서: 1, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg)
+기존 이미지 순서 적용: 1751359976_5_file_6863a1e80a41c.jpg (순서: 2, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg)
+기존 이미지 순서 적용: 1751359976_6_file_6863a1e80a730.jpg (순서: 3, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg)
+기존 이미지 순서 적용: 1751359976_7_file_6863a1e80aa06.jpg (순서: 4, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg)
+기존 이미지 순서 적용: 1751359976_3_file_6863a1e809861.jpg (순서: 5, file_path: https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_4_file_6863a1e80a047.jpg","original_name":"1751359976_4_file_6863a1e80a047.jpg","file_name":"1751359976_4_file_6863a1e80a047.jpg","is_existing":true,"display_order":1},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_5_file_6863a1e80a41c.jpg","original_name":"1751359976_5_file_6863a1e80a41c.jpg","file_name":"1751359976_5_file_6863a1e80a41c.jpg","is_existing":true,"display_order":2},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_6_file_6863a1e80a730.jpg","original_name":"1751359976_6_file_6863a1e80a730.jpg","file_name":"1751359976_6_file_6863a1e80a730.jpg","is_existing":true,"display_order":3},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_7_file_6863a1e80aa06.jpg","original_name":"1751359976_7_file_6863a1e80aa06.jpg","file_name":"1751359976_7_file_6863a1e80aa06.jpg","is_existing":true,"display_order":4},{"file_path":"https:\/\/www.topmktx.com\/assets\/uploads\/lectures\/1751359976_3_file_6863a1e809861.jpg","original_name":"1751359976_3_file_6863a1e809861.jpg","file_name":"1751359976_3_file_6863a1e809861.jpg","is_existing":true,"display_order":5}]
+최종 이미지 0: file_name=1751359976_4_file_6863a1e80a047.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_4_file_6863a1e80a047.jpg
+최종 이미지 1: file_name=1751359976_5_file_6863a1e80a41c.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_5_file_6863a1e80a41c.jpg
+최종 이미지 2: file_name=1751359976_6_file_6863a1e80a730.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_6_file_6863a1e80a730.jpg
+최종 이미지 3: file_name=1751359976_7_file_6863a1e80aa06.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_7_file_6863a1e80aa06.jpg
+최종 이미지 4: file_name=1751359976_3_file_6863a1e809861.jpg, file_path=https://www.topmktx.com/assets/uploads/lectures/1751359976_3_file_6863a1e809861.jpg
+=== store() 메서드 시작 - 2025-07-01 18:22:30 ===
+isDraft: NO
+POST keys: csrf_token, existing_lecture_images_hidden, title, content_type, category, difficulty_level, description, instructors, timezone, start_date, end_date, start_time, end_time, location_type, venue_name, venue_address, venue_latitude, venue_longitude, online_link, max_participants, registration_fee, registration_deadline, youtube_video, prerequisites, what_to_bring, additional_info, benefits, ordered_lecture_images, status
+FILES keys: instructors, lecture_images
+existing_lecture_images in POST: NO
+lecture_images FILES: {"name":["1. \uace0\uace0\ub2e4\uc774\ube0c \ub2e4\ube44\uc774 \uc7a5\ube44.jpg","2. \uace0\uace0\ub2e4\uc774\ube0c \ub871\ud540 \uac00\ubc29(\uc804\ub0a0 \ubc24 \uc9d0 \ubbf8\ub9ac \uc2f8 \ub193\uc740 \uc0ac\uc9c4).jpg","3. \ub525\uc2a4\ud14c\uc774\uc158 \ub3c4\ucc29 \ud6c4 \ucc0d\uc740 \uc0ac\uc9c4.jpg","4. \uc591\ub09c\uc601 \uc324 \ub3c4\uc6c0\uc73c\ub85c \uad6c\ub9e4\ud55c \ub871\ud540 \uac00\ubc29.jpg","5. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","6. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","7. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg","8. \uc591\ub09c\uc601 \uc35c\uc774 \ucc0d\uc5b4\uc900 \uc0ac\uc9c4.jpg"],"type":["image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg","image\/jpeg"],"tmp_name":["\/tmp\/phpZShC7I","\/tmp\/phpvFMqKb","\/tmp\/phpvke78C","\/tmp\/phptZUMKw","\/tmp\/phpAHyh82","\/tmp\/phpOmtXeq","\/tmp\/phpahbw7d","\/tmp\/phpuooX7m"],"error":[0,0,0,0,0,0,0,0],"size":[5771614,6058228,5666937,3751697,1692855,1497991,1299232,1127525]}
+
+=== 강의 이미지 병합 시작 ===
+새로 업로드된 이미지: [{"original_name":"1751361750_3_file_6863a8d64e14e.jpg","file_name":"1751361750_3_file_6863a8d64e14e.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_3_file_6863a8d64e14e.jpg","file_size":3751697,"upload_time":"2025-07-01 18:22:30"},{"original_name":"1751361750_4_file_6863a8d64e8e9.jpg","file_name":"1751361750_4_file_6863a8d64e8e9.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_4_file_6863a8d64e8e9.jpg","file_size":1692855,"upload_time":"2025-07-01 18:22:30"},{"original_name":"1751361750_5_file_6863a8d64ec88.jpg","file_name":"1751361750_5_file_6863a8d64ec88.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_5_file_6863a8d64ec88.jpg","file_size":1497991,"upload_time":"2025-07-01 18:22:30"},{"original_name":"1751361750_6_file_6863a8d64efb5.jpg","file_name":"1751361750_6_file_6863a8d64efb5.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_6_file_6863a8d64efb5.jpg","file_size":1299232,"upload_time":"2025-07-01 18:22:30"},{"original_name":"1751361750_7_file_6863a8d64f286.jpg","file_name":"1751361750_7_file_6863a8d64f286.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_7_file_6863a8d64f286.jpg","file_size":1127525,"upload_time":"2025-07-01 18:22:30"}]
+=== 순서 정렬된 이미지 데이터 처리 ===
+ordered_lecture_images JSON 길이: 756
+순서 정렬 JSON 디코드 결과: array (
+  0 => 
+  array (
+    'original_name' => 'temp_1751361750185_0.jpg',
+    'file_name' => 'temp_1751361750185_0.jpg',
+    'file_size' => 1692855,
+    'is_new' => true,
+    'display_order' => 1,
+    'temp_index' => 0,
+  ),
+  1 => 
+  array (
+    'original_name' => 'temp_1751361750185_1.jpg',
+    'file_name' => 'temp_1751361750185_1.jpg',
+    'file_size' => 1497991,
+    'is_new' => true,
+    'display_order' => 2,
+    'temp_index' => 1,
+  ),
+  2 => 
+  array (
+    'original_name' => 'temp_1751361750185_2.jpg',
+    'file_name' => 'temp_1751361750185_2.jpg',
+    'file_size' => 1299232,
+    'is_new' => true,
+    'display_order' => 3,
+    'temp_index' => 2,
+  ),
+  3 => 
+  array (
+    'original_name' => 'temp_1751361750185_3.jpg',
+    'file_name' => 'temp_1751361750185_3.jpg',
+    'file_size' => 1127525,
+    'is_new' => true,
+    'display_order' => 4,
+    'temp_index' => 3,
+  ),
+  4 => 
+  array (
+    'original_name' => 'temp_1751361750185_4.jpg',
+    'file_name' => 'temp_1751361750185_4.jpg',
+    'file_size' => 3751697,
+    'is_new' => true,
+    'display_order' => 5,
+    'temp_index' => 4,
+  ),
+)
+파일 크기 매칭 성공: 크기 1692855 -> 1751361750_4_file_6863a8d64e8e9.jpg
+새 이미지 순서 적용: 1751361750_4_file_6863a8d64e8e9.jpg (순서: 1, file_path: /assets/uploads/lectures/1751361750_4_file_6863a8d64e8e9.jpg)
+파일 크기 매칭 성공: 크기 1497991 -> 1751361750_5_file_6863a8d64ec88.jpg
+새 이미지 순서 적용: 1751361750_5_file_6863a8d64ec88.jpg (순서: 2, file_path: /assets/uploads/lectures/1751361750_5_file_6863a8d64ec88.jpg)
+파일 크기 매칭 성공: 크기 1299232 -> 1751361750_6_file_6863a8d64efb5.jpg
+새 이미지 순서 적용: 1751361750_6_file_6863a8d64efb5.jpg (순서: 3, file_path: /assets/uploads/lectures/1751361750_6_file_6863a8d64efb5.jpg)
+파일 크기 매칭 성공: 크기 1127525 -> 1751361750_7_file_6863a8d64f286.jpg
+새 이미지 순서 적용: 1751361750_7_file_6863a8d64f286.jpg (순서: 4, file_path: /assets/uploads/lectures/1751361750_7_file_6863a8d64f286.jpg)
+파일 크기 매칭 성공: 크기 3751697 -> 1751361750_3_file_6863a8d64e14e.jpg
+새 이미지 순서 적용: 1751361750_3_file_6863a8d64e14e.jpg (순서: 5, file_path: /assets/uploads/lectures/1751361750_3_file_6863a8d64e14e.jpg)
+display_order 재설정 완료: [1,2,3,4,5]
+순서 정렬된 최종 이미지: 5개
+최종 이미지 POST에 저장: [{"original_name":"1751361750_4_file_6863a8d64e8e9.jpg","file_name":"1751361750_4_file_6863a8d64e8e9.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_4_file_6863a8d64e8e9.jpg","file_size":1692855,"upload_time":"2025-07-01 18:22:30","display_order":1},{"original_name":"1751361750_5_file_6863a8d64ec88.jpg","file_name":"1751361750_5_file_6863a8d64ec88.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_5_file_6863a8d64ec88.jpg","file_size":1497991,"upload_time":"2025-07-01 18:22:30","display_order":2},{"original_name":"1751361750_6_file_6863a8d64efb5.jpg","file_name":"1751361750_6_file_6863a8d64efb5.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_6_file_6863a8d64efb5.jpg","file_size":1299232,"upload_time":"2025-07-01 18:22:30","display_order":3},{"original_name":"1751361750_7_file_6863a8d64f286.jpg","file_name":"1751361750_7_file_6863a8d64f286.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_7_file_6863a8d64f286.jpg","file_size":1127525,"upload_time":"2025-07-01 18:22:30","display_order":4},{"original_name":"1751361750_3_file_6863a8d64e14e.jpg","file_name":"1751361750_3_file_6863a8d64e14e.jpg","file_path":"\/assets\/uploads\/lectures\/1751361750_3_file_6863a8d64e14e.jpg","file_size":3751697,"upload_time":"2025-07-01 18:22:30","display_order":5}]
+최종 이미지 0: file_name=1751361750_4_file_6863a8d64e8e9.jpg, file_path=/assets/uploads/lectures/1751361750_4_file_6863a8d64e8e9.jpg
+최종 이미지 1: file_name=1751361750_5_file_6863a8d64ec88.jpg, file_path=/assets/uploads/lectures/1751361750_5_file_6863a8d64ec88.jpg
+최종 이미지 2: file_name=1751361750_6_file_6863a8d64efb5.jpg, file_path=/assets/uploads/lectures/1751361750_6_file_6863a8d64efb5.jpg
+최종 이미지 3: file_name=1751361750_7_file_6863a8d64f286.jpg, file_path=/assets/uploads/lectures/1751361750_7_file_6863a8d64f286.jpg
+최종 이미지 4: file_name=1751361750_3_file_6863a8d64e14e.jpg, file_path=/assets/uploads/lectures/1751361750_3_file_6863a8d64e14e.jpg

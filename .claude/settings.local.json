@@ -69,7 +69,11 @@
       "Bash(/workspace/extract_figma_styles.sh:*)",
       "Bash(/workspace/complete_figma_analysis.sh:*)",
       "Bash(timedatectl:*)",
-      "Bash(scp:*)"
+      "Bash(scp:*)",
+      "Bash(rsync:*)",
+      "Bash(git init:*)",
+      "Bash(sudo systemctl:*)",
+      "Bash(sudo systemctl status:*)"
     ],
     "deny": []
   }

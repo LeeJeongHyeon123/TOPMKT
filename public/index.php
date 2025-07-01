@@ -5,13 +5,21 @@
  * 모든 요청은 이 파일을 통해 처리됩니다.
  */
 
+// 상수 정의 (paths.php 로드 전이므로 여기서 정의)
+define('ROOT_PATH', dirname(__DIR__));
+define('SRC_PATH', ROOT_PATH . '/src');
+define('CONFIG_PATH', SRC_PATH . '/config');
+
+// paths.php 로드
+require_once CONFIG_PATH . '/paths.php';
+
 // 강의 등록 디버깅을 위한 로그
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/lectures/store') !== false) {
-    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "=== INDEX.PHP에서 캐치 ===\n", FILE_APPEND);
-    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
-    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD'] . "\n", FILE_APPEND);
-    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "POST 데이터 존재: " . (empty($_POST) ? 'NO' : 'YES') . "\n", FILE_APPEND);
-    file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "FILES 데이터 존재: " . (empty($_FILES) ? 'NO' : 'YES') . "\n", FILE_APPEND);
+    file_put_contents(DEBUG_STORE_FLOW_LOG, "=== INDEX.PHP에서 캐치 ===\n", FILE_APPEND);
+    file_put_contents(DEBUG_STORE_FLOW_LOG, "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . "\n", FILE_APPEND);
+    file_put_contents(DEBUG_STORE_FLOW_LOG, "REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD'] . "\n", FILE_APPEND);
+    file_put_contents(DEBUG_STORE_FLOW_LOG, "POST 데이터 존재: " . (empty($_POST) ? 'NO' : 'YES') . "\n", FILE_APPEND);
+    file_put_contents(DEBUG_STORE_FLOW_LOG, "FILES 데이터 존재: " . (empty($_FILES) ? 'NO' : 'YES') . "\n", FILE_APPEND);
 }
 
 // 오류 표시 (프로덕션에서는 비활성화)
@@ -20,15 +28,22 @@ ini_set('display_startup_errors', 0);
 error_reporting(0);
 
 try {
-    // 상대 경로 설정
-    define('ROOT_PATH', dirname(__DIR__));
-    define('SRC_PATH', ROOT_PATH . '/src');
-    define('CONFIG_PATH', SRC_PATH . '/config');
-
     // 설정 파일 로드
     require_once CONFIG_PATH . '/config.php';
     require_once CONFIG_PATH . '/database.php';
     require_once CONFIG_PATH . '/routes.php';
+    
+    // 헬퍼 클래스 로드
+    require_once SRC_PATH . '/helpers/WebLogger.php';
+    require_once SRC_PATH . '/helpers/ResponseHelper.php';
+    require_once SRC_PATH . '/helpers/GlobalErrorHandler.php';
+    require_once SRC_PATH . '/helpers/LogAnalyzer.php';
+    
+    // 글로벌 에러 핸들러 등록
+    GlobalErrorHandler::register();
+    
+    // 로깅 시스템 초기화
+    WebLogger::init();
 
     // 기본 세션 시작
     if (session_status() === PHP_SESSION_NONE) {
@@ -62,21 +77,69 @@ try {
     
     // JWT 토큰을 통한 자동 인증은 AuthMiddleware에서 처리
 
+    // 요청 시작 로그
+    $startTime = microtime(true);
+    WebLogger::info('Request started', [
+        'method' => $_SERVER['REQUEST_METHOD'] ?? '',
+        'uri' => $_SERVER['REQUEST_URI'] ?? '',
+        'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+        'referer' => $_SERVER['HTTP_REFERER'] ?? ''
+    ]);
+    
     // 라우팅 처리
     $router = new Router();
     $router->dispatch();
     
+    // 요청 완료 로그
+    $endTime = microtime(true);
+    $duration = $endTime - $startTime;
+    WebLogger::performance('Request completed', $duration, [
+        'method' => $_SERVER['REQUEST_METHOD'] ?? '',
+        'uri' => $_SERVER['REQUEST_URI'] ?? ''
+    ]);
+    
 } catch (Exception $e) {
-    echo "<h1>오류 발생</h1>";
-    echo "<p>오류 메시지: " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p>파일: " . $e->getFile() . "</p>";
-    echo "<p>라인: " . $e->getLine() . "</p>";
-    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    // 예외는 GlobalErrorHandler에서 처리됨
+    // 하지만 여기에 도달한 경우 최종 안전망
+    if (class_exists('WebLogger')) {
+        WebLogger::critical('Unhandled Exception in index.php', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+    
+    // 개발 환경에서만 상세 에러 표시
+    if ((getenv('APP_ENV') === 'development') || (defined('APP_DEBUG') && APP_DEBUG)) {
+        echo "<h1>오류 발생</h1>";
+        echo "<p>오류 메시지: " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p>파일: " . $e->getFile() . "</p>";
+        echo "<p>라인: " . $e->getLine() . "</p>";
+        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    } else {
+        http_response_code(500);
+        echo "<h1>서비스 오류</h1><p>일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>";
+    }
 } catch (Error $e) {
-    echo "<h1>치명적 오류 발생</h1>";
-    echo "<p>오류 메시지: " . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<p>파일: " . $e->getFile() . "</p>";
-    echo "<p>라인: " . $e->getLine() . "</p>";
-    echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    if (class_exists('WebLogger')) {
+        WebLogger::emergency('Fatal Error in index.php', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+    
+    if ((getenv('APP_ENV') === 'development') || (defined('APP_DEBUG') && APP_DEBUG)) {
+        echo "<h1>치명적 오류 발생</h1>";
+        echo "<p>오류 메시지: " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p>파일: " . $e->getFile() . "</p>";
+        echo "<p>라인: " . $e->getLine() . "</p>";
+        echo "<pre>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+    } else {
+        http_response_code(500);
+        echo "<h1>시스템 오류</h1><p>시스템에 심각한 문제가 발생했습니다.</p>";
+    }
 }
 ?>

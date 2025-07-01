@@ -343,7 +343,7 @@ class CorporateController {
             }
             
             // 업로드 디렉토리 설정
-            $uploadDir = PUBLIC_PATH . '/assets/uploads/corp_docs/';
+            $uploadDir = UPLOADS_PATH . '/corp_docs/';
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }

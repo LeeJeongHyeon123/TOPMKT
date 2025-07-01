@@ -309,6 +309,15 @@ class AuthMiddleware {
     }
     
     /**
+     * 사용자 역할 반환 (호환성을 위한 별칭)
+     * 
+     * @return string|null 사용자 역할 또는 null
+     */
+    public static function getUserRole() {
+        return self::getCurrentUserRole();
+    }
+    
+    /**
      * 현재 사용자 정보 반환 (JWT 기반)
      * 
      * @return array|null 사용자 정보 배열 또는 null

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($page_title) ? $page_title . ' - ' . (APP_NAME ?? '탑마케팅') : (APP_NAME ?? '탑마케팅') ?></title>
+    <title><?= isset($page_title) ? $page_title . ' - 탑마케팅' : (isset($title) ? $title : '탑마케팅') ?></title>
     <meta name="description" content="<?= $page_description ?? '글로벌 네트워크 마케팅 리더들의 커뮤니티' ?>">
     
     <!-- Open Graph / Facebook -->
@@ -123,7 +123,7 @@
                             <div class="logo-icon">
                                 <i class="fas fa-rocket header-rocket"></i>
                             </div>
-                            <span class="logo-text"><?= APP_NAME ?? '탑마케팅' ?></span>
+                            <span class="logo-text"><?= 탑마케팅 ?? '탑마케팅' ?></span>
                         </a>
                     </h1>
                 </div>
@@ -135,6 +135,16 @@
                         <li><a href="/community" class="<?= ($pageSection ?? '') === 'community' ? 'active' : '' ?>">커뮤니티</a></li>
                         <li><a href="/lectures" class="<?= ($pageSection ?? '') === 'lectures' ? 'active' : '' ?>">강의 일정</a></li>
                         <li><a href="/events" class="<?= ($pageSection ?? '') === 'events' ? 'active' : '' ?>">행사 일정</a></li>
+                        <?php 
+                        // 기업 사용자를 위한 신청 관리 메뉴
+                        try {
+                            $userRole = AuthMiddleware::getUserRole();
+                            if ($userRole === 'ROLE_CORP' || $userRole === 'ROLE_ADMIN'): ?>
+                        <li><a href="/registrations" class="<?= ($pageSection ?? '') === 'registrations' ? 'active' : '' ?>">📊 신청 관리</a></li>
+                        <?php endif;
+                        } catch (Exception $e) {
+                            // 권한 확인 실패 시 무시
+                        } ?>
                     </ul>
                 </nav>
 

@@ -131,6 +131,297 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     background: rgba(255, 255, 255, 0.3);
 }
 
+.btn-danger {
+    background: #e53e3e;
+    color: white;
+    border: 1px solid #c53030;
+}
+
+.btn-success {
+    background: #48bb78;
+    color: white;
+    border: 1px solid #38a169;
+}
+
+.btn-warning {
+    background: #ed8936;
+    color: white;
+    border: 1px solid #dd6b20;
+}
+
+.btn-info {
+    background: #4299e1;
+    color: white;
+    border: 1px solid #3182ce;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+}
+
+/* 신청 액션 컨테이너 */
+#registration-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#registration-actions .btn {
+    white-space: nowrap;
+    min-width: 140px;
+}
+
+/* 신청 모달 스타일 */
+.registration-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.registration-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.registration-modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+}
+
+.registration-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.registration-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.registration-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.registration-modal-body {
+    padding: 28px;
+}
+
+.form-section {
+    margin-bottom: 24px;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 0.9rem;
+}
+
+.form-group .required::after {
+    content: ' *';
+    color: #e53e3e;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group input.error,
+.form-group textarea.error,
+.form-group select.error {
+    border-color: #e53e3e;
+    background-color: #fed7d7;
+}
+
+.error-message {
+    color: #e53e3e;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+.error-message.general-error {
+    background: #fed7d7;
+    border: 1px solid #e53e3e;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+}
+
+.registration-modal-footer {
+    padding: 20px 28px 28px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #e2e8f0;
+}
+
+.registration-modal-footer .btn {
+    min-width: 120px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.registration-modal-footer .btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.registration-modal-footer .btn-primary:hover:not(:disabled) {
+    background: #5a67d8;
+    transform: translateY(-1px);
+}
+
+.registration-modal-footer .btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.registration-modal-footer .btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+.registration-modal-footer .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .registration-modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .registration-modal-header {
+        padding: 20px 24px 16px;
+    }
+    
+    .registration-modal-body {
+        padding: 24px 20px;
+    }
+    
+    .registration-modal-footer {
+        padding: 16px 20px 24px;
+        flex-direction: column;
+    }
+    
+    .registration-modal-footer .btn {
+        width: 100%;
+    }
+}
+
+.btn-danger:hover {
+    background: #c53030;
+    border-color: #9c1e1e;
+    transform: translateY(-1px);
+}
+
 /* 콘텐츠 레이아웃 */
 .lecture-content {
     display: grid;
@@ -1038,7 +1329,22 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <a href="/lectures/<?= $lecture['id'] ?>/edit" class="btn btn-edit">
                         ✏️ 수정
                     </a>
+                    <button class="btn btn-danger" onclick="confirmDeleteLecture(<?= $lecture['id'] ?>)">
+                        🗑️ 삭제
+                    </button>
                 <?php endif; ?>
+                
+                <?php if ($isLoggedIn && !$canEdit): ?>
+                    <!-- 신청 관련 버튼 -->
+                    <div id="registration-actions">
+                        <!-- 여기에 동적으로 신청 버튼이 생성됩니다 -->
+                    </div>
+                <?php elseif (!$isLoggedIn): ?>
+                    <a href="/auth/login?return_to=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="btn btn-primary">
+                        🚀 로그인 후 신청하기
+                    </a>
+                <?php endif; ?>
+                
                 <button class="btn btn-secondary" onclick="shareContent()">
                     🔗 공유하기
                 </button>
@@ -1254,14 +1560,14 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         <div class="instructor-card">
                             <!-- 강사 아바타 -->
                             <?php 
-                            // 기본 강사 이미지 경로들
+                            // 기본 강사 이미지 경로들 (경로 상수 사용)
                             $defaultInstructorImages = [
-                                '/assets/uploads/instructors/instructor-1.jpg',
-                                '/assets/uploads/instructors/instructor-2.jpg', 
-                                '/assets/uploads/instructors/instructor-3.jpg',
-                                '/assets/uploads/instructors/instructor-kim.jpg',
-                                '/assets/uploads/instructors/instructor-lee.jpg',
-                                '/assets/uploads/instructors/instructor-park.jpg'
+                                INSTRUCTORS_WEB_PATH . '/instructor-1.jpg',
+                                INSTRUCTORS_WEB_PATH . '/instructor-2.jpg', 
+                                INSTRUCTORS_WEB_PATH . '/instructor-3.jpg',
+                                INSTRUCTORS_WEB_PATH . '/instructor-kim.jpg',
+                                INSTRUCTORS_WEB_PATH . '/instructor-lee.jpg',
+                                INSTRUCTORS_WEB_PATH . '/instructor-park.jpg'
                             ];
                             
                             // 강사 이미지가 없거나 파일이 존재하지 않는 경우 기본 이미지 사용
@@ -2397,6 +2703,711 @@ function handleProfileModalEscKey(event) {
         closeProfileImageModal();
     }
 }
+
+/**
+ * 강의 신청 시스템
+ */
+
+// 페이지 로드 시 신청 상태 확인
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if ($isLoggedIn && !$canEdit): ?>
+        checkRegistrationStatus();
+    <?php endif; ?>
+});
+
+// 신청 상태 확인
+async function checkRegistrationStatus() {
+    try {
+        const response = await fetch(`/api/lectures/<?= $lecture['id'] ?>/registration-status`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const data = await response.json();
+        updateRegistrationUI(data);
+    } catch (error) {
+        console.error('신청 상태 확인 오류:', error);
+        showDefaultRegistrationButton();
+    }
+}
+
+// 신청 UI 업데이트
+function updateRegistrationUI(data) {
+    const actionsContainer = document.getElementById('registration-actions');
+    if (!actionsContainer) return;
+    
+    const lecture = <?= json_encode($lecture) ?>;
+    const now = new Date();
+    const startDate = new Date(lecture.start_date + ' ' + lecture.start_time);
+    
+    // 강의가 이미 시작되었는지 확인
+    const isLectureStarted = now >= startDate;
+    
+    if (data.registration) {
+        // 이미 신청한 경우
+        const registration = data.registration;
+        updateRegistrationStatusUI(registration, isLectureStarted);
+    } else {
+        // 신청하지 않은 경우
+        showRegistrationButton(data.lecture_info, isLectureStarted);
+    }
+}
+
+// 신청 상태별 UI 표시
+function updateRegistrationStatusUI(registration, isLectureStarted) {
+    const actionsContainer = document.getElementById('registration-actions');
+    const status = registration.status;
+    
+    let buttonHtml = '';
+    let statusText = '';
+    let statusClass = '';
+    
+    switch (status) {
+        case 'pending':
+            statusText = '⏳ 승인 대기중';
+            statusClass = 'btn-warning';
+            buttonHtml = `
+                <button class="btn ${statusClass}" disabled>
+                    ${statusText}
+                </button>
+                <button class="btn btn-outline" onclick="cancelRegistration()">
+                    ❌ 신청 취소
+                </button>
+            `;
+            break;
+            
+        case 'approved':
+            if (isLectureStarted) {
+                statusText = '✅ 참석 완료';
+                statusClass = 'btn-success';
+                buttonHtml = `<button class="btn ${statusClass}" disabled>${statusText}</button>`;
+            } else {
+                statusText = '✅ 신청 승인됨';
+                statusClass = 'btn-success';
+                buttonHtml = `
+                    <button class="btn ${statusClass}" disabled>
+                        ${statusText}
+                    </button>
+                    <button class="btn btn-outline" onclick="cancelRegistration()">
+                        ❌ 신청 취소
+                    </button>
+                `;
+            }
+            break;
+            
+        case 'rejected':
+            statusText = '❌ 신청 거절됨';
+            statusClass = 'btn-danger';
+            buttonHtml = `
+                <button class="btn ${statusClass}" disabled>
+                    ${statusText}
+                </button>
+                <button class="btn btn-primary" onclick="showRegistrationModal()">
+                    🔄 다시 신청하기
+                </button>
+            `;
+            break;
+            
+        case 'cancelled':
+            statusText = '⭕ 신청 취소됨';
+            statusClass = 'btn-secondary';
+            buttonHtml = `
+                <button class="btn btn-primary" onclick="showRegistrationModal()">
+                    🚀 다시 신청하기
+                </button>
+            `;
+            break;
+            
+        case 'waiting':
+            statusText = `⏰ 대기순번 ${registration.waiting_order}번`;
+            statusClass = 'btn-info';
+            buttonHtml = `
+                <button class="btn ${statusClass}" disabled>
+                    ${statusText}
+                </button>
+                <button class="btn btn-outline" onclick="cancelRegistration()">
+                    ❌ 대기 취소
+                </button>
+            `;
+            break;
+    }
+    
+    actionsContainer.innerHTML = buttonHtml;
+}
+
+// 신청 버튼 표시
+function showRegistrationButton(lectureInfo, isLectureStarted) {
+    const actionsContainer = document.getElementById('registration-actions');
+    
+    if (isLectureStarted) {
+        actionsContainer.innerHTML = `
+            <button class="btn btn-secondary" disabled>
+                ⏰ 강의가 이미 시작되었습니다
+            </button>
+        `;
+        return;
+    }
+    
+    // 신청 마감일 확인
+    if (lectureInfo.registration_end_date) {
+        const registrationEndDate = new Date(lectureInfo.registration_end_date);
+        const now = new Date();
+        
+        if (now > registrationEndDate) {
+            actionsContainer.innerHTML = `
+                <button class="btn btn-secondary" disabled>
+                    📅 신청 마감되었습니다
+                </button>
+            `;
+            return;
+        }
+    }
+    
+    // 정원 확인
+    if (lectureInfo.max_participants && lectureInfo.current_participants >= lectureInfo.max_participants) {
+        if (lectureInfo.allow_waiting_list) {
+            actionsContainer.innerHTML = `
+                <button class="btn btn-warning" onclick="showWaitingListModal()">
+                    ⏰ 대기자로 신청하기
+                </button>
+            `;
+        } else {
+            actionsContainer.innerHTML = `
+                <button class="btn btn-secondary" disabled>
+                    👥 정원이 마감되었습니다
+                </button>
+            `;
+        }
+        return;
+    }
+    
+    // 일반 신청 버튼
+    actionsContainer.innerHTML = `
+        <button class="btn btn-primary" onclick="showRegistrationModal()">
+            🚀 지금 신청하기
+        </button>
+    `;
+}
+
+// 기본 신청 버튼 표시 (오류 시)
+function showDefaultRegistrationButton() {
+    const actionsContainer = document.getElementById('registration-actions');
+    actionsContainer.innerHTML = `
+        <button class="btn btn-primary" onclick="showRegistrationModal()">
+            🚀 지금 신청하기
+        </button>
+    `;
+}
+
+// 신청 모달 표시
+function showRegistrationModal() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        // 폼 초기화
+        resetRegistrationForm();
+        
+        // 사용자 정보 자동 입력
+        loadUserInfo();
+    }
+}
+
+// 신청 모달 닫기
+function closeRegistrationModal() {
+    const modal = document.getElementById('registrationModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}
+
+// 신청 폼 초기화
+function resetRegistrationForm() {
+    const form = document.getElementById('registrationForm');
+    if (form) {
+        form.reset();
+        
+        // 에러 메시지 제거
+        const errorElements = form.querySelectorAll('.error-message');
+        errorElements.forEach(el => el.remove());
+        
+        // 입력 필드 스타일 초기화
+        const inputs = form.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.classList.remove('error');
+        });
+    }
+}
+
+// 사용자 정보 자동 입력
+async function loadUserInfo() {
+    try {
+        const response = await fetch('/auth/me', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const user = data.user;
+            
+            if (user) {
+                // 신청자 정보 자동 입력
+                const participantName = document.getElementById('participant_name');
+                const participantEmail = document.getElementById('participant_email');
+                const participantPhone = document.getElementById('participant_phone');
+                
+                if (participantName && user.nickname) {
+                    participantName.value = user.nickname;
+                }
+                if (participantEmail && user.email) {
+                    participantEmail.value = user.email;
+                }
+                if (participantPhone && user.phone) {
+                    participantPhone.value = user.phone;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('사용자 정보 로드 오류:', error);
+    }
+}
+
+// 신청 폼 제출
+async function submitRegistration() {
+    const form = document.getElementById('registrationForm');
+    const submitButton = document.getElementById('submitRegistrationBtn');
+    
+    if (!form || !submitButton) return;
+    
+    // 클라이언트 사이드 검증
+    if (!validateRegistrationForm()) {
+        return;
+    }
+    
+    // 버튼 비활성화
+    const originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '🔄 신청 중...';
+    submitButton.disabled = true;
+    
+    try {
+        // 폼 데이터 수집
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        // 데이터 정리
+        Object.keys(data).forEach(key => {
+            if (typeof data[key] === 'string') {
+                data[key] = data[key].trim();
+            }
+        });
+        
+        // CSRF 토큰 추가
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        data.csrf_token = csrfToken;
+        
+        // 신청 요청
+        const response = await fetch(`/api/lectures/<?= $lecture['id'] ?>/registration`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('✅ ' + result.message);
+            closeRegistrationModal();
+            checkRegistrationStatus(); // 상태 새로고침
+        } else {
+            // 에러 메시지 표시
+            showFormErrors(result.errors || { general: result.message });
+        }
+        
+    } catch (error) {
+        console.error('신청 제출 오류:', error);
+        alert('❌ 신청 처리 중 오류가 발생했습니다.');
+    } finally {
+        // 버튼 복구
+        submitButton.innerHTML = originalText;
+        submitButton.disabled = false;
+    }
+}
+
+// 신청 폼 클라이언트 사이드 검증
+function validateRegistrationForm() {
+    const errors = {};
+    
+    // 필수 필드 검증
+    const participantName = document.getElementById('participant_name').value.trim();
+    const participantEmail = document.getElementById('participant_email').value.trim();
+    const participantPhone = document.getElementById('participant_phone').value.trim();
+    
+    if (!participantName) {
+        errors.participant_name = '이름을 입력해주세요.';
+    } else if (participantName.length < 2) {
+        errors.participant_name = '이름은 2글자 이상 입력해주세요.';
+    }
+    
+    if (!participantEmail) {
+        errors.participant_email = '이메일을 입력해주세요.';
+    } else if (!isValidEmail(participantEmail)) {
+        errors.participant_email = '올바른 이메일 형식을 입력해주세요.';
+    }
+    
+    if (!participantPhone) {
+        errors.participant_phone = '연락처를 입력해주세요.';
+    } else if (!isValidPhone(participantPhone)) {
+        errors.participant_phone = '올바른 연락처 형식을 입력해주세요. (예: 010-1234-5678)';
+    }
+    
+    // 에러가 있으면 표시하고 false 반환
+    if (Object.keys(errors).length > 0) {
+        showFormErrors(errors);
+        return false;
+    }
+    
+    // 기존 에러 메시지 제거
+    clearFormErrors();
+    return true;
+}
+
+// 이메일 유효성 검사
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// 전화번호 유효성 검사
+function isValidPhone(phone) {
+    // 한국 휴대폰 번호 형식 (010-1234-5678, 01012345678 등)
+    const phoneRegex = /^(010|011|016|017|018|019)[-]?\d{3,4}[-]?\d{4}$/;
+    return phoneRegex.test(phone.replace(/\s/g, ''));
+}
+
+// 폼 에러 메시지 제거
+function clearFormErrors() {
+    const existingErrors = document.querySelectorAll('.error-message');
+    existingErrors.forEach(el => el.remove());
+    
+    const inputs = document.querySelectorAll('#registrationForm input, #registrationForm textarea, #registrationForm select');
+    inputs.forEach(input => input.classList.remove('error'));
+}
+
+// 폼 에러 표시
+function showFormErrors(errors) {
+    // 기존 에러 메시지 제거
+    const existingErrors = document.querySelectorAll('.error-message');
+    existingErrors.forEach(el => el.remove());
+    
+    // 입력 필드 스타일 초기화
+    const inputs = document.querySelectorAll('#registrationForm input, #registrationForm textarea, #registrationForm select');
+    inputs.forEach(input => input.classList.remove('error'));
+    
+    // 새로운 에러 메시지 표시
+    for (const [field, message] of Object.entries(errors)) {
+        if (field === 'general') {
+            // 일반 에러는 폼 상단에 표시
+            const form = document.getElementById('registrationForm');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message general-error';
+            errorDiv.textContent = message;
+            form.insertBefore(errorDiv, form.firstChild);
+        } else {
+            // 필드별 에러는 해당 필드 아래에 표시
+            const input = document.getElementById(field);
+            if (input) {
+                input.classList.add('error');
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message field-error';
+                errorDiv.textContent = message;
+                input.parentNode.insertBefore(errorDiv, input.nextSibling);
+            }
+        }
+    }
+}
+
+// 대기자 신청 모달
+function showWaitingListModal() {
+    if (confirm('정원이 마감되어 대기자로 신청됩니다.\n\n대기자로 신청하시겠습니까?')) {
+        showRegistrationModal();
+    }
+}
+
+// 신청 취소
+async function cancelRegistration() {
+    if (!confirm('정말로 신청을 취소하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        
+        const response = await fetch(`/api/lectures/<?= $lecture['id'] ?>/registration`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                csrf_token: csrfToken
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+            alert('✅ 신청이 취소되었습니다.');
+            checkRegistrationStatus(); // 상태 새로고침
+        } else {
+            alert('❌ 신청 취소에 실패했습니다.\n\n' + (data.message || '알 수 없는 오류'));
+        }
+    } catch (error) {
+        console.error('신청 취소 오류:', error);
+        alert('❌ 신청 취소 중 오류가 발생했습니다.');
+    }
+}
+
+/**
+ * 강의 삭제 확인 및 실행
+ */
+function confirmDeleteLecture(lectureId) {
+    if (!lectureId) {
+        alert('잘못된 강의 ID입니다.');
+        return;
+    }
+
+    // 삭제 확인
+    const confirmed = confirm('⚠️ 정말로 이 강의를 삭제하시겠습니까?\n\n삭제된 강의는 복구할 수 없습니다.');
+    
+    if (!confirmed) {
+        return;
+    }
+
+    // 두 번째 확인
+    const doubleConfirmed = confirm('⚠️ 마지막 확인입니다!\n\n강의 제목: "<?= htmlspecialchars($lecture['title']) ?>"\n\n정말로 삭제하시겠습니까?');
+    
+    if (!doubleConfirmed) {
+        return;
+    }
+
+    // 로딩 상태 표시
+    const deleteBtn = event.target;
+    const originalText = deleteBtn.innerHTML;
+    deleteBtn.innerHTML = '🔄 삭제 중...';
+    deleteBtn.disabled = true;
+
+    // CSRF 토큰 가져오기
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    // 디버깅 정보 출력
+    console.log('=== 강의 삭제 디버깅 시작 ===');
+    console.log('강의 ID:', lectureId);
+    console.log('CSRF 토큰:', csrfToken);
+    console.log('요청 URL:', `/lectures/${lectureId}/delete`);
+    console.log('요청 데이터:', {
+        csrf_token: csrfToken,
+        confirm_delete: true
+    });
+
+    // 삭제 요청
+    fetch(`/lectures/${lectureId}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            csrf_token: csrfToken,
+            confirm_delete: true
+        })
+    })
+    .then(response => {
+        console.log('=== 응답 정보 ===');
+        console.log('응답 상태:', response.status);
+        console.log('응답 상태 텍스트:', response.statusText);
+        console.log('응답 헤더:', response.headers);
+        console.log('응답 OK 여부:', response.ok);
+        
+        // 응답이 JSON이 아닐 수 있으므로 텍스트로 먼저 읽어보기
+        return response.text().then(text => {
+            console.log('응답 원문:', text);
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('JSON 파싱 오류:', e);
+                throw new Error('서버 응답이 유효한 JSON이 아닙니다: ' + text);
+            }
+        });
+    })
+    .then(data => {
+        console.log('=== 파싱된 응답 데이터 ===');
+        console.log('응답 데이터:', data);
+        console.log('응답 상태:', data.status);
+        console.log('응답 데이터 객체:', data.data);
+        
+        // ResponseHelper 형식 처리
+        const isSuccess = data.status === 'success' && data.data && data.data.success === true;
+        const message = data.data ? data.data.message : (data.message || '알 수 없는 오류');
+        
+        console.log('최종 성공 여부:', isSuccess);
+        console.log('최종 메시지:', message);
+        
+        if (isSuccess) {
+            console.log('✅ 강의 삭제 성공');
+            alert('✅ 강의가 성공적으로 삭제되었습니다.');
+            // 강의 목록 페이지로 리다이렉트
+            window.location.href = '/lectures';
+        } else {
+            console.error('❌ 강의 삭제 실패:', data);
+            alert('❌ 강의 삭제에 실패했습니다.\n\n오류: ' + message);
+            // 버튼 복구
+            deleteBtn.innerHTML = originalText;
+            deleteBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('=== 강의 삭제 오류 ===');
+        console.error('오류 객체:', error);
+        console.error('오류 메시지:', error.message);
+        console.error('오류 스택:', error.stack);
+        alert('❌ 강의 삭제 중 오류가 발생했습니다.\n\n네트워크를 확인하고 다시 시도해주세요.\n\n오류: ' + error.message);
+        // 버튼 복구
+        deleteBtn.innerHTML = originalText;
+        deleteBtn.disabled = false;
+    });
+}
+</script>
+
+<!-- 신청 모달 -->
+<div id="registrationModal" class="registration-modal">
+    <div class="registration-modal-content">
+        <div class="registration-modal-header">
+            <h2>🚀 강의 신청하기</h2>
+            <button class="registration-modal-close" onclick="closeRegistrationModal()">&times;</button>
+        </div>
+        
+        <form id="registrationForm" novalidate>
+            <div class="registration-modal-body">
+                <!-- 기본 정보 섹션 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        👤 신청자 정보
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_name" class="required">이름</label>
+                            <input type="text" id="participant_name" name="participant_name" required 
+                                   placeholder="실명을 입력해주세요">
+                        </div>
+                        <div class="form-group">
+                            <label for="participant_phone" class="required">연락처</label>
+                            <input type="tel" id="participant_phone" name="participant_phone" required 
+                                   placeholder="010-1234-5678">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="participant_email" class="required">이메일</label>
+                        <input type="email" id="participant_email" name="participant_email" required 
+                               placeholder="example@email.com">
+                    </div>
+                </div>
+                
+                <!-- 소속 정보 섹션 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        🏢 소속 정보
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_name">회사명/소속</label>
+                            <input type="text" id="company_name" name="company_name" 
+                                   placeholder="소속 회사나 기관명 (선택사항)">
+                        </div>
+                        <div class="form-group">
+                            <label for="position">직책/직위</label>
+                            <input type="text" id="position" name="position" 
+                                   placeholder="직책이나 직위 (선택사항)">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 추가 정보 섹션 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        📝 추가 정보
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="motivation">참가 동기/목적</label>
+                        <textarea id="motivation" name="motivation" 
+                                  placeholder="이 강의에 참가하시는 이유나 기대하시는 점을 간단히 적어주세요 (선택사항)"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="how_did_you_know">어떻게 알게 되셨나요?</label>
+                        <select id="how_did_you_know" name="how_did_you_know">
+                            <option value="">선택해주세요 (선택사항)</option>
+                            <option value="website">웹사이트에서</option>
+                            <option value="social_media">소셜미디어</option>
+                            <option value="friend_referral">지인 추천</option>
+                            <option value="company_notice">회사 공지</option>
+                            <option value="email">이메일</option>
+                            <option value="search_engine">검색엔진</option>
+                            <option value="advertisement">광고</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="special_requests">특별 요청사항</label>
+                        <textarea id="special_requests" name="special_requests" 
+                                  placeholder="식단 제한, 접근성 지원 등 특별한 요청사항이 있으시면 적어주세요 (선택사항)"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="registration-modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeRegistrationModal()">
+                    취소
+                </button>
+                <button type="button" id="submitRegistrationBtn" class="btn btn-primary" onclick="submitRegistration()">
+                    🚀 신청하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 모달 외부 클릭 시 닫기 -->
+<script>
+document.getElementById('registrationModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeRegistrationModal();
+    }
+});
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('registrationModal');
+        if (modal && modal.style.display === 'block') {
+            closeRegistrationModal();
+        }
+    }
+});
 </script>
 
 <?php include SRC_PATH . '/views/templates/footer.php'; ?>

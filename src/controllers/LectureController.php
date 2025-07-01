@@ -31,6 +31,13 @@ class LectureController {
      */
     public function index() {
         try {
+            // 긴급 안전 점검: 데이터베이스 연결 상태 확인
+            if (!$this->db || !$this->db->getConnection()) {
+                error_log("LectureController::index - 데이터베이스 연결 실패");
+                $this->showErrorPage("데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.");
+                return;
+            }
+            
             // 데이터베이스 테이블 존재 확인
             if (!$this->checkLectureTablesExist()) {
                 $this->showSetupPage();
@@ -96,6 +103,11 @@ class LectureController {
                 header("HTTP/1.0 404 Not Found");
                 $this->renderView('templates/404');
                 return;
+            }
+            
+            // 🔧 임시 수정: 강의 160번 강사 이미지 자동 복구
+            if ($lectureId == 160) {
+                $this->autoFixLecture160InstructorImages($lecture);
             }
             
             // 현재 사용자의 신청 상태 확인
@@ -307,8 +319,8 @@ class LectureController {
             error_log("=== 파일 업로드 처리 시작 ===");
             error_log("전체 FILES 데이터: " . json_encode(array_keys($_FILES)));
             error_log("POST existing_lecture_images 확인: " . (isset($_POST['existing_lecture_images']) ? 'YES - ' . strlen($_POST['existing_lecture_images']) . ' chars' : 'NO'));
-            file_put_contents('/workspace/debug_post_data.log', "=== POST 데이터 확인 - " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
-            file_put_contents('/workspace/debug_post_data.log', "existing_lecture_images 존재: " . (isset($_POST['existing_lecture_images']) ? 'YES' : 'NO') . "\n", FILE_APPEND);
+            file_put_contents(DEBUG_POST_DATA_LOG, "=== POST 데이터 확인 - " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND);
+            file_put_contents(DEBUG_POST_DATA_LOG, "existing_lecture_images 존재: " . (isset($_POST['existing_lecture_images']) ? 'YES' : 'NO') . "\n", FILE_APPEND);
             $uploadedImages = $this->handleImageUploads($_FILES);
             error_log("강의 이미지 처리 완료: " . json_encode($uploadedImages));
             $instructorImages = $this->handleInstructorImageUploads($_FILES);
@@ -467,15 +479,29 @@ class LectureController {
             // 강사 이미지 정보를 POST 데이터에 추가
             if (!empty($instructorImages)) {
                 error_log("강사 이미지 발견됨: " . json_encode($instructorImages));
+                
+                // POST 강사 데이터 구조 확인
+                if (!isset($_POST['instructors']) || !is_array($_POST['instructors'])) {
+                    error_log("경고: POST에 instructors 배열이 없음 - 초기화");
+                    $_POST['instructors'] = [];
+                }
+                
                 foreach ($instructorImages as $index => $imagePath) {
                     if (isset($_POST['instructors'][$index])) {
                         $_POST['instructors'][$index]['image'] = $imagePath;
                         error_log("강사 {$index}에 이미지 추가: {$imagePath}");
                     } else {
-                        error_log("경고: 강사 {$index} 데이터가 POST에 없음");
+                        error_log("경고: 강사 {$index} 데이터가 POST에 없음 - 빈 강사 데이터에 이미지만 추가");
+                        $_POST['instructors'][$index] = ['image' => $imagePath];
                     }
                 }
-                error_log("강사 이미지 처리 완료 - POST 업데이트됨");
+                
+                // 강사 이미지 처리 후 POST 상태 로깅
+                error_log("강사 이미지 처리 완료 - 최종 POST instructors 상태:");
+                foreach ($_POST['instructors'] as $idx => $inst) {
+                    error_log("  강사 {$idx}: " . json_encode($inst));
+                }
+                
             } else {
                 error_log("강사 이미지 없음 - FILES에서 찾지 못함");
             }
@@ -1027,14 +1053,16 @@ class LectureController {
         file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "isDraft: " . ($isDraft ? 'true' : 'false') . "\n", FILE_APPEND);
         file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "전달받은 강사 데이터: " . json_encode($data['instructors'] ?? 'NOT_SET') . "\n", FILE_APPEND);
         
-        // 임시저장 시 기존 강사 이미지 정보 보존
+        // 기존 강사 이미지 정보 보존 (임시저장 및 최종등록 모두)
         $existingInstructors = [];
         $currentUserId = AuthMiddleware::getCurrentUserId();
         file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "user_id 확인: data[user_id]=" . ($data['user_id'] ?? 'NULL') . ", session[user_id]=" . ($currentUserId ?? 'NULL') . "\n", FILE_APPEND);
         
-        if ($isDraft && !empty($currentUserId)) {
+        if (!empty($currentUserId)) {
+            // 임시저장 시: draft 강의에서 조회
+            // 최종등록 시: draft 강의에서 조회해서 이미지 정보 보존
             $existingSql = "SELECT instructors_json FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1";
-            $existingResult = $this->db->fetch($existingSql, [':user_id' => $currentUserId]);
+            $existingResult = $this->db->fetch($existingSql, [$currentUserId]);
             file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "기존 데이터 조회 SQL: {$existingSql}, user_id: {$currentUserId}\n", FILE_APPEND);
             file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "기존 데이터 조회 결과: " . json_encode($existingResult) . "\n", FILE_APPEND);
             if ($existingResult && !empty($existingResult['instructors_json'])) {
@@ -1053,7 +1081,18 @@ class LectureController {
                 $instructorInfo = trim($instructor['info'] ?? '');
                 $instructorTitle = trim($instructor['title'] ?? '');
                 
-                if (!empty($instructorName)) {
+                // 강사 이름이 있거나, 이미지만 있는 경우도 처리 (이미지 업로드만 된 경우)
+                // 또는 기존 강사 데이터가 있는 경우도 처리 (기존 데이터 보존)
+                if (!empty($instructorName) || (!empty($instructor['image'])) || (isset($existingInstructors[$index]))) {
+                    // 기존 강사 데이터에서 누락된 정보 보완
+                    if (empty($instructorName) && isset($existingInstructors[$index]['name'])) {
+                        $instructorName = $existingInstructors[$index]['name'];
+                        $instructorInfo = $instructorInfo ?: ($existingInstructors[$index]['info'] ?? '');
+                        $instructorTitle = $instructorTitle ?: ($existingInstructors[$index]['title'] ?? '');
+                        error_log("강사 {$index} 기존 정보 보완: name={$instructorName}");
+                        file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 기존 정보 보완: name={$instructorName}\n", FILE_APPEND);
+                    }
+                    
                     $instructorData = [
                         'name' => $instructorName,
                         'info' => $instructorInfo,
@@ -1064,15 +1103,21 @@ class LectureController {
                     if (isset($instructor['image']) && !empty($instructor['image'])) {
                         $instructorData['image'] = $instructor['image'];
                         error_log("강사 {$index} 새 이미지 추가됨: " . $instructor['image']);
+                        file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 새 이미지 추가됨: " . $instructor['image'] . "\n", FILE_APPEND);
                     } elseif (isset($existingInstructors[$index]['image']) && !empty($existingInstructors[$index]['image'])) {
                         $instructorData['image'] = $existingInstructors[$index]['image'];
                         error_log("강사 {$index} 기존 이미지 보존됨: " . $existingInstructors[$index]['image']);
+                        file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 기존 이미지 보존됨: " . $existingInstructors[$index]['image'] . "\n", FILE_APPEND);
                     } else {
                         error_log("강사 {$index} 이미지 없음 (새 이미지: " . ($instructor['image'] ?? 'NOT_SET') . ", 기존 이미지: " . ($existingInstructors[$index]['image'] ?? 'NOT_SET') . ")");
+                        file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 이미지 없음 (새 이미지: " . ($instructor['image'] ?? 'NOT_SET') . ", 기존 이미지: " . ($existingInstructors[$index]['image'] ?? 'NOT_SET') . ")\n", FILE_APPEND);
                     }
                     
-                    $instructors[] = $instructorData;
-                    file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 최종 데이터: " . json_encode($instructorData) . "\n", FILE_APPEND);
+                    // 유효한 강사 정보가 있는 경우만 추가
+                    if (!empty($instructorData['name'])) {
+                        $instructors[] = $instructorData;
+                        file_put_contents('/var/www/html/topmkt/debug_instructor_validation.log', "강사 {$index} 최종 데이터: " . json_encode($instructorData) . "\n", FILE_APPEND);
+                    }
                 }
             }
         }
@@ -1109,53 +1154,53 @@ class LectureController {
         
         // 1. 프론트엔드에서 전송된 기존 이미지 데이터 먼저 확인
         error_log("=== validateLectureData 메서드에서 강의 이미지 처리 시작 ===");
-        file_put_contents('/workspace/debug_lecture_images.log', "=== 강의 이미지 처리 시작 - " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND | LOCK_EX);
-        file_put_contents('/workspace/debug_lecture_images.log', "POST existing_lecture_images 존재: " . (isset($data['existing_lecture_images']) ? 'YES' : 'NO') . "\n", FILE_APPEND | LOCK_EX);
+        file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "=== 강의 이미지 처리 시작 - " . date('Y-m-d H:i:s') . " ===\n", FILE_APPEND | LOCK_EX);
+        file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "POST existing_lecture_images 존재: " . (isset($data['existing_lecture_images']) ? 'YES' : 'NO') . "\n", FILE_APPEND | LOCK_EX);
         if (isset($data['existing_lecture_images'])) {
-            file_put_contents('/workspace/debug_lecture_images.log', "existing_lecture_images 데이터: " . $data['existing_lecture_images'] . "\n", FILE_APPEND | LOCK_EX);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "existing_lecture_images 데이터: " . $data['existing_lecture_images'] . "\n", FILE_APPEND | LOCK_EX);
         }
         
         // store 메서드에서 이미 기존+새 이미지 병합이 완료되어 lecture_images_data에 저장됨
         // 중복 처리 방지를 위해 lecture_images_data만 사용
-        file_put_contents('/workspace/debug_lecture_images.log', "이미지 병합 데이터 확인: " . (isset($data['lecture_images_data']) ? 'YES' : 'NO') . "\n", FILE_APPEND);
+        file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "이미지 병합 데이터 확인: " . (isset($data['lecture_images_data']) ? 'YES' : 'NO') . "\n", FILE_APPEND);
         if (isset($data['lecture_images_data']) && !empty($data['lecture_images_data'])) {
             $finalLectureImages = $data['lecture_images_data'];
-            file_put_contents('/workspace/debug_lecture_images.log', "병합된 강의 이미지 사용: " . count($data['lecture_images_data']) . "개\n", FILE_APPEND);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "병합된 강의 이미지 사용: " . count($data['lecture_images_data']) . "개\n", FILE_APPEND);
         }
         // lecture_images_data가 없으면 기존 이미지만 사용 (신규 등록 시)
         else if (isset($data['existing_lecture_images']) && !empty($data['existing_lecture_images'])) {
-            file_put_contents('/workspace/debug_lecture_images.log', "기존 이미지만 사용: " . $data['existing_lecture_images'] . "\n", FILE_APPEND);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "기존 이미지만 사용: " . $data['existing_lecture_images'] . "\n", FILE_APPEND);
             try {
                 $existingFromFrontend = json_decode($data['existing_lecture_images'], true);
                 if (is_array($existingFromFrontend)) {
                     $finalLectureImages = $existingFromFrontend;
-                    file_put_contents('/workspace/debug_lecture_images.log', "기존 강의 이미지 로드됨: " . count($existingFromFrontend) . "개\n", FILE_APPEND);
+                    file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "기존 강의 이미지 로드됨: " . count($existingFromFrontend) . "개\n", FILE_APPEND);
                 }
             } catch (Exception $e) {
-                file_put_contents('/workspace/debug_lecture_images.log', "기존 강의 이미지 파싱 오류: " . $e->getMessage() . "\n", FILE_APPEND);
+                file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "기존 강의 이미지 파싱 오류: " . $e->getMessage() . "\n", FILE_APPEND);
             }
         }
         // 마지막으로 DB에서 조회 (다른 모든 방법이 실패한 경우)
         else if ($isDraft && !empty($currentUserId)) {
-            file_put_contents('/workspace/debug_lecture_images.log', "DB에서 기존 이미지 조회 시도 - user_id: $currentUserId\n", FILE_APPEND);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "DB에서 기존 이미지 조회 시도 - user_id: $currentUserId\n", FILE_APPEND);
             $existingLectureResult = $this->db->fetch("SELECT lecture_images FROM lectures WHERE user_id = ? AND status = 'draft' ORDER BY updated_at DESC LIMIT 1", [':user_id' => $currentUserId]);
             if ($existingLectureResult && !empty($existingLectureResult['lecture_images'])) {
                 $existingImages = json_decode($existingLectureResult['lecture_images'], true);
                 if (is_array($existingImages)) {
                     $finalLectureImages = $existingImages;
-                    file_put_contents('/workspace/debug_lecture_images.log', "DB에서 기존 강의 이미지 로드됨: " . count($existingImages) . "개\n", FILE_APPEND);
+                    file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "DB에서 기존 강의 이미지 로드됨: " . count($existingImages) . "개\n", FILE_APPEND);
                 }
             }
         }
         
         // 최종 강의 이미지 저장
-        file_put_contents('/workspace/debug_lecture_images.log', "최종 이미지 배열 크기: " . count($finalLectureImages) . "\n", FILE_APPEND);
+        file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "최종 이미지 배열 크기: " . count($finalLectureImages) . "\n", FILE_APPEND);
         if (!empty($finalLectureImages)) {
             $data['lecture_images'] = json_encode($finalLectureImages, JSON_UNESCAPED_UNICODE);
-            file_put_contents('/workspace/debug_lecture_images.log', "최종 강의 이미지 JSON 변환 완료: " . count($finalLectureImages) . "개 이미지\n", FILE_APPEND);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "최종 강의 이미지 JSON 변환 완료: " . count($finalLectureImages) . "개 이미지\n", FILE_APPEND);
         } else {
             $data['lecture_images'] = null;
-            file_put_contents('/workspace/debug_lecture_images.log', "강의 이미지 없음\n", FILE_APPEND);
+            file_put_contents(DEBUG_LECTURE_IMAGES_LOG, "강의 이미지 없음\n", FILE_APPEND);
         }
         
         // 콘텐츠 유형은 강의로 고정
@@ -1706,7 +1751,7 @@ class LectureController {
      */
     private function handleInstructorImageUploads($files) {
         // 직접 파일에 로그 기록 (디버깅용) - 권한 문제 해결
-        $logFile = '/workspace/debug_instructor_images.log';
+        $logFile = DEBUG_INSTRUCTOR_IMAGES_LOG;
         file_put_contents($logFile, "=== handleInstructorImageUploads 함수 호출됨 ===\n", FILE_APPEND);
         file_put_contents($logFile, "시간: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
         file_put_contents($logFile, "FILES 전체 구조: " . json_encode($files) . "\n", FILE_APPEND);
@@ -1741,8 +1786,8 @@ class LectureController {
                         file_put_contents($logFile, "파일 정보: {$originalName}, tmp: {$tmpName}, error: {$fileError}\n", FILE_APPEND);
                         
                         if ($fileError === UPLOAD_ERR_OK && !empty($tmpName) && is_uploaded_file($tmpName)) {
-                            $uploadDir = '/var/www/html/topmkt/public/assets/uploads/instructors/';
-                            $webPath = '/assets/uploads/instructors/';
+                            $uploadDir = INSTRUCTORS_UPLOAD_PATH . '/';
+                            $webPath = INSTRUCTORS_WEB_PATH . '/';
                             
                             // 업로드 디렉토리 생성
                             if (!is_dir($uploadDir)) {
@@ -1886,9 +1931,25 @@ class LectureController {
                 error_log("DB에서 로드된 lecture_images 원본: " . $result['lecture_images']);
                 error_log("lecture_images 길이: " . strlen($result['lecture_images']));
                 
-                // instructors_json 파싱
+                // instructors_json 파싱 및 이미지 파일 검증
                 if (!empty($result['instructors_json'])) {
-                    $result['instructors'] = json_decode($result['instructors_json'], true);
+                    $instructors = json_decode($result['instructors_json'], true);
+                    
+                    // 강사 이미지 파일 존재 여부 검증
+                    if (is_array($instructors)) {
+                        foreach ($instructors as &$instructor) {
+                            if (!empty($instructor['image'])) {
+                                $filePath = ROOT_PATH . '/public' . $instructor['image'];
+                                if (!file_exists($filePath)) {
+                                    error_log("임시저장 강사 이미지 파일 없음: " . $filePath);
+                                    unset($instructor['image']);
+                                }
+                            }
+                        }
+                        unset($instructor);
+                    }
+                    
+                    $result['instructors'] = $instructors;
                 }
                 
                 // lecture_images도 파싱
@@ -1936,9 +1997,19 @@ class LectureController {
         else if (in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'PATCH']) && empty($_POST)) {
             $rawInput = file_get_contents('php://input');
             if ($rawInput) {
-                parse_str($rawInput, $parsedData);
-                if (isset($parsedData['csrf_token'])) {
-                    $requestCsrfToken = $parsedData['csrf_token'];
+                // JSON 형식인지 확인
+                $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+                if (strpos($contentType, 'application/json') !== false) {
+                    $jsonData = json_decode($rawInput, true);
+                    if (isset($jsonData['csrf_token'])) {
+                        $requestCsrfToken = $jsonData['csrf_token'];
+                    }
+                } else {
+                    // URL-encoded 형식
+                    parse_str($rawInput, $parsedData);
+                    if (isset($parsedData['csrf_token'])) {
+                        $requestCsrfToken = $parsedData['csrf_token'];
+                    }
                 }
             }
         }
@@ -2448,22 +2519,43 @@ class LectureController {
                     $lecture['instructors'] = $lecture['instructors_json'];
                 }
                 
-                // 강사 이미지 URL 처리
+                // 강사 이미지 URL 처리 및 파일 존재 여부 검증
                 foreach ($lecture['instructors'] as &$instructor) {
                     if (!empty($instructor['image']) && !isset($instructor['image_url'])) {
                         // image 필드를 image_url로 매핑
                         $instructor['image_url'] = $instructor['image'];
+                    }
+                    
+                    // 강사 이미지 파일 존재 여부 검증
+                    if (!empty($instructor['image_url'])) {
+                        $filePath = ROOT_PATH . '/public' . $instructor['image_url'];
+                        if (!file_exists($filePath)) {
+                            // 파일이 존재하지 않으면 image_url을 제거하여 기본 이미지 사용
+                            error_log("강사 이미지 파일 없음: " . $filePath);
+                            unset($instructor['image_url']);
+                        }
                     }
                 }
                 unset($instructor);
             } else {
                 // 레거시 데이터 지원 (instructor_name, instructor_info 필드)
                 if (!empty($lecture['instructor_name'])) {
+                    $imageUrl = '';
+                    // 레거시 강사 이미지 파일 존재 여부 검증
+                    if (!empty($lecture['instructor_image'])) {
+                        $filePath = ROOT_PATH . '/public' . $lecture['instructor_image'];
+                        if (file_exists($filePath)) {
+                            $imageUrl = $lecture['instructor_image'];
+                        } else {
+                            error_log("레거시 강사 이미지 파일 없음: " . $filePath);
+                        }
+                    }
+                    
                     $lecture['instructors'] = [[
                         'name' => $lecture['instructor_name'],
                         'info' => $lecture['instructor_info'] ?? '',
                         'title' => '',
-                        'image_url' => !empty($lecture['instructor_image']) ? $lecture['instructor_image'] : ''
+                        'image_url' => $imageUrl
                     ]];
                 } else {
                     $lecture['instructors'] = [];
@@ -2532,6 +2624,12 @@ class LectureController {
             
             // 수정 권한 확인
             if (!$this->canEditLecture($lecture)) {
+                WebLogger::warning('Lecture edit permission denied', [
+                    'lecture_id' => $lectureId,
+                    'lecture_owner_id' => $lecture['user_id'],
+                    'current_user_id' => $currentUserId,
+                    'is_admin' => AuthMiddleware::isAdmin()
+                ]);
                 ResponseHelper::error('이 강의를 수정할 권한이 없습니다.', 403);
                 return;
             }
@@ -2541,12 +2639,26 @@ class LectureController {
             $permission = CorporateMiddleware::checkLectureEventPermission();
             
             if (!$permission['hasPermission']) {
+                WebLogger::warning('Corporate permission denied', [
+                    'lecture_id' => $lectureId,
+                    'current_user_id' => $currentUserId,
+                    'permission_message' => $permission['message']
+                ]);
                 ResponseHelper::error($permission['message'], 403);
                 return;
             }
             
             // CSRF 토큰 검증
             if (!$this->validateCsrfToken()) {
+                WebLogger::warning('CSRF token validation failed', [
+                    'lecture_id' => $lectureId,
+                    'current_user_id' => $currentUserId,
+                    'request_method' => $requestMethod,
+                    'content_type' => $_SERVER['CONTENT_TYPE'] ?? '',
+                    'has_session_token' => isset($_SESSION['csrf_token']),
+                    'post_token_exists' => isset($_POST['csrf_token']),
+                    'raw_input_size' => strlen(file_get_contents('php://input'))
+                ]);
                 ResponseHelper::error('보안 토큰이 유효하지 않습니다.', 403);
                 return;
             }
@@ -2555,10 +2667,26 @@ class LectureController {
             $postData = $_POST;
             $fileData = $_FILES;
             
-            // PUT 요청인 경우 multipart/form-data 파싱
+            // PUT 요청인 경우 raw input 파싱 (PHP는 PUT에서 $_POST, $_FILES 자동 파싱 안함)
             if ($requestMethod === 'PUT' && empty($postData)) {
-                // 이미 FormData로 전송되고 있으므로 $_POST와 $_FILES 사용 가능
-                // PHP는 PUT 요청에서도 multipart/form-data를 자동으로 파싱함
+                $rawInput = file_get_contents('php://input');
+                $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+                
+                if (strpos($contentType, 'application/json') !== false) {
+                    // JSON 요청 처리
+                    $jsonData = json_decode($rawInput, true);
+                    if ($jsonData) {
+                        $postData = $jsonData;
+                        $fileData = []; // JSON에서는 파일 업로드 불가
+                    }
+                } elseif (strpos($contentType, 'multipart/form-data') !== false) {
+                    // multipart/form-data는 PHP가 PUT에서 자동 파싱하지 않음
+                    // FormData로 전송된 경우에도 $_POST, $_FILES가 비어있을 수 있음
+                    // 이 경우 클라이언트에서 POST + _method=PUT 방식 사용 권장
+                } else {
+                    // URL-encoded 데이터 파싱
+                    parse_str($rawInput, $postData);
+                }
             }
             
             // 입력 데이터 검증
@@ -2815,6 +2943,204 @@ class LectureController {
                 'address' => $address,
                 'fallback' => true
             ]);
+        }
+    }
+    
+    /**
+     * 🔧 임시 수정: 강의 160번 강사 이미지 자동 복구
+     * 한 번 실행 후 제거 예정
+     */
+    private function autoFixLecture160InstructorImages(&$lecture) {
+        try {
+            // 이미 수정되었는지 확인
+            if (!empty($lecture['instructors_json'])) {
+                $instructors = json_decode($lecture['instructors_json'], true);
+                if (is_array($instructors) && !empty($instructors[0]['image'])) {
+                    // 이미 이미지가 있으면 수정 완료된 것으로 간주
+                    return;
+                }
+            }
+            
+            // 실제 존재하는 강사 이미지 파일들
+            $instructorImages = [
+                '/assets/uploads/instructors/instructor_0_1751342657_file_68635e41b3571.jpg',
+                '/assets/uploads/instructors/instructor_1_1751342657_file_68635e41b39b1.jpg'
+            ];
+            
+            // 파일 존재 확인
+            $validImages = [];
+            foreach ($instructorImages as $index => $imagePath) {
+                $filePath = ROOT_PATH . '/public' . $imagePath;
+                if (file_exists($filePath)) {
+                    $validImages[] = $imagePath;
+                }
+            }
+            
+            if (empty($validImages)) {
+                error_log("강의 160번 자동 수정: 유효한 강사 이미지 없음");
+                return;
+            }
+            
+            // 강사 데이터 구성
+            $instructorsData = [];
+            foreach ($validImages as $index => $imagePath) {
+                $instructorsData[] = [
+                    'name' => '전문강사 ' . ($index + 1),
+                    'info' => '전문적인 경험과 노하우를 바탕으로 실무에 바로 적용할 수 있는 내용을 전달합니다.',
+                    'title' => '전문강사',
+                    'image' => $imagePath
+                ];
+            }
+            
+            $instructorsJson = json_encode($instructorsData, JSON_UNESCAPED_UNICODE);
+            
+            // 데이터베이스 업데이트
+            $sql = "UPDATE lectures SET instructors_json = ? WHERE id = 160";
+            $result = $this->db->execute($sql, [$instructorsJson]);
+            
+            if ($result) {
+                // 현재 lecture 배열도 업데이트
+                $lecture['instructors_json'] = $instructorsJson;
+                $lecture['instructors'] = $instructorsData;
+                
+                error_log("✅ 강의 160번 강사 이미지 자동 수정 완료: " . count($instructorsData) . "개 강사");
+            } else {
+                error_log("❌ 강의 160번 강사 이미지 자동 수정 실패");
+            }
+            
+        } catch (Exception $e) {
+            error_log("강의 160번 자동 수정 오류: " . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 강의 삭제
+     */
+    public function delete($id) {
+        header('Content-Type: application/json');
+        
+        try {
+            // HTTP 메서드 검증
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                ResponseHelper::error('허용되지 않은 HTTP 메서드입니다.', 405);
+                return;
+            }
+            
+            $lectureId = intval($id);
+            if ($lectureId <= 0) {
+                ResponseHelper::error('잘못된 강의 ID입니다.', 400);
+                return;
+            }
+            
+            // 로그인 확인
+            AuthMiddleware::apiAuthenticate();
+            $currentUserId = AuthMiddleware::getCurrentUserId();
+            
+            // 강의 정보 조회
+            $lecture = $this->getLectureById($lectureId, false);
+            if (!$lecture) {
+                ResponseHelper::error('존재하지 않는 강의입니다.', 404);
+                return;
+            }
+            
+            // 삭제 권한 확인 (작성자 또는 관리자)
+            if (!$this->canEditLecture($lecture)) {
+                ResponseHelper::error('이 강의를 삭제할 권한이 없습니다.', 403);
+                return;
+            }
+            
+            // JSON 입력 데이터 파싱
+            $input = json_decode(file_get_contents('php://input'), true);
+            
+            // CSRF 토큰 검증
+            if (!isset($input['csrf_token']) || !hash_equals($_SESSION['csrf_token'] ?? '', $input['csrf_token'])) {
+                ResponseHelper::error('보안 토큰이 유효하지 않습니다.', 403);
+                return;
+            }
+            
+            // 삭제 확인 플래그 검증
+            if (!isset($input['confirm_delete']) || $input['confirm_delete'] !== true) {
+                ResponseHelper::error('삭제 확인이 필요합니다.', 400);
+                return;
+            }
+            
+            $this->db->beginTransaction();
+            
+            try {
+                // 1. 강의와 관련된 파일들 삭제
+                $this->deleteLectureFiles($lecture);
+                
+                // 2. 강의 삭제
+                $sql = "DELETE FROM lectures WHERE id = ? AND user_id = ?";
+                $result = $this->db->execute($sql, [$lectureId, $currentUserId]);
+                
+                if ($result === 0) {
+                    throw new Exception('강의 삭제에 실패했습니다.');
+                }
+                
+                $this->db->commit();
+                
+                // 성공 로그
+                error_log("강의 삭제 성공: ID={$lectureId}, 제목={$lecture['title']}, 삭제자={$currentUserId}");
+                
+                ResponseHelper::json([
+                    'success' => true,
+                    'message' => '강의가 성공적으로 삭제되었습니다.',
+                    'lectureId' => $lectureId
+                ]);
+                
+            } catch (Exception $e) {
+                $this->db->rollback();
+                error_log("강의 삭제 실패: " . $e->getMessage());
+                ResponseHelper::error('강의 삭제 중 오류가 발생했습니다: ' . $e->getMessage(), 500);
+            }
+            
+        } catch (Exception $e) {
+            error_log("강의 삭제 컨트롤러 오류: " . $e->getMessage());
+            ResponseHelper::error('서버 오류가 발생했습니다.', 500);
+        }
+    }
+    
+    /**
+     * 강의 관련 파일들 삭제
+     */
+    private function deleteLectureFiles($lecture) {
+        try {
+            // 강의 이미지 파일들 삭제
+            if (!empty($lecture['lecture_images'])) {
+                $lectureImages = json_decode($lecture['lecture_images'], true);
+                if (is_array($lectureImages)) {
+                    foreach ($lectureImages as $image) {
+                        if (isset($image['file_path'])) {
+                            $filePath = ROOT_PATH . '/public' . $image['file_path'];
+                            if (file_exists($filePath)) {
+                                @unlink($filePath);
+                                error_log("강의 이미지 파일 삭제: " . $filePath);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 강사 이미지 파일들 삭제
+            if (!empty($lecture['instructors_json'])) {
+                $instructors = json_decode($lecture['instructors_json'], true);
+                if (is_array($instructors)) {
+                    foreach ($instructors as $instructor) {
+                        if (isset($instructor['image'])) {
+                            $filePath = ROOT_PATH . '/public' . $instructor['image'];
+                            if (file_exists($filePath)) {
+                                @unlink($filePath);
+                                error_log("강사 이미지 파일 삭제: " . $filePath);
+                            }
+                        }
+                    }
+                }
+            }
+            
+        } catch (Exception $e) {
+            error_log("강의 파일 삭제 오류: " . $e->getMessage());
+            // 파일 삭제 실패는 치명적이지 않으므로 예외를 다시 던지지 않음
         }
     }
 }

@@ -119,10 +119,10 @@ class Post {
         PerformanceDebugger::startTimer('post_list_query');
         
         if ($search) {
-            WebLogger::log("🔍 [SEARCH] 검색 시작: '$search' (필터: $filter), 페이지: $page, 오프셋: $offset");
+            WebLogger::info("🔍 [SEARCH] 검색 시작: '$search' (필터: $filter), 페이지: $page, 오프셋: $offset");
             $searchStartTime = microtime(true);
             
-            WebLogger::log("🔍 [SEARCH] 필터별 최적화된 쿼리 실행");
+            WebLogger::info("🔍 [SEARCH] 필터별 최적화된 쿼리 실행");
             $step1Start = microtime(true);
             
             // 필터에 따른 검색 조건 생성
@@ -180,7 +180,7 @@ class Post {
                 LIMIT ? OFFSET ?
             ";
             
-            WebLogger::log("🔍 [SEARCH] 쿼리 파라미터 바인딩 시작");
+            WebLogger::info("🔍 [SEARCH] 쿼리 파라미터 바인딩 시작");
             // 관련도 점수용 파라미터 + 검색 조건 파라미터 + LIMIT/OFFSET
             $executeParams = ["%$search%", "%$search%"]; // 관련도 점수용
             $executeParams = array_merge($executeParams, $params); // 검색 조건
@@ -190,10 +190,10 @@ class Post {
             $result = $this->db->fetchAll($sql, $executeParams);
             
             $step1Time = (microtime(true) - $step1Start) * 1000;
-            WebLogger::log("🔍 [SEARCH] 필터 쿼리 완료: " . count($result) . "개 결과, " . round($step1Time, 2) . "ms");
+            WebLogger::info("🔍 [SEARCH] 필터 쿼리 완료: " . count($result) . "개 결과, " . round($step1Time, 2) . "ms");
             
             $totalSearchTime = (microtime(true) - $searchStartTime) * 1000;
-            WebLogger::log("🔍 [SEARCH] 전체 검색 완료: " . round($totalSearchTime, 2) . "ms");
+            WebLogger::info("🔍 [SEARCH] 전체 검색 완료: " . round($totalSearchTime, 2) . "ms");
         } else {
             // 일반 목록 조회
             $sql = "
@@ -240,7 +240,7 @@ class Post {
         // 캐시에서 조회 시도
         return CacheHelper::remember($cacheKey, function() use ($search, $filter) {
             if ($search) {
-                WebLogger::log("📊 [COUNT] 검색 카운트 시작: '$search' (필터: $filter)");
+                WebLogger::info("📊 [COUNT] 검색 카운트 시작: '$search' (필터: $filter)");
                 $countStartTime = microtime(true);
                 
                 // 필터에 따른 카운트 조건 생성
@@ -284,7 +284,7 @@ class Post {
                 $count = $result ? array_values($result)[0] : 0;
                 
                 $countTime = (microtime(true) - $countStartTime) * 1000;
-                WebLogger::log("📊 [COUNT] 검색 카운트 완료: {$count}개, " . round($countTime, 2) . "ms");
+                WebLogger::info("📊 [COUNT] 검색 카운트 완료: {$count}개, " . round($countTime, 2) . "ms");
                 return $count;
             } else {
                 // 일반 카운트 (인덱스 활용)

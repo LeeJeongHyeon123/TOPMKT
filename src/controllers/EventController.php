@@ -203,22 +203,22 @@ class EventController extends LectureController {
                 return [
                     [
                         'id' => 1,
-                        'url' => '/assets/uploads/events/marketing-workshop-main.jpg',
+                        'url' => '<?= EVENTS_WEB_PATH ?>/marketing-workshop-main.jpg',
                         'alt_text' => '여름 마케팅 전략 워크샵 메인 이미지'
                     ],
                     [
                         'id' => 2,
-                        'url' => '/assets/uploads/events/marketing-workshop-audience.jpg',
+                        'url' => '<?= EVENTS_WEB_PATH ?>/marketing-workshop-audience.jpg',
                         'alt_text' => '워크샵 참가자들 모습'
                     ],
                     [
                         'id' => 3,
-                        'url' => '/assets/uploads/events/marketing-workshop-presentation.jpg',
+                        'url' => '<?= EVENTS_WEB_PATH ?>/marketing-workshop-presentation.jpg',
                         'alt_text' => '강의 진행 모습'
                     ],
                     [
                         'id' => 4,
-                        'url' => '/assets/uploads/events/marketing-workshop-networking.jpg',
+                        'url' => '<?= EVENTS_WEB_PATH ?>/marketing-workshop-networking.jpg',
                         'alt_text' => '네트워킹 세션 모습'
                     ]
                 ];

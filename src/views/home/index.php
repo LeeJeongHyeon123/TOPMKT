@@ -319,6 +319,7 @@ require_once SRC_PATH . '/views/templates/header.php';
         transform: translateY(-1px) scale(0.98);
     }
 }
+
 </style>
 
 <?php require_once SRC_PATH . '/views/templates/footer.php'; ?> 
