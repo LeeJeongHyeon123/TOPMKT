@@ -293,9 +293,9 @@ class User {
     public function getRecentPosts($userId, $limit = 5) {
         $sql = "SELECT id, title, created_at, view_count, like_count, comment_count 
                 FROM posts 
-                WHERE user_id = :user_id AND status = 'published'
+                WHERE user_id = ? AND status = 'published'
                 ORDER BY created_at DESC 
-                LIMIT :limit";
+                LIMIT ?";
         
         return $this->db->fetchAll($sql, [$userId, $limit]);
     }
@@ -307,9 +307,9 @@ class User {
         $sql = "SELECT c.id, c.content, c.created_at, p.title as post_title, p.id as post_id
                 FROM comments c
                 JOIN posts p ON c.post_id = p.id
-                WHERE c.user_id = :user_id AND c.status = 'active'
+                WHERE c.user_id = ? AND c.status = 'active'
                 ORDER BY c.created_at DESC 
-                LIMIT :limit";
+                LIMIT ?";
         
         return $this->db->fetchAll($sql, [$userId, $limit]);
     }
