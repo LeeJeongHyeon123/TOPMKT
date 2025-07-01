@@ -5,6 +5,9 @@
  */
 ?>
 
+<!-- 브라우저 확장 프로그램 에러 억제 -->
+<script src="/assets/js/error-suppressor.js"></script>
+
 <style>
 /* 채팅 페이지 전용 스타일 */
 .chat-container {
@@ -103,6 +106,9 @@
     transition: all 0.2s ease;
     margin-bottom: 4px;
     position: relative;
+    z-index: 10; /* 디버깅: 클릭 우선순위 높임 */
+    pointer-events: auto; /* 디버깅: 클릭 가능 명시 */
+    background: #fff; /* 디버깅: 배경색 명시 */
 }
 
 .chat-room-item:hover {
@@ -282,6 +288,8 @@
     overflow-y: auto;
     padding: 20px;
     background: #f8fafc;
+    min-height: 200px; /* 최소 높이 보장 */
+    border: 2px solid #e2e8f0; /* 디버깅용 테두리 */
 }
 
 .message-group {
@@ -1041,6 +1049,39 @@ function chatFetch(url, options = {}) {
     return window.originalFetch ? window.originalFetch(url, options) : fetch(url, options);
 }
 
+/**
+ * 채팅 리스너 정리 함수
+ */
+function cleanupChatListeners() {
+    console.log('🧹 채팅 리스너 정리 중...');
+    
+    // 채팅방 목록 리스너 제거
+    if (window.chatRoomsListener) {
+        const userRoomsRef = database.ref(`userRooms/${currentUserId}`);
+        userRoomsRef.off('value', window.chatRoomsListener);
+        window.chatRoomsListener = null;
+        console.log('✅ 채팅방 목록 리스너 제거됨');
+    }
+    
+    // 개별 채팅방 리스너 제거
+    if (window.roomListeners) {
+        Object.keys(window.roomListeners).forEach(roomId => {
+            const roomRef = database.ref(`chatRooms/${roomId}`);
+            roomRef.off('value', window.roomListeners[roomId]);
+            console.log(`✅ 채팅방 ${roomId} 리스너 제거됨`);
+        });
+        window.roomListeners = {};
+    }
+    
+    // 메시지 리스너 제거
+    if (window.currentMessageListener && activeRoomId) {
+        const messagesRef = database.ref(`messages/${activeRoomId}`);
+        messagesRef.off('value', window.currentMessageListener);
+        window.currentMessageListener = null;
+        console.log('✅ 메시지 리스너 제거됨');
+    }
+}
+
 // 페이지 로드 시 초기화
 document.addEventListener('DOMContentLoaded', function() {
     // 채팅 페이지 진입 시 읽지 않은 메시지 수 초기화
@@ -1051,8 +1092,23 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeChat();
     setupEventListeners();
     
+    // 페이지 언로드 시 리스너 정리
+    window.addEventListener('beforeunload', cleanupChatListeners);
+    window.addEventListener('pagehide', cleanupChatListeners);
+    
     // URL 해시로 특정 채팅방 열기 처리
     handleUrlHash();
+    
+    // 디버깅: 전역 클릭 리스너
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.chat-room-item')) {
+            const roomItem = e.target.closest('.chat-room-item');
+            const roomId = roomItem.getAttribute('data-room-id');
+            console.log(`🎯 채팅방 영역 클릭 감지: ${roomId}`);
+            console.log('🎯 클릭된 실제 요소:', e.target);
+            console.log('🎯 채팅방 아이템:', roomItem);
+        }
+    }, true); // capture phase에서 실행
 });
 
 /**
@@ -1159,17 +1215,19 @@ function loadChatRooms() {
     
     const userRoomsRef = database.ref(`userRooms/${currentUserId}`);
     
-    userRoomsRef.on('value', function(snapshot) {
+    // 기존 리스너가 있다면 제거 (중복 방지)
+    if (window.chatRoomsListener) {
+        userRoomsRef.off('value', window.chatRoomsListener);
+    }
+    
+    // 새로운 리스너 생성 및 저장
+    window.chatRoomsListener = function(snapshot) {
         const roomsListContainer = document.getElementById('chatRoomsList');
         const loadingElement = document.getElementById('roomsLoading');
         
         if (loadingElement) {
             loadingElement.remove();
         }
-        
-        // 기존 채팅방 아이템들 제거 (로딩 제외)
-        const existingItems = roomsListContainer.querySelectorAll('.chat-room-item');
-        existingItems.forEach(item => item.remove());
         
         const userRooms = snapshot.val() || {};
         console.log('📂 채팅방 목록 업데이트됨:', Object.keys(userRooms));
@@ -1193,21 +1251,55 @@ function loadChatRooms() {
         Object.keys(userRooms).forEach(roomId => {
             loadChatRoomInfo(roomId);
         });
-    });
+    };
+    
+    userRoomsRef.on('value', window.chatRoomsListener);
 }
 
 /**
  * 채팅방 정보 로드
  */
 function loadChatRoomInfo(roomId) {
+    console.log(`🔄 채팅방 정보 로드 시작: ${roomId}`);
+    
+    // 이미 로드된 채팅방이면 렌더링만 수행
+    if (chatRooms[roomId]) {
+        console.log(`📂 채팅방 ${roomId} 캐시에서 로드됨`);
+        renderChatRoomItem(roomId, chatRooms[roomId]);
+        return;
+    }
+    
     const roomRef = database.ref(`chatRooms/${roomId}`);
     
-    roomRef.on('value', function(snapshot) {
+    // 기존 리스너가 있다면 제거 (중복 방지)
+    if (window.roomListeners && window.roomListeners[roomId]) {
+        roomRef.off('value', window.roomListeners[roomId]);
+    }
+    
+    // 리스너 저장용 객체 초기화
+    if (!window.roomListeners) {
+        window.roomListeners = {};
+    }
+    
+    // 새로운 리스너 생성 및 저장
+    window.roomListeners[roomId] = function(snapshot) {
         const roomData = snapshot.val();
-        if (!roomData) return;
+        console.log(`📊 채팅방 ${roomId} Firebase 데이터:`, roomData);
+        
+        if (!roomData) {
+            console.error(`❌ 채팅방 ${roomId}의 데이터가 Firebase에 존재하지 않음`);
+            return;
+        }
         
         chatRooms[roomId] = roomData;
+        console.log(`✅ 채팅방 ${roomId} 로컬 캐시에 저장됨`);
+        console.log(`📋 현재 전체 chatRooms:`, Object.keys(chatRooms));
+        
         renderChatRoomItem(roomId, roomData);
+    };
+    
+    roomRef.on('value', window.roomListeners[roomId], function(error) {
+        console.error(`❌ 채팅방 ${roomId} 로드 실패:`, error);
     });
 }
 
@@ -1224,8 +1316,33 @@ function renderChatRoomItem(roomId, roomData) {
         roomItem = document.createElement('div');
         roomItem.className = 'chat-room-item';
         roomItem.setAttribute('data-room-id', roomId);
-        roomItem.addEventListener('click', () => openChatRoom(roomId));
+        
+        // 클릭 이벤트 등록 with 디버깅
+        roomItem.addEventListener('click', (e) => {
+            console.log(`🖱️ 채팅방 클릭됨: ${roomId}`);
+            console.log('🖱️ 클릭된 요소:', e.target);
+            console.log('🖱️ 현재 요소:', e.currentTarget);
+            console.log('🖱️ 요소 클래스:', e.currentTarget.className);
+            console.log('🖱️ data-room-id:', e.currentTarget.getAttribute('data-room-id'));
+            
+            // 이벤트 전파 방지 (중복 실행 방지)
+            e.stopPropagation();
+            e.preventDefault();
+            
+            openChatRoom(roomId);
+        });
+        
         roomsListContainer.appendChild(roomItem);
+        console.log(`✅ 채팅방 아이템 생성 및 클릭 이벤트 등록: ${roomId}`);
+        
+        // 디버깅: 요소 클릭 가능 여부 확인
+        console.log(`🔍 채팅방 ${roomId} 요소 상태:`, {
+            display: roomItem.style.display,
+            visibility: roomItem.style.visibility,
+            pointerEvents: window.getComputedStyle(roomItem).pointerEvents,
+            zIndex: window.getComputedStyle(roomItem).zIndex,
+            position: window.getComputedStyle(roomItem).position
+        });
     }
     
     // 채팅방 이름과 아바타 설정
@@ -1237,18 +1354,24 @@ function renderChatRoomItem(roomId, roomData) {
     if (roomData.type === 'private' && roomData.participants) {
         const otherUserId = Object.keys(roomData.participants).find(id => id != currentUserId);
         if (otherUserId) {
-            // 사용자 정보가 없으면 비동기로 가져오기
-            if (!users[otherUserId]) {
-                loadUserInfo(otherUserId).then(() => {
-                    // 사용자 정보 로드 완료 후 채팅방 아이템 다시 렌더링
-                    renderChatRoomItem(roomId, roomData);
-                });
-            }
-            
+            // 사용자 정보가 이미 있으면 사용
             if (users[otherUserId]) {
                 roomName = users[otherUserId].nickname || '사용자';
                 avatarText = roomName.substring(0, 1).toUpperCase();
                 partnerImage = users[otherUserId].profile_image || users[otherUserId].profile_image_thumb;
+            } else {
+                // 사용자 정보가 없으면 비동기로 가져오기 (재귀 호출 방지)
+                if (!roomItem.dataset.loadingUser) {
+                    roomItem.dataset.loadingUser = 'true';
+                    loadUserInfo(otherUserId).then(() => {
+                        // 로딩 플래그 제거
+                        delete roomItem.dataset.loadingUser;
+                        // 사용자 정보 로드 완료 후 채팅방 아이템 다시 렌더링
+                        renderChatRoomItem(roomId, roomData);
+                    }).catch(() => {
+                        delete roomItem.dataset.loadingUser;
+                    });
+                }
             }
         }
     }
@@ -1299,12 +1422,34 @@ function renderChatRoomItem(roomId, roomData) {
  */
 function openChatRoom(roomId) {
     console.log(`💬 채팅방 열기: ${roomId}`);
+    console.log(`📊 현재 chatRooms 데이터:`, chatRooms);
+    console.log(`🔍 요청된 채팅방 ID: ${roomId}`);
     
     activeRoomId = roomId;
     const roomData = chatRooms[roomId];
     
+    console.log(`📂 해당 채팅방 데이터:`, roomData);
+    
     if (!roomData) {
-        console.error('채팅방 데이터를 찾을 수 없습니다:', roomId);
+        console.error('❌ 채팅방 데이터를 찾을 수 없습니다:', roomId);
+        console.error('📋 사용 가능한 채팅방 목록:', Object.keys(chatRooms));
+        
+        // Firebase에서 직접 데이터 가져오기 시도
+        console.log('🔄 Firebase에서 직접 채팅방 데이터 로드 시도...');
+        const roomRef = database.ref(`chatRooms/${roomId}`);
+        roomRef.once('value', function(snapshot) {
+            const firebaseRoomData = snapshot.val();
+            console.log('🔥 Firebase에서 가져온 데이터:', firebaseRoomData);
+            
+            if (firebaseRoomData) {
+                console.log('✅ Firebase에 데이터가 존재함. 로컬 캐시 업데이트 중...');
+                chatRooms[roomId] = firebaseRoomData;
+                openChatRoom(roomId); // 재귀 호출로 다시 시도
+            } else {
+                console.error('❌ Firebase에도 채팅방이 존재하지 않음');
+                alert('채팅방을 찾을 수 없습니다.');
+            }
+        });
         return;
     }
     
@@ -1315,10 +1460,29 @@ function openChatRoom(roomId) {
     document.querySelector(`[data-room-id="${roomId}"]`).classList.add('active');
     
     // 채팅 UI 표시
-    document.getElementById('chatWelcome').style.display = 'none';
-    document.getElementById('activeChatArea').style.display = 'flex';
-    document.getElementById('activeChatArea').style.flexDirection = 'column';
-    document.getElementById('activeChatArea').style.height = '100%';
+    console.log('🖥️ UI 요소 상태 변경 중...');
+    
+    const chatWelcome = document.getElementById('chatWelcome');
+    const activeChatArea = document.getElementById('activeChatArea');
+    
+    console.log('📋 chatWelcome 요소:', chatWelcome);
+    console.log('📋 activeChatArea 요소:', activeChatArea);
+    
+    if (chatWelcome) {
+        chatWelcome.style.display = 'none';
+        console.log('✅ chatWelcome 숨김 처리됨');
+    } else {
+        console.error('❌ chatWelcome 요소를 찾을 수 없음');
+    }
+    
+    if (activeChatArea) {
+        activeChatArea.style.display = 'flex';
+        activeChatArea.style.flexDirection = 'column';
+        activeChatArea.style.height = '100%';
+        console.log('✅ activeChatArea 표시 처리됨');
+    } else {
+        console.error('❌ activeChatArea 요소를 찾을 수 없음');
+    }
     
     // 채팅 상대 정보 설정
     updateChatHeader(roomData);
@@ -1334,31 +1498,42 @@ function openChatRoom(roomId) {
  * 채팅 헤더 업데이트
  */
 function updateChatHeader(roomData) {
+    console.log('🎨 채팅 헤더 업데이트:', roomData);
+    
     let partnerName = roomData.name || '채팅방';
     let partnerImage = null;
     
     // 1:1 채팅인 경우 상대방 정보로 설정
     if (roomData.type === 'private' && roomData.participants) {
         const otherUserId = Object.keys(roomData.participants).find(id => id != currentUserId);
+        console.log(`👤 상대방 사용자 ID: ${otherUserId}`);
+        console.log(`👤 현재 사용자 ID: ${currentUserId}`);
+        console.log(`📋 현재 users 객체:`, users);
+        
         if (otherUserId) {
             currentPartnerUserId = otherUserId; // 현재 상대방 ID 저장
             
             // 사용자 정보가 없으면 비동기로 가져오기
             if (!users[otherUserId]) {
+                console.log(`🔄 사용자 ${otherUserId} 정보 로드 필요`);
                 loadUserInfo(otherUserId).then(() => {
+                    console.log(`✅ 사용자 ${otherUserId} 정보 로드 완료:`, users[otherUserId]);
                     // 사용자 정보 로드 완료 후 채팅 헤더 다시 업데이트
                     updateChatHeader(roomData);
                 });
             }
             
             if (users[otherUserId]) {
+                console.log(`👤 사용자 ${otherUserId} 정보 사용:`, users[otherUserId]);
                 partnerName = users[otherUserId].nickname || '사용자';
                 partnerImage = users[otherUserId].profile_image || users[otherUserId].profile_image_thumb;
+                console.log(`👤 설정된 상대방 이름: ${partnerName}`);
+                console.log(`🖼️ 설정된 상대방 이미지: ${partnerImage || '없음'}`);
             }
-            
-            // 프로필 방문 버튼 표시
-            document.getElementById('visitProfileBtn').style.display = 'block';
         }
+        
+        // 프로필 방문 버튼 표시
+        document.getElementById('visitProfileBtn').style.display = 'block';
     } else {
         currentPartnerUserId = null;
         // 프로필 방문 버튼 숨김
@@ -1395,17 +1570,41 @@ function updateChatHeader(roomData) {
  * 메시지 로드
  */
 function loadMessages(roomId) {
+    console.log(`📨 메시지 로드 시작: ${roomId}`);
+    
     const messagesContainer = document.getElementById('chatMessages');
+    if (!messagesContainer) {
+        console.error('❌ 메시지 컨테이너를 찾을 수 없음');
+        return;
+    }
+    
     messagesContainer.innerHTML = '<div class="loading"><div class="loading-spinner"></div>메시지를 불러오는 중...</div>';
     
     // 실용적인 메시지 로딩 수 (성능과 사용성의 균형)
     const messagesRef = database.ref(`messages/${roomId}`).limitToLast(50);
     
-    messagesRef.off(); // 기존 리스너 제거
-    messagesRef.on('value', function(snapshot) {
+    console.log(`🔗 Firebase 리스너 설정: messages/${roomId}`);
+    
+    // 기존 메시지 리스너 제거
+    if (window.currentMessageListener) {
+        const oldRef = database.ref(`messages/${activeRoomId || roomId}`);
+        oldRef.off('value', window.currentMessageListener);
+        window.currentMessageListener = null;
+    }
+    
+    // 새로운 리스너 생성 및 저장
+    window.currentMessageListener = function(snapshot) {
+        console.log(`📥 메시지 데이터 수신:`, snapshot.val());
         const messages = snapshot.val() || {};
+        console.log(`📊 메시지 개수: ${Object.keys(messages).length}`);
+        
         renderMessages(messages);
         scrollToBottom();
+    };
+    
+    messagesRef.on('value', window.currentMessageListener, function(error) {
+        console.error('❌ 메시지 로드 실패:', error);
+        messagesContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: red;">메시지를 불러올 수 없습니다.</div>';
     });
 }
 
@@ -1413,16 +1612,34 @@ function loadMessages(roomId) {
  * 메시지 렌더링
  */
 function renderMessages(messages) {
+    console.log('🎨 메시지 렌더링 시작:', messages);
+    
     const messagesContainer = document.getElementById('chatMessages');
+    console.log('📋 메시지 컨테이너:', messagesContainer);
+    
+    if (!messagesContainer) {
+        console.error('❌ 메시지 컨테이너를 찾을 수 없음');
+        return;
+    }
+    
     messagesContainer.innerHTML = '';
     
-    if (Object.keys(messages).length === 0) {
-        messagesContainer.innerHTML = `
+    const messageCount = Object.keys(messages).length;
+    console.log(`📊 렌더링할 메시지 개수: ${messageCount}`);
+    
+    if (messageCount === 0) {
+        console.log('💬 빈 채팅방 - 안내 메시지 표시');
+        
+        const emptyMessage = `
             <div style="text-align: center; padding: 40px 20px; color: #718096;">
                 <i class="fas fa-comment-dots" style="font-size: 2rem; margin-bottom: 12px; opacity: 0.5;"></i>
                 <p style="margin: 0; font-size: 0.9rem;">첫 메시지를 보내보세요!</p>
             </div>
         `;
+        
+        messagesContainer.innerHTML = emptyMessage;
+        console.log('✅ 빈 채팅방 안내 메시지 설정 완료');
+        console.log('📝 설정된 HTML:', emptyMessage);
         return;
     }
     
