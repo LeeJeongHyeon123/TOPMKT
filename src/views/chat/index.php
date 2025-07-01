@@ -111,6 +111,15 @@
     background: #fff; /* 디버깅: 배경색 명시 */
 }
 
+/* 채팅방 아이템 내부 요소들이 클릭을 차단하지 않도록 */
+.chat-room-item * {
+    pointer-events: none;
+}
+
+.chat-room-item {
+    pointer-events: auto;
+}
+
 .chat-room-item:hover {
     background: #f7fafc;
 }
@@ -1096,19 +1105,32 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('beforeunload', cleanupChatListeners);
     window.addEventListener('pagehide', cleanupChatListeners);
     
+    // 🔍 전역 클릭 디버깅 - 모든 클릭 이벤트 감지
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+        const roomItem = target.closest('.chat-room-item');
+        
+        if (roomItem) {
+            const roomId = roomItem.getAttribute('data-room-id');
+            console.log(`🎯 채팅방 영역 클릭 감지: ${roomId}`, {
+                target: target,
+                roomItem: roomItem,
+                targetTag: target.tagName,
+                targetClass: target.className,
+                targetId: target.id
+            });
+        } else if (target.closest('#chatRoomsList')) {
+            console.log(`🎯 채팅방 목록 영역 클릭 (채팅방 아이템 아님):`, {
+                target: target,
+                targetTag: target.tagName,
+                targetClass: target.className,
+                targetId: target.id
+            });
+        }
+    }, true); // capture 단계에서 캐치
+    
     // URL 해시로 특정 채팅방 열기 처리
     handleUrlHash();
-    
-    // 디버깅: 전역 클릭 리스너
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.chat-room-item')) {
-            const roomItem = e.target.closest('.chat-room-item');
-            const roomId = roomItem.getAttribute('data-room-id');
-            console.log(`🎯 채팅방 영역 클릭 감지: ${roomId}`);
-            console.log('🎯 클릭된 실제 요소:', e.target);
-            console.log('🎯 채팅방 아이템:', roomItem);
-        }
-    }, true); // capture phase에서 실행
 });
 
 /**
@@ -1230,9 +1252,20 @@ function loadChatRooms() {
         }
         
         const userRooms = snapshot.val() || {};
-        console.log('📂 채팅방 목록 업데이트됨:', Object.keys(userRooms));
+        const currentRoomIds = Object.keys(userRooms);
         
-        if (Object.keys(userRooms).length === 0) {
+        // 중복 업데이트 방지: 이전 상태와 비교
+        if (window.lastRoomIds && 
+            window.lastRoomIds.length === currentRoomIds.length &&
+            window.lastRoomIds.every(id => currentRoomIds.includes(id))) {
+            console.log('📂 채팅방 목록 변경 없음 - 업데이트 건너뜀');
+            return;
+        }
+        
+        console.log('📂 채팅방 목록 업데이트됨:', currentRoomIds);
+        window.lastRoomIds = [...currentRoomIds]; // 현재 상태 저장
+        
+        if (currentRoomIds.length === 0) {
             roomsListContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: #718096;" id="noRoomsMessage">
                     <i class="fas fa-comments" style="font-size: 2rem; margin-bottom: 12px; opacity: 0.5;"></i>
@@ -1248,7 +1281,7 @@ function loadChatRooms() {
         }
         
         // 각 채팅방의 정보를 가져와서 표시
-        Object.keys(userRooms).forEach(roomId => {
+        currentRoomIds.forEach(roomId => {
             loadChatRoomInfo(roomId);
         });
     };
@@ -1310,27 +1343,53 @@ function renderChatRoomItem(roomId, roomData) {
     const roomsListContainer = document.getElementById('chatRoomsList');
     
     // 기존 아이템이 있으면 업데이트, 없으면 생성
-    let roomItem = document.querySelector(`[data-room-id="${roomId}"]`);
+    // 특수문자가 포함된 roomId를 안전하게 선택하기 위해 모든 채팅방 아이템을 순회
+    let roomItem = null;
+    const allRoomItems = document.querySelectorAll('.chat-room-item');
+    for (const item of allRoomItems) {
+        if (item.getAttribute('data-room-id') === roomId) {
+            roomItem = item;
+            break;
+        }
+    }
     
     if (!roomItem) {
         roomItem = document.createElement('div');
         roomItem.className = 'chat-room-item';
         roomItem.setAttribute('data-room-id', roomId);
         
-        // 클릭 이벤트 등록 with 디버깅
-        roomItem.addEventListener('click', (e) => {
+        // 클릭 이벤트 등록 with 디버깅 - 여러 이벤트로 시도
+        const clickHandler = (e) => {
             console.log(`🖱️ 채팅방 클릭됨: ${roomId}`);
             console.log('🖱️ 클릭된 요소:', e.target);
             console.log('🖱️ 현재 요소:', e.currentTarget);
             console.log('🖱️ 요소 클래스:', e.currentTarget.className);
             console.log('🖱️ data-room-id:', e.currentTarget.getAttribute('data-room-id'));
             
+            // roomId 특수문자 검사
+            if (roomId.includes('-') || roomId.includes('_')) {
+                console.log(`⚠️ 특수문자 포함 roomId 감지: ${roomId}`);
+            }
+            
+            // 채팅방 데이터 존재 여부 확인
+            if (chatRooms[roomId]) {
+                console.log(`✅ 채팅방 데이터 존재: ${roomId}`, chatRooms[roomId]);
+            } else {
+                console.log(`❌ 채팅방 데이터 없음: ${roomId}`);
+                console.log('📋 현재 chatRooms:', Object.keys(chatRooms));
+            }
+            
             // 이벤트 전파 방지 (중복 실행 방지)
             e.stopPropagation();
             e.preventDefault();
             
             openChatRoom(roomId);
-        });
+        };
+        
+        // 여러 이벤트 타입으로 등록
+        roomItem.addEventListener('click', clickHandler);
+        roomItem.addEventListener('mousedown', clickHandler);
+        roomItem.addEventListener('touchstart', clickHandler, { passive: false });
         
         roomsListContainer.appendChild(roomItem);
         console.log(`✅ 채팅방 아이템 생성 및 클릭 이벤트 등록: ${roomId}`);
@@ -1343,6 +1402,33 @@ function renderChatRoomItem(roomId, roomData) {
             zIndex: window.getComputedStyle(roomItem).zIndex,
             position: window.getComputedStyle(roomItem).position
         });
+        
+        // 추가 디버깅: 겹치는 요소 확인
+        setTimeout(() => {
+            const rect = roomItem.getBoundingClientRect();
+            const centerX = rect.x + rect.width / 2;
+            const centerY = rect.y + rect.height / 2;
+            const topElement = document.elementFromPoint(centerX, centerY);
+            
+            console.log(`🎯 채팅방 ${roomId} 중앙 좌표 (${Math.round(centerX)}, ${Math.round(centerY)})에서 감지된 최상위 요소:`, {
+                expected: roomItem,
+                actual: topElement,
+                isExpected: topElement === roomItem,
+                topElementTag: topElement?.tagName,
+                topElementClass: topElement?.className,
+                topElementId: topElement?.id
+            });
+            
+            if (topElement !== roomItem) {
+                console.warn(`⚠️ 채팅방 ${roomId}이 다른 요소에 가려져 있습니다!`, topElement);
+                
+                // 가리는 요소의 z-index를 낮춰보기
+                if (topElement && topElement.style) {
+                    const currentZIndex = window.getComputedStyle(topElement).zIndex;
+                    console.log(`🔧 가리는 요소의 z-index: ${currentZIndex}`);
+                }
+            }
+        }, 1000);
     }
     
     // 채팅방 이름과 아바타 설정
@@ -1456,8 +1542,11 @@ function openChatRoom(roomId) {
     // 활성 채팅방 표시 업데이트
     document.querySelectorAll('.chat-room-item').forEach(item => {
         item.classList.remove('active');
+        // 특수문자가 포함된 roomId 안전한 매칭
+        if (item.getAttribute('data-room-id') === roomId) {
+            item.classList.add('active');
+        }
     });
-    document.querySelector(`[data-room-id="${roomId}"]`).classList.add('active');
     
     // 채팅 UI 표시
     console.log('🖥️ UI 요소 상태 변경 중...');
@@ -1518,9 +1607,30 @@ function updateChatHeader(roomData) {
                 console.log(`🔄 사용자 ${otherUserId} 정보 로드 필요`);
                 loadUserInfo(otherUserId).then(() => {
                     console.log(`✅ 사용자 ${otherUserId} 정보 로드 완료:`, users[otherUserId]);
-                    // 사용자 정보 로드 완료 후 채팅 헤더 다시 업데이트
+                    // 무한 루프 방지: 사용자 정보가 실제로 로드된 경우에만 재호출
+                    if (users[otherUserId]) {
+                        updateChatHeader(roomData);
+                    } else {
+                        console.warn(`⚠️ 사용자 ${otherUserId} 정보 로드 실패 - 기본값 사용`);
+                        // 기본값으로 폴백
+                        users[otherUserId] = {
+                            id: otherUserId,
+                            nickname: '사용자',
+                            profile_image: null
+                        };
+                        updateChatHeader(roomData);
+                    }
+                }).catch(error => {
+                    console.error(`❌ 사용자 ${otherUserId} 정보 로드 오류:`, error);
+                    // 에러 시 기본값으로 폴백
+                    users[otherUserId] = {
+                        id: otherUserId,
+                        nickname: '사용자',
+                        profile_image: null
+                    };
                     updateChatHeader(roomData);
                 });
+                return; // 비동기 로딩 중이므로 함수 종료
             }
             
             if (users[otherUserId]) {
@@ -2252,8 +2362,15 @@ function leaveChatRoom() {
                 // 채팅방 데이터 제거
                 delete chatRooms[activeRoomId];
                 
-                // 사이드바에서 채팅방 제거
-                const roomItem = document.querySelector(`[data-room-id="${activeRoomId}"]`);
+                // 사이드바에서 채팅방 제거 (특수문자 안전 처리)
+                let roomItem = null;
+                const allRoomItems = document.querySelectorAll('.chat-room-item');
+                for (const item of allRoomItems) {
+                    if (item.getAttribute('data-room-id') === activeRoomId) {
+                        roomItem = item;
+                        break;
+                    }
+                }
                 if (roomItem) {
                     roomItem.remove();
                     console.log('✅ 사이드바에서 채팅방 아이템 제거됨');
@@ -2365,8 +2482,22 @@ async function loadUserInfo(userId) {
     }
     
     try {
+        console.log(`🌐 API 호출 시작: /api/users/${userId}/profile-image`);
         const response = await chatFetch(`/api/users/${userId}/profile-image`);
-        const data = await response.json();
+        console.log(`📊 API 응답 상태: ${response.status}`);
+        
+        if (!response.ok) {
+            console.error(`❌ API 응답 오류: ${response.status} ${response.statusText}`);
+            const errorText = await response.text();
+            console.error(`❌ 오류 내용: ${errorText}`);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const response_data = await response.json();
+        console.log(`📋 API 응답 데이터:`, response_data);
+        
+        // ResponseHelper의 구조에 맞게 data 필드에서 실제 데이터 추출
+        const data = response_data.data || response_data;
         
         if (data.user_id) {
             users[userId] = {
@@ -2375,12 +2506,23 @@ async function loadUserInfo(userId) {
                 profile_image: data.original_image
             };
             
-            console.log('사용자 정보 로드됨:', users[userId]);
+            console.log('✅ 사용자 정보 로드됨:', users[userId]);
+        } else {
+            console.warn(`⚠️ API 응답에 user_id가 없음:`, data);
+            console.warn(`🔍 전체 응답 구조:`, response_data);
+            
+            // 폴백: 기본 사용자 정보 생성하여 무한 루프 방지
+            users[userId] = {
+                id: userId,
+                nickname: '사용자',
+                profile_image: null
+            };
+            console.warn(`🔄 기본 사용자 정보로 폴백 처리됨:`, users[userId]);
         }
         
         return Promise.resolve();
     } catch (error) {
-        console.error('사용자 정보 로드 실패:', error);
+        console.error('❌ 사용자 정보 로드 실패:', error);
         return Promise.reject(error);
     }
 }
