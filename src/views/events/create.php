@@ -439,20 +439,6 @@ if (!$permission['hasPermission']) {
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="event_scale" class="form-label">행사 규모</label>
-                    <select id="event_scale" name="event_scale" class="form-select">
-                        <option value="">규모를 선택하세요</option>
-                        <option value="small">소규모 (50명 이하)</option>
-                        <option value="medium">중규모 (50-200명)</option>
-                        <option value="large">대규모 (200명 이상)</option>
-                    </select>
-                </div>
-
-                <div class="form-checkbox-group">
-                    <input type="checkbox" id="has_networking" name="has_networking" class="form-checkbox">
-                    <label for="has_networking" class="form-label">네트워킹 세션 포함</label>
-                </div>
             </div>
 
             <!-- 주최자 정보 섹션 -->

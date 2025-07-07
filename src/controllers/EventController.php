@@ -97,7 +97,7 @@ class EventController extends LectureController {
                     start_date, end_date, start_time, end_time,
                     location_type, venue_name, venue_address, online_link,
                     max_participants, registration_fee, category, status,
-                    content_type, event_scale, has_networking, sponsor_info,
+                    content_type, sponsor_info,
                     dress_code, parking_info, created_at
                 FROM lectures 
                 WHERE content_type = 'event'
@@ -167,7 +167,7 @@ class EventController extends LectureController {
                     l.start_date, l.end_date, l.start_time, l.end_time,
                     l.location_type, l.venue_name, l.venue_address, l.online_link,
                     l.max_participants, l.registration_fee, l.category, l.status,
-                    l.content_type, l.event_scale, l.has_networking, l.sponsor_info,
+                    l.content_type, l.sponsor_info,
                     l.dress_code, l.parking_info, l.created_at, l.user_id, l.instructor_image, l.youtube_video,
                     u.nickname as author_name, u.bio as author_bio, 
                     u.profile_image, u.profile_image_original
@@ -339,7 +339,7 @@ class EventController extends LectureController {
         $optional = [
             'instructor_name', 'instructor_info', 'end_date', 'end_time',
             'venue_name', 'venue_address', 'online_link', 'max_participants',
-            'registration_fee', 'event_scale', 'has_networking', 'sponsor_info',
+            'registration_fee', 'sponsor_info',
             'dress_code', 'parking_info'
         ];
         
@@ -354,7 +354,6 @@ class EventController extends LectureController {
         if ($validated['registration_fee']) {
             $validated['registration_fee'] = intval($validated['registration_fee']);
         }
-        $validated['has_networking'] = !empty($data['has_networking']);
         
         return $validated;
     }
@@ -368,14 +367,14 @@ class EventController extends LectureController {
                     start_date, end_date, start_time, end_time,
                     location_type, venue_name, venue_address, online_link,
                     max_participants, registration_fee, category, content_type,
-                    event_scale, has_networking, sponsor_info, dress_code, parking_info,
+                    sponsor_info, dress_code, parking_info,
                     status, created_at
                 ) VALUES (
                     :user_id, :title, :description, :instructor_name, :instructor_info,
                     :start_date, :end_date, :start_time, :end_time,
                     :location_type, :venue_name, :venue_address, :online_link,
                     :max_participants, :registration_fee, :category, :content_type,
-                    :event_scale, :has_networking, :sponsor_info, :dress_code, :parking_info,
+                    :sponsor_info, :dress_code, :parking_info,
                     'published', NOW()
                 )";
         

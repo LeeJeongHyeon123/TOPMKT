@@ -21,7 +21,7 @@ class RegistrationController extends BaseController
         try {
             // 로그인 확인
             if (!AuthMiddleware::isLoggedIn()) {
-                return ResponseHelper::json('error', '로그인이 필요합니다.', null, 401);
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
             }
             
             $userId = AuthMiddleware::getCurrentUserId();
@@ -43,7 +43,7 @@ class RegistrationController extends BaseController
             $lecture = $stmt->get_result()->fetch_assoc();
             
             if (!$lecture) {
-                return ResponseHelper::json('error', '강의를 찾을 수 없습니다.', null, 404);
+                return ResponseHelper::json(null, 404, '강의를 찾을 수 없습니다.');
             }
             
             // 사용자의 신청 정보 조회
@@ -69,11 +69,11 @@ class RegistrationController extends BaseController
                 'user_id' => $userId
             ];
             
-            return ResponseHelper::json('success', '신청 상태 조회 완료', $responseData);
+            return ResponseHelper::json($responseData, 200, '신청 상태 조회 완료');
             
         } catch (Exception $e) {
             error_log("신청 상태 조회 오류: " . $e->getMessage());
-            return ResponseHelper::json('error', '신청 상태 조회 중 오류가 발생했습니다.', null, 500);
+            return ResponseHelper::json(null, 500, '신청 상태 조회 중 오류가 발생했습니다.');
         }
     }
     
@@ -87,12 +87,12 @@ class RegistrationController extends BaseController
         try {
             // HTTP 메소드 확인
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                return ResponseHelper::json('error', 'POST 메소드만 허용됩니다.', null, 405);
+                return ResponseHelper::json(null, 405, 'POST 메소드만 허용됩니다.');
             }
             
             // 로그인 확인
             if (!AuthMiddleware::isLoggedIn()) {
-                return ResponseHelper::json('error', '로그인이 필요합니다.', null, 401);
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
             }
             
             $userId = AuthMiddleware::getCurrentUserId();
@@ -102,7 +102,7 @@ class RegistrationController extends BaseController
             
             // CSRF 토큰 검증
             if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
-                return ResponseHelper::json('error', 'CSRF 토큰이 유효하지 않습니다.', null, 403);
+                return ResponseHelper::json(null, 403, 'CSRF 토큰이 유효하지 않습니다.');
             }
             
             // 강의 정보 조회
@@ -121,12 +121,12 @@ class RegistrationController extends BaseController
             $lecture = $stmt->get_result()->fetch_assoc();
             
             if (!$lecture) {
-                return ResponseHelper::json('error', '강의를 찾을 수 없습니다.', null, 404);
+                return ResponseHelper::json(null, 404, '강의를 찾을 수 없습니다.');
             }
             
             // 본인 강의 신청 방지
             if ($lecture['organizer_id'] == $userId) {
-                return ResponseHelper::json('error', '본인이 등록한 강의에는 신청할 수 없습니다.', null, 400);
+                return ResponseHelper::json(null, 400, '본인이 등록한 강의에는 신청할 수 없습니다.');
             }
             
             // 기존 신청 확인
@@ -137,7 +137,7 @@ class RegistrationController extends BaseController
             $existing = $stmt->get_result()->fetch_assoc();
             
             if ($existing && in_array($existing['status'], ['pending', 'approved', 'waiting'])) {
-                return ResponseHelper::json('error', '이미 신청하셨습니다.', null, 400);
+                return ResponseHelper::json(null, 400, '이미 신청하셨습니다.');
             }
             
             // 신청 기간 확인
@@ -146,21 +146,21 @@ class RegistrationController extends BaseController
             if ($lecture['registration_start_date']) {
                 $startDate = new DateTime($lecture['registration_start_date']);
                 if ($now < $startDate) {
-                    return ResponseHelper::json('error', '아직 신청 기간이 아닙니다.', null, 400);
+                    return ResponseHelper::json(null, 400, '아직 신청 기간이 아닙니다.');
                 }
             }
             
             if ($lecture['registration_end_date']) {
                 $endDate = new DateTime($lecture['registration_end_date']);
                 if ($now > $endDate) {
-                    return ResponseHelper::json('error', '신청 기간이 마감되었습니다.', null, 400);
+                    return ResponseHelper::json(null, 400, '신청 기간이 마감되었습니다.');
                 }
             }
             
             // 강의 시작 시간 확인
             $lectureStart = new DateTime($lecture['start_date'] . ' ' . $lecture['start_time']);
             if ($now >= $lectureStart) {
-                return ResponseHelper::json('error', '강의가 이미 시작되었습니다.', null, 400);
+                return ResponseHelper::json(null, 400, '강의가 이미 시작되었습니다.');
             }
             
             // 사용자 정보 조회
@@ -171,7 +171,7 @@ class RegistrationController extends BaseController
             $user = $stmt->get_result()->fetch_assoc();
             
             if (!$user) {
-                return ResponseHelper::json('error', '사용자 정보를 찾을 수 없습니다.', null, 404);
+                return ResponseHelper::json(null, 404, '사용자 정보를 찾을 수 없습니다.');
             }
             
             // 정원 확인 및 대기자 처리
@@ -181,7 +181,7 @@ class RegistrationController extends BaseController
             
             if ($lecture['max_participants'] && $lecture['current_participants'] >= $lecture['max_participants']) {
                 if (!$lecture['allow_waiting_list']) {
-                    return ResponseHelper::json('error', '정원이 마감되었습니다.', null, 400);
+                    return ResponseHelper::json(null, 400, '정원이 마감되었습니다.');
                 }
                 
                 // 대기자로 등록
@@ -205,7 +205,7 @@ class RegistrationController extends BaseController
             // 입력 데이터 검증
             $validationErrors = $this->validateRegistrationData($input, $user);
             if (!empty($validationErrors)) {
-                return ResponseHelper::json('error', '입력 데이터에 오류가 있습니다.', ['errors' => $validationErrors], 400);
+                return ResponseHelper::json(['errors' => $validationErrors], 400, '입력 데이터에 오류가 있습니다.');
             }
             
             // 신청 데이터 구성
@@ -273,27 +273,30 @@ class RegistrationController extends BaseController
                 // 커밋
                 $this->db->commit();
                 
-                // 신청 확인 이메일 발송
+                // 신청 확인 SMS 발송
                 try {
-                    $emailService = new EmailService();
-                    $registrationData['id'] = $registrationId;
-                    $registrationData['created_at'] = date('Y-m-d H:i:s');
-                    $emailService->sendApplicationConfirmation($registrationData, $lecture);
+                    require_once SRC_PATH . '/helpers/SmsHelper.php';
+                    $smsResult = sendLectureApplicationSms($registrationData['participant_phone']);
+                    if ($smsResult['success']) {
+                        error_log("강의 신청 확인 SMS 발송 성공: " . $registrationData['participant_phone']);
+                    } else {
+                        error_log("강의 신청 확인 SMS 발송 실패: " . $smsResult['message']);
+                    }
                 } catch (Exception $e) {
-                    error_log("신청 확인 이메일 발송 실패: " . $e->getMessage());
-                    // 이메일 실패는 전체 프로세스를 중단하지 않음
+                    error_log("SMS 발송 오류: " . $e->getMessage());
+                    // SMS 실패는 전체 프로세스를 중단하지 않음
                 }
                 
                 $message = $isWaitingList ? 
                     "대기자로 신청이 완료되었습니다. (대기순번: {$waitingOrder}번)" :
                     ($status === 'approved' ? '신청이 승인되었습니다.' : '신청이 완료되었습니다. 승인을 기다려주세요.');
                 
-                return ResponseHelper::json('success', $message, [
+                return ResponseHelper::json([
                     'registration_id' => $registrationId,
                     'status' => $status,
                     'is_waiting_list' => $isWaitingList,
                     'waiting_order' => $waitingOrder
-                ]);
+                ], 200, $message);
                 
             } catch (Exception $e) {
                 $this->db->rollback();
@@ -302,7 +305,8 @@ class RegistrationController extends BaseController
             
         } catch (Exception $e) {
             error_log("신청 등록 오류: " . $e->getMessage());
-            return ResponseHelper::json('error', '신청 처리 중 오류가 발생했습니다.', null, 500);
+            error_log("신청 등록 스택 추적: " . $e->getTraceAsString());
+            return ResponseHelper::json(null, 500, '신청 처리 중 오류가 발생했습니다: ' . $e->getMessage());
         }
     }
     
@@ -316,12 +320,12 @@ class RegistrationController extends BaseController
         try {
             // HTTP 메소드 확인
             if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
-                return ResponseHelper::json('error', 'DELETE 메소드만 허용됩니다.', null, 405);
+                return ResponseHelper::json(null, 405, 'DELETE 메소드만 허용됩니다.');
             }
             
             // 로그인 확인
             if (!AuthMiddleware::isLoggedIn()) {
-                return ResponseHelper::json('error', '로그인이 필요합니다.', null, 401);
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
             }
             
             $userId = AuthMiddleware::getCurrentUserId();
@@ -331,7 +335,7 @@ class RegistrationController extends BaseController
             
             // CSRF 토큰 검증
             if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
-                return ResponseHelper::json('error', 'CSRF 토큰이 유효하지 않습니다.', null, 403);
+                return ResponseHelper::json(null, 403, 'CSRF 토큰이 유효하지 않습니다.');
             }
             
             // 신청 정보 조회
@@ -350,7 +354,7 @@ class RegistrationController extends BaseController
             $registration = $stmt->get_result()->fetch_assoc();
             
             if (!$registration) {
-                return ResponseHelper::json('error', '취소할 신청을 찾을 수 없습니다.', null, 404);
+                return ResponseHelper::json(null, 404, '취소할 신청을 찾을 수 없습니다.');
             }
             
             // 강의 시작 시간 확인
@@ -358,7 +362,7 @@ class RegistrationController extends BaseController
             $lectureStart = new DateTime($registration['start_date'] . ' ' . $registration['start_time']);
             
             if ($now >= $lectureStart) {
-                return ResponseHelper::json('error', '강의가 이미 시작되어 취소할 수 없습니다.', null, 400);
+                return ResponseHelper::json(null, 400, '강의가 이미 시작되어 취소할 수 없습니다.');
             }
             
             // 신청 취소 처리
@@ -372,16 +376,16 @@ class RegistrationController extends BaseController
             $stmt->bind_param("i", $registration['id']);
             
             if ($stmt->execute()) {
-                return ResponseHelper::json('success', '신청이 취소되었습니다.', [
+                return ResponseHelper::json([
                     'registration_id' => $registration['id']
-                ]);
+                ], 200, '신청이 취소되었습니다.');
             } else {
-                return ResponseHelper::json('error', '신청 취소에 실패했습니다.', null, 500);
+                return ResponseHelper::json(null, 500, '신청 취소에 실패했습니다.');
             }
             
         } catch (Exception $e) {
             error_log("신청 취소 오류: " . $e->getMessage());
-            return ResponseHelper::json('error', '신청 취소 중 오류가 발생했습니다.', null, 500);
+            return ResponseHelper::json(null, 500, '신청 취소 중 오류가 발생했습니다.');
         }
     }
     

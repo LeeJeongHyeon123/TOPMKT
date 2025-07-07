@@ -198,3 +198,6 @@
 {"timestamp":"2025-07-01 18:22:30","action":"store_request","method":"POST","isDraft":false,"registration_deadline":"2025-07-10T21:25","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"published","title":"aScxasdsadsasadsads"}
 {"timestamp":"2025-07-01 18:22:30","action":"branch_decision","user_id":4,"draftLecture_exists":false,"draftLecture_id":null,"status_is_draft":false,"final_registration_deadline":"2025-07-10 21:25:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
 {"timestamp":"2025-07-01 18:22:30","action":"calling_createLecture"}
+{"timestamp":"2025-07-06 15:22:00","action":"store_request","method":"POST","isDraft":false,"registration_deadline":"2025-07-13T18:23","youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8","status":"published","title":"\ud14c\uc2a4\ud2b8 \uac15\uc7581"}
+{"timestamp":"2025-07-06 15:22:00","action":"branch_decision","user_id":4,"draftLecture_exists":false,"draftLecture_id":null,"status_is_draft":false,"final_registration_deadline":"2025-07-13 18:23:00","final_youtube_video":"https:\/\/www.youtube.com\/watch?v=cmozBFp7Xv8"}
+{"timestamp":"2025-07-06 15:22:00","action":"calling_createLecture"}

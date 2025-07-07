@@ -53,8 +53,6 @@ try {
             'registration_fee' => 250000,
             'category' => 'conference',
             'content_type' => 'event',
-            'event_scale' => 'large',
-            'has_networking' => true,
             'sponsor_info' => '주최: 글로벌 마케팅 협회, 후원: 삼성전자, LG전자, 현대자동차',
             'dress_code' => 'business',
             'parking_info' => '코엑스 지하주차장 이용 가능 (유료)',
@@ -99,8 +97,6 @@ try {
             'registration_fee' => 80000,
             'category' => 'workshop',
             'content_type' => 'event',
-            'event_scale' => 'small',
-            'has_networking' => true,
             'dress_code' => 'casual',
             'parking_info' => '주변 공영주차장 이용',
             'status' => 'published'
@@ -120,8 +116,6 @@ try {
             'registration_fee' => 25000,
             'category' => 'seminar',
             'content_type' => 'event',
-            'event_scale' => 'medium',
-            'has_networking' => false,
             'status' => 'published'
         ]
     ];
@@ -131,14 +125,14 @@ try {
         start_date, end_date, start_time, end_time,
         location_type, venue_name, venue_address, online_link,
         max_participants, registration_fee, category, content_type,
-        event_scale, has_networking, sponsor_info, dress_code, parking_info,
+        sponsor_info, dress_code, parking_info,
         status, created_at
     ) VALUES (
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?,
         ?, ?, ?, ?,
         ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
+        ?, ?, ?,
         ?, NOW()
     )";
     
@@ -165,8 +159,6 @@ try {
                 $event['registration_fee'] ?? null,
                 $event['category'],
                 $event['content_type'],
-                $event['event_scale'] ?? null,
-                $event['has_networking'] ? 1 : 0,
                 $event['sponsor_info'] ?? null,
                 $event['dress_code'] ?? null,
                 $event['parking_info'] ?? null,

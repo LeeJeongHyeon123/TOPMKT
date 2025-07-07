@@ -290,4 +290,40 @@ function sendReservationSms($phone, $reservationType, $reservationDate, $reserva
 {
     $message = "[탑마케팅] {$reservationType} 예약이 확정되었습니다. 일시: {$reservationDate} {$reservationTime}";
     return sendSms($phone, $message);
+}
+
+/**
+ * 강의 신청 접수 확인 SMS 발송
+ * 
+ * @param string $phone 수신자 전화번호
+ * @return array 발송 결과
+ */
+function sendLectureApplicationSms($phone) 
+{
+    $message = "[탑마케팅] 강의 신청이 접수되었습니다. 승인 결과는 1~2일 내 안내드리겠습니다. 문의: topmktx.com";
+    return sendSms($phone, $message);
+}
+
+/**
+ * 강의 신청 승인 SMS 발송
+ * 
+ * @param string $phone 수신자 전화번호
+ * @return array 발송 결과
+ */
+function sendLectureApprovalSms($phone) 
+{
+    $message = "[탑마케팅] 강의 신청이 승인되었습니다! 상세 일정은 topmktx.com에서 확인해주세요.";
+    return sendSms($phone, $message);
+}
+
+/**
+ * 강의 신청 거절 SMS 발송
+ * 
+ * @param string $phone 수신자 전화번호
+ * @return array 발송 결과
+ */
+function sendLectureRejectionSms($phone) 
+{
+    $message = "[탑마케팅] 강의 신청이 아쉽게도 마감되었습니다. 다음 강의 안내는 topmktx.com에서 확인해주세요.";
+    return sendSms($phone, $message);
 } 

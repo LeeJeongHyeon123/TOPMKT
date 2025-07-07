@@ -977,6 +977,13 @@ class LectureController {
      * 강의 신청 가능 여부 확인
      */
     private function canRegisterLecture($lecture) {
+        // 로그인하지 않은 경우
+        if (!AuthMiddleware::isLoggedIn()) return false;
+        
+        // 본인이 작성한 강의에는 신청할 수 없음
+        $currentUserId = AuthMiddleware::getCurrentUserId();
+        if ($currentUserId == $lecture['user_id']) return false;
+        
         // 발행된 상태이고 등록 마감일이 지나지 않았으며 정원이 남아있는 경우
         if ($lecture['status'] !== 'published') return false;
         if ($lecture['registration_deadline'] && strtotime($lecture['registration_deadline']) < time()) return false;
@@ -2022,7 +2029,21 @@ class LectureController {
     }
     
     /**
-     * 강의 신청 처리
+     * 구식 신청 URL을 강의 상세 페이지로 리다이렉트
+     */
+    public function redirectToLecture($id) {
+        $lectureId = intval($id);
+        if ($lectureId > 0) {
+            header("Location: /lectures/{$lectureId}");
+            exit;
+        } else {
+            header("Location: /lectures");
+            exit;
+        }
+    }
+    
+    /**
+     * 강의 신청 처리 (구식, 사용 중단 예정)
      */
     public function register($id) {
         try {

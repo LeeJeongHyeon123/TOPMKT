@@ -73,7 +73,8 @@
       "Bash(rsync:*)",
       "Bash(git init:*)",
       "Bash(sudo systemctl:*)",
-      "Bash(sudo systemctl status:*)"
+      "Bash(sudo systemctl status:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

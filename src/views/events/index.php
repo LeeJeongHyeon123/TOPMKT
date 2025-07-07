@@ -235,17 +235,6 @@ $monthNames = [
     transform: scale(1.02);
 }
 
-.event-item.scale-large {
-    background: linear-gradient(135deg, #FF6B6B 0%, #EE5A24 100%);
-}
-
-.event-item.scale-medium {
-    background: linear-gradient(135deg, #FFA726 0%, #FF7043 100%);
-}
-
-.event-item.scale-small {
-    background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%);
-}
 
 .more-events {
     color: #4A90E2;
@@ -347,24 +336,6 @@ $monthNames = [
     gap: 3px;
 }
 
-.event-scale-badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    font-weight: 500;
-    margin-left: 8px;
-}
-
-.event-scale-badge.large { background: #FFEBEE; color: #C62828; }
-.event-scale-badge.medium { background: #FFF3E0; color: #E65100; }
-.event-scale-badge.small { background: #E8F5E8; color: #2E7D32; }
-
-/* 네트워킹 아이콘 */
-.networking-icon {
-    color: #4A90E2;
-    margin-left: 5px;
-}
 
 /* 반응형 */
 @media (max-width: 768px) {
@@ -500,13 +471,10 @@ $monthNames = [
                         ?>
                         
                         <?php foreach ($displayEvents as $event): ?>
-                            <div class="event-item <?= $event['event_scale'] ? 'scale-' . $event['event_scale'] : '' ?>" 
+                            <div class="event-item" 
                                  onclick="showEventDetail(<?= $event['id'] ?>)"
                                  title="<?= htmlspecialchars($event['title']) ?>">
                                 <?= htmlspecialchars(mb_substr($event['title'], 0, 15)) ?>
-                                <?php if ($event['has_networking']): ?>
-                                    <i class="fas fa-users networking-icon" title="네트워킹 포함"></i>
-                                <?php endif; ?>
                             </div>
                         <?php endforeach; ?>
                         
@@ -569,22 +537,9 @@ function showDayEvents(date) {
         li.style.cursor = 'pointer';
         li.onclick = () => showEventDetail(event.id);
         
-        let scaleHtml = '';
-        if (event.event_scale) {
-            const scaleName = {
-                'small': '소규모',
-                'medium': '중규모', 
-                'large': '대규모'
-            };
-            scaleHtml = `<span class="event-scale-badge ${event.event_scale}">${scaleName[event.event_scale]}</span>`;
-        }
-        
-        let networkingHtml = event.has_networking ? 
-            '<i class="fas fa-users networking-icon" title="네트워킹 포함"></i>' : '';
-        
         li.innerHTML = `
             <div class="event-title">
-                ${event.title}${scaleHtml}${networkingHtml}
+                ${event.title}
             </div>
             <div class="event-details">
                 <div><i class="fas fa-clock"></i> ${event.start_time}</div>

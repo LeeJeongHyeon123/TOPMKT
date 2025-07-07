@@ -35,6 +35,7 @@ class RegistrationDashboardController extends BaseController
             // 날짜 필터 파라미터 처리
             $startDate = $_GET['start_date'] ?? null;
             $endDate = $_GET['end_date'] ?? null;
+            $contentType = $_GET['type'] ?? 'lecture'; // 새로운 파라미터: lecture | event
             
             // 기본값: 최근 1개월
             if (!$startDate || !$endDate) {
@@ -42,12 +43,13 @@ class RegistrationDashboardController extends BaseController
                 $endDate = date('Y-m-d');
             }
             
-            // 내 강의 목록 조회 (날짜 필터 적용)
+            // 내 강의/행사 목록 조회 (날짜 필터 및 컨텐츠 타입 적용)
             $lecturesQuery = "
                 SELECT 
                     l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
                     l.max_participants, l.current_participants, l.auto_approval,
-                    l.registration_end_date,
+                    l.registration_end_date, l.content_type, l.location_type,
+                    l.sponsor_info,
                     COUNT(DISTINCT lr.id) as total_applications,
                     COUNT(DISTINCT CASE WHEN lr.status = 'pending' THEN lr.id END) as pending_count,
                     COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as approved_count,
@@ -56,41 +58,48 @@ class RegistrationDashboardController extends BaseController
                 FROM lectures l
                 LEFT JOIN lecture_registrations lr ON l.id = lr.lecture_id
                 WHERE l.user_id = ? AND l.status = 'published' 
+                AND l.content_type = ?
                 AND l.start_date >= ? AND l.start_date <= ?
                 GROUP BY l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
-                         l.max_participants, l.current_participants, l.auto_approval, l.registration_end_date
+                         l.max_participants, l.current_participants, l.auto_approval, l.registration_end_date,
+                         l.content_type, l.location_type, l.sponsor_info
                 ORDER BY l.start_date DESC, l.created_at DESC
             ";
             
             $stmt = $this->db->prepare($lecturesQuery);
-            $stmt->bind_param("iss", $userId, $startDate, $endDate);
+            $stmt->bind_param("isss", $userId, $contentType, $startDate, $endDate);
             $stmt->execute();
             $lectures = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             
-            // 대시보드 통계 계산
-            $stats = $this->getDashboardStats($userId);
+            // 각 강의/행사의 신청 상태 계산
+            foreach ($lectures as &$lecture) {
+                $lecture['registration_status'] = $this->calculateRegistrationStatus($lecture);
+            }
             
-            // 최근 신청 목록 (최근 20개)
+            // 대시보드 통계 계산 (컨텐츠 타입별)
+            $stats = $this->getDashboardStats($userId, $contentType);
+            
+            // 최근 신청 목록 (최근 20개, 컨텐츠 타입별)
             $recentRegistrationsQuery = "
                 SELECT 
                     r.id, r.participant_name, r.participant_email, r.status,
                     r.created_at, r.is_waiting_list, r.waiting_order,
-                    l.title as lecture_title, l.id as lecture_id
+                    l.title as lecture_title, l.id as lecture_id, l.content_type
                 FROM lecture_registrations r
                 JOIN lectures l ON r.lecture_id = l.id
-                WHERE l.user_id = ?
+                WHERE l.user_id = ? AND l.content_type = ?
                 ORDER BY r.created_at DESC
                 LIMIT 20
             ";
             
             $stmt = $this->db->prepare($recentRegistrationsQuery);
-            $stmt->bind_param("i", $userId);
+            $stmt->bind_param("is", $userId, $contentType);
             $stmt->execute();
             $recentRegistrations = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             
             // 뷰 렌더링
             $pageTitle = '신청 관리 대시보드';
-            $pageDescription = '강의 신청 현황을 한눈에 확인하고 관리하세요.';
+            $pageDescription = ($contentType === 'event' ? '행사' : '강의') . ' 신청 현황을 한눈에 확인하고 관리하세요.';
             
             include SRC_PATH . '/views/templates/header.php';
             include SRC_PATH . '/views/registrations/dashboard.php';
@@ -267,30 +276,28 @@ class RegistrationDashboardController extends BaseController
             $stmt->bind_param("ssii", $newStatus, $adminNotes, $userId, $registrationId);
             
             if ($stmt->execute()) {
-                // 이메일 알림 발송
+                // SMS 알림 발송 (이메일 대신)
                 try {
-                    $emailService = new EmailService();
+                    require_once SRC_PATH . '/helpers/SmsHelper.php';
                     
-                    // 강의 정보 조회
-                    $lectureQuery = "SELECT id, title, start_date, start_time, end_date, end_time, location FROM lectures WHERE id = ?";
-                    $lectureStmt = $this->db->prepare($lectureQuery);
-                    $lectureStmt->bind_param("i", $registration['lecture_id']);
-                    $lectureStmt->execute();
-                    $lectureInfo = $lectureStmt->get_result()->fetch_assoc();
-                    
-                    // 업데이트된 신청 정보 구성
-                    $updatedRegistration = $registration;
-                    $updatedRegistration['status'] = $newStatus;
-                    $updatedRegistration['admin_notes'] = $adminNotes;
-                    
+                    // SMS 발송
                     if ($newStatus === 'approved') {
-                        $emailService->sendApprovalNotification($updatedRegistration, $lectureInfo);
+                        $smsResult = sendLectureApprovalSms($registration['participant_phone']);
+                        $logMessage = "강의 신청 승인 SMS 발송";
                     } else {
-                        $emailService->sendRejectionNotification($updatedRegistration, $lectureInfo);
+                        $smsResult = sendLectureRejectionSms($registration['participant_phone']);
+                        $logMessage = "강의 신청 거절 SMS 발송";
                     }
+                    
+                    if ($smsResult['success']) {
+                        error_log($logMessage . " 성공: " . $registration['participant_phone']);
+                    } else {
+                        error_log($logMessage . " 실패: " . $smsResult['message']);
+                    }
+                    
                 } catch (Exception $e) {
-                    error_log("상태 변경 이메일 발송 실패: " . $e->getMessage());
-                    // 이메일 실패는 전체 프로세스를 중단하지 않음
+                    error_log("상태 변경 SMS 발송 실패: " . $e->getMessage());
+                    // SMS 실패는 전체 프로세스를 중단하지 않음
                 }
                 
                 $message = $newStatus === 'approved' ? '신청이 승인되었습니다.' : '신청이 거절되었습니다.';
@@ -310,9 +317,9 @@ class RegistrationDashboardController extends BaseController
     }
     
     /**
-     * 대시보드 통계 정보
+     * 대시보드 통계 정보 (컨텐츠 타입별)
      */
-    private function getDashboardStats($userId)
+    private function getDashboardStats($userId, $contentType = 'lecture')
     {
         // registration_statistics 테이블 없이 직접 집계
         $statsQuery = "
@@ -324,11 +331,11 @@ class RegistrationDashboardController extends BaseController
                 COUNT(DISTINCT CASE WHEN lr.status = 'rejected' THEN lr.id END) as rejected_applications
             FROM lectures l
             LEFT JOIN lecture_registrations lr ON l.id = lr.lecture_id
-            WHERE l.user_id = ? AND l.status = 'published'
+            WHERE l.user_id = ? AND l.status = 'published' AND l.content_type = ?
         ";
         
         $stmt = $this->db->prepare($statsQuery);
-        $stmt->bind_param("i", $userId);
+        $stmt->bind_param("is", $userId, $contentType);
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
     }
@@ -440,6 +447,54 @@ class RegistrationDashboardController extends BaseController
         $stmt->execute();
         
         return $stmt->get_result()->fetch_assoc();
+    }
+    
+    /**
+     * 강의/행사의 신청 상태 계산
+     */
+    private function calculateRegistrationStatus($lecture)
+    {
+        $now = new DateTime();
+        $startDate = new DateTime($lecture['start_date'] . ' ' . $lecture['start_time']);
+        $registrationEndDate = $lecture['registration_end_date'] ? new DateTime($lecture['registration_end_date']) : null;
+        
+        // 행사/강의가 이미 시작됨
+        if ($startDate <= $now) {
+            return [
+                'status' => 'completed',
+                'label' => '완료됨',
+                'color' => 'gray',
+                'icon' => '✅'
+            ];
+        }
+        
+        // 신청 마감일이 설정되어 있고 지났음
+        if ($registrationEndDate && $registrationEndDate <= $now) {
+            return [
+                'status' => 'closed',
+                'label' => '신청 마감',
+                'color' => 'red',
+                'icon' => '🔒'
+            ];
+        }
+        
+        // 최대 참가자 수가 설정되어 있고 가득참
+        if ($lecture['max_participants'] && $lecture['current_participants'] >= $lecture['max_participants']) {
+            return [
+                'status' => 'full',
+                'label' => '정원 마감',
+                'color' => 'orange',
+                'icon' => '👥'
+            ];
+        }
+        
+        // 신청 가능
+        return [
+            'status' => 'open',
+            'label' => '신청 중',
+            'color' => 'green',
+            'icon' => '📝'
+        ];
     }
     
     /**

@@ -34,7 +34,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?? '' ?>">
+    <?php 
+    // CSRF 토큰 생성
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    ?>
+    <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?>">
     <?php 
     require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
     try {

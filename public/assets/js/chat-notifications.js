@@ -207,13 +207,22 @@ async function getRoomPartnerInfo(roomId, roomData) {
                 'X-CSRF-Token': getCsrfToken()
             }
         });
-        const data = await response.json();
+        const result = await response.json();
+        
+        // ResponseHelper 구조에 맞게 데이터 추출
+        const data = result.data || result;
+        
+        // 디버깅용 로그 (개발 시에만)
+        if (!data.nickname) {
+            console.warn('채팅 알림: 닉네임을 찾을 수 없음', { result, data, partnerId });
+        }
         
         return {
             name: data.nickname || '알 수 없음',
             userId: partnerId
         };
     } catch (error) {
+        console.warn('채팅 알림: API 호출 실패', error, partnerId);
         return { name: '알 수 없음', userId: partnerId };
     }
 }

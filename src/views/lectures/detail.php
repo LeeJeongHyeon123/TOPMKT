@@ -8,6 +8,13 @@ require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
 require_once SRC_PATH . '/helpers/HtmlSanitizerHelper.php';
 $isLoggedIn = AuthMiddleware::isLoggedIn();
 $currentUserId = AuthMiddleware::getCurrentUserId();
+
+// 편집 권한 확인 (강의 작성자이거나 관리자인지 확인)
+$canEdit = false;
+if ($isLoggedIn && isset($lecture)) {
+    $userRole = AuthMiddleware::getUserRole();
+    $canEdit = ($userRole === 'ROLE_ADMIN') || ($lecture['user_id'] == $currentUserId);
+}
 ?>
 
 <style>
@@ -1417,9 +1424,15 @@ body {
                 <?php endif; ?>
                 
                 <?php if ($isLoggedIn && !$canEdit): ?>
-                    <!-- 신청 관련 버튼 -->
+                    <!-- 일반 사용자 신청 버튼 -->
                     <div id="registration-actions">
                         <!-- 여기에 동적으로 신청 버튼이 생성됩니다 -->
+                    </div>
+                <?php elseif ($isLoggedIn && $canEdit && isset($_GET['debug_registration']) && $_GET['debug_registration'] === 'true'): ?>
+                    <!-- 디버그 모드: 강의 작성자 신청 테스트 -->
+                    <div id="registration-actions">
+                        <!-- 여기에 동적으로 신청 버튼이 생성됩니다 -->
+                        <small style="color: #ff6b6b; font-weight: bold;">🔧 DEBUG MODE: 강의 작성자 신청 테스트</small>
                     </div>
                 <?php elseif (!$isLoggedIn): ?>
                     <a href="/auth/login?return_to=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="btn btn-primary">
@@ -2091,7 +2104,8 @@ body {
                         <?php endif; ?>
                     </div>
                     
-                    <?php if ($isLoggedIn): ?>
+                    <?php if ($isLoggedIn && !$canEdit): ?>
+                        <!-- 일반 사용자만 신청 관련 UI 표시 -->
                         <?php if ($userRegistration): ?>
                             <div class="btn-register" style="background: #68d391; cursor: default;">
                                 ✅ 신청 완료
@@ -2105,7 +2119,18 @@ body {
                                 ❌ 신청 마감
                             </div>
                         <?php endif; ?>
-                    <?php else: ?>
+                    <?php elseif ($isLoggedIn && $canEdit): ?>
+                        <!-- 강의 작성자/관리자는 신청 UI 대신 관리 메시지 표시 -->
+                        <div style="text-align: center; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                            <div style="font-size: 1rem; font-weight: 600; color: #667eea; margin-bottom: 5px;">
+                                ✏️ 강의 관리자
+                            </div>
+                            <div style="font-size: 0.9rem; color: #718096;">
+                                본인이 개설한 강의입니다
+                            </div>
+                        </div>
+                    <?php elseif (!$isLoggedIn): ?>
+                        <!-- 비로그인 사용자 -->
                         <a href="/auth/login?redirect=<?= urlencode($_SERVER['REQUEST_URI']) ?>" class="btn-register">
                             🔑 로그인 후 신청
                         </a>
@@ -2318,16 +2343,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // 신청 버튼 클릭 이벤트
-    const registerBtn = document.querySelector('.btn-register[href*="register"]');
-    if (registerBtn) {
-        registerBtn.addEventListener('click', function(e) {
-            // 신청 확인
-            if (!confirm('이 강의에 신청하시겠습니까?')) {
-                e.preventDefault();
-            }
-        });
-    }
+    // 구식 신청 시스템 코드 제거됨 (모달 기반 신청 시스템 사용)
     
     // 일정 추가 버튼 이벤트
     const icalBtn = document.querySelector('a[download]');
@@ -2792,14 +2808,34 @@ function handleProfileModalEscKey(event) {
 
 // 페이지 로드 시 신청 상태 확인
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('📄 페이지 로드 완료');
+    console.log('👤 로그인 상태:', <?= $isLoggedIn ? 'true' : 'false' ?>);
+    console.log('✏️ 편집 권한:', <?= $canEdit ? 'true' : 'false' ?>);
+    
     <?php if ($isLoggedIn && !$canEdit): ?>
+        console.log('🔍 신청 상태 확인 조건 만족, API 호출 시작...');
         checkRegistrationStatus();
+    <?php else: ?>
+        <?php if (!$isLoggedIn): ?>
+            console.log('⚠️ 로그인되지 않은 사용자 - 로그인 버튼이 표시됩니다');
+        <?php elseif ($canEdit): ?>
+            console.log('ℹ️ 편집 권한이 있는 사용자 (강의 작성자 또는 관리자) - 편집/관리 버튼이 표시됩니다');
+            <?php if (isset($_GET['debug_registration']) && $_GET['debug_registration'] === 'true'): ?>
+                console.log('🔧 DEBUG MODE: 강의 작성자도 신청 테스트 가능');
+                checkRegistrationStatus();
+            <?php endif; ?>
+        <?php else: ?>
+            console.log('🔄 신청 상태 확인 조건 불만족, 기본 버튼 표시...');
+            showDefaultRegistrationButton();
+        <?php endif; ?>
     <?php endif; ?>
 });
 
 // 신청 상태 확인
 async function checkRegistrationStatus() {
     try {
+        console.log('🔍 신청 상태 확인 시작...');
+        
         const response = await fetch(`/api/lectures/<?= $lecture['id'] ?>/registration-status`, {
             method: 'GET',
             headers: {
@@ -2807,16 +2843,34 @@ async function checkRegistrationStatus() {
             }
         });
         
-        const data = await response.json();
-        updateRegistrationUI(data);
+        console.log('📡 API 응답 상태:', response.status);
+        
+        const result = await response.json();
+        console.log('📋 신청 상태 데이터:', result);
+        console.log('📋 응답 데이터 구조:', JSON.stringify(result, null, 2));
+        
+        // API 응답 구조 수정: result.data가 실제 데이터
+        if (result.status === 'success' && result.data) {
+            console.log('✅ API 성공 응답, data 사용');
+            updateRegistrationUI(result.data);
+        } else {
+            console.error('❌ API 응답 오류:', result);
+            showDefaultRegistrationButton();
+        }
     } catch (error) {
-        console.error('신청 상태 확인 오류:', error);
+        console.error('❌ 신청 상태 확인 오류:', error);
+        console.log('🔄 기본 신청 버튼으로 폴백...');
         showDefaultRegistrationButton();
     }
 }
 
 // 신청 UI 업데이트
 function updateRegistrationUI(data) {
+    console.log('🔄 updateRegistrationUI 호출됨');
+    console.log('📦 전체 data:', data);
+    console.log('📦 data.lecture_info:', data.lecture_info);
+    console.log('📦 data.registration:', data.registration);
+    
     const actionsContainer = document.getElementById('registration-actions');
     if (!actionsContainer) return;
     
@@ -2829,10 +2883,13 @@ function updateRegistrationUI(data) {
     
     if (data.registration) {
         // 이미 신청한 경우
+        console.log('👤 이미 신청한 사용자');
         const registration = data.registration;
         updateRegistrationStatusUI(registration, isLectureStarted);
     } else {
         // 신청하지 않은 경우
+        console.log('🆕 신청하지 않은 사용자');
+        console.log('🔗 data.lecture_info를 showRegistrationButton에 전달');
         showRegistrationButton(data.lecture_info, isLectureStarted);
     }
 }
@@ -2921,7 +2978,25 @@ function updateRegistrationStatusUI(registration, isLectureStarted) {
 
 // 신청 버튼 표시
 function showRegistrationButton(lectureInfo, isLectureStarted) {
+    console.log('🎯 showRegistrationButton 호출됨');
+    console.log('📋 lectureInfo:', lectureInfo);
+    console.log('📋 lectureInfo 타입:', typeof lectureInfo);
+    console.log('📋 lectureInfo.registration_end_date:', lectureInfo?.registration_end_date);
+    console.log('📋 lectureInfo의 모든 키:', lectureInfo ? Object.keys(lectureInfo) : 'null');
+    console.log('⏰ isLectureStarted:', isLectureStarted);
+    
     const actionsContainer = document.getElementById('registration-actions');
+    if (!actionsContainer) {
+        console.error('❌ registration-actions 컨테이너를 찾을 수 없습니다');
+        return;
+    }
+    
+    // lectureInfo 유효성 검사
+    if (!lectureInfo || typeof lectureInfo !== 'object') {
+        console.error('❌ lectureInfo가 유효하지 않습니다:', lectureInfo);
+        showDefaultRegistrationButton();
+        return;
+    }
     
     if (isLectureStarted) {
         actionsContainer.innerHTML = `
@@ -2975,27 +3050,56 @@ function showRegistrationButton(lectureInfo, isLectureStarted) {
 
 // 기본 신청 버튼 표시 (오류 시)
 function showDefaultRegistrationButton() {
+    console.log('🔄 기본 신청 버튼 표시 중...');
+    
+    // 편집 권한이 있는 사용자는 신청 버튼이 필요하지 않음
+    const canEdit = <?= $canEdit ? 'true' : 'false' ?>;
+    if (canEdit) {
+        console.log('ℹ️ 편집 권한이 있는 사용자이므로 신청 버튼을 표시하지 않습니다');
+        return;
+    }
+    
     const actionsContainer = document.getElementById('registration-actions');
+    if (!actionsContainer) {
+        console.error('❌ registration-actions 컨테이너를 찾을 수 없습니다');
+        console.log('🔍 로그인 상태:', <?= $isLoggedIn ? 'true' : 'false' ?>);
+        console.log('✏️ 편집 권한:', canEdit);
+        return;
+    }
+    
     actionsContainer.innerHTML = `
         <button class="btn btn-primary" onclick="showRegistrationModal()">
             🚀 지금 신청하기
         </button>
     `;
+    
+    console.log('✅ 기본 신청 버튼 표시 완료');
 }
 
 // 신청 모달 표시
 function showRegistrationModal() {
+    console.log('🚀 showRegistrationModal() 호출됨');
+    
     const modal = document.getElementById('registrationModal');
-    if (modal) {
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        
-        // 폼 초기화
-        resetRegistrationForm();
-        
-        // 사용자 정보 자동 입력
-        loadUserInfo();
+    if (!modal) {
+        console.error('❌ 신청 모달 요소를 찾을 수 없습니다');
+        alert('신청 모달을 로드할 수 없습니다. 페이지를 새로고침해주세요.');
+        return;
     }
+    
+    console.log('✅ 모달 요소 발견, 표시 중...');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // 폼 초기화
+    resetRegistrationForm();
+    
+    // 사용자 정보 자동 입력 (비동기, 오류가 있어도 모달은 표시)
+    loadUserInfo().catch(error => {
+        console.warn('⚠️ 사용자 정보 로드 실패:', error);
+    });
+    
+    console.log('✅ 모달 표시 완료');
 }
 
 // 신청 모달 닫기
@@ -3004,6 +3108,16 @@ function closeRegistrationModal() {
     if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = '';
+        
+        // 로딩 상태 해제
+        const submitButton = document.getElementById('submitRegistrationBtn');
+        if (submitButton) {
+            submitButton.innerHTML = '🚀 신청하기';
+            submitButton.disabled = false;
+        }
+        
+        // 폼 초기화
+        resetRegistrationForm();
     }
 }
 
@@ -3028,6 +3142,8 @@ function resetRegistrationForm() {
 // 사용자 정보 자동 입력
 async function loadUserInfo() {
     try {
+        console.log('📝 사용자 정보 로드 시작...');
+        
         const response = await fetch('/auth/me', {
             method: 'GET',
             headers: {
@@ -3040,6 +3156,8 @@ async function loadUserInfo() {
             const user = data.user;
             
             if (user) {
+                console.log('✅ 사용자 정보 로드 성공:', user.nickname);
+                
                 // 신청자 정보 자동 입력
                 const participantName = document.getElementById('participant_name');
                 const participantEmail = document.getElementById('participant_email');
@@ -3489,6 +3607,17 @@ document.addEventListener('keydown', function(e) {
             closeRegistrationModal();
         }
     }
+});
+
+// btn-register 클릭 이벤트 추가
+document.addEventListener('DOMContentLoaded', function() {
+    const registerButtons = document.querySelectorAll('.btn-register');
+    registerButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            showRegistrationModal();
+        });
+    });
 });
 </script>
 

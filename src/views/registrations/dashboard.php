@@ -141,6 +141,20 @@
     font-weight: 700;
     margin-bottom: 8px;
     line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lecture-id-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .lecture-meta {
@@ -150,6 +164,50 @@
     font-size: 0.9rem;
     opacity: 0.9;
     color: white;
+    flex-wrap: wrap;
+}
+
+/* 신청 상태 배지 */
+.registration-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+    backdrop-filter: blur(5px);
+}
+
+.registration-status-badge.open {
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+}
+
+.registration-status-badge.closed {
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.registration-status-badge.full {
+    background: rgba(249, 115, 22, 0.9);
+    color: white;
+    border-color: rgba(249, 115, 22, 0.5);
+    box-shadow: 0 2px 4px rgba(249, 115, 22, 0.2);
+}
+
+.registration-status-badge.completed {
+    background: rgba(107, 114, 128, 0.9);
+    color: white;
+    border-color: rgba(107, 114, 128, 0.5);
+    box-shadow: 0 2px 4px rgba(107, 114, 128, 0.2);
 }
 
 .lecture-body {
@@ -322,6 +380,58 @@
     font-size: 0.85rem;
 }
 
+/* 컨텐츠 타입 탭 스타일 */
+.content-type-tabs {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: center;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #4a5568;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-button:hover {
+    border-color: #667eea;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* 행사 전용 스타일링 */
+.event-card .lecture-header {
+    background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%);
+}
+
+.event-card .lecture-title {
+    color: white;
+}
+
+.event-card .lecture-id-badge {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
     .dashboard-container {
@@ -376,6 +486,39 @@
         flex: 1;
         min-width: 120px;
     }
+    
+    .content-type-tabs {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .tab-button {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .lecture-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .lecture-id-badge {
+        font-size: 0.7rem;
+        padding: 3px 8px;
+    }
+    
+    .registration-status-badge {
+        font-size: 0.6rem;
+        padding: 3px 6px;
+        gap: 2px;
+    }
+    
+    .lecture-meta {
+        gap: 8px;
+        font-size: 0.8rem;
+    }
+    
 }
 </style>
 
@@ -386,18 +529,30 @@
             📊 신청 관리 대시보드
         </h1>
         <p class="dashboard-subtitle">
-            강의 신청 현황을 한눈에 확인하고 효율적으로 관리하세요
+            <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?> 신청 현황을 한눈에 확인하고 효율적으로 관리하세요
         </p>
+        
+        <!-- 컨텐츠 타입 탭 -->
+        <div class="content-type-tabs">
+            <button class="tab-button <?= ($contentType ?? 'lecture') === 'lecture' ? 'active' : '' ?>" 
+                    onclick="switchContentType('lecture')">
+                🎓 강의 관리
+            </button>
+            <button class="tab-button <?= ($contentType ?? 'lecture') === 'event' ? 'active' : '' ?>" 
+                    onclick="switchContentType('event')">
+                🎉 행사 관리
+            </button>
+        </div>
     </div>
     
     <!-- 통계 카드 -->
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-header">
-                <div class="stat-icon primary">📚</div>
+                <div class="stat-icon primary"><?= ($contentType ?? 'lecture') === 'event' ? '🎉' : '📚' ?></div>
             </div>
             <div class="stat-value"><?= number_format($stats['total_lectures']) ?></div>
-            <div class="stat-label">등록된 강의</div>
+            <div class="stat-label">등록된 <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?></div>
         </div>
         
         <div class="stat-card">
@@ -429,7 +584,7 @@
     <div class="section">
         <div class="section-header">
             <h2 class="section-title">
-                🎯 최근 강의 목록 (1개월)
+                <?= ($contentType ?? 'lecture') === 'event' ? '🎉 최근 행사 목록 (1개월)' : '🎯 최근 강의 목록 (1개월)' ?>
             </h2>
             <div class="date-filter-container">
                 <div class="date-filter">
@@ -445,26 +600,46 @@
         
         <?php if (empty($lectures)): ?>
             <div style="text-align: center; padding: 60px 20px; color: #718096;">
-                <div style="font-size: 3rem; margin-bottom: 16px;">📚</div>
-                <h3 style="margin-bottom: 8px;">등록된 강의가 없습니다</h3>
-                <p>새로운 강의를 등록하여 참가자들을 모집해보세요!</p>
-                <a href="/lectures/create" class="btn btn-primary" style="margin-top: 20px;">
-                    ➕ 강의 등록하기
+                <div style="font-size: 3rem; margin-bottom: 16px;">
+                    <?= ($contentType ?? 'lecture') === 'event' ? '🎉' : '📚' ?>
+                </div>
+                <h3 style="margin-bottom: 8px;">
+                    등록된 <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?>가 없습니다
+                </h3>
+                <p>새로운 <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?>를 등록하여 참가자들을 모집해보세요!</p>
+                <a href="<?= ($contentType ?? 'lecture') === 'event' ? '/events/create' : '/lectures/create' ?>" 
+                   class="btn btn-primary" style="margin-top: 20px;">
+                    ➕ <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?> 등록하기
                 </a>
             </div>
         <?php else: ?>
             <div class="lecture-grid">
                 <?php foreach ($lectures as $lecture): ?>
-                    <div class="lecture-card">
+                    <div class="lecture-card <?= $lecture['content_type'] === 'event' ? 'event-card' : '' ?>">
                         <div class="lecture-header">
                             <div class="lecture-title">
                                 <?= htmlspecialchars($lecture['title']) ?>
+                                <span class="lecture-id-badge">
+                                    #<?= $lecture['id'] ?>
+                                </span>
                             </div>
                             <div class="lecture-meta">
                                 <span>📅 <?= date('Y-m-d H:i', strtotime($lecture['start_date'] . ' ' . $lecture['start_time'])) ?></span>
-                                <?php if ($lecture['max_participants']): ?>
-                                    <span>👥 <?= number_format($lecture['current_participants']) ?>/<?= number_format($lecture['max_participants']) ?>명</span>
+                                <span>👥 
+                                    <?= number_format($lecture['current_participants']) ?>/<?= 
+                                        $lecture['max_participants'] ? number_format($lecture['max_participants']) . '명' : '무제한' 
+                                    ?>
+                                </span>
+                                <?php if ($lecture['content_type'] === 'event' && $lecture['location_type'] === 'offline'): ?>
+                                    <span>📍 현장 행사</span>
+                                <?php elseif ($lecture['content_type'] === 'event' && $lecture['location_type'] === 'online'): ?>
+                                    <span>💻 온라인 행사</span>
                                 <?php endif; ?>
+                                
+                                <!-- 신청 상태 배지 -->
+                                <span class="registration-status-badge <?= $lecture['registration_status']['status'] ?>">
+                                    <?= $lecture['registration_status']['icon'] ?> <?= $lecture['registration_status']['label'] ?>
+                                </span>
                             </div>
                         </div>
                         
@@ -488,8 +663,8 @@
                                 <a href="/registrations/lectures/<?= $lecture['id'] ?>" class="btn btn-primary">
                                     👥 신청자 관리
                                 </a>
-                                <a href="/lectures/<?= $lecture['id'] ?>" class="btn btn-outline">
-                                    📋 강의 상세
+                                <a href="<?= $lecture['content_type'] === 'event' ? '/events/' : '/lectures/' ?><?= $lecture['id'] ?>" class="btn btn-outline">
+                                    📋 <?= $lecture['content_type'] === 'event' ? '행사' : '강의' ?> 상세
                                 </a>
                             </div>
                         </div>
@@ -499,17 +674,13 @@
         <?php endif; ?>
     </div>
     
-    <!-- 무한 스크롤 로딩 인디케이터 -->
-    <div id="loading-indicator" style="display: none; text-align: center; padding: 20px; color: #718096;">
-        <i class="fas fa-spinner fa-spin"></i> 더 많은 강의를 불러오는 중...
-    </div>
     
     <!-- 최근 신청 목록 -->
     <?php if (!empty($recentRegistrations)): ?>
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">
-                    ⏰ 최근 신청 현황
+                    ⏰ 최근 <?= ($contentType ?? 'lecture') === 'event' ? '행사' : '강의' ?> 신청 현황
                 </h2>
             </div>
             
@@ -519,7 +690,7 @@
                         <thead>
                             <tr>
                                 <th>신청자</th>
-                                <th>강의명</th>
+                                <th><?= ($contentType ?? 'lecture') === 'event' ? '행사명' : '강의명' ?></th>
                                 <th>상태</th>
                                 <th>신청일</th>
                                 <th>관리</th>
@@ -537,7 +708,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <a href="/lectures/<?= $registration['lecture_id'] ?>" 
+                                        <a href="<?= ($contentType ?? 'lecture') === 'event' ? '/events/' : '/lectures/' ?><?= $registration['lecture_id'] ?>" 
                                            style="color: #667eea; text-decoration: none;">
                                             <?= htmlspecialchars($registration['lecture_title']) ?>
                                         </a>
@@ -605,12 +776,22 @@ function resetDateFilter() {
     window.location.href = url.toString();
 }
 
+// 컨텐츠 타입 전환 기능
+function switchContentType(type) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('type', type);
+    // 날짜 필터는 유지
+    window.location.href = url.toString();
+}
+
 // 페이지 로드 시 URL 파라미터로부터 날짜 값 설정
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const startDate = urlParams.get('start_date');
     const endDate = urlParams.get('end_date');
+    const contentType = urlParams.get('type') || 'lecture';
     
+    // 날짜 필터 값 설정
     if (startDate) {
         document.getElementById('startDate').value = startDate;
     }
@@ -628,29 +809,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// 무한 스크롤 구현
-let isLoading = false;
-let hasMoreData = true;
-let currentPage = 1;
-
-function loadMoreLectures() {
-    if (isLoading || !hasMoreData) return;
-    
-    isLoading = true;
-    document.getElementById('loading-indicator').style.display = 'block';
-    
-    // AJAX로 추가 강의 데이터 로드 (필요시 구현)
-    setTimeout(() => {
-        isLoading = false;
-        document.getElementById('loading-indicator').style.display = 'none';
-        // 실제로는 서버에서 데이터를 받아와서 DOM에 추가
-    }, 1000);
-}
-
-// 스크롤 이벤트 리스너
-window.addEventListener('scroll', () => {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
-        loadMoreLectures();
-    }
-});
+// 모든 강의를 한 번에 로드하므로 무한 스크롤 불필요
 </script>

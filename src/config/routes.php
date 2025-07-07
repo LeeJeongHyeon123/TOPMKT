@@ -95,7 +95,8 @@ class Router {
             'POST:/lectures/{id}/update' => ['LectureController', 'update'],
             'PUT:/lectures/{id}/update' => ['LectureController', 'update'],
             'POST:/lectures/{id}/delete' => ['LectureController', 'delete'],
-            'POST:/lectures/{id}/register' => ['LectureController', 'register'],
+            // 구식 신청 라우트 제거됨 (모달 기반 신청 시스템 사용)
+            'GET:/lectures/{id}/register' => ['LectureController', 'redirectToLecture'],
             'POST:/lectures/update-images' => ['LectureController', 'updateImages'],
             'GET:/lectures/{id}/ical' => ['LectureController', 'generateICal'],
             

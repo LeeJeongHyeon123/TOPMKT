@@ -193,21 +193,6 @@ $monthNames = [
     gap: 10px;
 }
 
-.event-scale-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    font-weight: 500;
-}
-
-.event-scale-badge.large { background: #FFEBEE; color: #C62828; }
-.event-scale-badge.medium { background: #FFF3E0; color: #E65100; }
-.event-scale-badge.small { background: #E8F5E8; color: #2E7D32; }
-
-.networking-icon {
-    color: #4A90E2;
-    font-size: 0.9rem;
-}
 
 .event-meta {
     display: flex;
@@ -373,20 +358,9 @@ $monthNames = [
         <?php else: ?>
             <?php foreach ($events as $event): ?>
                 <div class="event-card" onclick="showEventDetail(<?= $event['id'] ?>)">
-                    <div class="event-card-header <?= $event['event_scale'] ? 'scale-' . $event['event_scale'] : '' ?>">
+                    <div class="event-card-header">
                         <div class="event-title">
                             <?= htmlspecialchars($event['title']) ?>
-                            <?php if ($event['event_scale']): ?>
-                                <?php
-                                $scaleNames = ['small' => '소규모', 'medium' => '중규모', 'large' => '대규모'];
-                                ?>
-                                <span class="event-scale-badge <?= $event['event_scale'] ?>">
-                                    <?= $scaleNames[$event['event_scale']] ?>
-                                </span>
-                            <?php endif; ?>
-                            <?php if ($event['has_networking']): ?>
-                                <i class="fas fa-users networking-icon" title="네트워킹 포함"></i>
-                            <?php endif; ?>
                         </div>
                         
                         <div class="event-meta">

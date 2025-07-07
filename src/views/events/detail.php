@@ -92,18 +92,6 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     opacity: 0.8;
 }
 
-.event-scale-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    margin-left: 10px;
-}
-
-.event-scale-badge.large { background: rgba(255, 107, 107, 0.3); color: white; }
-.event-scale-badge.medium { background: rgba(255, 167, 38, 0.3); color: white; }
-.event-scale-badge.small { background: rgba(102, 187, 106, 0.3); color: white; }
 
 .event-content {
     display: grid;
@@ -723,9 +711,6 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             
             <h1 class="event-title">
                 <?= htmlspecialchars($event['title']) ?>
-                <?php if ($event['has_networking']): ?>
-                    <i class="fas fa-users" title="네트워킹 포함" style="font-size: 0.8em; opacity: 0.8;"></i>
-                <?php endif; ?>
             </h1>
             
             <p class="event-subtitle">
@@ -787,12 +772,6 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <?= nl2br(htmlspecialchars($event['description'])) ?>
                 </div>
                 
-                <?php if ($event['has_networking']): ?>
-                <div class="networking-notice">
-                    <i class="fas fa-users"></i>
-                    <span>이 행사에는 네트워킹 시간이 포함되어 있습니다.</span>
-                </div>
-                <?php endif; ?>
             </div>
             
             <?php if (!empty($event['images'])): ?>
