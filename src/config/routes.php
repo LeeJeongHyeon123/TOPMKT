@@ -104,10 +104,12 @@ class Router {
             'GET:/api/lectures/{id}/registration-status' => ['RegistrationController', 'getRegistrationStatus'],
             'POST:/api/lectures/{id}/registration' => ['RegistrationController', 'createRegistration'],
             'DELETE:/api/lectures/{id}/registration' => ['RegistrationController', 'cancelRegistration'],
+            'GET:/api/lectures/{id}/previous-registration' => ['RegistrationController', 'getPreviousRegistration'],
             
             // 기업 신청 관리 대시보드 라우트
             'GET:/registrations' => ['RegistrationDashboardController', 'index'],
             'GET:/registrations/lectures/{id}' => ['RegistrationDashboardController', 'lectureRegistrations'],
+            'GET:/registrations/events/{id}' => ['RegistrationDashboardController', 'lectureRegistrations'],
             'POST:/api/registrations/{id}/status' => ['RegistrationDashboardController', 'updateRegistrationStatus'],
             
             // 행사 일정 라우트
@@ -118,8 +120,13 @@ class Router {
             'GET:/events/{id}/edit' => ['EventController', 'edit'],
             'POST:/events/{id}/update' => ['EventController', 'update'],
             'POST:/events/{id}/delete' => ['EventController', 'delete'],
-            'POST:/events/{id}/register' => ['EventController', 'register'],
             'GET:/events/{id}/ical' => ['EventController', 'generateICal'],
+            
+            // 행사 신청 관리 API 라우트
+            'GET:/api/events/{id}/registration-status' => ['EventController', 'getRegistrationStatus'],
+            'POST:/api/events/{id}/registration' => ['EventController', 'register'],
+            'DELETE:/api/events/{id}/registration' => ['EventController', 'cancelRegistration'],
+            'GET:/api/events/{id}/previous-registration' => ['EventController', 'getPreviousRegistration'],
             
             // 채팅 라우트
             'GET:/chat' => ['ChatController', 'index'],
@@ -161,6 +168,12 @@ class Router {
      * URL 경로와 HTTP 메서드를 기반으로 적절한 컨트롤러와 액션 호출
      */
     public function dispatch() {
+        // API 강의 신청 요청 디버깅
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+            error_log("=== ROUTER 디스패치 시작 ===");
+            error_log("라우터에서 받은 URI: " . $_SERVER['REQUEST_URI']);
+            error_log("라우터에서 받은 METHOD: " . $_SERVER['REQUEST_METHOD']);
+        }
         // 웹 서버가 아닌 환경에서 실행되는 경우 기본값 설정
         if (!isset($_SERVER['REQUEST_URI'])) {
             $_SERVER['REQUEST_URI'] = '/';
@@ -183,8 +196,24 @@ class Router {
         // 라우트 키 생성
         $routeKey = $method . ':' . $uri;
         
+        // API 강의 신청 요청 디버깅
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+            error_log("생성된 라우트 키: " . $routeKey);
+            error_log("사용 가능한 라우트들:");
+            foreach ($this->routes as $key => $route) {
+                if (strpos($key, 'registration') !== false) {
+                    error_log("  - " . $key . " => " . $route[0] . "::" . $route[1]);
+                }
+            }
+        }
+        
         // 정적 라우트 먼저 검색
         if (isset($this->routes[$routeKey])) {
+            // API 강의 신청 요청 디버깅
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+                error_log("✅ 정적 라우트 매치: " . $routeKey);
+                error_log("실행할 컨트롤러: " . $this->routes[$routeKey][0] . "::" . $this->routes[$routeKey][1]);
+            }
             $this->executeRoute($this->routes[$routeKey]);
             return;
         }
@@ -192,12 +221,23 @@ class Router {
         // 동적 라우트 검색
         foreach ($this->routes as $pattern => $route) {
             if ($this->matchDynamicRoute($pattern, $routeKey)) {
+                // API 강의 신청 요청 디버깅
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+                    error_log("✅ 동적 라우트 매치: " . $pattern);
+                    error_log("실행할 컨트롤러: " . $route[0] . "::" . $route[1]);
+                }
                 $this->executeRoute($route);
                 return;
             }
         }
         
         // 매칭되는 라우트가 없으면 404 페이지 표시
+        // API 강의 신청 요청 디버깅
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+            error_log("❌ 매칭되는 라우트가 없음!");
+            error_log("찾으려고 한 라우트: " . $routeKey);
+        }
+        
         header('HTTP/1.1 404 Not Found');
         $this->show404();
     }
@@ -226,6 +266,15 @@ class Router {
         list($controllerName, $action) = $route;
         $controllerPath = SRC_PATH . '/controllers/' . $controllerName . '.php';
         
+        // API 강의 신청 요청 디버깅
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+            error_log("=== 라우트 실행 시작 ===");
+            error_log("컨트롤러명: " . $controllerName);
+            error_log("액션명: " . $action);
+            error_log("컨트롤러 파일 경로: " . $controllerPath);
+            error_log("파일 존재 여부: " . (file_exists($controllerPath) ? 'YES' : 'NO'));
+        }
+        
         // 라우트 실행 로깅
         file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "=== ROUTE EXECUTION ===\n", FILE_APPEND);
         file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Controller: $controllerName\n", FILE_APPEND);
@@ -242,10 +291,43 @@ class Router {
                     file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Method exists, calling $action\n", FILE_APPEND);
                     // 동적 라우트에서 파라미터 추출
                     $params = $this->extractRouteParams();
+                    
+                    // API 강의 신청 디버깅
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && strpos($_SERVER['REQUEST_URI'], '/api/lectures/') !== false && strpos($_SERVER['REQUEST_URI'], '/registration') !== false) {
+                        error_log("🔍 추출된 파라미터: " . json_encode($params));
+                        error_log("🔍 파라미터 개수: " . count($params));
+                    }
+                    
                     if (!empty($params)) {
-                        $controller->$action(...$params);
+                        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Calling $action with params: " . json_encode($params) . "\n", FILE_APPEND);
+                        
+                        // 🚨 강제 예외 처리 추가
+                        try {
+                            $controller->$action(...$params);
+                        } catch (Exception $e) {
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Exception in $action: " . $e->getMessage() . "\n", FILE_APPEND);
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Exception file: " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
+                            throw $e;
+                        } catch (Error $e) {
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Fatal Error in $action: " . $e->getMessage() . "\n", FILE_APPEND);
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Fatal Error file: " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
+                            throw $e;
+                        }
                     } else {
-                        $controller->$action();
+                        file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "Calling $action without params\n", FILE_APPEND);
+                        
+                        // 🚨 강제 예외 처리 추가
+                        try {
+                            $controller->$action();
+                        } catch (Exception $e) {
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Exception in $action (no params): " . $e->getMessage() . "\n", FILE_APPEND);
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Exception file: " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
+                            throw $e;
+                        } catch (Error $e) {
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Fatal Error in $action (no params): " . $e->getMessage() . "\n", FILE_APPEND);
+                            file_put_contents('/var/www/html/topmkt/logs/topmkt_errors.log', "🚨 Fatal Error file: " . $e->getFile() . ":" . $e->getLine() . "\n", FILE_APPEND);
+                            throw $e;
+                        }
                     }
                     return;
                 } else {

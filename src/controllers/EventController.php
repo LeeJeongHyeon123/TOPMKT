@@ -569,6 +569,555 @@ class EventController extends LectureController {
     }
     
     /**
+     * 행사 신청 API
+     */
+    public function register($eventId) {
+        header('Content-Type: application/json');
+        
+        try {
+            // HTTP 메소드 확인
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                return ResponseHelper::json(null, 405, 'POST 메소드만 허용됩니다.');
+            }
+            
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
+            }
+            
+            $userId = AuthMiddleware::getCurrentUserId();
+            
+            // 데이터 파싱 (JSON 또는 폼 데이터 지원)
+            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+            $input = [];
+            
+            if (strpos($contentType, 'application/json') !== false) {
+                $rawInput = file_get_contents('php://input');
+                if (!empty($rawInput)) {
+                    $decoded = json_decode($rawInput, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                        $input = $decoded;
+                    } else {
+                        $input = $_POST;
+                    }
+                } else {
+                    $input = $_POST;
+                }
+            } else {
+                $input = $_POST;
+            }
+            
+            if (empty($input)) {
+                return ResponseHelper::json(null, 400, '입력 데이터가 없습니다.');
+            }
+            
+            // CSRF 토큰 검증
+            if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
+                return ResponseHelper::json(null, 403, 'CSRF 토큰이 유효하지 않습니다.');
+            }
+            
+            // 행사 정보 조회
+            $eventQuery = "
+                SELECT 
+                    id, title, start_date, start_time, max_participants, 
+                    auto_approval, registration_start_date, 
+                    registration_end_date, allow_waiting_list, status, user_id as organizer_id
+                FROM lectures 
+                WHERE id = ? AND content_type = 'event' AND status = 'published'
+            ";
+            
+            $stmt = $this->db->prepare($eventQuery);
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+            $event = $stmt->get_result()->fetch_assoc();
+            
+            if (!$event) {
+                return ResponseHelper::json(null, 404, '행사를 찾을 수 없습니다.');
+            }
+            
+            // 본인 행사 신청 방지
+            if ($event['organizer_id'] == $userId) {
+                return ResponseHelper::json(null, 400, '본인이 등록한 행사에는 신청할 수 없습니다.');
+            }
+            
+            // 기존 신청 확인
+            $existingQuery = "SELECT id, status FROM lecture_registrations WHERE lecture_id = ? AND user_id = ?";
+            $stmt = $this->db->prepare($existingQuery);
+            $stmt->bind_param("ii", $eventId, $userId);
+            $stmt->execute();
+            $existing = $stmt->get_result()->fetch_assoc();
+            
+            if ($existing && in_array($existing['status'], ['pending', 'approved', 'waiting'])) {
+                return ResponseHelper::json(null, 400, '이미 신청하셨습니다.');
+            }
+            
+            // 취소된 신청이 있으면 삭제 (재신청을 위해)
+            if ($existing && $existing['status'] === 'cancelled') {
+                $deleteQuery = "DELETE FROM lecture_registrations WHERE id = ?";
+                $stmt = $this->db->prepare($deleteQuery);
+                $stmt->bind_param("i", $existing['id']);
+                $stmt->execute();
+            }
+            
+            // 신청 기간 확인
+            $now = new DateTime();
+            
+            if ($event['registration_start_date']) {
+                $startDate = new DateTime($event['registration_start_date']);
+                if ($now < $startDate) {
+                    return ResponseHelper::json(null, 400, '아직 신청 기간이 아닙니다.');
+                }
+            }
+            
+            if ($event['registration_end_date']) {
+                $endDate = new DateTime($event['registration_end_date']);
+                if ($now > $endDate) {
+                    return ResponseHelper::json(null, 400, '신청 기간이 마감되었습니다.');
+                }
+            }
+            
+            // 행사 시작 시간 확인
+            $eventStart = new DateTime($event['start_date'] . ' ' . $event['start_time']);
+            if ($now >= $eventStart) {
+                return ResponseHelper::json(null, 400, '행사가 이미 시작되었습니다.');
+            }
+            
+            // 사용자 정보 조회
+            $userQuery = "SELECT nickname, phone, email FROM users WHERE id = ?";
+            $stmt = $this->db->prepare($userQuery);
+            $stmt->bind_param("i", $userId);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+            
+            if (!$user) {
+                return ResponseHelper::json(null, 404, '사용자 정보를 찾을 수 없습니다.');
+            }
+            
+            // 입력 데이터 검증
+            $validationErrors = $this->validateRegistrationData($input, $user);
+            if (!empty($validationErrors)) {
+                return ResponseHelper::json(['errors' => $validationErrors], 400, '입력 데이터에 오류가 있습니다.');
+            }
+            
+            // 정원 확인 (승인된 신청 수 조회)
+            $approvedCountQuery = "SELECT COUNT(*) as count FROM lecture_registrations WHERE lecture_id = ? AND status = 'approved'";
+            $stmt = $this->db->prepare($approvedCountQuery);
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+            $currentParticipants = $stmt->get_result()->fetch_assoc()['count'];
+            
+            $isWaitingList = false;
+            $waitingOrder = null;
+            $status = 'pending';
+            
+            if ($event['max_participants'] && $currentParticipants >= $event['max_participants']) {
+                if (!$event['allow_waiting_list']) {
+                    return ResponseHelper::json(null, 400, '정원이 마감되었습니다.');
+                }
+                
+                // 대기자로 등록
+                $isWaitingList = true;
+                $status = 'waiting';
+                
+                // 대기 순번 계산
+                $waitingQuery = "SELECT MAX(waiting_order) as max_order FROM lecture_registrations WHERE lecture_id = ? AND is_waiting_list = 1";
+                $stmt = $this->db->prepare($waitingQuery);
+                $stmt->bind_param("i", $eventId);
+                $stmt->execute();
+                $result = $stmt->get_result()->fetch_assoc();
+                $waitingOrder = ($result['max_order'] ?? 0) + 1;
+            }
+            
+            // 자동 승인 확인
+            if (!$isWaitingList && $event['auto_approval']) {
+                $status = 'approved';
+            }
+            
+            // 신청 데이터 구성
+            $registrationData = [
+                'lecture_id' => $eventId,
+                'user_id' => $userId,
+                'participant_name' => trim($input['participant_name'] ?? $user['nickname']),
+                'participant_email' => trim($input['participant_email'] ?? $user['email']),
+                'participant_phone' => trim($input['participant_phone'] ?? $user['phone']),
+                'company_name' => trim($input['company_name'] ?? ''),
+                'position' => trim($input['position'] ?? ''),
+                'motivation' => trim($input['motivation'] ?? ''),
+                'special_requests' => trim($input['special_requests'] ?? ''),
+                'how_did_you_know' => trim($input['how_did_you_know'] ?? ''),
+                'status' => $status,
+                'is_waiting_list' => $isWaitingList,
+                'waiting_order' => $waitingOrder,
+                'processed_by' => null,
+                'processed_at' => null
+            ];
+            
+            // 자동 승인인 경우 처리자 정보 설정
+            if ($status === 'approved') {
+                $registrationData['processed_by'] = $userId;
+                $registrationData['processed_at'] = date('Y-m-d H:i:s');
+            }
+            
+            // 트랜잭션 시작
+            $this->db->beginTransaction();
+            
+            try {
+                // 신청 등록
+                $insertQuery = "
+                    INSERT INTO lecture_registrations 
+                    (lecture_id, user_id, registration_date, participant_name, participant_email, participant_phone,
+                     company_name, position, motivation, special_requests, how_did_you_know,
+                     status, is_waiting_list, waiting_order, processed_by, processed_at)
+                    VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ";
+                
+                $stmt = $this->db->prepare($insertQuery);
+                $stmt->bind_param(
+                    "iisssssssssiiis",
+                    $registrationData['lecture_id'],
+                    $registrationData['user_id'],
+                    $registrationData['participant_name'],
+                    $registrationData['participant_email'],
+                    $registrationData['participant_phone'],
+                    $registrationData['company_name'],
+                    $registrationData['position'],
+                    $registrationData['motivation'],
+                    $registrationData['special_requests'],
+                    $registrationData['how_did_you_know'],
+                    $registrationData['status'],
+                    $registrationData['is_waiting_list'],
+                    $registrationData['waiting_order'],
+                    $registrationData['processed_by'],
+                    $registrationData['processed_at']
+                );
+                
+                if (!$stmt->execute()) {
+                    throw new Exception('행사 신청 등록에 실패했습니다: ' . $stmt->error);
+                }
+                
+                $registrationId = $this->db->lastInsertId();
+                
+                // 커밋
+                $this->db->commit();
+                
+                // 행사 신청 확인 SMS 발송
+                try {
+                    require_once SRC_PATH . '/helpers/SmsHelper.php';
+                    $smsResult = sendEventApplicationSms($registrationData['participant_phone']);
+                    if ($smsResult['success']) {
+                        error_log("행사 신청 확인 SMS 발송 성공: " . $registrationData['participant_phone']);
+                    } else {
+                        error_log("행사 신청 확인 SMS 발송 실패: " . $smsResult['message']);
+                    }
+                } catch (Exception $e) {
+                    error_log("SMS 발송 오류: " . $e->getMessage());
+                    // SMS 실패는 전체 프로세스를 중단하지 않음
+                }
+                
+                $message = $isWaitingList ? 
+                    "대기자로 신청이 완료되었습니다. (대기순번: {$waitingOrder}번)" :
+                    ($status === 'approved' ? '신청이 승인되었습니다.' : '신청이 완료되었습니다. 승인을 기다려주세요.');
+                
+                return ResponseHelper::json([
+                    'registration_id' => $registrationId,
+                    'status' => $status,
+                    'is_waiting_list' => $isWaitingList,
+                    'waiting_order' => $waitingOrder
+                ], 200, $message);
+                
+            } catch (Exception $e) {
+                $this->db->rollback();
+                throw $e;
+            }
+            
+        } catch (Exception $e) {
+            error_log("행사 신청 등록 오류: " . $e->getMessage());
+            return ResponseHelper::json(null, 500, '신청 처리 중 오류가 발생했습니다: ' . $e->getMessage());
+        }
+    }
+    
+    /**
+     * 행사 신청 상태 확인 API
+     */
+    public function getRegistrationStatus($eventId) {
+        header('Content-Type: application/json');
+        
+        try {
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
+            }
+            
+            $userId = AuthMiddleware::getCurrentUserId();
+            
+            // 행사 정보 조회
+            $eventQuery = "
+                SELECT 
+                    l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
+                    l.max_participants, l.auto_approval,
+                    l.registration_start_date, l.registration_end_date, l.allow_waiting_list,
+                    l.status as event_status,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as current_participants
+                FROM lectures l
+                LEFT JOIN lecture_registrations lr ON l.id = lr.lecture_id
+                WHERE l.id = ? AND l.content_type = 'event' AND l.status = 'published'
+                GROUP BY l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
+                         l.max_participants, l.auto_approval, l.registration_start_date, 
+                         l.registration_end_date, l.allow_waiting_list, l.status
+            ";
+            
+            $stmt = $this->db->prepare($eventQuery);
+            $stmt->bind_param("i", $eventId);
+            $stmt->execute();
+            $event = $stmt->get_result()->fetch_assoc();
+            
+            if (!$event) {
+                return ResponseHelper::json(null, 404, '행사를 찾을 수 없습니다.');
+            }
+            
+            // 사용자의 신청 정보 조회
+            $registrationQuery = "
+                SELECT 
+                    id, status, is_waiting_list, waiting_order,
+                    created_at, processed_at, admin_notes
+                FROM lecture_registrations 
+                WHERE lecture_id = ? AND user_id = ?
+                ORDER BY created_at DESC 
+                LIMIT 1
+            ";
+            
+            $stmt = $this->db->prepare($registrationQuery);
+            $stmt->bind_param("ii", $eventId, $userId);
+            $stmt->execute();
+            $registration = $stmt->get_result()->fetch_assoc();
+            
+            // 응답 데이터 구성
+            $responseData = [
+                'event_info' => $event,
+                'registration' => $registration,
+                'user_id' => $userId
+            ];
+            
+            return ResponseHelper::json($responseData, 200, '신청 상태 조회 완료');
+            
+        } catch (Exception $e) {
+            error_log("행사 신청 상태 조회 오류: " . $e->getMessage());
+            return ResponseHelper::json(null, 500, '신청 상태 조회 중 오류가 발생했습니다.');
+        }
+    }
+    
+    /**
+     * 행사 신청 취소 API
+     */
+    public function cancelRegistration($eventId) {
+        header('Content-Type: application/json');
+        
+        try {
+            // HTTP 메소드 확인
+            if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+                return ResponseHelper::json(null, 405, 'DELETE 메소드만 허용됩니다.');
+            }
+            
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
+            }
+            
+            $userId = AuthMiddleware::getCurrentUserId();
+            
+            // 데이터 파싱 (JSON 또는 쿼리 파라미터 지원)
+            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+            
+            if (strpos($contentType, 'application/json') !== false) {
+                $input = json_decode(file_get_contents('php://input'), true);
+            } else {
+                $input = array_merge($_GET, $_POST);
+            }
+            
+            // CSRF 토큰 검증
+            $csrfToken = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+            
+            if (!$this->validateCsrfToken($csrfToken)) {
+                return ResponseHelper::json(null, 403, 'CSRF 토큰이 유효하지 않습니다.');
+            }
+            
+            // 신청 정보 조회
+            $registrationQuery = "
+                SELECT r.*, l.start_date, l.start_time 
+                FROM lecture_registrations r
+                JOIN lectures l ON r.lecture_id = l.id
+                WHERE r.lecture_id = ? AND r.user_id = ? 
+                AND r.status IN ('pending', 'approved', 'waiting')
+                ORDER BY r.created_at DESC LIMIT 1
+            ";
+            
+            $stmt = $this->db->prepare($registrationQuery);
+            $stmt->bind_param("ii", $eventId, $userId);
+            $stmt->execute();
+            $registration = $stmt->get_result()->fetch_assoc();
+            
+            if (!$registration) {
+                return ResponseHelper::json(null, 404, '취소할 신청을 찾을 수 없습니다.');
+            }
+            
+            // 행사 시작 시간 확인
+            $now = new DateTime();
+            $eventStart = new DateTime($registration['start_date'] . ' ' . $registration['start_time']);
+            
+            if ($now >= $eventStart) {
+                return ResponseHelper::json(null, 400, '행사가 이미 시작되어 취소할 수 없습니다.');
+            }
+            
+            // 신청 취소 처리
+            $updateQuery = "
+                UPDATE lecture_registrations 
+                SET status = 'cancelled', processed_at = NOW() 
+                WHERE id = ?
+            ";
+            
+            $stmt = $this->db->prepare($updateQuery);
+            $stmt->bind_param("i", $registration['id']);
+            
+            if ($stmt->execute() && $stmt->affected_rows > 0) {
+                return ResponseHelper::json([
+                    'registration_id' => $registration['id']
+                ], 200, '신청이 취소되었습니다.');
+            } else {
+                return ResponseHelper::json(null, 500, '신청 취소에 실패했습니다.');
+            }
+            
+        } catch (Exception $e) {
+            error_log("행사 신청 취소 오류: " . $e->getMessage());
+            return ResponseHelper::json(null, 500, '신청 취소 중 오류가 발생했습니다.');
+        }
+    }
+    
+    /**
+     * 이전 행사 신청 데이터 조회 API
+     */
+    public function getPreviousRegistration($eventId) {
+        header('Content-Type: application/json');
+        
+        try {
+            // 로그인 확인
+            if (!AuthMiddleware::isLoggedIn()) {
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
+            }
+            
+            $userId = AuthMiddleware::getCurrentUserId();
+            
+            // 가장 최근 취소된 신청 정보 조회
+            $query = "
+                SELECT 
+                    participant_name, participant_email, participant_phone,
+                    company_name, position, motivation, special_requests, how_did_you_know
+                FROM lecture_registrations 
+                WHERE lecture_id = ? AND user_id = ? AND status = 'cancelled'
+                ORDER BY created_at DESC 
+                LIMIT 1
+            ";
+            
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param("ii", $eventId, $userId);
+            $stmt->execute();
+            $result = $stmt->get_result()->fetch_assoc();
+            
+            if ($result) {
+                return ResponseHelper::json($result, 200, '이전 신청 데이터 조회 완료');
+            } else {
+                return ResponseHelper::json(null, 404, '이전 신청 데이터가 없습니다.');
+            }
+            
+        } catch (Exception $e) {
+            error_log("이전 행사 신청 데이터 조회 오류: " . $e->getMessage());
+            return ResponseHelper::json(null, 500, '이전 신청 데이터 조회 중 오류가 발생했습니다.');
+        }
+    }
+    
+    /**
+     * 행사 신청 데이터 검증
+     */
+    private function validateRegistrationData($input, $user) {
+        $errors = [];
+        
+        // 필수 필드 검증
+        $participantName = trim($input['participant_name'] ?? '');
+        $participantEmail = trim($input['participant_email'] ?? '');
+        $participantPhone = trim($input['participant_phone'] ?? '');
+        
+        // 이름 검증
+        if (empty($participantName)) {
+            $errors['participant_name'] = '이름을 입력해주세요.';
+        } elseif (strlen($participantName) < 2) {
+            $errors['participant_name'] = '이름은 2글자 이상 입력해주세요.';
+        } elseif (strlen($participantName) > 100) {
+            $errors['participant_name'] = '이름이 너무 깁니다.';
+        }
+        
+        // 이메일 검증
+        if (empty($participantEmail)) {
+            $errors['participant_email'] = '이메일을 입력해주세요.';
+        } elseif (!filter_var($participantEmail, FILTER_VALIDATE_EMAIL)) {
+            $errors['participant_email'] = '올바른 이메일 형식을 입력해주세요.';
+        } elseif (strlen($participantEmail) > 255) {
+            $errors['participant_email'] = '이메일이 너무 깁니다.';
+        }
+        
+        // 전화번호 검증
+        if (empty($participantPhone)) {
+            $errors['participant_phone'] = '연락처를 입력해주세요.';
+        } elseif (!$this->isValidPhone($participantPhone)) {
+            $errors['participant_phone'] = '올바른 연락처 형식을 입력해주세요. (예: 010-1234-5678)';
+        }
+        
+        // 선택적 필드 길이 검증
+        if (!empty($input['company_name']) && strlen(trim($input['company_name'])) > 255) {
+            $errors['company_name'] = '회사명이 너무 깁니다.';
+        }
+        
+        if (!empty($input['position']) && strlen(trim($input['position'])) > 100) {
+            $errors['position'] = '직책명이 너무 깁니다.';
+        }
+        
+        if (!empty($input['motivation']) && strlen(trim($input['motivation'])) > 1000) {
+            $errors['motivation'] = '참가 동기가 너무 깁니다. (최대 1000자)';
+        }
+        
+        if (!empty($input['special_requests']) && strlen(trim($input['special_requests'])) > 1000) {
+            $errors['special_requests'] = '특별 요청사항이 너무 깁니다. (최대 1000자)';
+        }
+        
+        // how_did_you_know 값 검증
+        $validSources = ['website', 'social_media', 'friend_referral', 'company_notice', 'email', 'search_engine', 'advertisement', 'other'];
+        if (!empty($input['how_did_you_know']) && !in_array($input['how_did_you_know'], $validSources)) {
+            $errors['how_did_you_know'] = '올바른 항목을 선택해주세요.';
+        }
+        
+        return $errors;
+    }
+    
+    /**
+     * 전화번호 형식 검증
+     */
+    private function isValidPhone($phone) {
+        // 공백 제거
+        $phone = preg_replace('/\s/', '', $phone);
+        
+        // 한국 휴대폰 번호 형식 검증
+        return preg_match('/^(010|011|016|017|018|019)[-]?\d{3,4}[-]?\d{4}$/', $phone);
+    }
+    
+    /**
+     * CSRF 토큰 검증
+     */
+    private function validateCsrfToken($token) {
+        if (!isset($_SESSION['csrf_token'])) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
+    }
+    
+    /**
      * 현재 사용자 정보 가져오기
      */
     private function getCurrentUser() {

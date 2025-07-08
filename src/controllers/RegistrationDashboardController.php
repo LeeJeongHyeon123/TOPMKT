@@ -47,12 +47,13 @@ class RegistrationDashboardController extends BaseController
             $lecturesQuery = "
                 SELECT 
                     l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
-                    l.max_participants, l.current_participants, l.auto_approval,
+                    l.max_participants, l.auto_approval,
                     l.registration_end_date, l.content_type, l.location_type,
                     l.sponsor_info,
                     COUNT(DISTINCT lr.id) as total_applications,
                     COUNT(DISTINCT CASE WHEN lr.status = 'pending' THEN lr.id END) as pending_count,
                     COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as approved_count,
+                    COUNT(DISTINCT CASE WHEN lr.status = 'approved' THEN lr.id END) as current_participants,
                     COUNT(DISTINCT CASE WHEN lr.status = 'rejected' THEN lr.id END) as rejected_count,
                     COUNT(DISTINCT CASE WHEN lr.status = 'waiting' THEN lr.id END) as waiting_count
                 FROM lectures l
@@ -61,7 +62,7 @@ class RegistrationDashboardController extends BaseController
                 AND l.content_type = ?
                 AND l.start_date >= ? AND l.start_date <= ?
                 GROUP BY l.id, l.title, l.start_date, l.start_time, l.end_date, l.end_time,
-                         l.max_participants, l.current_participants, l.auto_approval, l.registration_end_date,
+                         l.max_participants, l.auto_approval, l.registration_end_date,
                          l.content_type, l.location_type, l.sponsor_info
                 ORDER BY l.start_date DESC, l.created_at DESC
             ";
@@ -113,7 +114,7 @@ class RegistrationDashboardController extends BaseController
     }
     
     /**
-     * 특정 강의의 신청자 관리 페이지
+     * 특정 강의/행사의 신청자 관리 페이지
      */
     public function lectureRegistrations($lectureId)
     {
@@ -126,13 +127,13 @@ class RegistrationDashboardController extends BaseController
         $userId = AuthMiddleware::getCurrentUserId();
         $userRole = AuthMiddleware::getUserRole();
         
-        // 강의 정보 및 권한 확인
+        // 강의/행사 정보 및 권한 확인
         $lectureQuery = "
             SELECT 
                 l.id, l.title, l.description, l.start_date, l.start_time, l.end_date, l.end_time,
                 l.max_participants, l.current_participants, l.auto_approval,
                 l.registration_start_date, l.registration_end_date, l.allow_waiting_list,
-                l.user_id as organizer_id, u.nickname as organizer_name
+                l.content_type, l.user_id as organizer_id, u.nickname as organizer_name
             FROM lectures l
             JOIN users u ON l.user_id = u.id
             WHERE l.id = ? AND l.status = 'published'
@@ -149,7 +150,7 @@ class RegistrationDashboardController extends BaseController
             exit;
         }
         
-        // 권한 확인 (본인 강의이거나 관리자)
+        // 권한 확인 (본인 강의/행사이거나 관리자)
         if ($userRole !== 'ROLE_ADMIN' && $lecture['organizer_id'] != $userId) {
             header('HTTP/1.1 403 Forbidden');
             include SRC_PATH . '/views/errors/403.php';
@@ -175,8 +176,9 @@ class RegistrationDashboardController extends BaseController
             $lectureStats = $this->getLectureStats($lectureId);
             
             // 뷰 렌더링
+            $contentTypeName = $lecture['content_type'] === 'event' ? '행사' : '강의';
             $pageTitle = $lecture['title'] . ' - 신청자 관리';
-            $pageDescription = '강의 신청자 목록을 확인하고 승인/거절을 관리하세요.';
+            $pageDescription = $contentTypeName . ' 신청자 목록을 확인하고 승인/거절을 관리하세요.';
             
             include SRC_PATH . '/views/templates/header.php';
             include SRC_PATH . '/views/registrations/lecture-detail.php';
@@ -199,12 +201,12 @@ class RegistrationDashboardController extends BaseController
         try {
             // HTTP 메소드 확인
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                return ResponseHelper::json('error', 'POST 메소드만 허용됩니다.', null, 405);
+                return ResponseHelper::json(null, 405, 'POST 메소드만 허용됩니다.');
             }
             
             // 로그인 확인
             if (!AuthMiddleware::isLoggedIn()) {
-                return ResponseHelper::json('error', '로그인이 필요합니다.', null, 401);
+                return ResponseHelper::json(null, 401, '로그인이 필요합니다.');
             }
             
             $userId = AuthMiddleware::getCurrentUserId();
@@ -215,7 +217,7 @@ class RegistrationDashboardController extends BaseController
             
             // CSRF 토큰 검증
             if (!$this->validateCsrfToken($input['csrf_token'] ?? '')) {
-                return ResponseHelper::json('error', 'CSRF 토큰이 유효하지 않습니다.', null, 403);
+                return ResponseHelper::json(null, 403, 'CSRF 토큰이 유효하지 않습니다.');
             }
             
             $newStatus = $input['status'] ?? '';
@@ -224,13 +226,13 @@ class RegistrationDashboardController extends BaseController
             // 상태 검증
             $validStatuses = ['approved', 'rejected'];
             if (!in_array($newStatus, $validStatuses)) {
-                return ResponseHelper::json('error', '올바른 상태를 선택해주세요.', null, 400);
+                return ResponseHelper::json(null, 400, '올바른 상태를 선택해주세요.');
             }
             
             // 신청 정보 및 권한 확인
             $registrationQuery = "
                 SELECT r.*, l.user_id as lecture_organizer, l.title as lecture_title,
-                       l.max_participants, l.current_participants
+                       l.max_participants, l.current_participants, l.start_date, l.start_time, l.content_type
                 FROM lecture_registrations r
                 JOIN lectures l ON r.lecture_id = l.id
                 WHERE r.id = ?
@@ -242,17 +244,17 @@ class RegistrationDashboardController extends BaseController
             $registration = $stmt->get_result()->fetch_assoc();
             
             if (!$registration) {
-                return ResponseHelper::json('error', '신청을 찾을 수 없습니다.', null, 404);
+                return ResponseHelper::json(null, 404, '신청을 찾을 수 없습니다.');
             }
             
             // 권한 확인
             if ($userRole !== 'ROLE_ADMIN' && $registration['lecture_organizer'] != $userId) {
-                return ResponseHelper::json('error', '권한이 없습니다.', null, 403);
+                return ResponseHelper::json(null, 403, '권한이 없습니다.');
             }
             
             // 이미 처리된 신청인지 확인
             if (in_array($registration['status'], ['approved', 'rejected'])) {
-                return ResponseHelper::json('error', '이미 처리된 신청입니다.', null, 400);
+                return ResponseHelper::json(null, 400, '이미 처리된 신청입니다.');
             }
             
             // 승인 시 정원 확인
@@ -261,7 +263,7 @@ class RegistrationDashboardController extends BaseController
                 $currentParticipants = $registration['current_participants'];
                 
                 if ($maxParticipants && $currentParticipants >= $maxParticipants) {
-                    return ResponseHelper::json('error', '정원이 초과되었습니다.', null, 400);
+                    return ResponseHelper::json(null, 400, '정원이 초과되었습니다.');
                 }
             }
             
@@ -280,13 +282,26 @@ class RegistrationDashboardController extends BaseController
                 try {
                     require_once SRC_PATH . '/helpers/SmsHelper.php';
                     
-                    // SMS 발송
+                    // 컨텐츠 타입에 따른 SMS 발송
+                    $contentType = $registration['content_type'] ?? 'lecture';
+                    $contentTypeName = $contentType === 'event' ? '행사' : '강의';
+                    
                     if ($newStatus === 'approved') {
-                        $smsResult = sendLectureApprovalSms($registration['participant_phone']);
-                        $logMessage = "강의 신청 승인 SMS 발송";
+                        $lectureDate = $registration['start_date'] . ' ' . $registration['start_time'];
+                        if ($contentType === 'event') {
+                            $smsResult = sendEventApprovalSms($registration['participant_phone'], $registration['lecture_title'], $lectureDate);
+                        } else {
+                            $smsResult = sendLectureApprovalSms($registration['participant_phone'], $registration['lecture_title'], $lectureDate);
+                        }
+                        $logMessage = "{$contentTypeName} 신청 승인 SMS 발송";
                     } else {
-                        $smsResult = sendLectureRejectionSms($registration['participant_phone']);
-                        $logMessage = "강의 신청 거절 SMS 발송";
+                        $reason = !empty($adminNotes) ? $adminNotes : '';
+                        if ($contentType === 'event') {
+                            $smsResult = sendEventRejectionSms($registration['participant_phone'], $registration['lecture_title'], $reason);
+                        } else {
+                            $smsResult = sendLectureRejectionSms($registration['participant_phone'], $registration['lecture_title'], $reason);
+                        }
+                        $logMessage = "{$contentTypeName} 신청 거절 SMS 발송";
                     }
                     
                     if ($smsResult['success']) {
@@ -302,17 +317,17 @@ class RegistrationDashboardController extends BaseController
                 
                 $message = $newStatus === 'approved' ? '신청이 승인되었습니다.' : '신청이 거절되었습니다.';
                 
-                return ResponseHelper::json('success', $message, [
+                return ResponseHelper::json([
                     'registration_id' => $registrationId,
                     'new_status' => $newStatus
-                ]);
+                ], 200, $message);
             } else {
-                return ResponseHelper::json('error', '상태 업데이트에 실패했습니다.', null, 500);
+                return ResponseHelper::json(null, 500, '상태 업데이트에 실패했습니다.');
             }
             
         } catch (Exception $e) {
             error_log("신청 상태 변경 오류: " . $e->getMessage());
-            return ResponseHelper::json('error', '처리 중 오류가 발생했습니다.', null, 500);
+            return ResponseHelper::json(null, 500, '처리 중 오류가 발생했습니다.');
         }
     }
     
