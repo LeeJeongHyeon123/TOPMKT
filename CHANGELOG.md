@@ -1,5 +1,47 @@
 # 변경 로그 (Changelog)
 
+## [3.4.0] - 2025-07-14
+
+### 🚀 이미지 업로드 시스템 30MB 확장 및 중앙화
+
+#### 📤 업로드 시스템 완전 개편
+- **중앙화된 설정 시스템**
+  - `UploadConfig` 클래스 생성 (`/src/config/upload.php`)
+  - 모든 업로드 제한을 30MB로 통일 (기존 2MB/5MB/10MB 산발적 제한 해결)
+  - JavaScript/PHP 검증 로직 완전 동기화
+
+- **전체 시스템 업데이트**
+  - 13개 위치의 하드코딩된 제한 제거
+  - 8개 컨트롤러 업데이트: EventController, LectureController, UserController, CorporateController 등
+  - 5개 뷰 파일 JavaScript 검증 로직 통합
+
+- **서버 설정 최적화**
+  - PHP 설정: `upload_max_filesize` 30M, `post_max_size` 50M, `memory_limit` 256M
+  - Apache 재시작 및 설정 적용 검증 완료
+
+#### 🧪 포괄적 QA 테스트 시스템
+- **테스트 도구 개발**
+  - CLI 테스트: `test-config-cli.php`
+  - 웹 테스트: `test-upload-config.php`, `test-javascript-config.php`
+  - 직접 업로드 시뮬레이션: `test-direct-upload.php`
+
+- **검증 결과**
+  - 25MB 파일 업로드 성공 검증
+  - 31MB 파일 정상 거부 검증
+  - 모든 확장자 및 MIME 타입 검증 통과
+
+#### 📋 완전 문서화
+- **QA 리포트 생성**: `UPLOAD_SYSTEM_QA_REPORT.md`
+  - 프로젝트 개요 및 달성 결과 상세 기록
+  - 영향받은 파일 통계: 21개 파일 (8개 컨트롤러, 5개 뷰, 2개 설정, 4개 테스트)
+  - 운영 가이드 및 향후 용량 변경 방법 제공
+
+#### 🎯 기술적 성과
+- **원클릭 용량 변경**: 한 곳에서 설정 변경 시 전체 시스템 반영
+- **Zero Regression**: 기존 기능 영향 없음
+- **100% 호환성**: 모든 업로드 기능 정상 작동
+- **Future Proof**: 확장성 있는 아키텍처 구현
+
 ## [3.1.0] - 2025-07-01
 
 ### 🎯 주요 기능 추가
