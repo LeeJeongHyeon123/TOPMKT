@@ -8,7 +8,28 @@ require_once SRC_PATH . '/middlewares/AuthMiddleware.php';
 require_once SRC_PATH . '/helpers/HtmlSanitizerHelper.php';
 $isLoggedIn = AuthMiddleware::isLoggedIn();
 $currentUserId = AuthMiddleware::getCurrentUserId();
+
+// 편집 권한 확인 (행사 작성자이거나 관리자인지 확인)
+$canEdit = false;
+if ($isLoggedIn && isset($event)) {
+    $userRole = AuthMiddleware::getUserRole();
+    $canEdit = ($userRole === 'ROLE_ADMIN') || ($event['user_id'] == $currentUserId);
+}
+
+// CSRF 토큰 생성
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 ?>
+
+<!-- 한국어 인코딩 설정 -->
+<meta charset="utf-8">
+
+<!-- CSRF 토큰 메타 태그 -->
+<meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?>">
+
+<!-- Quill.js 에디터 CSS (리치 텍스트 표시용) -->
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 
 <style>
 /* 행사 상세 페이지 스타일 (파란색 테마) */
@@ -29,6 +50,67 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     margin-top: 0px;
     position: relative;
     overflow: hidden;
+}
+
+/* 히어로 섹션 상단 관리 버튼 (수정/삭제) */
+.event-admin-actions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 2;
+}
+
+/* 기본 버튼 스타일 */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 수정 버튼 스타일 */
+.btn-edit {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+}
+
+.btn-edit:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    text-decoration: none;
+}
+
+/* 삭제 버튼 스타일 */
+.btn-danger {
+    background: rgba(229, 62, 62, 0.9);
+    color: white;
+    border: 1px solid rgba(197, 48, 48, 0.8);
+    backdrop-filter: blur(8px);
+}
+
+.btn-danger:hover {
+    background: rgba(197, 48, 48, 0.95);
+    border-color: rgba(197, 48, 48, 1);
+    color: white;
+    text-decoration: none;
 }
 
 .event-hero::before {
@@ -129,6 +211,99 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     color: #64748b;
     line-height: 1.7;
     font-size: 1rem;
+}
+
+/* 행사 내용 내 이미지 크기 제한 */
+.event-description img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+/* Quill 에디터 이미지 크기 제한 */
+.ql-editor img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+/* 강사/연사 정보 스타일 */
+.instructors-card {
+    border-left: 3px solid #4A90E2;
+}
+
+.instructors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.instructor-item {
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.instructor-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.instructor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.instructor-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.instructor-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.instructor-details {
+    flex: 1;
+}
+
+.instructor-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.instructor-title {
+    font-size: 0.9rem;
+    color: #4A90E2;
+    font-weight: 500;
+}
+
+.instructor-bio {
+    color: #64748b;
+    line-height: 1.5;
+    font-size: 0.9rem;
 }
 
 .info-card {
@@ -487,18 +662,18 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     font-weight: 500;
 }
 
-/* 행사 액션 버튼 */
-.event-actions {
+/* 히어로 섹션 하단 공유 버튼 */
+.event-share-actions {
     margin-top: 30px;
     display: flex;
     justify-content: center;
     gap: 15px;
 }
 
-.btn {
+.btn-share {
     padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
     font-weight: 600;
     text-decoration: none;
     display: inline-flex;
@@ -507,20 +682,19 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
 }
 
-.btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.3);
+.btn-share:hover {
+    background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+    color: white;
+    text-decoration: none;
 }
 
 
@@ -551,6 +725,24 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     
     .content-section {
         padding: 20px;
+    }
+    
+    /* 모바일에서 관리 버튼 위치 조정 */
+    .event-admin-actions {
+        top: 15px;
+        right: 15px;
+        gap: 8px;
+    }
+    
+    .event-admin-actions .btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    
+    /* 모바일에서 공유 버튼 크기 조정 */
+    .btn-share {
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
     
     /* 모바일 모달 네비게이션 */
@@ -682,11 +874,538 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 .btn-chat-author i {
     font-size: 0.875rem;
 }
+
+/* 행사 신청 모달 스타일 (강의 등록 스타일 적용) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    padding: 24px 28px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.modal-body {
+    padding: 28px;
+    text-align: left;
+}
+
+.modal-footer {
+    padding: 16px 28px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* 섹션별 폼 구성 */
+.form-section {
+    margin-bottom: 28px;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+.form-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background: white;
+    text-align: left;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    background: #cbd5e0;
+    transform: translateY(-1px);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .modal-header {
+        padding: 20px 24px 16px;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+}
+
+/* 행사 이미지 갤러리 스타일 */
+.event-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #f8fafc;
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(74, 144, 226, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+/* 이미지 모달 */
+.event-image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(4px);
+}
+
+.modal-image-content {
+    position: relative;
+    margin: auto;
+    display: block;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    object-fit: contain;
+    margin-top: 5vh;
+    border-radius: 8px;
+}
+
+.modal-image-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-image-close:hover {
+    color: #ccc;
+}
+
+.modal-image-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    font-size: 18px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.modal-image-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-nav-prev {
+    left: 20px;
+}
+
+.modal-nav-next {
+    right: 20px;
+}
+
+.modal-nav-prev::before {
+    content: '‹';
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.modal-nav-next::before {
+    content: '›';
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.modal-image-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .event-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .gallery-item img {
+        height: 150px;
+    }
+    
+    .modal-image-content {
+        width: 95%;
+        margin-top: 10vh;
+    }
+    
+    .modal-image-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    .modal-nav-prev {
+        left: 10px;
+    }
+    
+    .modal-nav-next {
+        right: 10px;
+    }
+}
+
+/* 강사 이미지 모달 스타일 - 완벽한 중앙정렬 */
+.instructor-image-modal {
+    display: none !important; /* 기본값: 숨김 */
+    position: fixed !important;
+    z-index: 10000 !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(4px) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 모달이 활성화될 때 - 완벽한 중앙정렬 */
+.instructor-image-modal.show {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.instructor-image-modal .modal-content {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 90% !important;
+    max-width: 600px !important;
+    max-height: 90vh !important;
+    background: white !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+}
+
+.instructor-image-modal .modal-header {
+    width: 100%;
+    background: linear-gradient(135deg, #4A90E2 0%, #2E86AB 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.instructor-image-modal .modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.instructor-image-modal img {
+    width: 100%;
+    max-width: 500px;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.instructor-image-modal .modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1;
+    background: rgba(0,0,0,0.3);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.instructor-image-modal .modal-close:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.1);
+}
+
+/* 중앙정렬 강화를 위한 추가 CSS */
+.instructor-image-modal.show {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: row !important;
+    text-align: center !important;
+}
+
+.instructor-image-modal.show .modal-content {
+    margin: auto !important;
+    position: static !important;
+}
+
+@media (max-width: 768px) {
+    .instructor-image-modal .modal-content {
+        width: 95% !important;
+        max-width: none !important;
+    }
+    
+    .instructor-image-modal .modal-header {
+        padding: 15px !important;
+    }
+    
+    .instructor-image-modal .modal-header h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    .instructor-image-modal img {
+        padding: 15px !important;
+    }
+}
 </style>
 
 <div class="event-detail-container">
     <!-- 행사 히어로 섹션 -->
     <div class="event-hero">
+        <div class="event-admin-actions">
+            <?php if ($canEdit): ?>
+                <a href="/events/create?id=<?= $event['id'] ?>" class="btn btn-edit">
+                    ✏️ 수정
+                </a>
+                <button class="btn btn-danger" onclick="confirmDeleteEvent(<?= $event['id'] ?>)">
+                    🗑️ 삭제
+                </button>
+            <?php endif; ?>
+        </div>
         <div class="event-hero-content">
             <div class="event-category">
                 <?php
@@ -710,11 +1429,11 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             </div>
             
             <h1 class="event-title">
-                <?= htmlspecialchars($event['title']) ?>
+                <?= htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8') ?>
             </h1>
             
             <p class="event-subtitle">
-                <?= htmlspecialchars(mb_substr($event['description'], 0, 100)) ?>...
+                <?= htmlspecialchars(mb_substr(strip_tags($event['description']), 0, 100), ENT_QUOTES, 'UTF-8') ?>...
             </p>
             
             <div class="event-meta-row">
@@ -724,7 +1443,16 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 </div>
                 <div class="event-meta-item">
                     <i class="fas fa-clock"></i>
-                    <span><?= date('H:i', strtotime($event['start_time'])) ?> - <?= date('H:i', strtotime($event['end_time'])) ?></span>
+                    <span>
+                        <?php
+                        // 시작 시간만 표시
+                        if ($event['start_time']) {
+                            echo date('H:i', strtotime($event['start_time'])) . ' 시작';
+                        } else {
+                            echo '시간 미정';
+                        }
+                        ?>
+                    </span>
                 </div>
                 <div class="event-meta-item">
                     <i class="fas fa-map-marker-alt"></i>
@@ -738,10 +1466,27 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         <?php endif; ?>
                     </span>
                 </div>
+                <?php if (!empty($event['registration_deadline'])): ?>
+                <div class="event-meta-item">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>
+                        <?php
+                        $deadline = new DateTime($event['registration_deadline']);
+                        $now = new DateTime();
+                        
+                        if ($now > $deadline) {
+                            echo '<span style="color: #ef4444;">신청 마감</span>';
+                        } else {
+                            echo '신청 마감: ' . $deadline->format('n월 j일 H:i');
+                        }
+                        ?>
+                    </span>
+                </div>
+                <?php endif; ?>
             </div>
             
-            <div class="event-actions">
-                <button class="btn btn-secondary btn-share" onclick="shareEventContent()">
+            <div class="event-share-actions">
+                <button class="btn-share" onclick="shareEventContent()">
                     🔗 공유하기
                 </button>
             </div>
@@ -756,8 +1501,22 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             <div class="content-section">
                 <h2>🎬 관련 영상</h2>
                 <div class="youtube-container">
+                    <?php
+                    // YouTube URL을 embed 형식으로 변환
+                    $youtubeUrl = $event['youtube_video'];
+                    $embedUrl = $youtubeUrl;
+                    
+                    // 일반 YouTube URL을 embed URL로 변환
+                    if (strpos($youtubeUrl, 'youtube.com/watch?v=') !== false) {
+                        $videoId = preg_replace('/.*[?&]v=([^&]*).*/', '$1', $youtubeUrl);
+                        $embedUrl = "https://www.youtube.com/embed/" . $videoId;
+                    } elseif (strpos($youtubeUrl, 'youtu.be/') !== false) {
+                        $videoId = str_replace('https://youtu.be/', '', $youtubeUrl);
+                        $embedUrl = "https://www.youtube.com/embed/" . $videoId;
+                    }
+                    ?>
                     <iframe 
-                        src="<?= htmlspecialchars($event['youtube_video']) ?>" 
+                        src="<?= htmlspecialchars($embedUrl) ?>" 
                         frameborder="0" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen>
@@ -768,10 +1527,9 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             
             <div class="content-section">
                 <h2>행사 소개</h2>
-                <div class="event-description">
-                    <?= nl2br(htmlspecialchars($event['description'])) ?>
+                <div class="event-description ql-editor">
+                    <?= $event['description'] ?? '' ?>
                 </div>
-                
             </div>
             
             <?php if (!empty($event['images'])): ?>
@@ -792,12 +1550,6 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
             </div>
             <?php endif; ?>
             
-            <?php if ($event['sponsor_info']): ?>
-            <div class="content-section">
-                <h2>후원 및 협력사</h2>
-                <p class="event-description"><?= htmlspecialchars($event['sponsor_info']) ?></p>
-            </div>
-            <?php endif; ?>
         </div>
 
         <!-- 사이드바 -->
@@ -812,9 +1564,40 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         무료
                     <?php endif; ?>
                 </div>
-                <button class="register-btn" onclick="registerEvent()">
-                    참가 신청하기
-                </button>
+                <?php if ($isLoggedIn): ?>
+                    <?php
+                    // 등록 마감일 확인
+                    $isDeadlinePassed = false;
+                    if (!empty($event['registration_deadline'])) {
+                        $now = new DateTime();
+                        $deadline = new DateTime($event['registration_deadline']);
+                        $isDeadlinePassed = $now > $deadline;
+                    }
+                    ?>
+                    
+                    <?php if ($isDeadlinePassed): ?>
+                        <button class="register-btn" disabled style="background: #9ca3af; cursor: not-allowed;">
+                            신청 마감됨
+                        </button>
+                    <?php else: ?>
+                        <button id="event-register-btn" class="register-btn" onclick="registerEvent()">
+                            참가 신청하기
+                        </button>
+                        <button id="event-cancel-btn" class="register-btn" onclick="cancelEventRegistration()" style="display: none; background: #dc3545;">
+                            신청 취소
+                        </button>
+                    <?php endif; ?>
+                <?php else: ?>
+                    <?php if ($isDeadlinePassed): ?>
+                        <button class="register-btn" disabled style="background: #9ca3af; cursor: not-allowed;">
+                            신청 마감됨
+                        </button>
+                    <?php else: ?>
+                        <button class="register-btn" onclick="redirectToLogin()">
+                            로그인 후 신청하기
+                        </button>
+                    <?php endif; ?>
+                <?php endif; ?>
             </div>
 
             <!-- 행사 정보 -->
@@ -822,18 +1605,27 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 <h3><i class="fas fa-info-circle"></i> 행사 정보</h3>
                 <ul class="info-list">
                     <li>
-                        <span class="info-label">일시</span>
+                        <span class="info-label">시작</span>
                         <span class="info-value">
-                            <?= date('n월 j일', strtotime($event['start_date'])) ?>
-                            <?php if ($event['end_date'] && $event['end_date'] !== $event['start_date']): ?>
-                                - <?= date('n월 j일', strtotime($event['end_date'])) ?>
-                            <?php endif; ?>
+                            <?php
+                            $startDateTime = date('Y년 n월 j일 H:i', strtotime($event['start_date'] . ' ' . $event['start_time']));
+                            echo $startDateTime;
+                            ?>
                         </span>
                     </li>
+                    <?php if ($event['end_date'] || $event['end_time']): ?>
                     <li>
-                        <span class="info-label">시간</span>
-                        <span class="info-value"><?= date('H:i', strtotime($event['start_time'])) ?> - <?= date('H:i', strtotime($event['end_time'])) ?></span>
+                        <span class="info-label">종료</span>
+                        <span class="info-value">
+                            <?php
+                            $endDate = $event['end_date'] ?: $event['start_date'];
+                            $endTime = $event['end_time'] ?: $event['start_time'];
+                            $endDateTime = date('Y년 n월 j일 H:i', strtotime($endDate . ' ' . $endTime));
+                            echo $endDateTime;
+                            ?>
+                        </span>
                     </li>
+                    <?php endif; ?>
                     <li>
                         <span class="info-label">장소</span>
                         <span class="info-value">
@@ -852,18 +1644,19 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                         <span class="info-value"><?= number_format($event['max_participants']) ?>명</span>
                     </li>
                     <?php endif; ?>
-                    <?php if ($event['dress_code']): ?>
+                    <?php if (!empty($event['registration_deadline'])): ?>
                     <li>
-                        <span class="info-label">드레스코드</span>
+                        <span class="info-label">신청 마감</span>
                         <span class="info-value">
                             <?php
-                            $dressCodes = [
-                                'casual' => '캐주얼',
-                                'business_casual' => '비즈니스 캐주얼',
-                                'business' => '비즈니스',
-                                'formal' => '정장'
-                            ];
-                            echo $dressCodes[$event['dress_code']] ?? $event['dress_code'];
+                            $deadline = new DateTime($event['registration_deadline']);
+                            $now = new DateTime();
+                            
+                            if ($now > $deadline) {
+                                echo '<span style="color: #ef4444; font-weight: 600;">마감됨</span>';
+                            } else {
+                                echo $deadline->format('Y년 n월 j일 H:i');
+                            }
                             ?>
                         </span>
                     </li>
@@ -871,28 +1664,73 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 </ul>
             </div>
 
-            <!-- 강사 정보 -->
-            <div class="info-card instructor-card">
-                <h3><i class="fas fa-user"></i> 진행자</h3>
-                <?php if (!empty($event['instructor_image'])): ?>
-                <div class="instructor-avatar-image">
-                    <img src="<?= htmlspecialchars($event['instructor_image']) ?>" 
-                         alt="<?= htmlspecialchars($event['instructor_name']) ?> 프로필" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="instructor-avatar-fallback" style="display: none;">
-                        <?= mb_substr($event['instructor_name'], 0, 1) ?>
+            <!-- 강사/연사 정보 -->
+            <?php if (!empty($event['instructors']) && is_array($event['instructors'])): ?>
+            <div class="info-card instructors-card">
+                <h3><i class="fas fa-users"></i> 강사/연사 정보</h3>
+                <div class="instructors-list">
+                    <?php foreach ($event['instructors'] as $instructor): ?>
+                    <div class="instructor-item">
+                        <div class="instructor-header">
+                            <div class="instructor-avatar">
+                                <?php if (!empty($instructor['image'])): ?>
+                                    <img src="<?= htmlspecialchars($instructor['image']) ?>" 
+                                         alt="<?= htmlspecialchars($instructor['name']) ?>" 
+                                         onclick="openInstructorImageModal('<?= htmlspecialchars($instructor['image']) ?>', '<?= htmlspecialchars($instructor['name']) ?>')"
+                                         style="cursor: pointer;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <?php endif; ?>
+                                <div class="instructor-fallback" <?= !empty($instructor['image']) ? 'style="display:none;"' : '' ?>>
+                                    <?= mb_substr($instructor['name'], 0, 1) ?>
+                                </div>
+                            </div>
+                            <div class="instructor-details">
+                                <div class="instructor-name"><?= htmlspecialchars($instructor['name']) ?></div>
+                                <?php if (!empty($instructor['title'])): ?>
+                                <div class="instructor-title"><?= htmlspecialchars($instructor['title']) ?></div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php if (!empty($instructor['info'])): ?>
+                        <div class="instructor-bio"><?= htmlspecialchars($instructor['info']) ?></div>
+                        <?php endif; ?>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php elseif (!empty($event['instructor_name']) || !empty($event['instructor_info'])): ?>
+            <!-- 기본 강사 정보 표시 (instructor_name, instructor_info 필드 사용) -->
+            <div class="info-card instructors-card">
+                <h3><i class="fas fa-user"></i> 강사 정보</h3>
+                <div class="instructors-list">
+                    <div class="instructor-item">
+                        <div class="instructor-header">
+                            <div class="instructor-avatar">
+                                <?php if (!empty($event['instructor_image'])): ?>
+                                    <img src="<?= htmlspecialchars($event['instructor_image']) ?>" 
+                                         alt="<?= htmlspecialchars($event['instructor_name'] ?: '강사') ?>" 
+                                         onclick="openInstructorImageModal('<?= htmlspecialchars($event['instructor_image']) ?>', '<?= htmlspecialchars($event['instructor_name'] ?: '강사') ?>')"
+                                         style="cursor: pointer;"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <?php endif; ?>
+                                <div class="instructor-fallback" <?= !empty($event['instructor_image']) ? 'style="display:none;"' : '' ?>>
+                                    <?= mb_substr($event['instructor_name'] ?: '강사', 0, 1) ?>
+                                </div>
+                            </div>
+                            <div class="instructor-details">
+                                <div class="instructor-name"><?= htmlspecialchars($event['instructor_name'] ?: '미정', ENT_QUOTES, 'UTF-8') ?></div>
+                            </div>
+                        </div>
+                        <?php if (!empty($event['instructor_info'])): ?>
+                        <div class="instructor-bio"><?= htmlspecialchars($event['instructor_info'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                <?php else: ?>
-                <div class="instructor-avatar">
-                    <?= mb_substr($event['instructor_name'], 0, 1) ?>
-                </div>
-                <?php endif; ?>
-                <div class="instructor-name"><?= htmlspecialchars($event['instructor_name']) ?></div>
-                <div class="instructor-bio"><?= htmlspecialchars($event['instructor_info']) ?></div>
             </div>
+            <?php endif; ?>
 
-            <?php if ($event['venue_address'] || $event['parking_info']): ?>
+
+            <?php if ($event['venue_address'] || $event['online_link']): ?>
             <!-- 장소 정보 -->
             <div class="info-card">
                 <h3><i class="fas fa-map-marker-alt"></i> 장소 안내</h3>
@@ -907,12 +1745,6 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                     <li>
                         <span class="info-label">주소</span>
                         <span class="info-value"><?= htmlspecialchars($event['venue_address']) ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if ($event['parking_info']): ?>
-                    <li>
-                        <span class="info-label">주차</span>
-                        <span class="info-value"><?= htmlspecialchars($event['parking_info']) ?></span>
                     </li>
                     <?php endif; ?>
                     <?php if ($event['online_link'] && in_array($event['location_type'], ['online', 'hybrid'])): ?>
@@ -945,12 +1777,23 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
                 <div class="info-card author-info-card">
                     <h3><i class="fas fa-user-edit"></i> 작성자</h3>
                     <div class="author-info-compact">
-                        <div class="author-avatar-small" onclick="showProfileImageModal('<?= addslashes(htmlspecialchars($event['profile_image_original'] ?? $event['profile_image'] ?? '')) ?>', '<?= addslashes(htmlspecialchars($event['author_name'] ?? $event['nickname'] ?? '작성자')) ?>')" style="cursor: pointer;" title="프로필 이미지 크게 보기">
-                            <?php 
-                            $authorImage = $event['profile_image'] ?? null;
-                            $authorName = $event['author_name'] ?? $event['nickname'] ?? '작성자';
+                        <?php 
+                        // 원본 이미지 우선, 없으면 썸네일, 둘 다 없으면 null
+                        $authorImage = $event['profile_image_original'] ?? $event['profile_image'] ?? null;
+                        $authorName = $event['author_name'] ?? $event['nickname'] ?? '작성자';
+                        ?>
+                        
+                        <div class="author-avatar-small" 
+                             <?php if ($authorImage): ?>
+                             onclick="showProfileImageModal('<?= addslashes(htmlspecialchars($authorImage)) ?>', '<?= addslashes(htmlspecialchars($authorName)) ?>')" 
+                             style="cursor: pointer;" 
+                             title="프로필 이미지 크게 보기"
+                             <?php else: ?>
+                             style="cursor: default;"
+                             title="프로필 이미지 없음"
+                             <?php endif; ?>>
                             
-                            if ($authorImage): ?>
+                            <?php if ($authorImage): ?>
                                 <img src="<?= htmlspecialchars($authorImage) ?>" 
                                      alt="<?= htmlspecialchars($authorName) ?>" 
                                      style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;"
@@ -992,6 +1835,105 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
     </div>
 </div>
 
+<!-- 행사 신청 모달 -->
+<?php if ($isLoggedIn): ?>
+<div id="eventRegistrationModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">📋 행사 신청</h3>
+            <button class="modal-close" onclick="closeEventRegistrationModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="eventRegistrationForm">
+                <!-- 개인 정보 섹션 -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="fas fa-user"></i> 개인 정보 (필수)
+                    </h4>
+                    <div class="form-group">
+                        <label for="event_participant_name">이름 *</label>
+                        <input type="text" id="event_participant_name" name="participant_name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="event_participant_email">이메일 *</label>
+                            <input type="email" id="event_participant_email" name="participant_email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="event_participant_phone">연락처 *</label>
+                            <input type="tel" id="event_participant_phone" name="participant_phone" required placeholder="010-1234-5678">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 소속 정보 섹션 -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="fas fa-building"></i> 소속 정보 (선택)
+                    </h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="event_company_name">회사명</label>
+                            <input type="text" id="event_company_name" name="company_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="event_position">직책</label>
+                            <input type="text" id="event_position" name="position">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 참가 정보 섹션 -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="fas fa-clipboard-check"></i> 참가 정보 (선택)
+                    </h4>
+                    <div class="form-group">
+                        <label for="event_motivation">참가 동기</label>
+                        <textarea id="event_motivation" name="motivation" placeholder="이 행사에 참가하시는 이유를 간단히 알려주세요."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event_special_requests">특별 요청사항</label>
+                        <textarea id="event_special_requests" name="special_requests" placeholder="식이 제한, 접근성 요구사항 등이 있으시면 알려주세요."></textarea>
+                    </div>
+                </div>
+                
+                <!-- 기타 정보 섹션 -->
+                <div class="form-section">
+                    <h4 class="form-section-title">
+                        <i class="fas fa-info-circle"></i> 기타 정보 (선택)
+                    </h4>
+                    <div class="form-group">
+                        <label for="event_how_did_you_know">어떻게 알게 되셨나요?</label>
+                        <select id="event_how_did_you_know" name="how_did_you_know">
+                            <option value="">선택해주세요</option>
+                            <option value="website">웹사이트</option>
+                            <option value="social_media">소셜미디어</option>
+                            <option value="friend_referral">지인 추천</option>
+                            <option value="company_notice">회사 공지</option>
+                            <option value="email">이메일</option>
+                            <option value="search_engine">검색엔진</option>
+                            <option value="advertisement">광고</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeEventRegistrationModal()">
+                취소
+            </button>
+            <button type="button" class="btn btn-primary" onclick="submitEventRegistration()">
+                신청하기
+            </button>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <!-- 이미지 모달 -->
 <?php if (!empty($event['images'])): ?>
 <div id="imageModal" class="image-modal">
@@ -1015,6 +1957,17 @@ $currentUserId = AuthMiddleware::getCurrentUserId();
 </div>
 <?php endif; ?>
 
+<!-- 강사 이미지 모달 -->
+<div id="instructorImageModal" class="instructor-image-modal">
+    <span class="modal-close" onclick="closeInstructorImageModal()">&times;</span>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="instructorModalName">강사 이미지</h3>
+        </div>
+        <img id="instructorModalImage" src="" alt="">
+    </div>
+</div>
+
 <!-- 네이버 지도 API (행사장 위치) -->
 <?php if (in_array($event['location_type'], ['offline', 'hybrid']) && $event['venue_address']): ?>
 <?php
@@ -1023,25 +1976,31 @@ $venueName = !empty($event['venue_name']) ? $event['venue_name'] : '행사장';
 $mapAddress = !empty($event['venue_address']) ? $event['venue_address'] : '';
 $naverClientId = defined('NAVER_MAPS_CLIENT_ID') ? NAVER_MAPS_CLIENT_ID : 'c5yj6m062z';
 
-// 장소별 기본 좌표 (강의 시스템과 동일한 방식)
-$defaultCoords = [
+// 행사장 좌표 (데이터베이스에서 가져온 실제 좌표 우선 사용)
+$eventCoords = [
     'lat' => 37.5665,  // 서울시청 기본
     'lng' => 126.9780
 ];
 
-// 반도 아이비밸리 정확 좌표 사용 (실제 측정 좌표)
-if (strpos($mapAddress, '반도 아이비밸리') !== false || strpos($mapAddress, '가산디지털1로 204') !== false) {
-    $defaultCoords['lat'] = 37.4835033620443;
-    $defaultCoords['lng'] = 126.881038151818;
-} elseif (strpos($mapAddress, '가산') !== false || strpos($mapAddress, '금천구') !== false) {
-    $defaultCoords['lat'] = 37.4816;
-    $defaultCoords['lng'] = 126.8819;
-} elseif (strpos($mapAddress, '강남') !== false || strpos($mapAddress, '테헤란로') !== false) {
-    $defaultCoords['lat'] = 37.4979;
-    $defaultCoords['lng'] = 127.0276;
-} elseif (strpos($mapAddress, '홍대') !== false || strpos($mapAddress, '마포') !== false) {
-    $defaultCoords['lat'] = 37.5563;
-    $defaultCoords['lng'] = 126.9236;
+// 데이터베이스에 저장된 위경도가 있으면 우선 사용
+if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+    $eventCoords['lat'] = floatval($event['venue_latitude']);
+    $eventCoords['lng'] = floatval($event['venue_longitude']);
+} else {
+    // 저장된 위경도가 없으면 주소 기반으로 추정
+    if (strpos($mapAddress, '반도 아이비밸리') !== false || strpos($mapAddress, '가산디지털1로 204') !== false) {
+        $eventCoords['lat'] = 37.4835033620443;
+        $eventCoords['lng'] = 126.881038151818;
+    } elseif (strpos($mapAddress, '가산') !== false || strpos($mapAddress, '금천구') !== false) {
+        $eventCoords['lat'] = 37.4816;
+        $eventCoords['lng'] = 126.8819;
+    } elseif (strpos($mapAddress, '강남') !== false || strpos($mapAddress, '테헤란로') !== false) {
+        $eventCoords['lat'] = 37.4979;
+        $eventCoords['lng'] = 127.0276;
+    } elseif (strpos($mapAddress, '홍대') !== false || strpos($mapAddress, '마포') !== false) {
+        $eventCoords['lat'] = 37.5563;
+        $eventCoords['lng'] = 126.9236;
+    }
 }
 ?>
 
@@ -1083,7 +2042,7 @@ window.initEventVenueMap = function() {
         console.log('🗺️ 행사장 지도 초기화 시작');
         
         // 지도 중심 좌표
-        var center = new naver.maps.LatLng(<?= floatval($defaultCoords['lat']) ?>, <?= floatval($defaultCoords['lng']) ?>);
+        var center = new naver.maps.LatLng(<?= floatval($eventCoords['lat']) ?>, <?= floatval($eventCoords['lng']) ?>);
         
         // 지도 옵션
         var mapOptions = {
@@ -1190,16 +2149,270 @@ document.addEventListener('DOMContentLoaded', function() {
 <?php endif; ?>
 
 <script>
-function registerEvent() {
+// 행사 ID 전역 변수
+const eventId = <?= $event['id'] ?>;
+
+// 페이지 로드 시 행사 신청 상태 확인
+document.addEventListener('DOMContentLoaded', function() {
     <?php if ($isLoggedIn): ?>
-        alert('참가 신청 기능은 준비 중입니다.');
-        // TODO: 실제 참가 신청 로직 구현
-    <?php else: ?>
-        if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
-            window.location.href = '/auth/login?redirect=' + encodeURIComponent(window.location.pathname);
-        }
+        checkEventRegistrationStatus();
     <?php endif; ?>
+});
+
+// 행사 신청 상태 확인
+async function checkEventRegistrationStatus() {
+    try {
+        const response = await fetch(`/api/events/${eventId}/registration-status?event_id=${eventId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success' && result.data.registration) {
+            const registration = result.data.registration;
+            updateEventRegistrationUI(registration.status, registration);
+        }
+    } catch (error) {
+        console.error('행사 신청 상태 확인 오류:', error);
+    }
 }
+
+// 행사 신청 UI 업데이트
+function updateEventRegistrationUI(status, registration) {
+    const registerBtn = document.getElementById('event-register-btn');
+    const cancelBtn = document.getElementById('event-cancel-btn');
+    
+    if (!registerBtn || !cancelBtn) return;
+    
+    switch (status) {
+        case 'pending':
+            registerBtn.style.display = 'none';
+            cancelBtn.style.display = 'block';
+            cancelBtn.textContent = '신청 취소 (승인 대기중)';
+            cancelBtn.style.background = '#dc3545';
+            break;
+        case 'approved':
+            registerBtn.style.display = 'none';
+            cancelBtn.style.display = 'block';
+            cancelBtn.textContent = '신청 취소 (승인됨)';
+            cancelBtn.style.background = '#dc3545';
+            break;
+        case 'waiting':
+            registerBtn.style.display = 'none';
+            cancelBtn.style.display = 'block';
+            cancelBtn.textContent = `신청 취소 (대기: ${registration.waiting_order}번)`;
+            cancelBtn.style.background = '#dc3545';
+            break;
+        case 'rejected':
+            registerBtn.style.display = 'block';
+            registerBtn.textContent = '다시 신청하기';
+            cancelBtn.style.display = 'none';
+            break;
+        case 'cancelled':
+            registerBtn.style.display = 'block';
+            registerBtn.textContent = '다시 신청하기';
+            cancelBtn.style.display = 'none';
+            break;
+        default:
+            registerBtn.style.display = 'block';
+            registerBtn.textContent = '참가 신청하기';
+            cancelBtn.style.display = 'none';
+    }
+}
+
+// 행사 신청 버튼 클릭
+async function registerEvent() {
+    try {
+        // 이전 신청 데이터 조회 및 폼 자동 입력
+        await loadEventUserInfo();
+        
+        // 모달 표시
+        document.getElementById('eventRegistrationModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    } catch (error) {
+        console.error('행사 신청 모달 열기 오류:', error);
+        alert('행사 신청 준비 중 오류가 발생했습니다.');
+    }
+}
+
+// 로그인 페이지로 리다이렉트
+function redirectToLogin() {
+    if (confirm('로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?')) {
+        window.location.href = '/auth/login?redirect=' + encodeURIComponent(window.location.pathname);
+    }
+}
+
+// 사용자 정보 및 이전 신청 데이터 로드
+async function loadEventUserInfo() {
+    try {
+        // 사용자 정보 가져오기
+        const userResponse = await fetch('/auth/me', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (userResponse.ok) {
+            const userData = await userResponse.json();
+            if (userData.status === 'success' && userData.data) {
+                fillEventUserInfo(userData.data);
+            }
+        }
+        
+        // 이전 신청 데이터 가져오기
+        const prevResponse = await fetch(`/api/events/${eventId}/previous-registration`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (prevResponse.ok) {
+            const prevData = await prevResponse.json();
+            if (prevData.status === 'success' && prevData.data) {
+                fillEventRegistrationForm(prevData.data);
+            }
+        }
+    } catch (error) {
+        console.error('사용자 정보 로드 오류:', error);
+    }
+}
+
+// 사용자 정보로 폼 채우기
+function fillEventUserInfo(userData) {
+    document.getElementById('event_participant_name').value = userData.nickname || '';
+    document.getElementById('event_participant_email').value = userData.email || '';
+    document.getElementById('event_participant_phone').value = userData.phone || '';
+}
+
+// 이전 신청 데이터로 폼 채우기
+function fillEventRegistrationForm(registrationData) {
+    document.getElementById('event_participant_name').value = registrationData.participant_name || '';
+    document.getElementById('event_participant_email').value = registrationData.participant_email || '';
+    document.getElementById('event_participant_phone').value = registrationData.participant_phone || '';
+    document.getElementById('event_company_name').value = registrationData.company_name || '';
+    document.getElementById('event_position').value = registrationData.position || '';
+    document.getElementById('event_motivation').value = registrationData.motivation || '';
+    document.getElementById('event_special_requests').value = registrationData.special_requests || '';
+    document.getElementById('event_how_did_you_know').value = registrationData.how_did_you_know || '';
+}
+
+// 행사 신청 모달 닫기
+function closeEventRegistrationModal() {
+    document.getElementById('eventRegistrationModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// 행사 신청 제출
+async function submitEventRegistration() {
+    try {
+        const form = document.getElementById('eventRegistrationForm');
+        const formData = new FormData(form);
+        
+        // CSRF 토큰 추가
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        formData.append('csrf_token', csrfToken);
+        
+        // FormData를 JSON으로 변환
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        
+        const response = await fetch(`/api/events/${eventId}/registration?event_id=${eventId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('✅ ' + result.message);
+            closeEventRegistrationModal();
+            
+            // UI 업데이트
+            if (result.data) {
+                updateEventRegistrationUI(result.data.status, result.data);
+            }
+        } else {
+            if (result.data && result.data.errors) {
+                let errorMsg = '입력 정보를 확인해주세요:\n';
+                for (const field in result.data.errors) {
+                    errorMsg += '- ' + result.data.errors[field] + '\n';
+                }
+                alert(errorMsg);
+            } else {
+                alert('❌ ' + (result.message || '신청 처리 중 오류가 발생했습니다.'));
+            }
+        }
+    } catch (error) {
+        console.error('행사 신청 제출 오류:', error);
+        alert('❌ 네트워크 오류가 발생했습니다.');
+    }
+}
+
+// 행사 신청 취소
+async function cancelEventRegistration() {
+    if (!confirm('정말로 행사 신청을 취소하시겠습니까?')) {
+        return;
+    }
+    
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        
+        const response = await fetch(`/api/events/${eventId}/registration?event_id=${eventId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                csrf_token: csrfToken
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('✅ ' + result.message);
+            
+            // UI 업데이트
+            updateEventRegistrationUI('cancelled', null);
+        } else {
+            alert('❌ ' + (result.message || '신청 취소 중 오류가 발생했습니다.'));
+        }
+    } catch (error) {
+        console.error('행사 신청 취소 오류:', error);
+        alert('❌ 네트워크 오류가 발생했습니다.');
+    }
+}
+
+// 모달 외부 클릭 시 닫기
+document.addEventListener('click', function(e) {
+    const modal = document.getElementById('eventRegistrationModal');
+    if (e.target === modal) {
+        closeEventRegistrationModal();
+    }
+});
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeEventRegistrationModal();
+    }
+});
 
 <?php if (!empty($event['images'])): ?>
 // 이미지 갤러리 관련 변수
@@ -1276,12 +2489,85 @@ document.getElementById('imageModal').addEventListener('click', function(e) {
 });
 <?php endif; ?>
 
+// 행사 이미지 갤러리 함수 별칭 (HTML에서 호출되는 함수명과 일치)
+function openEventImageModal(index) {
+    openImageModal(index);
+}
+
+// 강사 이미지 모달 열기
+function openInstructorImageModal(imageSrc, instructorName) {
+    console.log('강사 이미지 모달 열기:', imageSrc, instructorName);
+    
+    const modal = document.getElementById('instructorImageModal');
+    const modalImage = document.getElementById('instructorModalImage');
+    const modalName = document.getElementById('instructorModalName');
+    
+    if (!modal || !modalImage || !modalName) {
+        console.error('강사 이미지 모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
+    modalName.textContent = instructorName + ' 강사';
+    modalImage.src = imageSrc;
+    modalImage.alt = instructorName + ' 강사 이미지';
+    
+    // 완벽한 중앙정렬을 위한 클래스 적용
+    modal.classList.add('show');
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.setProperty('align-items', 'center', 'important');
+    modal.style.setProperty('justify-content', 'center', 'important');
+    document.body.style.overflow = 'hidden'; // 스크롤 방지
+}
+
+// 강사 이미지 모달 닫기
+function closeInstructorImageModal() {
+    const modal = document.getElementById('instructorImageModal');
+    if (modal) {
+        modal.classList.remove('show');
+        modal.style.setProperty('display', 'none', 'important');
+        document.body.style.overflow = 'auto'; // 스크롤 복원
+    }
+}
+
+// 강사 이미지 모달 이벤트 리스너 (페이지 로드 후 실행)
+document.addEventListener('DOMContentLoaded', function() {
+    const instructorModal = document.getElementById('instructorImageModal');
+    
+    if (instructorModal) {
+        // 배경 클릭시 닫기
+        instructorModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeInstructorImageModal();
+            }
+        });
+        
+        // ESC 키로 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && instructorModal.classList.contains('show')) {
+                closeInstructorImageModal();
+            }
+        });
+    }
+});
+
+function closeEventImageModal() {
+    closeImageModal();
+}
+
+function prevEventImage() {
+    prevImage();
+}
+
+function nextEventImage() {
+    nextImage();
+}
+
 /**
  * 행사 공유하기 기능
  */
 function shareEventContent() {
     try {
-        const eventTitle = "<?= addslashes(htmlspecialchars($event['title'])) ?>";
+        const eventTitle = "<?= addslashes(htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8')) ?>";
         const eventUrl = window.location.href;
         const eventDescription = "<?= addslashes(htmlspecialchars(substr(strip_tags($event['description'] ?? ''), 0, 100))) ?>...";
         
@@ -1504,5 +2790,108 @@ function startChatWithAuthor(authorId, authorName) {
     
     // 채팅 페이지로 이동하면서 해당 사용자와 채팅 시작
     window.location.href = `/chat#user-${authorId}`;
+}
+
+// 이벤트 삭제 확인 함수
+function confirmDeleteEvent(eventId) {
+    if (!eventId) {
+        alert('잘못된 행사 ID입니다.');
+        return;
+    }
+
+    // 삭제 확인
+    const confirmed = confirm('⚠️ 정말로 이 행사를 삭제하시겠습니까?\n\n삭제된 행사는 복구할 수 없습니다.');
+    
+    if (!confirmed) {
+        return;
+    }
+
+    // 두 번째 확인
+    const doubleConfirmed = confirm('⚠️ 마지막 확인입니다!\n\n행사 제목: "<?= htmlspecialchars($event['title']) ?>"\n\n정말로 삭제하시겠습니까?');
+    
+    if (!doubleConfirmed) {
+        return;
+    }
+
+    // 로딩 상태 표시
+    const deleteBtn = event.target;
+    const originalText = deleteBtn.innerHTML;
+    deleteBtn.innerHTML = '🔄 삭제 중...';
+    deleteBtn.disabled = true;
+
+    // CSRF 토큰 가져오기
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    // 디버깅 정보 출력
+    console.log('=== 행사 삭제 디버깅 시작 ===');
+    console.log('행사 ID:', eventId);
+    console.log('CSRF 토큰:', csrfToken);
+    console.log('요청 URL:', `/events/${eventId}/delete`);
+    console.log('요청 데이터:', {
+        csrf_token: csrfToken,
+        confirm_delete: true
+    });
+
+    // 삭제 요청
+    fetch(`/events/${eventId}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            csrf_token: csrfToken,
+            confirm_delete: true
+        })
+    })
+    .then(response => {
+        console.log('=== 응답 정보 ===');
+        console.log('응답 상태:', response.status);
+        console.log('응답 상태 텍스트:', response.statusText);
+        console.log('응답 헤더:', response.headers);
+        console.log('응답 OK 여부:', response.ok);
+        
+        // 응답이 JSON이 아닐 수 있으므로 텍스트로 먼저 읽어보기
+        return response.text().then(text => {
+            console.log('응답 원문:', text);
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('JSON 파싱 오류:', e);
+                throw new Error('서버 응답이 유효한 JSON이 아닙니다: ' + text);
+            }
+        });
+    })
+    .then(data => {
+        console.log('=== 파싱된 응답 데이터 ===');
+        console.log('응답 데이터:', data);
+        console.log('응답 상태:', data.status);
+        console.log('응답 데이터 객체:', data.data);
+        
+        // ResponseHelper 형식 처리
+        const isSuccess = data.status === 'success' && data.data && data.data.success === true;
+        const message = data.data ? data.data.message : (data.message || '알 수 없는 오류');
+        
+        if (isSuccess) {
+            alert('✅ 행사가 성공적으로 삭제되었습니다.');
+            // 행사 목록 페이지로 리다이렉트
+            window.location.href = '/events';
+        } else {
+            console.error('행사 삭제 실패:', message);
+            alert('❌ 행사 삭제에 실패했습니다: ' + message);
+            
+            // 버튼 상태 복원
+            deleteBtn.innerHTML = originalText;
+            deleteBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('네트워크 오류:', error);
+        alert('❌ 네트워크 오류가 발생했습니다: ' + error.message);
+        
+        // 버튼 상태 복원
+        deleteBtn.innerHTML = originalText;
+        deleteBtn.disabled = false;
+    });
 }
 </script>
